@@ -1,0 +1,885 @@
+generated: '2026-08-04'
+method: searched
+source: https://support.controlup.com/docs/mcp-server + npm package @controlup-ai/mcp@1.0.3 (published tool definitions)
+status: published
+server:
+  name: controlup
+  transport: stdio
+  package: '@controlup-ai/mcp'
+  version: 1.0.3
+  registry_url: https://www.npmjs.com/package/@controlup-ai/mcp
+  command: npx
+  args:
+  - -y
+  - '@controlup-ai/mcp@latest'
+  docs: https://support.controlup.com/docs/mcp-server
+  api_base_url: https://api.controlup.com
+  hosted_remote_endpoint: null
+authentication:
+  style: environment variables passed to the local process
+  variables:
+  - name: API_KEY
+    description: ControlUp organization API key, created in the ONE console under API Key Management. Sent to the REST API
+      as an HTTP bearer token.
+    required: true
+  - name: ORG_ID
+    description: ControlUp organization ID, shown on the API Key Management popup. Substituted into the orgId path parameter.
+    required: true
+  - name: DOMAINS
+    description: Optional comma-separated list of product identifiers to selectively enable tool groups. Omit to load every
+      product.
+    required: false
+  permissions: API keys inherit the permissions of the user that created them; permissions must be assigned directly to
+    the user, not inherited via IdP group membership.
+domains:
+- id: platform
+  product: DEX Platform
+  base_path: /v1
+  tool_count: 28
+- id: cu4d
+  product: ControlUp for Desktops
+  base_path: /cu4d-dal-mcp
+  tool_count: 18
+- id: vdi
+  product: ControlUp for VDI
+  base_path: /historical
+  tool_count: 19
+- id: cu4c
+  product: ControlUp for Compliance
+  base_path: /compliance
+  tool_count: 6
+- id: workflows
+  product: Workflows
+  base_path: /workflows
+  tool_count: 14
+- id: synthetic-monitoring
+  product: Synthetic Monitoring
+  base_path: /synthetic-monitoring
+  tool_count: 21
+tool_count: 106
+introspection:
+  tools_list: not remotely introspectable — the server is stdio-only and requires a customer API key. The tool set below
+    was read from the published npm distribution, which is the authoritative first-party source.
+  live_probe: false
+tools:
+- name: create-tenant-organization
+  domain: platform
+  description: Creates a new tenant organization under the Tenant Manager organization. This endpoint is relevant only if
+    you are an MSP.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgPublicController_createTenantOrganization
+  rest: POST /organizations/{tenantManagerOrgId}/tenants
+- name: list-users
+  domain: platform
+  description: Returns a list of all users in your ControlUp organization, including users with a pending invitation. Supports
+    filtering, pagination, and including related data like roles and settings.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgUsersPublicController_getAll
+  rest: GET /organizations/{orgId}/users
+- name: get-user
+  domain: platform
+  description: Get detailed information about a specific user by their ID, with optional inclusion of roles and settings.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgUsersPublicController_getOneById
+  rest: GET /organizations/{orgId}/users/{id}
+- name: update-user
+  domain: platform
+  description: Update a user\'s settings, status, roles, login methods, and MFA configuration.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgUsersPublicController_update
+  rest: PATCH /organizations/{orgId}/users/{id}
+- name: delete-user
+  domain: platform
+  description: Remove a user from the organization permanently.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgUsersPublicController_delete
+  rest: DELETE /organizations/{orgId}/users/{id}
+- name: revoke-user-api-keys
+  domain: platform
+  description: Revoke all API keys that were created by a specific user. This action cannot be undone.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgUsersPublicController_revoke
+  rest: POST /organizations/{orgId}/users/{id}/revoke-api-keys
+- name: invite-users
+  domain: platform
+  description: Invite one or more users to join the organization with specified roles. Users will receive an email invitation
+    to set up their account.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgInvitationPublicController_create
+  rest: POST /organizations/{orgId}/invitations
+- name: resend-invitation
+  domain: platform
+  description: Resend an invitation email to a user who was previously invited but has not yet accepted.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgInvitationPublicController_update
+  rest: PATCH /organizations/{orgId}/invitations
+- name: list-roles
+  domain: platform
+  description: List all roles available in the organization with their permissions and assigned users/groups.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgRolesPublicController_getAll
+  rest: GET /organizations/{orgId}/roles
+- name: get-role
+  domain: platform
+  description: Get detailed information about a specific role including its permissions and assigned users/groups.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgRolesPublicController_getOneById
+  rest: GET /organizations/{orgId}/roles/{id}
+- name: create-role
+  domain: platform
+  description: Create a new custom role with specific permissions. Permissions are organized by category and can include
+    device scope restrictions.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgRolesPublicController_create
+  rest: POST /organizations/{orgId}/roles
+- name: update-role
+  domain: platform
+  description: Update an existing role\'s name, description, permissions, or user/group assignments.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgRolesPublicController_update
+  rest: PATCH /organizations/{orgId}/roles/{id}
+- name: delete-role
+  domain: platform
+  description: Delete a custom role. This will remove the role from all assigned users and groups.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgRolesPublicController_delete
+  rest: DELETE /organizations/{orgId}/roles/{id}
+- name: list-ip-allowlist
+  domain: platform
+  description: List all IP allowlist entries configured for the organization.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgIpAllowlistPublicController_getAll
+  rest: GET /organizations/{orgId}/ip-allowlist
+- name: create-ip-allowlist-entry
+  domain: platform
+  description: Create a new IP allowlist entry with one or more IP addresses or CIDR ranges.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgIpAllowlistPublicController_create
+  rest: POST /organizations/{orgId}/ip-allowlist
+- name: update-ip-allowlist-entry
+  domain: platform
+  description: Update an existing IP allowlist entry\'s description or IP addresses.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgIpAllowlistPublicController_update
+  rest: PATCH /organizations/{orgId}/ip-allowlist/{id}
+- name: delete-ip-allowlist-entry
+  domain: platform
+  description: Delete an IP allowlist entry.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgIpAllowlistPublicController_delete
+  rest: DELETE /organizations/{orgId}/ip-allowlist/{id}
+- name: get-organization-settings
+  domain: platform
+  description: Get current organization-wide settings including login methods, MFA, session timeouts, and default home page.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSettingsPublicController_getOneById
+  rest: GET /organizations/{orgId}/settings
+- name: update-organization-settings
+  domain: platform
+  description: Update organization-wide settings including login methods, MFA options, session timeouts, and IP allowlist
+    enforcement.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSettingsPublicController_update
+  rest: PATCH /organizations/{orgId}/settings
+- name: get-saml-settings
+  domain: platform
+  description: Get the SAML configuration for SSO authentication in the organization.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSamlPublicController_getOneById
+  rest: GET /organizations/{orgId}/saml
+- name: create-saml-settings
+  domain: platform
+  description: Configure SAML settings for SSO authentication. Requires IdP metadata and default role assignment.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSamlPublicController_create
+  rest: POST /organizations/{orgId}/saml
+- name: update-saml-settings
+  domain: platform
+  description: Update existing SAML configuration settings.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSamlPublicController_update
+  rest: PATCH /organizations/{orgId}/saml
+- name: delete-saml-settings
+  domain: platform
+  description: Remove SAML configuration, disabling SSO authentication for the organization.
+  rest: DELETE /v1/organizations/{orgId}/saml
+  source_operation: null
+- name: list-sso-groups
+  domain: platform
+  description: List all SSO group mappings configured for SAML authentication.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSsoGroupsPublicController_getAll
+  rest: GET /organizations/{orgId}/sso-groups
+- name: create-sso-group
+  domain: platform
+  description: Create a new SSO group mapping. The external ID must match the group name from the SAML assertion.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSsoGroupsPublicController_create
+  rest: POST /organizations/{orgId}/sso-groups
+- name: update-sso-group
+  domain: platform
+  description: Update an SSO group\'s external ID or display name.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSsoGroupsPublicController_update
+  rest: PATCH /organizations/{orgId}/sso-groups/{id}
+- name: delete-sso-group
+  domain: platform
+  description: Delete an SSO group mapping.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgSsoGroupsPublicController_delete
+  rest: DELETE /organizations/{orgId}/sso-groups/{id}
+- name: get-audit-log
+  domain: platform
+  description: Retrieve audit log entries with comprehensive filtering options. Tracks all actions performed in the organization
+    including user activities, security events, and system changes.
+  source_operation: openapi/controlup-dex-platform-openapi.yml#OrgAuditLogPublicController_getAll
+  rest: GET /organizations/{orgId}/audit-log
+- name: list-devices
+  domain: cu4d
+  description: 'List devices with pagination, filtering, sorting, search, and optional DEX scores. Available filter fields:
+    - METADATA: name, dns_name, platform (1=Windows, 2=macOS), is_online, last_communication, group, tags - AGENT: agent_version,
+    auto_update_mode - OS: os_name, os_version - HARDWARE: hw_manufacturer, hw_model - USER: console_user, console_user_upn
+    - NETWORK: public_ip, public_ip_country, public_ip_city - PERFORMANCE: cpu_perc, memory_total_bytes_used, total_used_disk
+    - STABILITY: app_crashes, app_freezes, hangs, bsods Filter operators: - equals/notEquals: Exact match (use for strings,
+    numbers, booleans) - contains: Wildcard search (use for partial string matches) - gt/lt/gte/lte: Range comparisons (use
+    for numbers and dates) DEX (Digital Employee Experience) Score: - Score range: 0-10 (higher is better) - Use includeScores=true
+    to include dexScore in response - Use sort="_score" with sortDir="desc" to get worst-performing devices first'
+  rest: GET /cu4d-dal-mcp/devices
+  source_operation: null
+- name: get-device-metadata
+  domain: cu4d
+  description: Get basic metadata for a device (id, name, platform, online status, group, tags)
+  rest: GET /cu4d-dal-mcp/devices/{id}/metadata
+  source_operation: null
+- name: get-device-agent-info
+  domain: cu4d
+  description: Get agent and configuration info for a device (version, update mode, features)
+  rest: GET /cu4d-dal-mcp/devices/{id}/agent
+  source_operation: null
+- name: get-device-os-hardware
+  domain: cu4d
+  description: Get OS and hardware details for a device (OS name/version, CPU, memory, GPU)
+  rest: GET /cu4d-dal-mcp/devices/{id}/os-hardware
+  source_operation: null
+- name: get-device-users
+  domain: cu4d
+  description: Get user and session information for a device (console user, active sessions)
+  rest: GET /cu4d-dal-mcp/devices/{id}/users
+  source_operation: null
+- name: get-device-network
+  domain: cu4d
+  description: Get network and location info for a device (IP, geo location, interfaces, latency)
+  rest: GET /cu4d-dal-mcp/devices/{id}/network
+  source_operation: null
+- name: get-device-performance
+  domain: cu4d
+  description: Get performance metrics for a device (CPU, memory, disk, network throughput)
+  rest: GET /cu4d-dal-mcp/devices/{id}/performance
+  source_operation: null
+- name: get-device-apps
+  domain: cu4d
+  description: Get application stability metrics for a device (crashes, freezes, hangs, BSODs)
+  rest: GET /cu4d-dal-mcp/devices/{id}/apps
+  source_operation: null
+- name: get-device-performance-history
+  domain: cu4d
+  description: 'Get historical performance metrics for a device over a time range. Returns time-series data points with
+    CPU, memory, network, and disk metrics aggregated by time interval. Use cases: - "What was the CPU usage 1 hour ago?"
+    - "Show me memory trends over the last 24 hours" - "Get performance history for the last week"'
+  rest: GET /cu4d-dal-mcp/devices/{id}/performance/history
+  source_operation: null
+- name: get-device-network-history
+  domain: cu4d
+  description: 'Get historical network metrics for a device over a time range. Returns time-series data points with WiFi
+    signal, latency, and throughput aggregated by time interval. Use cases: - "How was the WiFi signal over the last 24
+    hours?" - "Show me latency trends during working hours" - "Was there network issues yesterday?"'
+  rest: GET /cu4d-dal-mcp/devices/{id}/network/history
+  source_operation: null
+- name: get-device-score-history
+  domain: cu4d
+  description: 'Get historical DEX (Digital Employee Experience) score for a device over a time range. Returns time-series
+    data points with DEX score and contributing factors aggregated by time interval. Use cases: - "How did the device health
+    change over the last week?" - "When did the DEX score drop?" - "Show me score trends compared to CPU/memory usage"'
+  rest: GET /cu4d-dal-mcp/devices/{id}/score/history
+  source_operation: null
+- name: get-device-stability-history
+  domain: cu4d
+  description: 'Get historical stability metrics for a device over a time range. Returns time-series data points with crashes,
+    freezes, hangs, and BSODs aggregated by time interval. Use cases: - "When did the crashes start happening?" - "Were
+    there any BSODs this week?" - "Show me stability trends over the last month"'
+  rest: GET /cu4d-dal-mcp/devices/{id}/stability/history
+  source_operation: null
+- name: get-device-users-history
+  domain: cu4d
+  description: 'Get historical user activity for a device over a time range. Returns time-series data points with console
+    users and session counts aggregated by time interval. Use cases: - "Who was logged in yesterday?" - "How many active
+    sessions over the last week?" - "When did the user log in?"'
+  rest: GET /cu4d-dal-mcp/devices/{id}/users/history
+  source_operation: null
+- name: list-applications
+  domain: cu4d
+  description: 'List installed applications across all devices with pagination, filtering, and search. Returns application
+    name, version, publisher, and optionally crash statistics. Available filter fields: - name: Application name - version:
+    Application version - publisher: Application publisher - platform: Platform (1=Windows, 2=macOS, 3=Linux) Use cases:
+    - "What applications are installed across my fleet?" - "Find all versions of Chrome installed" - "List applications
+    from Microsoft"'
+  rest: GET /cu4d-dal-mcp/applications
+  source_operation: null
+- name: get-application-crashes
+  domain: cu4d
+  description: 'Get application crash statistics aggregated by application name and version. Returns crash count, affected
+    devices, and crash types for each application. Use cases: - "Which applications are crashing the most?" - "Find applications
+    that crashed more than 10 times this week" - "Get crash statistics for Chrome over the last month" - "Compare crash
+    rates between different applications"'
+  rest: GET /cu4d-dal-mcp/applications/crashes
+  source_operation: null
+- name: compare-application-versions
+  domain: cu4d
+  description: 'Compare crash rates between different versions of the same application. Returns crash count, device count,
+    and crash rate for each version. Use cases: - "Compare Chrome crash rates between versions" - "Find the most stable
+    version of Outlook" - "Which version of Teams is causing the most issues?" - "Did the new version of an app improve
+    stability?"'
+  rest: GET /cu4d-dal-mcp/applications/compare-versions
+  source_operation: null
+- name: get-win-event-logs
+  domain: cu4d
+  description: 'Get Windows event logs from devices with filtering and search. Returns event ID, source, level, message,
+    and timestamp. Event levels: - Error: Significant problems like loss of data or functionality - Warning: Potential problems
+    that may require attention - Information: Successful operations - Critical: Severe issues requiring immediate attention
+    Use cases: - "Show me all critical and error events from the last 24 hours" - "Find application crash events in Windows
+    event log" - "Get events from a specific source like Microsoft-Windows-Application-Experience" - "Search for BSOD-related
+    events"'
+  rest: GET /cu4d-dal-mcp/win-event-logs
+  source_operation: null
+- name: execute-custom-query
+  domain: cu4d
+  description: 'Execute a custom Elasticsearch query against available indexes. Use this tool when existing tools don''t
+    cover your specific query requirements. # INDEX DOCUMENTATION For complete field reference, see: src/docs/elasticsearch-indexes.md
+    For TypeScript definitions, see: src/docs/elasticsearch-indexes.ts # AVAILABLE INDEXES AND FIELD MAPPINGS ## 1. _devices
+    (Current Device State) Real-time device information snapshot. Use for current device status queries. **Fields:** | Field
+    | Type | Description | |-------|------|-------------| | _id | keyword | Device document ID | | _device_id | keyword
+    | Unique device identifier | | name | text/keyword | Device name (use .keyword for exact match) | | dns_name | text/keyword
+    | DNS hostname | | platform | integer | Platform: 1=Windows, 2=macOS, 3=Linux | | is_online | boolean | Current online
+    status | | last_communication | date | Last communication timestamp | | group | text/keyword | Device group name | |
+    tags | keyword[] | Device tags array | | agent_version | text/keyword | Agent version string | | agent_manager_version
+    | text/keyword | Agent manager version | | auto_update_mode | keyword | Update mode (PRODUCTION, etc.) | | os_name |
+    text/keyword | Full OS name | | os_version | text/keyword | OS version | | os_patch | text/keyword | OS patch level
+    | | os_architecture | keyword | Architecture (x64, arm64) | | hw_manufacturer | text/keyword | Hardware manufacturer
+    | | hw_model | text/keyword | Hardware model | | hw_cpu | text/keyword | CPU model | | hw_memory_total_bytes | long
+    | Total RAM in bytes | | hw_gpu | text/keyword | GPU model | | console_user | text/keyword | Current logged-in user
+    | | console_user_upn | text/keyword | User principal name (email) | | console_user_display_name | text/keyword | User
+    display name | | console_user_dept | text/keyword | User department | | console_user_manager | text/keyword | User''s
+    manager | | active_usernames | keyword[] | Active usernames array | | activesessions | integer | Active session count
+    | | public_ip | keyword | Public IP address | | public_ip_city | text/keyword | City from geo-IP | | public_ip_state
+    | text/keyword | State/region from geo-IP | | public_ip_country | text/keyword | Country from geo-IP | | public_ip_timezone
+    | keyword | Timezone from geo-IP | | network_interfaces | nested | Network interface objects | | latency_target | keyword
+    | Ping target address | | ping_avg | float | Average ping in ms | | cpu_perc | float | CPU usage percentage | | cpu_total_percentage
+    | float | Total CPU percentage (for scoring) | | cpuqueuelength | integer | CPU queue length | | memory_total_bytes_used
+    | long | Used memory in bytes | | memory_total_bytes_available | long | Available memory in bytes | | total_used_disk
+    | long | Used disk space in bytes | | total_free_disk | long | Free disk space in bytes | | bytes_received_per_sec |
+    long | Network bytes in per second | | bytes_sent_per_sec | long | Network bytes out per second | | wifi_signal | integer
+    | WiFi signal strength (0-100) | | latency_result_1 | float | Latency measurement in ms | | foreground_app | text/keyword
+    | Current foreground application | | app_crashes | integer | App crash count (recent) | | app_freezes | integer | App
+    freeze count | | hangs | integer | Application hang count | | bsods | integer | Blue screen count | | hw_battery_health_percentage
+    | integer | Battery health % | | user_input_delay_max | integer | Max user input delay in ms | | user_logon_duration
+    | integer | User logon duration in ms | ## 2. device_status (Historical Device Metrics) Time-series performance data.
+    Use for historical trends and time-based aggregations. **Key Fields:** | Field | Type | Description | |-------|------|-------------|
+    | _device_id | keyword | Device identifier | | _device_name | text/keyword | Device name | | _created_local | date |
+    Timestamp (primary time field) | | created_local | date | Alternative timestamp field | | cpu_perc | float | CPU usage
+    percentage | | cpu_total_percentage | float | Total CPU percentage | | mem_perc | float | Memory usage percentage |
+    | memory_total_bytes_used | long | Memory used in bytes | | memory_total_bytes_available | long | Memory available in
+    bytes | | wifi_signal | integer | WiFi signal strength | | latency_result_1 | float | Network latency in ms | | total_used_disk
+    | long | Used disk in bytes | | total_free_disk | long | Free disk in bytes | | bytes_received_per_sec | long | Network
+    bytes in | | bytes_sent_per_sec | long | Network bytes out | | foreground_app | text/keyword | Active application |
+    | foreground_app_friendly_name | text/keyword | Friendly app name | | console_user_upn | text/keyword | User principal
+    name | | platform | integer | Platform (1=Win, 2=Mac) | | public_ip_country | text/keyword | Country | | public_ip_city
+    | text/keyword | City | | dex_score | float | DEX score at this point | ## 3. installed_apps (Installed Applications)
+    Software inventory across devices. **Fields:** | Field | Type | Description | |-------|------|-------------| | _device_id
+    | keyword | Device identifier | | _device_name | text/keyword | Device name | | name | text/keyword | Application name
+    | | version | text/keyword | Application version | | publisher | text/keyword | Application publisher | | platform |
+    integer | Platform (1=Win, 2=Mac) | | installdate | keyword | Install date string | | iso_install_date | date | Install
+    date (ISO format) | | source | keyword | Installation source | | uninstall_string | text | Uninstall command | | bits
+    | keyword | Architecture (32/64 bit) | | _created | date | Record creation time | | _created_local | date | Local timestamp
+    | ## 4. win_event_log (Windows Event Logs) Windows system and application events. Use for crash analysis and system
+    diagnostics. **Fields:** | Field | Type | Description | |-------|------|-------------| | _device_id | keyword | Device
+    identifier | | _device_name | text/keyword | Device name | | event_id | integer | Windows Event ID | | event_source
+    | text/keyword | Event source (e.g., "Application Error") | | event_level | integer | Level: 1=Critical, 2=Error, 3=Warning,
+    4=Info | | message | text | Event message content | | category | keyword | Event category | | process_name | text/keyword
+    | Crashed/affected process | | process_version | text/keyword | Process version | | fault_module | text/keyword | Faulting
+    module name | | fault_module_version | text/keyword | Faulting module version | | _created | date | Record creation
+    time | | _created_local | date | Local timestamp (use for time queries) | | console_user_upn | text/keyword | User at
+    time of event | ## 5. builtin_appdx_errors (Application Errors) Application crash and error tracking. **Fields:** |
+    Field | Type | Description | |-------|------|-------------| | _device_id | keyword | Device identifier | | _device_name
+    | text/keyword | Device name | | app_name | text/keyword | Application name | | app_version | text/keyword | Application
+    version | | error_type | keyword | Type of error | | error_message | text | Error message | | crash_time | date | Crash
+    timestamp | | _created | date | Record creation time | | _created_local | date | Local timestamp | ## 6. power_events
+    (Power State Changes) Device power state transitions (sleep, wake, shutdown, etc.) **Fields:** | Field | Type | Description
+    | |-------|------|-------------| | _device_id | keyword | Device identifier | | _device_name | text/keyword | Device
+    name | | event_type | keyword | Power event type | | upn | text/keyword | User principal name | | _created_local | date
+    | Event timestamp | ## 7. mswin_logons (Windows Logon Events) User logon/logoff tracking and logon performance. **Fields:**
+    | Field | Type | Description | |-------|------|-------------| | _device_id | keyword | Device identifier | | _device_name
+    | text/keyword | Device name | | logonstart | date | Logon start time | | logonduration_ms | long | Logon duration in
+    ms | | userprofileduration_ms | long | Profile load duration | | grouppolicycsesduration_ms | long | Group policy duration
+    | | console_user_upn | text/keyword | User principal name | | _created_local | date | Record timestamp | ## 8. app_focus
+    (Application Focus Time) Application usage and focus duration tracking. **Fields:** | Field | Type | Description | |-------|------|-------------|
+    | _device_id | keyword | Device identifier | | _device_name | text/keyword | Device name | | foreground_app | text/keyword
+    | Application name | | foreground_app_friendly_name | text/keyword | Friendly app name | | duration_ms | long | Focus
+    duration in ms | | console_user_upn | text/keyword | User principal name | | _created_local | date | Focus start timestamp
+    | ## 9. groups (Device Groups) Device group definitions. **Fields:** | Field | Type | Description | |-------|------|-------------|
+    | name | text/keyword | Group name | | description | text | Group description | ## 10. tags (Device Tags) Device tag
+    definitions. **Fields:** | Field | Type | Description | |-------|------|-------------| | name | text/keyword | Tag name
+    | # QUERY BUILDING GUIDE ## Basic Query Structure \`\`\`json { "index": "_devices", "query": { "_source": ["name", "platform",
+    "cpu_perc"], "size": 50, "from": 0, "query": { "bool": { "must": [...], "filter": [...], "should": [...], "must_not":
+    [...] } }, "sort": [{"name.keyword": "asc"}], "aggs": {...} } } \`\`\` ## Common Query Patterns ### Term Query (exact
+    match): \`\`\`json {"term": {"platform": 1}} \`\`\` ### Terms Query (multiple values): \`\`\`json {"terms": {"platform":
+    [1, 2]}} \`\`\` ### Wildcard Query (partial match on text/keyword fields): \`\`\`json {"wildcard": {"name.keyword":
+    "*PROD*"}} \`\`\` ### Range Query (numbers, dates): \`\`\`json {"range": {"cpu_perc": {"gte": 80}}} {"range": {"_created_local":
+    {"gte": "2025-01-01T00:00:00Z", "lte": "2025-01-05T23:59:59Z"}}} \`\`\` ### Bool Query (combine conditions): \`\`\`json
+    { "bool": { "must": [ {"term": {"platform": 1}}, {"range": {"cpu_perc": {"gte": 80}}} ], "filter": [ {"term": {"is_online":
+    true}} ] } } \`\`\` ## Aggregation Patterns ### Terms Aggregation (group by): \`\`\`json { "aggs": { "by_platform":
+    { "terms": {"field": "platform", "size": 10} } } } \`\`\` ### Date Histogram (time series): \`\`\`json { "aggs": { "over_time":
+    { "date_histogram": { "field": "_created_local", "calendar_interval": "1h" }, "aggs": { "avg_cpu": {"avg": {"field":
+    "cpu_perc"}} } } } } \`\`\` ### Cardinality (unique count): \`\`\`json { "aggs": { "unique_devices": {"cardinality":
+    {"field": "_device_id.keyword"}} } } \`\`\` ## Field Type Notes - Use \`.keyword\` suffix for exact matching on text
+    fields (e.g., \`name.keyword\`, \`console_user.keyword\`) - Numeric fields (integer, long, float) don''t need .keyword
+    suffix - Date fields use ISO 8601 format: \`2025-01-05T12:00:00Z\` - Boolean fields use true/false (not "true"/"false")
+    - For time-based queries on historical data, use \`_created_local\` field ## Example Use Cases 1. "Find all Windows
+    devices with CPU > 90%": Index: _devices, filter: platform=1 AND cpu_perc > 90 2. "Count crashes per application in
+    last 7 days": Index: win_event_log, filter: event_level=2, agg: terms on process_name.keyword 3. "Get average CPU by
+    device group over last 24 hours": Index: device_status, date_histogram on _created_local with avg(cpu_total_percentage),
+    grouped by group.keyword'
+  rest: POST /cu4d-dal-mcp/custom-query
+  source_operation: null
+- name: get-host-metrics-per-folder
+  domain: vdi
+  description: Returns average host resource consumption per folder throughout the search period. The granularity depends
+    on the search period.
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getHostMetrics
+  rest: GET /v1/hosts/metrics
+- name: get-host-counts
+  domain: vdi
+  description: Returns usage statistics per host (users, sessions, or machines count).
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getHostCounts
+  rest: GET /v1/hosts/counts
+- name: get-user-activity
+  domain: vdi
+  description: Returns a list of users and their activity status throughout the search period. The search period is divided
+    into time windows according to the granularity parameter.
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getUserActivity
+  rest: GET /v1/users/activity
+- name: get-machine-statistics
+  domain: vdi
+  description: 'Returns historical performance metrics and resource consumption statistics for monitored machines, including
+    servers and VDI desktops. **THIS IS THE PRIMARY TOOL FOR ANALYZING MACHINE/SERVER PERFORMANCE AND IDENTIFYING RESOURCE
+    BOTTLENECKS.** Use this tool when users ask about: \''worst performing machines\'', \''machines with high CPU/memory/disk
+    usage\'', \''machine performance issues\'', \''resource consumption\'', \''which machines are struggling\'', \''server
+    performance problems\'', \''machines with session performance issues\'', \''session counts and metrics per machine\'',
+    or any query about identifying poorly performing infrastructure. Returns metrics like CPU utilization, memory usage,
+    disk I/O (reads/writes/transfers per second), network throughput, processor queue length, disk queue length, page faults,
+    process counts, and session counts (total sessions, active sessions, user sessions, idle sessions, disconnected sessions,
+    ICA sessions, session disconnect rate). Data can be grouped by individual machine, virtualization host, or organizational
+    folder. Supports different aggregation types: Avg (average values over time period), Max (peak values), Min (minimum
+    values), or Worst (automatically selects max/min based on what indicates poor performance for each metric - e.g., max
+    for CPU usage, min for free disk space). When metricsType=\''UserSessions\'', returns session-related metrics per machine
+    which is essential for VDI/DaaS session performance analysis. Essential for capacity planning, performance troubleshooting,
+    identifying resource-starved machines, and finding infrastructure bottlenecks affecting user experience. Also supports
+    GPU metrics (NVIDIA utilization, memory, encoder/decoder usage) and PVS metrics (Citrix Provisioning Services - boot
+    times, cache usage, vDisk health) when metricsType parameter is set accordingly.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getMachineStatsByMachine
+  rest: GET /v1/machines/statistics/{grouping}
+- name: get-machine-sizing-virt
+  domain: vdi
+  description: 'Returns AI-powered sizing recommendations to optimize CPU, RAM, and disk resource allocation for virtual
+    machines based on historical usage data from the previous month. Uses machine learning with an algorithm that analyzes
+    the 95th percentile of usage values and adds a 15% buffer to provide optimal recommendations. Identifies over-provisioned
+    machines (waste reduction), under-provisioned machines (performance improvement), and right-sized machines. Helps answer:
+    What is the best allocation of CPU cores and RAM? Can resources be reallocated? Does a machine have sufficient resources
+    for its workload? Recommendations categorize machines by sizing status (Over/Right/Under) for both CPU and memory. No
+    input parameters required beyond pagination.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getRecommendationVirtualization
+  rest: GET /v1/machines/sizing_recommendation/virtualization
+- name: get-machine-sizing-recommendation-azure
+  domain: vdi
+  description: 'Returns comprehensive Azure cost optimization recommendations with specific Azure VM and disk SKU suggestions
+    based on historical usage data. Uses AI/ML to analyze the previous month of data (95th percentile + 15% buffer) and
+    recommends optimal Azure Virtual Machine sizes and managed disk configurations to reduce Azure compute costs. Provides
+    detailed cost analysis across multiple pricing models (PAYG, Spot, Reserved 1Y/3Y) with percentage savings calculations.
+    Helps answer: Which Azure VM sizing option best fits requirements? How much can be saved by right-sizing? What are the
+    cost differences between pricing models? Requires Azure-specific configuration including licensing (Azure Hybrid Benefit
+    vs OS Windows), region, currency, VM features (CPU architecture, networking, Hyper-V generation), disk options (tier,
+    redundancy, size), and cost model preferences.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getRecommendationAzure
+  rest: GET /v1/machines/sizing_recommendation/azure
+- name: get-netscaler-metrics
+  domain: vdi
+  description: 'Returns aggregated performance metrics for NetScaler ADC (Application Delivery Controller) appliances to
+    monitor health, identify bottlenecks, and analyze workload distribution. Provides average values for packet CPU utilization
+    (percentage), memory usage (percentage), management CPU utilization, network traffic in/out (Mbps through all NICs),
+    HDX session count, Load Balancer and Gateway availability percentages, High Availability status (primary/secondary),
+    HA sync failures, and heartbeat rates. Use this to answer: Which NetScalers were available? Is workload evenly distributed?
+    Are there performance bottlenecks? Track software version, build number, and configuration changes. Metrics are averaged
+    over the specified time period (default: last 24 hours). This endpoint returns summary statistics without time-series
+    granularity - use the V2 endpoint for time-series data.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getNetscalerUsage
+  rest: GET /v1/netscaler/usage/system
+- name: get-netscaler-load-balancer-metrics
+  domain: vdi
+  description: 'Returns aggregated performance and health metrics for NetScaler Load Balancer virtual servers distributing
+    traffic across backend application servers. Monitors client connections, request/response traffic rates (Mbps), vServer
+    health (percentage of bound services in Up state), active/inactive backend services, request hit rate (requests/sec),
+    spillover events, surge queue depth, load-balancing method (Round Robin, Least Connection, etc.), and protocol (HTTP,
+    SSL, etc.). Use this to answer: Do I need more capacity? How many requests does a load balancer handle during business
+    hours? Is load balancer behavior affecting user experience? Track vServer IP address, port, active/inactive service
+    counts, and identify performance bottlenecks. Returns summary statistics averaged over the time period (default: last
+    24 hours) - use V2 endpoint for time-series trending with granular data points.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getLoadbalancerUsage
+  rest: GET /v1/netscaler/usage/loadbalancer
+- name: get-netscaler-gateway-metrics
+  domain: vdi
+  description: 'Returns aggregated performance metrics for NetScaler Gateway virtual servers providing secure remote access
+    to Citrix Virtual Apps and Desktops. Monitors concurrent user connections, request/response traffic rates (Mbps), request/response
+    rates (transactions/sec), Gateway IP address and port, and SSL/TLS certificate status (name and expiration date). Essential
+    for remote access capacity planning and security management. Use this to answer: How many user connections does a gateway
+    handle during business hours? When did gateways experience highest traffic? How does response rate compare to request
+    rate? Are certificates expiring soon? Track user connection trends, bandwidth consumption patterns, and identify Gateway
+    performance bottlenecks affecting remote user experience. Returns summary statistics averaged over the time period (default:
+    last 24 hours) - use V2 endpoint for time-series trending with granular data points showing traffic patterns over time.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getGatewayUsageTimeSeries
+  rest: GET /v2/netscaler/usage/gateway
+- name: get-ns-metrics-timeseries-v2
+  domain: vdi
+  description: 'Returns performance metrics with time-series data for NetScaler ADC appliances, enabling trend analysis
+    and historical performance visualization. Unlike the standard metrics endpoint which returns aggregated averages, this
+    V2 endpoint provides granular data points over time for: Traffic In/Out (Mbps rate through NICs), Packet CPU utilization
+    (%), Memory utilization (%), HDX session counts, and Management CPU utilization (%). Supports both summary view (single
+    aggregated line for all appliances - percentages averaged, other metrics summed) and per-appliance view (individual
+    trend lines for each appliance). Essential for identifying performance patterns, detecting configuration changes, spotting
+    bottlenecks over time, and analyzing workload distribution trends across NetScaler infrastructure. Time-series granularity
+    depends on the selected time range. Use this for dashboard visualizations, performance trending, and capacity planning.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getNetscalerUsageWithTimeSeries
+  rest: GET /v2/netscaler/usage/system
+- name: get-ns-lb-metrics-timeseries
+  domain: vdi
+  description: 'Returns performance metrics with time-series data for NetScaler Load Balancer virtual servers, enabling
+    trend analysis and capacity planning. Unlike the standard endpoint which returns aggregated averages, this V2 endpoint
+    provides granular data points over time for: client connections count, traffic in/out rates (request/response bits in
+    Mbps), vServer health percentage (services in Up state), active/inactive services count, request hit rate, spillover
+    events, and surge queue depth. Supports two visualization modes: Summary view (single aggregated line - percentages
+    averaged, other metrics summed) and Per-Appliance view (individual trend lines for each Load Balancer). Essential for
+    answering: When do peak loads occur during business hours? How did traffic patterns change after configuration updates?
+    Are spillover events increasing? Is vServer health degrading over time? Click data points to view min/average/max values.
+    Time-series granularity adapts to selected time range. Use this for capacity planning, performance dashboards, and identifying
+    when load balancer changes impacted application delivery.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getLoadbalancerUsageWithTimeSeries
+  rest: GET /v2/netscaler/usage/loadbalancer
+- name: get-ns-gw-metrics-timeseries-v2
+  domain: vdi
+  description: 'Returns performance metrics with time-series data for NetScaler Gateway virtual servers, enabling trend
+    analysis of remote access patterns and user activity over time. Unlike the standard endpoint which returns aggregated
+    averages, this V2 endpoint provides granular data points over time for: concurrent user connections count, traffic in/out
+    rates (request/response bits in Mbps), and request/response transaction rates. Supports two visualization modes: Summary
+    view (single aggregated line - percentages averaged, other metrics summed across all Gateways) and Per-Appliance view
+    (individual trend lines for each Gateway). Interactive features allow clicking data points to view min/average/max values
+    for user connections, request/response bits, and request/response rates during the selected period. Essential for answering
+    time-based questions: When do peak user connections occur during business hours? How did traffic rates change after
+    infrastructure updates? What are the request vs response rate patterns? Time-series granularity adapts to selected time
+    range. Use this for remote access capacity planning, SLA monitoring, identifying peak usage periods, and troubleshooting
+    Gateway performance issues affecting user experience.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getGatewayUsageTimeSeries
+  rest: GET /v2/netscaler/usage/gateway
+- name: get-start-upload-date
+  domain: vdi
+  description: Returns date when the first historical data upload was started
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getStartUploadDate
+  rest: GET /v1/uploadstartstatus
+- name: get-session-statistics
+  domain: vdi
+  description: 'Returns comprehensive historical statistics for INDIVIDUAL USER SESSIONS across VDI/DaaS environments (Citrix
+    CVAD, Omnissa Horizon). **USE THIS TOOL FOR INDIVIDUAL SESSION ANALYSIS, NOT FOR FINDING WHICH MACHINES HAVE SESSION
+    PROBLEMS.** For identifying machines with session performance issues, use getMachineStatistics with metricsType=\''UserSessions\''
+    instead. This tool provides detailed per-session records with different focus areas via preset types: ACTIVITY (session
+    initiation, logon/logoff times, duration), CLIENT (client performance indicators like NIC speed, OS version, IP address),
+    CVAD (Citrix-specific metrics: brokering duration, delivery group, StoreFront server, profile load time), HORIZON (Omnissa
+    Horizon metrics: pod name, pool name, farm name, connection server), RESOURCES (resource consumption per session: CPU,
+    RAM, disk I/O, GPU utilization), UX (user experience metrics per session: protocol latency, RTT, bandwidth, application
+    load time, frames per second), LIST (basic session list for specific user/server, requires userAccount or serverName
+    filter). Answers questions like: Which sessions had highest CPU usage? Which users had slowest logon times? What was
+    average application load time for sessions? Which sessions did a specific user initiate? What were the connection details
+    for a user\''s sessions? Filter by user account, server name, EUC site, branch, folder, or logon duration range. Essential
+    for deep-dive session analysis, troubleshooting specific user complaints, analyzing session timing and connectivity,
+    and identifying user experience issues at the individual session level. Returns one row per session. Default sort: logoff
+    time descending.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getSessionsStatistics
+  rest: GET /v1/sessions
+- name: get-individual-session-details
+  domain: vdi
+  description: 'Returns comprehensive activity details for a specific user session identified from Session Activity report.
+    Provides drill-down view showing: session events timeline (logon/logoff, connect/disconnect events with timestamps),
+    client information (IP address, machine name, OS type/version, NIC speed, Citrix Receiver/Horizon Client versions, branch
+    location), active applications (running apps during session with usage times), active URLs accessed, protocol details
+    (HDX/RDP/Blast/PCoIP with bandwidth and latency), performance metrics (CPU, RAM, disk I/O, GPU utilization over session
+    duration), user experience data (protocol latency, RTT, frames per second, application load times), and platform-specific
+    details (CVAD: brokering duration, delivery group, StoreFront server, profile load time; Horizon: pod name, pool name,
+    connection server, farm name). Essential for deep-dive troubleshooting of individual session problems: Why did this
+    user experience slow performance? What applications were running when the issue occurred? What were the network conditions
+    during the session? Use sessionUid from getSessionStatistics results to identify the specific session to investigate.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getSessionDetails
+  rest: GET /v1/sessions/details
+- name: get-session-timeline
+  domain: vdi
+  description: Returns the timeline of session state changes for a specific session.
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getSessionTimeline
+  rest: GET /v1/sessions/timeline/{sessionUid}
+- name: get-application-statistics
+  domain: vdi
+  description: 'Returns comprehensive historical usage statistics and resource consumption metrics for all applications
+    running on monitored machines, aggregated per application version. Provides organization-wide visibility into application
+    adoption and performance across the entire application portfolio. **DO NOT use this tool when asked about a specific
+    application by name** - use getUsageDetailsForAnApplication instead for queries like "Chrome usage" or "Excel statistics".
+    This tool is for answering broad questions like: What are the most used applications in my organization? Which applications
+    consume the most resources (CPU, GPU, memory, I/O) across all apps? Are there resource usage differences between different
+    versions of the same application? Which apps should we prioritize for optimization or upgrade? What is our complete
+    application inventory? Metrics include: unique user count and trend (percentage change from previous period), peak concurrent
+    instances (highest number of processes running simultaneously, counted using 5-minute interval sampling), average resource
+    consumption (CPU, GPU, memory, read/write/total I/O operations), average application load time, total instances and
+    duration, unique machines running the app, and Top 10% highest CPU consumers. Statistics are aggregated weekly (Monday-Sunday)
+    or monthly depending on timeFrame parameter. Data spans previous 12 months. Default sort: by unique users descending.
+    Essential for capacity planning, license optimization, identifying resource-hungry applications, comparing performance
+    across application versions, tracking application adoption trends, and making informed decisions about application lifecycle
+    management.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getAppStats
+  rest: GET /v1/applications/statistics
+- name: get-usage-details-for-all-applications
+  domain: vdi
+  description: 'Returns detailed usage statistics for all applications including peak concurrent users/instances throughout
+    the specified search period. For each application version, provides: number of unique users who ran the application,
+    and peak concurrency (the highest number of instances/processes running simultaneously across all machines, sampled
+    at intervals). Essential for answering questions like: What are the peak concurrent users for applications? How many
+    instances of an application run at the same time? Which applications have the highest concurrent usage? The granularity
+    of peak concurrency data and time-series breakdown depends on the length and recency of the search period. Data is returned
+    per application version. Use this for capacity planning, license optimization based on concurrent usage, and identifying
+    peak load times for applications.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getAppUsage
+  rest: GET /v1/applications/usage/all
+- name: get-usage-details-for-an-application
+  domain: vdi
+  description: 'Returns detailed usage statistics for a specific application identified by its exact name. **USE THIS TOOL
+    when the user asks about a specific application by name (e.g., "Chrome usage", "Excel statistics", "Outlook activity").**
+    Provides comprehensive drill-down view including: usage per machine (which computers ran the app), usage per user account
+    (which users launched it), peak concurrent instances over time (maximum number of processes running simultaneously,
+    sampled at 5-minute intervals), and time-series data showing usage patterns throughout the search period. The granularity
+    of peak concurrent instances data depends on the length and recency of the search period. Essential for answering: Which
+    users/machines use this application? When are peak usage times? How many concurrent instances do we need to license?
+    What is the usage trend over time? Use appVersion parameter to filter to a specific version if the application has multiple
+    versions tracked separately.\nFor discovering what applications exist or comparing usage across multiple applications,
+    use getApplicationStatistics instead.'
+  source_operation: openapi/controlup-vdi-daas-historical-openapi.yml#getAppUsageSingle
+  rest: GET /v1/applications/usage/single
+- name: list-devices
+  domain: cu4c
+  description: Returns a list of all devices managed by ControlUp for Compliance. Supports filtering by device properties,
+    pagination, sorting, and search. Use this to get an overview of your device inventory.
+  source_operation: openapi/controlup-compliance-openapi.yml#getDevices
+  rest: GET /devices
+- name: get-device-details
+  domain: cu4c
+  description: Returns detailed information for a specific device, including security score, agent status, and a summary
+    of detected issues (vulnerabilities, patches, compliance issues, and misconfigurations). Use this to get a comprehensive
+    view of a single device\'s security posture.
+  source_operation: openapi/controlup-compliance-openapi.yml#getDeviceDetails
+  rest: GET /devices/{device_id}
+- name: list-device-vulnerabilities
+  domain: cu4c
+  description: Returns a list of vulnerabilities (CVEs) detected on a specific device. Each vulnerability includes CVE identifiers,
+    CVSS scores, EPSS scores, severity levels, and remediation availability. Use this to understand the CVE exposure of
+    a device.
+  source_operation: openapi/controlup-compliance-openapi.yml#getDeviceVulnerabilities
+  rest: GET /devices/{device_id}/vulnerabilities
+- name: list-device-patches
+  domain: cu4c
+  description: Returns a list of missing OS and application patches detected on a specific device. Includes information
+    about patch versions, KB numbers, release dates, affected applications, and whether remediation is available. Use this
+    to identify what patches need to be installed.
+  source_operation: openapi/controlup-compliance-openapi.yml#getDevicePatches
+  rest: GET /devices/{device_id}/patches
+- name: list-device-compliance
+  domain: cu4c
+  description: Returns a list of compliance issues detected on a specific device. These are security controls and best practices
+    that the device should adhere to. Includes severity levels, potential risks, and remediation availability. Use this
+    to assess compliance posture.
+  source_operation: openapi/controlup-compliance-openapi.yml#getDeviceCompliance
+  rest: GET /devices/{device_id}/compliance
+- name: list-device-misconfigurations
+  domain: cu4c
+  description: Returns a list of misconfiguration issues detected on a specific device. These are security settings that
+    are not properly configured. Includes severity levels, potential risks, and remediation availability. Use this to identify
+    security misconfigurations.
+  source_operation: openapi/controlup-compliance-openapi.yml#getDeviceMisconfig
+  rest: GET /devices/{device_id}/misconfig
+- name: list-flows
+  domain: workflows
+  description: Retrieve a complete list of workflows available in your organization.
+  source_operation: openapi/controlup-workflows-openapi.yml#get_flows_workflows_v1_flows_get
+  rest: GET /workflows/v1/flows
+- name: get-flow
+  domain: workflows
+  description: Retrieve details about a specific workflow by its ID.
+  source_operation: openapi/controlup-workflows-openapi.yml#get_flow_workflows_v1_flows__flowId__get
+  rest: GET /workflows/v1/flows/{flowId}
+- name: update-flow-status
+  domain: workflows
+  description: Change the status of a flow (enable or disable)
+  source_operation: openapi/controlup-workflows-openapi.yml#update_flow_status_workflows_v1_flows__flowId__patch
+  rest: PATCH /workflows/v1/flows/{flowId}
+- name: delete-flow
+  domain: workflows
+  description: Delete a flow by its ID from your organization.
+  source_operation: openapi/controlup-workflows-openapi.yml#delete_flow_workflows_v1_flows__flowId__delete
+  rest: DELETE /workflows/v1/flows/{flowId}
+- name: list-flow-runs
+  domain: workflows
+  description: Retrieve the status and details of runs for a specific workflow.
+  source_operation: openapi/controlup-workflows-openapi.yml#get_flow_runs_workflows_v1_flows__flowId__runs_get
+  rest: GET /workflows/v1/flows/{flowId}/runs
+- name: list-forms
+  domain: workflows
+  description: Retrieve a complete list of all forms available in your organization.
+  source_operation: openapi/controlup-workflows-openapi.yml#get_all_forms_workflows_v1_forms_get
+  rest: GET /workflows/v1/forms
+- name: get-form
+  domain: workflows
+  description: Retrieve details about a specific form by its ID.
+  source_operation: openapi/controlup-workflows-openapi.yml#get_form_workflows_v1_forms__formId__get
+  rest: GET /workflows/v1/forms/{formId}
+- name: delete-form
+  domain: workflows
+  description: Delete a form by its ID from your organization.
+  source_operation: openapi/controlup-workflows-openapi.yml#delete_form_workflows_v1_forms__formId__delete
+  rest: DELETE /workflows/v1/forms/{formId}
+- name: list-integrations
+  domain: workflows
+  description: Retrieve a complete list of available integrations in your organization.
+  source_operation: openapi/controlup-workflows-openapi.yml#get_all_integrations_workflows_v1_integrations_get
+  rest: GET /workflows/v1/integrations
+- name: get-integration
+  domain: workflows
+  description: Retrieve details about a specific integration by its ID.
+  source_operation: openapi/controlup-workflows-openapi.yml#get_integration_workflows_v1_integrations__integrationId__get
+  rest: GET /workflows/v1/integrations/{integrationId}
+- name: delete-integration
+  domain: workflows
+  description: Delete an integration by its ID from your organization.
+  source_operation: openapi/controlup-workflows-openapi.yml#delete_integration_workflows_v1_integrations__integrationId__delete
+  rest: DELETE /workflows/v1/integrations/{integrationId}
+- name: list-integration-actions
+  domain: workflows
+  description: Retrieve a list of all available actions for a specific integration within your organization
+  source_operation: openapi/controlup-workflows-openapi.yml#get_integration_actions_workflows_v1_integrations__integration_id__actions_get
+  rest: GET /workflows/v1/integrations/{integration_id}/actions
+- name: get-integration-action
+  domain: workflows
+  description: Retrieve details for a specific action of a specific integration, including the action input/output schema
+  source_operation: openapi/controlup-workflows-openapi.yml#get_integration_action_workflows_v1_integrations__integration_id__actions__node_type__get
+  rest: GET /workflows/v1/integrations/{integration_id}/actions/{node_type}
+- name: execute-integration-action
+  domain: workflows
+  description: Execute a single integration action directly (without running a flow). The request body must match the action
+    input schema.
+  source_operation: openapi/controlup-workflows-openapi.yml#execute_integration_action_workflows_v1_integrations__integration_id__actions__node_type__execute_post
+  rest: POST /workflows/v1/integrations/{integration_id}/actions/{node_type}/execute
+- name: list-scouts
+  domain: synthetic-monitoring
+  description: Returns a list of your Scouts. Scouts can be configured to test EUC (End User Computing) resources like Citrix
+    or VMware gateways, or network resources like HTTP endpoints, DNS, ping, and traceroute. Supports filtering by hive,
+    type, subtype, interval, disabled status, username, and pagination.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.get_scouts
+  rest: GET /scouts
+- name: create-scout-euc
+  domain: synthetic-monitoring
+  description: Creates a new EUC (End User Computing) Scout that tests virtual desktop infrastructure. Supports Citrix Gateway,
+    Citrix Cloud, Citrix StoreFront, VMware Horizon, VMware Workspace ONE, and VMware Security Server.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.create_scout
+  rest: POST /scouts
+- name: create-scout-net
+  domain: synthetic-monitoring
+  description: Creates a new Network Scout that tests network connectivity. Supports HTTP endpoint testing, DNS resolution,
+    Ping, and Traceroute.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.create_scout
+  rest: POST /scouts
+- name: get-scout
+  domain: synthetic-monitoring
+  description: Returns details about a specific Scout, including its configuration and test result summary statistics.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.get_scout_by_id
+  rest: GET /scouts/{scoutId}
+- name: edit-scout-euc
+  domain: synthetic-monitoring
+  description: Updates an existing EUC Scout\'s configuration. You can modify the Scout name, interval, address, credentials,
+    hive, OTP settings, and other EUC-specific settings. When you edit labels, all existing labels are deleted and replaced
+    with the ones you provide.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.edit_scout
+  rest: PUT /scouts/{scoutId}
+- name: edit-scout-net
+  domain: synthetic-monitoring
+  description: Updates an existing Network Scout\'s configuration. You can modify the Scout name, interval, address, hives,
+    and network-specific options (HTTP, DNS, Ping, Traceroute). When you edit labels, all existing labels are deleted and
+    replaced with the ones you provide.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.edit_scout
+  rest: PUT /scouts/{scoutId}
+- name: delete-scout
+  domain: synthetic-monitoring
+  description: Deletes a Scout. This action is irreversible and will remove all test history associated with the Scout.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.delete_scout
+  rest: DELETE /scouts/{scoutId}
+- name: toggle-scout
+  domain: synthetic-monitoring
+  description: Enables or disables a Scout. Disabled Scouts stop running tests until re-enabled.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.disable_scout
+  rest: POST /scouts/{scoutId}/disabled
+- name: list-hives
+  domain: synthetic-monitoring
+  description: Returns a list of your Custom Hives. Custom Hives are on-premises agents that can run Scouts from within
+    your network.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#honeycomb.api.custom_hives
+  rest: GET /hives
+- name: list-cloud-hives
+  domain: synthetic-monitoring
+  description: Returns a list of available Cloud Hives. Cloud Hives are hosted by ControlUp and can run Scouts from various
+    geographic locations.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#honeycomb.api.cloud_hives
+  rest: GET /cloud_hives
+- name: list-tests
+  domain: synthetic-monitoring
+  description: Returns a list of test results for your Scouts. You can filter by date range, Scout ID, and test status.
+    Each test contains detailed metrics about the Scout\'s test run.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.get_tests
+  rest: GET /tests
+- name: list-alerts
+  domain: synthetic-monitoring
+  description: Returns a list of all triggered alerts across your Scouts. Each alert includes the Scout\'s alert policy
+    conditions and trigger history.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.get_alerts
+  rest: GET /alerts
+- name: list-scouts-with-alerts
+  domain: synthetic-monitoring
+  description: Returns a list of Scout IDs that have triggered an alert within the specified time period.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#honeycomb.api.get_scout_alerts
+  rest: GET /alerts/scouts
+- name: get-alerts-for-scout
+  domain: synthetic-monitoring
+  description: Returns triggered alerts for a specific Scout, including the alert policy configuration and each time the
+    alert was triggered.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.get_alert_for_scout
+  rest: GET /alerts/{scoutId}
+- name: list-alert-policies
+  domain: synthetic-monitoring
+  description: Returns a list of alert policies configured for a specific Scout.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.get_scout_alert_policies
+  rest: GET /scouts/{scoutId}/alerts
+- name: create-alert-policy
+  domain: synthetic-monitoring
+  description: Creates an alert policy for a Scout. Alert policies define conditions that trigger alerts (e.g., status ==
+    failure), trigger settings (e.g., consecutive match count), and notifications (email, webhook, or integration).
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.create_scout_alert
+  rest: POST /scouts/{scoutId}/alerts
+- name: get-alert-policy
+  domain: synthetic-monitoring
+  description: Returns detailed information about a specific alert policy, including conditions, trigger settings, and notifications.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.get_scout_alert
+  rest: GET /scouts/{scoutId}/alerts/{alertId}
+- name: update-alert-policy
+  domain: synthetic-monitoring
+  description: Updates an existing alert policy. You can modify the conditions, trigger settings, notifications, or disable
+    the policy.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.update_scout_alert
+  rest: PATCH /scouts/{scoutId}/alerts/{alertId}
+- name: delete-alert-policy
+  domain: synthetic-monitoring
+  description: Deletes an alert policy from a Scout. This action is irreversible.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#app.delete_scout_alert
+  rest: DELETE /scouts/{scoutId}/alerts/{alertId}
+- name: list-mfas
+  domain: synthetic-monitoring
+  description: Returns a list of usernames and their associated phone numbers used for phone or SMS MFA authentication with
+    EUC Scouts.
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#honeycomb.api.get_org_mfas
+  rest: GET /mfas
+- name: list-integrations
+  domain: synthetic-monitoring
+  description: Returns a list of active external integrations available for alert notifications (e.g., ServiceNow, Teams,
+    Slack).
+  source_operation: openapi/controlup-synthetic-monitoring-openapi.yml#honeycomb.api.get_org_integrations
+  rest: GET /integrations

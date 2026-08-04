@@ -1,0 +1,111 @@
+generated: '2026-08-04'
+method: probed
+source: live GET of /.well-known/* on every apis.yml host and every OpenAPI servers[] host
+hosts_probed:
+- https://api.controlup.com
+- https://api.controlup.io
+- https://www.controlup.com
+- https://support.controlup.com
+- https://app.controlup.com
+documents:
+- host: https://api.controlup.io
+  path: /.well-known/api-catalog
+  status: 200
+  content_type: application/linkset+json; charset=utf-8
+  standard: RFC 9727 (API catalog / linkset)
+  file: controlup-api-catalog.json
+  note: >-
+    Real RFC 9727 linkset. Enumerates twelve OpenAPI definitions, each with a service-desc href under
+    https://api.controlup.io/openapi/<filename> and a service-doc href pointing at the ReadMe reference hub. This
+    catalog is the authoritative discovery surface for the ControlUp API estate and is what this repo's openapi/
+    directory was harvested from.
+- host: https://api.controlup.io
+  path: /.well-known/security.txt
+  status: 404
+- host: https://api.controlup.io
+  path: /.well-known/openid-configuration
+  status: 404
+- host: https://api.controlup.io
+  path: /.well-known/oauth-authorization-server
+  status: 404
+- host: https://api.controlup.io
+  path: /.well-known/oauth-protected-resource
+  status: 404
+- host: https://api.controlup.io
+  path: /.well-known/ai-plugin.json
+  status: 404
+- host: https://api.controlup.io
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://api.controlup.io
+  path: /.well-known/agent.json
+  status: 404
+- host: https://api.controlup.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://api.controlup.com
+  path: /.well-known/openid-configuration
+  status: 404
+- host: https://api.controlup.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+- host: https://api.controlup.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+- host: https://api.controlup.com
+  path: /.well-known/api-catalog
+  status: 404
+- host: https://api.controlup.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+- host: https://api.controlup.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://api.controlup.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://www.controlup.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://www.controlup.com
+  path: /.well-known/api-catalog
+  status: 404
+- host: https://www.controlup.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://www.controlup.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://support.controlup.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://support.controlup.com
+  path: /.well-known/api-catalog
+  status: 404
+- host: https://support.controlup.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://support.controlup.com
+  path: /.well-known/agent.json
+  status: 404
+rejected:
+- host: https://app.controlup.com
+  paths:
+  - /.well-known/security.txt
+  - /.well-known/openid-configuration
+  - /.well-known/oauth-authorization-server
+  - /.well-known/oauth-protected-resource
+  - /.well-known/api-catalog
+  status: 200
+  content_type: text/html
+  reason: >-
+    Single-page-app catch-all. app.controlup.com answers HTTP 200 with the same 1,305-byte HTML shell for every
+    /.well-known/* path, including paths that cannot exist. Not treated as a discovery document.
+notes:
+- No security.txt (RFC 9116) is published on any ControlUp host. The vulnerability-reporting channel is the SafeBase
+  trust center at trustcenter.controlup.com — see security/controlup-vulnerability-disclosure.yml.
+- No OIDC or OAuth 2.0 authorization-server metadata is published. The public API authenticates with organization
+  API keys presented as HTTP bearer tokens; SAML SSO is configured per-organization for console login, not for API
+  access.
+- No A2A agent card was found at either /.well-known/agent-card.json or the legacy /.well-known/agent.json on any
+  host, so no a2a/ artifact is written.

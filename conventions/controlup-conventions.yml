@@ -1,0 +1,148 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  https://api.controlup.io/reference/how-to-make-api-requests-1,
+  https://api.controlup.io/reference/how-to-create-api-keys,
+  https://api.controlup.io/reference/filtering-api-results,
+  https://api.controlup.io/reference/rate-limiting,
+  https://www.controlup.com/resources/blog/using-controlup-api-paging-with-powerbi/
+  — cross-checked against the twelve OpenAPI definitions in openapi/
+authentication:
+  style: bearer-api-key
+  header: 'Authorization: Bearer <API_KEY>'
+  scheme_names_in_spec: [bearerAuth, BearerAuth, ApiKeyAuth, apiKey, bearer, bearer-jwt]
+  key_creation: >-
+    Created in the ControlUp ONE console from the profile menu > API Key Management > + Create new. The key has a
+    settable expiry duration and stops working when the duration ends.
+  key_permissions: >-
+    API keys inherit the permissions of the user who created them and are updated automatically when that user's
+    permissions change. Permissions granted indirectly through identity-provider group membership do NOT apply to
+    API access — the permission must be assigned directly to the ControlUp user account.
+  key_revocation: >-
+    A user can revoke their own key from API Key Management; an admin can revoke every key created by a user from
+    Settings > User Settings > Revoke API Keys, or via POST /v1/organizations/{orgId}/users/{id}/revoke-api-keys.
+    Deleting a user revokes their keys; disabling a user suspends them until reactivation.
+  alternate_schemes:
+  - name: CookieAuth
+    spec: openapi/controlup-daas-iq-openapi.yml
+    parameter: user_dex_token
+    note: Browser-session cookie accepted by the DaaS IQ API in addition to the bearer token.
+  docs: https://api.controlup.io/reference/how-to-create-api-keys
+tenancy:
+  model: organization-scoped
+  parameter: orgId
+  location: path
+  note: >-
+    Platform API operations are addressed as /v1/organizations/{orgId}/<resource>. The organization ID is shown on
+    the API Key Management page and is also the ORG_ID environment variable the MCP server requires. MSP "Tenant
+    Manager" organizations can create and list tenant organizations beneath themselves.
+  docs: https://api.controlup.io/reference/how-to-make-api-requests-1
+idempotency:
+  supported: false
+  note: >-
+    ControlUp documents no idempotency key and no OpenAPI definition in this repo declares an Idempotency-Key
+    header or equivalent parameter. Write operations are plain POST/PATCH/PUT/DELETE. Retrying a create is not
+    protected against duplication; retry logic should re-read the collection before re-issuing a POST.
+pagination:
+  styles:
+  - style: underscore-page
+    params: {page: _page, size: _limit, sort: _sortBy, order: _order}
+    default_note: >-
+      The documented platform convention. "_page specifies which page to retrieve and _limit defines the number of
+      lines"; nearly all endpoints support paging.
+    used_by: [openapi/controlup-dex-platform-openapi.yml, openapi/controlup-desktops-openapi.yml, openapi/controlup-compliance-openapi.yml]
+    docs: https://www.controlup.com/resources/blog/using-controlup-api-paging-with-powerbi/
+  - style: page-pagesize
+    params: {page: page, size: pageSize, sort: sort, filter: filter}
+    used_by: [openapi/controlup-daas-iq-openapi.yml, openapi/controlup-synthetic-monitoring-openapi.yml]
+    note: The DaaS IQ and Synthetic Monitoring surfaces use the unprefixed page/pageSize pair instead.
+  divergence: >-
+    The two pagination dialects are not interchangeable. A client that works against the platform API will not
+    page correctly against DaaS IQ without switching parameter names.
+filtering:
+  search_param: _search
+  per_field_params: >-
+    Every filterable field in a resource has its own query parameter of the same name (for example email,
+    firstName, name, description).
+  operator: contains
+  case_sensitive: false
+  boolean_logic: >-
+    Repeating the same query parameter ORs the values together; different query parameters are ANDed. _search
+    matches the value against any field in the resource.
+  docs: https://api.controlup.io/reference/filtering-api-results
+field_selection:
+  params:
+  - {name: _select, description: Restrict the response to named fields.}
+  - {name: _expand, description: Expand related sub-resources inline.}
+  - {name: include, description: Include named related collections (DaaS IQ). Unknown keys return 422.}
+  - {name: fields, description: Field projection on the Events API — the response carries only the attributes requested.}
+  - {name: _format, description: Response format selector. Several endpoints also advertise application/xml and text/csv alongside application/json.}
+time_range:
+  params: [_timeFrom, _timeTo]
+  note: >-
+    Historical/analytics endpoints take an explicit time window. The VDI historical API additionally exposes
+    fixed time-frame presets (1W, 1M) and granularity selectors (5m, 1h) on user-activity style endpoints.
+rate_limiting:
+  documented: true
+  docs: https://api.controlup.io/reference/rate-limiting
+  limits:
+  - scope: organization
+    applies_to: [Platform API, VDI API, Desktops API, Compliance API]
+    limit: 200 requests per minute
+  - scope: user
+    applies_to: [Platform API, VDI API, Desktops API, Compliance API]
+    limit: 60 requests per minute per organization
+    note: The per-user limit is shared across every API key that user has created.
+  - scope: concurrency
+    applies_to: [VDI API]
+    limit: 15 requests in flight
+    note: A 16th concurrent request fails immediately with 429.
+  - scope: endpoint
+    applies_to: [Synthetic Monitoring API]
+    limit: 10 requests per minute
+    endpoints: [Create a Scout, Create alert policy]
+  - scope: endpoint
+    applies_to: [Synthetic Monitoring API]
+    limit: 100 requests per minute
+    endpoints: [all other endpoints]
+  signalling:
+    response_status: 429
+    headers_documented: false
+    note: >-
+      ControlUp documents the numeric limits and the 429 status but publishes no RateLimit-* / Retry-After header
+      contract, and none of the twelve OpenAPI definitions declares rate-limit response headers. Clients must
+      budget against the published numbers rather than read them off the response.
+  see: rate-limits/controlup-rate-limits.yml
+errors:
+  envelope: application/json
+  format: vendor
+  rfc9457: false
+  note: >-
+    No operation in any of the twelve definitions returns application/problem+json. Error bodies are ordinary JSON
+    described per-spec. See errors/controlup-problem-types.yml for the derived status-code catalog, including the
+    402 (no active licence) and 503 (licence status unverifiable) pair that is specific to DaaS IQ.
+  see: errors/controlup-problem-types.yml
+versioning:
+  scheme: uri-path
+  note: >-
+    Version lives in the path and varies per product surface — /v1 (platform, workflows, VDI historical),
+    /events/v1, /daas-iq/v1, /synthetic-monitoring/v2, and unversioned prefixes for /compliance, /edge/api,
+    /vdi/config and /vdi/realtime. The VDI historical API serves /v1 and /v2 NetScaler endpoints side by side.
+  see: lifecycle/controlup-lifecycle.yml
+request_tracing:
+  header: cu-request-id
+  note: >-
+    The official MCP client sets a cu-request-id header on every REST call it makes. The header is not documented
+    in the public reference or declared in the OpenAPI definitions, so it is recorded here as observed
+    first-party client behaviour, not as a published contract.
+  evidence: "@controlup-ai/mcp@1.0.3 dist/modules/api-client.js"
+discovery:
+  api_catalog: https://api.controlup.io/.well-known/api-catalog
+  standard: RFC 9727
+  llms_txt:
+  - https://api.controlup.io/llms.txt
+  - https://support.controlup.com/llms.txt
+  - https://www.controlup.com/llms.txt
+  markdown_docs: >-
+    Every documentation and reference page is served as Markdown by appending .md to its URL, on both
+    support.controlup.com/docs/<slug>.md and api.controlup.io/reference/<slug>.md.

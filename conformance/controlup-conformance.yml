@@ -1,0 +1,102 @@
+generated: '2026-08-04'
+method: derived
+source: >-
+  openapi/*.yml (12 definitions) + https://api.controlup.io/.well-known/api-catalog +
+  https://api.controlup.io/reference/* + https://trustcenter.controlup.com/
+standards:
+- id: openapi-3.x
+  conforms: true
+  evidence: >-
+    Twelve published definitions spanning OpenAPI 3.0.0, 3.0.1, 3.0.3, 3.0.4, 3.1.0 and 3.1.1. 282 of 303
+    operations declare an operationId.
+  note: Version drift across the estate — six different OpenAPI patch/minor versions are in production simultaneously.
+- id: rfc9727-api-catalog
+  conforms: true
+  evidence: >-
+    https://api.controlup.io/.well-known/api-catalog returns 200 with Content-Type application/linkset+json and a
+    twelve-entry linkset, each carrying service-desc (the OpenAPI) and service-doc (the reference hub) links.
+  note: >-
+    Genuinely rare. Fewer than a fraction of a percent of catalogued providers publish a working RFC 9727 API
+    catalog, and ControlUp's is complete and accurate against the specs it advertises.
+- id: llms-txt
+  conforms: true
+  evidence: >-
+    Three llms.txt files published — https://api.controlup.io/llms.txt (the API reference index, including every
+    operation), https://support.controlup.com/llms.txt (the full knowledge base index) and
+    https://www.controlup.com/llms.txt (marketing site, Yoast-generated). Every docs and reference page is also
+    served as Markdown at <url>.md.
+  note: >-
+    The www.controlup.com llms.txt emits links to the WP Engine staging host (cupstaging.wpengine.com) rather than
+    the production domain — a generator misconfiguration that makes every link in that file wrong.
+- id: mcp
+  conforms: true
+  evidence: >-
+    Official first-party MCP server published as @controlup-ai/mcp on npm and documented at
+    https://support.controlup.com/docs/mcp-server. 106 tools across six selectable product domains, stdio
+    transport, API key + org ID authentication.
+- id: oauth2
+  conforms: false
+  evidence: >-
+    No oauth2 security scheme in any of the twelve definitions and no OAuth 2.0 metadata at
+    /.well-known/oauth-authorization-server on any host. API authentication is a long-lived organization API key
+    presented as an HTTP bearer token.
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration on any ControlUp host.
+  note: >-
+    OIDC/OAuth is documented for CONSOLE login federation (Microsoft Entra ID, Okta) and SAML SSO is configurable
+    per organization via the platform API, but neither is an API authentication path.
+- id: saml-2.0
+  conforms: true
+  evidence: >-
+    SAML SSO configuration is a first-class API resource — GET/POST/PATCH /v1/organizations/{orgId}/saml, plus
+    POST /v1/organizations/{orgId}/saml/{idpName} to derive the configuration from an existing Entra ID
+    integration, and SSO group mappings at /v1/organizations/{orgId}/sso-groups.
+  scope: console authentication, not API authentication
+- id: scim
+  conforms: false
+  evidence: >-
+    No /scim path or SCIM 2.0 schema in any definition. User lifecycle is managed through ControlUp's own
+    /v1/organizations/{orgId}/users and /invitations resources, not a SCIM endpoint.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Zero operations across 303 return application/problem+json. Error bodies are vendor JSON.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header documented; no operation marked deprecated in any definition.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: 404 at /.well-known/security.txt on www, api.controlup.com, api.controlup.io and support hosts.
+- id: a2a-agent-card
+  conforms: false
+  evidence: >-
+    404 at both /.well-known/agent-card.json and the legacy /.well-known/agent.json on every host. app.controlup.com
+    returns a 200 HTML SPA shell for all /.well-known/* paths and was rejected as a false positive.
+- id: asyncapi
+  conforms: false
+  evidence: No AsyncAPI document published. Webhooks exist as an outbound trigger follow-up action but are not described by a spec.
+- id: json-schema
+  conforms: true
+  evidence: >-
+    563 component schemas across the twelve definitions. Schemas are per-definition; there is no shared component
+    library, so the same concept is redeclared in each product spec.
+- id: pagination
+  conforms: partial
+  evidence: >-
+    Documented and implemented, but in two incompatible dialects — _page/_limit/_sortBy/_order on the platform,
+    Desktops and Compliance surfaces, and page/pageSize/sort/filter on DaaS IQ and Synthetic Monitoring.
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No idempotency key documented and no Idempotency-Key parameter in any of the twelve definitions. Write
+    operations carry no replay protection.
+- id: rate-limit-headers
+  conforms: false
+  evidence: >-
+    Numeric limits are documented at https://api.controlup.io/reference/rate-limiting and 429 is the documented
+    failure, but no RateLimit-* or Retry-After header contract is published or declared in any definition.
+compliance_program:
+  published: true
+  url: https://trustcenter.controlup.com/
+  certifications: [ISO/IEC 27001:2022, ISO/IEC 27017:2015, ISO/IEC 27018:2019, ISO/IEC 27701:2019, SOC 2 Type 2, SOC 3, FIPS 140-2 Level 1, CSA STAR Level 1, GDPR]
+  see: security/controlup-trust-center.yml

@@ -1,0 +1,63 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for ControlUp ONE Platform API
+  version: 1.0.0
+extends: openapi/controlup-dex-platform-openapi.yml
+x-generated: '2026-08-04'
+x-method: generated
+x-source: https://api.controlup.io/.well-known/api-catalog
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: controlup
+    x-apievangelist-api-key: controlup-dex-platform
+    x-apievangelist-tags:
+    - identity
+    - user-management
+    - audit-log
+    - saml
+    - sso
+    - governance
+    x-apievangelist-discovery: https://api.controlup.io/.well-known/api-catalog
+    x-apievangelist-documentation: https://api.controlup.io/reference
+    x-apievangelist-status-page: https://status.controlup.com/
+    x-apievangelist-changelog: https://support.controlup.com/docs/release-notes
+    x-apievangelist-support: https://support.controlup.com/
+    x-apievangelist-trust-center: https://trustcenter.controlup.com/
+- target: $.info
+  update:
+    x-rate-limits:
+      documented: true
+      docs: https://api.controlup.io/reference/rate-limiting
+      summary: 60 requests/minute per user and 200 requests/minute per organization. Returns 429 with no RateLimit-* or
+        Retry-After header.
+      headers: null
+      artifact: rate-limits/controlup-rate-limits.yml
+- target: $.info
+  update:
+    x-idempotency:
+      supported: false
+      note: ControlUp documents no idempotency key and this definition declares no Idempotency-Key parameter. Writes have
+        no replay protection.
+      artifact: conventions/controlup-conventions.yml
+- target: $.info
+  update:
+    x-error-format:
+      rfc9457: false
+      media_type: application/json
+      note: No operation returns application/problem+json and no stable machine-readable error code is published; clients
+        branch on HTTP status.
+      artifact: errors/controlup-problem-types.yml
+- target: $.info
+  update:
+    x-authentication:
+      style: bearer-api-key
+      header: 'Authorization: Bearer <API_KEY>'
+      key_management: https://api.controlup.io/reference/how-to-create-api-keys
+      note: API keys inherit the permissions of the creating user; permissions inherited through an identity-provider group
+        do NOT apply to API access.
+      artifact: authentication/controlup-authentication.yml
+- target: $.info
+  update:
+    x-servers-observed:
+    - https://api.controlup.com/v1

@@ -1,0 +1,76 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  https://support.controlup.com/docs/vdi-daas,
+  https://support.controlup.com/llms.txt,
+  https://www.powershellgallery.com/packages/ControlUp.Automation
+type: powershell-module
+note: >-
+  ControlUp ships no cross-platform command-line binary. Its first-party command surface is a set of PowerShell
+  cmdlets for the VDI & DaaS product — the "VDI PowerShell Automation Module" — which talk to the ControlUp Monitor
+  cluster and the on-premises/hybrid environment rather than to the public REST API at api.controlup.com. They are
+  therefore a genuinely separate control plane from the REST + MCP surfaces, not a wrapper around them.
+install:
+- method: powershell-gallery
+  command: Install-Module -Name ControlUp.Automation
+  url: https://www.powershellgallery.com/packages/ControlUp.Automation
+  version: 1.0.8
+  publisher: ControlUp
+- method: bundled
+  description: >-
+    The VDI PowerShell Automation Module ships with the ControlUp Monitor / Real-Time Console installation and is
+    documented per-cmdlet in the knowledge base.
+  url: https://support.controlup.com/docs/vdi-powershell-automation-module
+docs: https://support.controlup.com/docs/vdi-daas
+command_groups:
+- group: Query and export
+  docs: https://support.controlup.com/docs/monitor-cluster-powershell-api-cmdlets
+  commands:
+  - {name: Invoke-CUQuery, description: 'Retrieve real-time information from the ControlUp Monitor cluster.', docs: https://support.controlup.com/docs/invoke-cuquery}
+  - {name: Export-CUQuery, description: 'Run a real-time query and export it to CSV. Designed for large datasets.', docs: https://support.controlup.com/docs/export-cuquery}
+  - {name: Get-CUVendorVMs, description: Retrieve machines from the connected hypervisor/EUC vendor., docs: https://support.controlup.com/docs/get-cuvendorvms}
+  reference:
+  - {name: 'Monitor cluster reference tables', url: https://support.controlup.com/docs/monitor-cluster-powershell-api-reference-tables}
+  - {name: 'Fields by table', url: https://support.controlup.com/docs/monitor-cluster-powershell-fields-by-table}
+- group: Monitor and agent deployment
+  commands:
+  - {name: Install-CUMonitor, description: Install a ControlUp Monitor., docs: https://support.controlup.com/docs/install-cumonitor}
+  - {name: Install-CUAgent, description: Install a ControlUp Agent on target machines., docs: https://support.controlup.com/docs/install-cuagent-install-an-agent}
+  - {name: Invoke-CUAgentUpdate, description: Upgrade an installed agent., docs: https://support.controlup.com/docs/invoke-cuagentupdate-upgrade-an-agent}
+- group: Actions
+  docs: https://support.controlup.com/docs/powershell-cmdlets-for-solve-actions
+  commands:
+  - {name: Invoke-CUAction, description: Run a ControlUp action against a target., docs: https://support.controlup.com/docs/invoke-cuaction}
+  - {name: Get-CUAvailableActions, description: Retrieve every action available in the environment., docs: https://support.controlup.com/docs/get-cuavailableactions-retrieve-all-actions-in-your-controlup-environment}
+  - {name: Get-CUActionSignature, description: Retrieve an action's parameter signature before invoking it., docs: https://support.controlup.com/docs/get-cuactionsignature}
+- group: Triggers
+  docs: https://support.controlup.com/docs/powershell-cmdlets-for-triggers
+  description: >-
+    Configure trigger packs, their schedules, notification templates and follow-up actions — including the
+    "Send a RESTful API request" webhook follow-up action.
+  reference:
+  - {name: Trigger actions, url: https://support.controlup.com/docs/powershell-cmdlets-for-trigger-actions}
+  - {name: Trigger schedules, url: https://support.controlup.com/docs/powershell-cmdlets-for-trigger-schedules}
+  - {name: Trigger templates, url: https://support.controlup.com/docs/powershell-cmdlets-for-trigger-templates}
+  - {name: Convert trigger filters, url: https://support.controlup.com/docs/powershell-cmdlets-to-convert-trigger-filters}
+- group: Users, credentials and sites
+  commands:
+  - {name: Add-CUUser, description: Create a new VDI App (Solve) user., docs: https://support.controlup.com/docs/add-cuuser-create-new-solve-users}
+  - {name: Get-CUCredentials, description: Retrieve shared ControlUp credentials., docs: https://support.controlup.com/docs/get-cucredentials-retrieve-all-controlup-credentials}
+  reference:
+  - {name: Credentials management, url: https://support.controlup.com/docs/manage-cucredentials}
+  - {name: Sites management, url: https://support.controlup.com/docs/powershell-cmdlets-for-sites-management}
+- group: Machines, folders and environment configuration
+  reference:
+  - {name: Machine and folder management, url: https://support.controlup.com/docs/controlup-powershell-commands}
+  - {name: Environment configuration cmdlets, url: https://support.controlup.com/docs/90-powershell-cmdlets}
+  - {name: Export rules, url: https://support.controlup.com/docs/powershell-cmdlets-for-export-rules}
+- group: Cloud connections
+  reference:
+  - {name: Cloud connections management, url: https://support.controlup.com/docs/powershell-cmdlets-for-cloud-connections-management}
+  - {name: Break down Azure connections to resource groups, url: https://support.controlup.com/docs/powershell-cmdlets-to-breakdown-connections-to-resource-groups}
+related:
+  scripts: >-
+    ControlUp's Script Actions library is PowerShell as well and is mirrored publicly at
+    https://github.com/controlup/script-library (plus experimental-scripts and environment-scripts).
+  packages: packages/controlup-packages.yml

@@ -1,0 +1,47 @@
+generated: '2026-08-04'
+method: searched
+source: https://api.controlup.io/reference/rate-limiting
+docs: https://api.controlup.io/reference/rate-limiting
+rate_limits:
+- name: Organization request rate
+  applies_to: [ControlUp ONE Platform API, ControlUp VDI and DaaS APIs, ControlUp for Desktops API, ControlUp for Compliance API]
+  limit_count: 200
+  limit_period: minute
+  scope: organization
+- name: User request rate
+  applies_to: [ControlUp ONE Platform API, ControlUp VDI and DaaS APIs, ControlUp for Desktops API, ControlUp for Compliance API]
+  limit_count: 60
+  limit_period: minute
+  scope: user-per-organization
+  note: Shared across every API key created by that user — creating extra keys does not raise the ceiling.
+- name: VDI parallel request limit
+  applies_to: [ControlUp VDI and DaaS Historical API]
+  limit_count: 15
+  limit_period: concurrent
+  scope: in-flight requests
+  note: A 16th simultaneous request fails immediately with HTTP 429. Long-running queries hold their slot.
+- name: Synthetic Monitoring - Scout creation
+  applies_to: [ControlUp Synthetic Monitoring API]
+  limit_count: 10
+  limit_period: minute
+  scope: endpoint
+  endpoints: [Create a Scout]
+- name: Synthetic Monitoring - alert policy creation
+  applies_to: [ControlUp Synthetic Monitoring API]
+  limit_count: 10
+  limit_period: minute
+  scope: endpoint
+  endpoints: [Create alert policy]
+- name: Synthetic Monitoring - all other endpoints
+  applies_to: [ControlUp Synthetic Monitoring API]
+  limit_count: 100
+  limit_period: minute
+  scope: endpoint
+signalling:
+  status_code: 429
+  headers: none documented
+  retry_after: not documented
+  note: >-
+    ControlUp publishes the numbers but not a machine-readable signal. No RateLimit-Limit / RateLimit-Remaining /
+    RateLimit-Reset or Retry-After contract is documented, and none of the twelve OpenAPI definitions declares
+    rate-limit response headers, so an agent cannot discover its remaining budget at runtime.

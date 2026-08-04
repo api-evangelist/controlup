@@ -1,23 +1,349 @@
 aid: controlup
 name: ControlUp
-description: 'ControlUp is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: ControlUp is a Digital Employee Experience (DEX) and Autonomous Endpoint Management (AEM) platform that monitors,
+  scores and remediates the end-user computing estate — physical desktops and laptops, VDI and DaaS (Citrix CVAD / Citrix
+  Cloud, Omnissa Horizon, Azure Virtual Desktop, Windows 365, Parallels RAS), the applications and sessions running on them,
+  and the network path in between. The ControlUp ONE platform spans ControlUp for Desktops, for VDI, for Apps, for Frontline
+  Workers and for Compliance, plus Synthetic Monitoring (Scouts and Hives), Workflows, and Pulse AI. It publishes a public
+  REST API surface at api.controlup.com documented on a ReadMe hub at api.controlup.io, an RFC 9727 /.well-known/api-catalog
+  linkset enumerating twelve OpenAPI definitions, an official Model Context Protocol server on npm (@controlup-ai/mcp) exposing
+  106 tools across six product domains, PowerShell cmdlets for monitor and agent automation, and llms.txt indexes on both
+  the documentation and API hosts.
 url: https://raw.githubusercontent.com/api-evangelist/controlup/refs/heads/main/apis.yml
+image: https://www.controlup.com/wp-content/uploads/controlup_prev.webp
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.21'
 created: '2026-08-04'
 modified: '2026-08-04'
 tags:
-- Company
-apis: []
+- digital-employee-experience
+- endpoint-management
+- vdi
+- daas
+- virtual-desktop
+- observability
+- monitoring
+- synthetic-monitoring
+- device-management
+- compliance
+- vulnerability-management
+- workflow-automation
+- citrix
+- azure-virtual-desktop
+- mcp
+- agent-native
+apis:
+- name: ControlUp ONE Platform API
+  description: Organization, identity and governance API for the ControlUp ONE platform — users, invitations, roles and
+    permissions, organization settings, SAML SSO configuration and SSO group mappings, IP allowlist entries, organization
+    tags, the audit log, and MSP tenant-organization management. Bearer API-key auth scoped to an organization ID path parameter.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/v1
+  tags:
+  - digital-employee-experience
+  - identity
+  - user-management
+  - audit-log
+  - saml
+  - sso
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-dex-platform-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+  - type: APIReference
+    url: https://api.controlup.io/reference
+- name: ControlUp Events and Alerts API
+  description: Event and alert API for the ControlUp ONE platform — list and retrieve events with field projection and cardinality
+    counts over a time range, and read the configured alert definitions for Devices and other product modules. Backed by
+    two published OpenAPI definitions (dex-alerts and dex events).
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/events/v1
+  tags:
+  - events
+  - alerts
+  - observability
+  - monitoring
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-dex-alerts-openapi.yml
+  - type: OpenAPI
+    url: openapi/controlup-dex-events-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp for Desktops API
+  description: Physical endpoint API for ControlUp for Desktops (formerly Edge DX) — devices and device details, alerts,
+    scripts and script actions, surveys, OS errors, events, and a data-access layer for querying collected desktop telemetry
+    across Windows, macOS and Linux endpoints.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/edge/api
+  tags:
+  - endpoint-management
+  - device-management
+  - scripts
+  - surveys
+  - observability
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-desktops-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp for Compliance API
+  description: Compliance and endpoint-security posture API — list managed devices, retrieve per-device detail including
+    the security score and agent status, and enumerate detected vulnerabilities (CVEs), missing OS and application patches,
+    failed compliance controls, and security misconfigurations for a device.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/compliance
+  tags:
+  - compliance
+  - vulnerability-management
+  - patch-management
+  - endpoint-security
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-compliance-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp VDI and DaaS Historical API
+  description: Historical analytics API for virtual desktop and DaaS estates — host metrics and counts per folder, user
+    activity, machine statistics and AI-driven sizing recommendations for virtualization and Azure, session statistics,
+    individual session details and timelines, application usage statistics, Windows events, process data, NetScaler ADC
+    / Load Balancer / Gateway metrics, and a dynamic query API.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/historical
+  tags:
+  - vdi
+  - daas
+  - citrix
+  - netscaler
+  - session-analytics
+  - capacity-planning
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-vdi-daas-historical-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp VDI and DaaS Realtime Metrics API
+  description: Real-time metrics API for VDI and DaaS environments, exposing live metric reads for monitored resources alongside
+    the historical API. Bearer API-key auth.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/vdi/realtime
+  tags:
+  - vdi
+  - daas
+  - real-time
+  - metrics
+  - monitoring
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-vdi-daas-realtime-metrics-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp VDI and DaaS Configuration API
+  description: Configuration API for the VDI and DaaS product — machine configuration management plus trigger configuration
+    (trigger packs and their follow-up actions, including the RESTful-request webhook action). Published as two OpenAPI
+    definitions sharing the /vdi/config base path.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/vdi/config
+  tags:
+  - vdi
+  - daas
+  - configuration
+  - triggers
+  - automation
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-vdi-daas-configuration-openapi.yml
+  - type: OpenAPI
+    url: openapi/controlup-vdi-config-triggers-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp DaaS IQ API
+  description: The largest published ControlUp surface — 128 paths and 149 operations covering DaaS IQ, ControlUp's cost-and-capacity
+    intelligence layer for Azure Virtual Desktop, Windows 365 and other DaaS estates. Bearer API-key auth with an alternate
+    cookie-based session scheme.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/daas-iq/v1
+  tags:
+  - daas
+  - azure-virtual-desktop
+  - windows-365
+  - cost-optimization
+  - capacity-planning
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-daas-iq-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp Synthetic Monitoring API
+  description: Synthetic monitoring API (the former Scoutbees product) — create and manage EUC Scouts that log into Citrix,
+    Horizon, AVD and other virtual desktop stacks on a schedule, and Network Scouts that test HTTP endpoints, DNS and connectivity;
+    list Custom Hives and Cloud Hives, read test results, manage alert policies and triggered alerts, list MFA identities,
+    and list notification integrations.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/synthetic-monitoring/v2/
+  tags:
+  - synthetic-monitoring
+  - vdi
+  - uptime-monitoring
+  - alerting
+  - network-monitoring
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-synthetic-monitoring-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp Workflows API
+  description: Workflow automation API — list, retrieve, enable/disable and delete flows, list flow runs, manage forms,
+    and enumerate integrations together with their available actions, action input/output schemas, and direct action execution
+    without running a full flow.
+  humanURL: https://api.controlup.io/reference
+  baseURL: https://api.controlup.com/workflows/v1
+  tags:
+  - workflow-automation
+  - integrations
+  - orchestration
+  properties:
+  - type: OpenAPI
+    url: openapi/controlup-workflows-openapi.yml
+  - type: Documentation
+    url: https://api.controlup.io/reference
+- name: ControlUp MCP Server
+  description: Official Model Context Protocol server published by ControlUp as the npm package @controlup-ai/mcp. Runs
+    locally over stdio via npx, authenticates with a ControlUp API key plus organization ID, and exposes 106 tools across
+    six selectable product domains (platform, cu4d, vdi, cu4c, workflows, synthetic-monitoring) that call the public REST
+    API on the customer's behalf.
+  humanURL: https://support.controlup.com/docs/mcp-server
+  baseURL: https://api.controlup.com
+  tags:
+  - mcp
+  - agent-native
+  - digital-employee-experience
+  - automation
+  properties:
+  - type: MCPServer
+    url: mcp/controlup-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/controlup-tool-crosswalk.yml
+  - type: Documentation
+    url: https://support.controlup.com/docs/mcp-server
+  - type: Packages
+    url: https://www.npmjs.com/package/@controlup-ai/mcp
+common:
+- type: DomainSecurity
+  url: security/controlup-domain-security.yml
+- type: Authentication
+  url: authentication/controlup-authentication.yml
+- type: Website
+  url: https://www.controlup.com/
+- type: DeveloperPortal
+  url: https://api.controlup.io/
+- type: Documentation
+  url: https://support.controlup.com/docs
+- type: APIReference
+  url: https://api.controlup.io/reference
+- type: GettingStarted
+  url: https://api.controlup.io/reference/how-to-make-api-requests-1
+- type: Support
+  url: https://support.controlup.com/
+- type: Blog
+  url: https://www.controlup.com/resources/blog/
+- type: GitHubOrganization
+  url: https://github.com/controlup
+- type: Roadmap
+  url: https://support.controlup.com/docs/submit-and-vote-on-feature-requests
+- type: Pricing
+  url: https://www.controlup.com/pricing/
+- type: SignUp
+  url: https://www.controlup.com/free-trial/
+- type: Login
+  url: https://app.controlup.com/
+- type: TermsOfService
+  url: https://www.controlup.com/terms/
+- type: PrivacyPolicy
+  url: https://www.controlup.com/privacy-policy/controlup-privacy-policy/
+- type: StatusPage
+  url: https://status.controlup.com/
+- type: ChangeLog
+  url: https://support.controlup.com/docs/release-notes
+- type: TrustCenter
+  url: https://trustcenter.controlup.com/
+- type: Compliance
+  url: https://trustcenter.controlup.com/
+- type: Security
+  url: https://trustcenter.controlup.com/
+- type: WellKnown
+  url: well-known/controlup-well-known.yml
+- type: APICatalog
+  url: well-known/controlup-api-catalog.json
+- type: MCPServer
+  url: mcp/controlup-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/controlup-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/controlup-llms.txt
+- type: Packages
+  url: packages/controlup-packages.yml
+- type: SDKs
+  url: packages/controlup-packages.yml
+- type: CLI
+  url: cli/controlup-cli.yml
+- type: Conventions
+  url: conventions/controlup-conventions.yml
+- type: RateLimits
+  url: rate-limits/controlup-rate-limits.yml
+- type: ErrorCatalog
+  url: errors/controlup-problem-types.yml
+- type: DataModel
+  url: data-model/controlup-data-model.yml
+- type: Lifecycle
+  url: lifecycle/controlup-lifecycle.yml
+- type: Deprecation
+  url: https://support.controlup.com/docs/controlup-product-version-lifecycle-quick-guide
+- type: ChangeLog
+  url: changelog/controlup-changelog.yml
+- type: Conformance
+  url: conformance/controlup-conformance.yml
+- type: VulnerabilityDisclosure
+  url: security/controlup-vulnerability-disclosure.yml
+- type: TrustCenter
+  url: security/controlup-trust-center.yml
+- type: Webhooks
+  url: asyncapi/controlup-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Overlay
+  url: overlays/controlup-dex-platform-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-dex-alerts-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-dex-events-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-desktops-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-compliance-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-vdi-daas-historical-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-vdi-daas-realtime-metrics-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-vdi-daas-configuration-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-vdi-config-triggers-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-daas-iq-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-synthetic-monitoring-overlay.yaml
+- type: Overlay
+  url: overlays/controlup-workflows-overlay.yaml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
-common:
-- type: Website
-  url: https://www.hiive.com/securities/controlup-stock
+x-enrichment:
+  date: '2026-08-04'
+  status: enriched
+  artifacts_added: 50
+  pass: local-v1

@@ -1,0 +1,67 @@
+generated: '2026-08-04'
+method: generated
+source: >-
+  Generated from openapi/*.yml (12 definitions, 303 operations) plus conventions/, errors/, rate-limits/ and
+  asyncapi/ in this repo. Every operationId referenced was verified present in the named spec; no provider-published
+  AGENTS.md or skill files exist to harvest.
+skills:
+- file: controlup-triage-device-compliance-risk.md
+  name: Triage endpoint compliance risk for a ControlUp-managed device
+  api: openapi/controlup-compliance-openapi.yml
+  operations: [getDevices, getDeviceDetails, getDeviceVulnerabilities, getDevicePatches, getDeviceCompliance, getDeviceMisconfig]
+- file: controlup-provision-synthetic-monitoring-scout.md
+  name: Provision a Synthetic Monitoring Scout and its alert policy
+  api: openapi/controlup-synthetic-monitoring-openapi.yml
+  operations: [app.create_scout, app.get_scouts, app.get_scout_by_id, app.edit_scout, app.disable_scout, app.create_scout_alert,
+    app.get_scout_alert_policies, app.get_scout_alert, app.update_scout_alert, app.get_tests, app.get_alerts,
+    app.get_alert_for_scout, honeycomb.api.custom_hives, honeycomb.api.cloud_hives, honeycomb.api.get_org_integrations]
+- file: controlup-govern-organization-access.md
+  name: Govern organization access, roles and API keys
+  api: openapi/controlup-dex-platform-openapi.yml
+  operations: [OrgUsersPublicController_getAll, OrgUsersPublicController_getOneById, OrgUsersPublicController_update,
+    OrgUsersPublicController_delete, OrgUsersPublicController_revoke, OrgInvitationPublicController_create,
+    OrgInvitationPublicController_update, OrgRolesPublicController_getAll, OrgRolesPublicController_getOneById,
+    OrgRolesPublicController_create, OrgRolesPublicController_update, OrgRolesPublicController_delete,
+    OrgSettingsPublicController_getOneById, OrgSettingsPublicController_update, OrgSamlPublicController_getOneById,
+    OrgSamlPublicController_create, OrgSamlPublicController_update, OrgSamlPublicController_configureByIdp,
+    OrgSsoGroupsPublicController_getAll, OrgSsoGroupsPublicController_create, OrgIpAllowlistPublicController_getAll,
+    OrgIpAllowlistPublicController_create, OrgIpAllowlistPublicController_update, OrgIpAllowlistPublicController_delete,
+    OrgAuditLogPublicController_getAll, OrgLicensePublicController_getLicenseUsage]
+- file: controlup-analyze-vdi-session-experience.md
+  name: Analyze VDI and DaaS session experience and right-size the estate
+  api: openapi/controlup-vdi-daas-historical-openapi.yml
+  operations: [getHostMetrics, getHostCounts, getUserActivity, getSessionsStatistics, getSessionDetails,
+    getSessionTimeline, getSessionsAggregated, getMachineStatsByMachine, getMachinesAggregated, getAppStats,
+    getAppUsage, getAppUsageSingle, getProcessUsageAll, getProcessUsageSingle, getWindowsEvents, getNetscalerUsage,
+    getGatewayUsage, getLoadbalancerUsage, getNetscalerUsageWithTimeSeries, getGatewayUsageTimeSeries,
+    getLoadbalancerUsageWithTimeSeries, getRecommendationVirtualization, getRecommendationAzure, getStartUploadDate,
+    getSchema, execute]
+- file: controlup-run-workflow-integration-action.md
+  name: Discover and execute a ControlUp Workflows integration action
+  api: openapi/controlup-workflows-openapi.yml
+  operations: [get_flows_workflows_v1_flows_get, get_flow_workflows_v1_flows__flowId__get,
+    update_flow_status_workflows_v1_flows__flowId__patch, get_flow_runs_workflows_v1_flows__flowId__runs_get,
+    launch_flow_workflows_v1_flows_launch_post, get_all_forms_workflows_v1_forms_get,
+    get_form_workflows_v1_forms__formId__get, get_all_integrations_workflows_v1_integrations_get,
+    get_integration_workflows_v1_integrations__integrationId__get,
+    get_integration_actions_workflows_v1_integrations__integration_id__actions_get,
+    get_integration_action_workflows_v1_integrations__integration_id__actions__node_type__get,
+    execute_integration_action_workflows_v1_integrations__integration_id__actions__node_type__execute_post]
+coverage:
+  specs_with_skills: 5
+  specs_total: 12
+  not_yet_covered:
+  - openapi/controlup-daas-iq-openapi.yml
+  - openapi/controlup-desktops-openapi.yml
+  - openapi/controlup-dex-alerts-openapi.yml
+  - openapi/controlup-dex-events-openapi.yml
+  - openapi/controlup-vdi-daas-realtime-metrics-openapi.yml
+  - openapi/controlup-vdi-daas-configuration-openapi.yml
+  - openapi/controlup-vdi-config-triggers-openapi.yml
+cross_cutting_rules_every_skill_inherits:
+  auth: Bearer API key; permissions must be assigned DIRECTLY to the ControlUp user, never inherited from an IdP group.
+  tenancy: orgId path parameter on platform operations; it is the tenancy boundary.
+  idempotency: None. No idempotency key exists anywhere in the estate — retries of writes are unprotected.
+  pagination: Two dialects. _page/_limit on platform/Desktops/Compliance; page/pageSize on DaaS IQ and Synthetic Monitoring.
+  rate_limits: 60/min per user, 200/min per org, 15 concurrent on VDI, 10/min on Scout and alert-policy creation. No RateLimit-* or Retry-After headers.
+  errors: Vendor JSON, not RFC 9457. Branch on HTTP status; no stable machine-readable error code is published.

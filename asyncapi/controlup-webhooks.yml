@@ -1,0 +1,117 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  https://support.controlup.com/docs/webhooks-for-synthetic-monitoring,
+  https://support.controlup.com/docs/using-webhooks-as-follow-up-action,
+  https://support.controlup.com/docs/devices-alerts-servicenow-integration,
+  https://support.controlup.com/docs/create-flows-and-integrations
+spec_type: none
+asyncapi_published: false
+asyncapi_note: >-
+  ControlUp publishes no AsyncAPI document and no event-schema registry. The event surface below is real and
+  documented in prose, but it is not machine-readable — an agent cannot discover the channels, payload schemas or
+  bindings without reading the knowledge base. Nothing has been fabricated to fill that gap.
+webhooks:
+  supported: true
+  direction: outbound
+  model: >-
+    ControlUp does not operate a subscription-style webhook API. Webhooks are configured as NOTIFICATION METHODS
+    and FOLLOW-UP ACTIONS attached to alert policies and triggers — the customer supplies the destination URL and
+    the payload template, and ControlUp POSTs to it when the condition fires. There is no /webhooks resource in
+    any of the twelve OpenAPI definitions and no endpoint for registering or listing webhook subscriptions
+    programmatically.
+  surfaces:
+  - name: Synthetic Monitoring webhook notifications
+    docs: https://support.controlup.com/docs/webhooks-for-synthetic-monitoring
+    configured_on: A Scout's Alert Policy, under Notification Methods > Add webhook method
+    transport: HTTP POST
+    payload: >-
+      JSON, fully customer-defined. "Custom Fields" are declared with dot-notation names (payload.summary) and
+      values that mix literal text with ControlUp webhook variables, so the payload SHAPE is chosen by the
+      consumer, not by ControlUp. There is no default/canonical event envelope.
+    authentication: [None, Basic (username and password), API Token]
+    custom_headers: true
+    security_note: >-
+      ControlUp's own documentation states that custom headers and custom fields are stored and sent as clear,
+      unencrypted text.
+    trigger_conditions:
+    - A test fails
+    - A threshold is breached
+    - A recovery occurs after a failure
+    variables:
+      scout:
+      - {name: '{scout.id}', description: The Scout's ID value}
+      - {name: '{scout.name}', description: The Scout's name}
+      - {name: '{scout.resource}', description: Name of the resource being tested (EUC Scouts)}
+      - {name: '{scout.user}', description: Username configured for authenticating the Scout (EUC Scouts)}
+      - {name: '{scout.address}', description: Address of the tested resource or gateway}
+      - {name: '{scout.location}', description: Name of the cloud or custom hive where the Scout runs}
+      test_common:
+      - {name: '{test.status}', description: Status of the test (success/failure)}
+      - {name: '{test.status_percents}', description: Success percentage of the test}
+      - {name: '{test.start_time}', description: Start time of the test}
+      - {name: '{test.state_count}', description: How many times in a row the trigger has fired}
+      test_euc:
+      - {name: '{test.ready_phase}', description: Duration to reach Session Ready on the published resource}
+      - {name: '{test.server_name}', description: Server on which the Scout's session was opened}
+      test_http:
+      - {name: '{test.status_code}', description: HTTP status code}
+      - {name: '{test.latency}', description: Total response time}
+      - {name: '{test.ttfb}', description: Time to first byte}
+      - {name: '{test.connect_time}', description: Connect duration}
+      - {name: '{test.namelookup_time}', description: DNS lookup duration}
+      - {name: '{test.tls_handshake_time}', description: TLS handshake duration}
+      - {name: '{test.redirect_time}', description: Redirect duration}
+      - {name: '{test.response_time}', description: Response duration}
+      - {name: '{test.body_size}', description: Response body size}
+      - {name: '{test.cert_exp_date}', description: Certificate expiration date}
+      - {name: '{test.dest}', description: Destination address of the HTTP request}
+      test_dns:
+      - {name: '{test.query_type}', description: DNS query type}
+      - {name: '{test.result}', description: Responded records of the DNS query}
+      - {name: '{test.runtime}', description: Total duration of the DNS query}
+      - {name: '{test.server}', description: DNS server used for the query}
+      test_ping_traceroute:
+      - {name: '{test.packets_sent}', description: Packets sent during the test}
+      - {name: '{test.packets_received}', description: Packets received during the test}
+      - {name: '{test.jitter}', description: Average jitter across sent packets}
+      - {name: '{test.avg_rtt}', description: Average latency}
+      - {name: '{test.min_rtt}', description: Lowest total latency}
+      - {name: '{test.max_rtt}', description: Highest total latency}
+      - {name: '{test.hops}', description: Number of hops the packets traversed}
+    example_payload: |
+      {
+        "scoutName": "{scout.name}",
+        "testStatus": "{test.status}",
+        "failureReason": "{test.failure_reason}",
+        "timestamp": "{test.time}"
+      }
+  - name: Trigger follow-up action ("Send a RESTful API request")
+    docs: https://support.controlup.com/docs/using-webhooks-as-follow-up-action
+    configured_on: A ControlUp Trigger (Trigger Packs), as a follow-up action
+    transport: Customer-selected HTTP(S) method (POST in the documented example)
+    payload: >-
+      Defined by a Notification Template. Headers, body and even the URI can embed trigger variables using
+      $(VariableName) syntax — the documented example uses $(TriggerName) and $(CompName).
+    prerequisites:
+    - At least one ControlUp Monitor installed, with outbound internet access to the destination endpoint.
+    - A ControlUp licence with Automated Actions activated.
+    programmatic_configuration: https://support.controlup.com/docs/powershell-cmdlets-for-triggers
+    note: >-
+      Configured through the Real-Time Console or the trigger PowerShell cmdlets, not through the public REST API.
+      The VDI configuration/triggers OpenAPI (openapi/controlup-vdi-config-triggers-openapi.yml) covers trigger
+      configuration but does not expose webhook subscription management.
+  related_integrations:
+  - {name: ServiceNow, docs: https://support.controlup.com/docs/devices-alerts-servicenow-integration}
+  - {name: Microsoft Teams, docs: https://support.controlup.com/docs/integration-with-microsoft-teams}
+  - {name: Workflow integrations, docs: https://support.controlup.com/docs/create-flows-and-integrations}
+  - {name: Current integrations catalogue, docs: https://support.controlup.com/docs/current-integrations}
+  discoverable_via_api:
+    synthetic_monitoring: 'GET /synthetic-monitoring/v2/integrations — lists active external integrations available for alert notifications.'
+    workflows: 'GET /workflows/v1/integrations and /workflows/v1/integrations/{integrationId}/actions — enumerates integrations and their action input/output schemas.'
+gaps:
+- No AsyncAPI 2.x or 3.x document.
+- No canonical event envelope — the payload is entirely customer-templated, so two ControlUp tenants emit structurally different events for the same condition.
+- No signing, HMAC or replay-protection mechanism documented for outbound webhooks; authentication is whatever the receiver requires (none/basic/token) and headers are stored in clear text.
+- No delivery-retry, ordering or at-least-once guarantee documented.
+- No API for registering, listing or deleting webhook endpoints — configuration is console/PowerShell only.

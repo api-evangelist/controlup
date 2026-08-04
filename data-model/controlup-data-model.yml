@@ -1,0 +1,1525 @@
+generated: '2026-08-04'
+method: derived
+source: openapi/*.yml (12 definitions, 244 paths, 303 operations)
+note: Resource graph derived from the path structure of ControlUp's twelve published OpenAPI definitions. Entities are the
+  addressable resource segments; nested_under records the parent segments a resource appears beneath (a belongs_to relationship
+  in the URL space) and identifiers records the path parameters that key it. Schema-level relationships are summarised separately
+  below — ControlUp's components.schemas are largely DTO-shaped rather than a normalised object model, so the URL space
+  is the more faithful entity graph.
+domains:
+- domain: ControlUp ONE Platform
+  entity_count: 13
+  entities:
+  - entity: tags
+    operations: 5
+    paths:
+    - /v1/organizations/{orgId}/tags
+    - /v1/organizations/{orgId}/tags/{id}
+    nested_under:
+    - organizations
+    identifiers:
+    - id
+    - orgId
+  - entity: roles
+    operations: 5
+    paths:
+    - /v1/organizations/{orgId}/roles
+    - /v1/organizations/{orgId}/roles/{id}
+    nested_under:
+    - organizations
+    identifiers:
+    - id
+    - orgId
+  - entity: users
+    operations: 4
+    paths:
+    - /v1/organizations/{orgId}/users
+    - /v1/organizations/{orgId}/users/{id}
+    nested_under:
+    - organizations
+    identifiers:
+    - id
+    - orgId
+  - entity: ip-allowlist
+    operations: 4
+    paths:
+    - /v1/organizations/{orgId}/ip-allowlist
+    - /v1/organizations/{orgId}/ip-allowlist/{id}
+    nested_under:
+    - organizations
+    identifiers:
+    - id
+    - orgId
+  - entity: saml
+    operations: 4
+    paths:
+    - /v1/organizations/{orgId}/saml
+    - /v1/organizations/{orgId}/saml/{idpName}
+    nested_under:
+    - organizations
+    identifiers:
+    - idpName
+    - orgId
+  - entity: sso-groups
+    operations: 4
+    paths:
+    - /v1/organizations/{orgId}/sso-groups
+    - /v1/organizations/{orgId}/sso-groups/{id}
+    nested_under:
+    - organizations
+    identifiers:
+    - id
+    - orgId
+  - entity: tenants
+    operations: 2
+    paths:
+    - /v1/organizations/{tenantManagerOrgId}/tenants
+    nested_under:
+    - organizations
+    identifiers:
+    - tenantManagerOrgId
+  - entity: invitations
+    operations: 2
+    paths:
+    - /v1/organizations/{orgId}/invitations
+    nested_under:
+    - organizations
+    identifiers:
+    - orgId
+  - entity: settings
+    operations: 2
+    paths:
+    - /v1/organizations/{orgId}/settings
+    nested_under:
+    - organizations
+    identifiers:
+    - orgId
+  - entity: usage
+    operations: 1
+    paths:
+    - /v1/organizations/{orgId}/license/usage
+    nested_under:
+    - license
+    - organizations
+    identifiers:
+    - orgId
+  - entity: copy-edge-data
+    operations: 1
+    paths:
+    - /v1/organizations/{tenantManagerOrgId}/tenants/copy-edge-data
+    nested_under:
+    - organizations
+    - tenants
+    identifiers:
+    - tenantManagerOrgId
+  - entity: revoke-api-keys
+    operations: 1
+    paths:
+    - /v1/organizations/{orgId}/users/{id}/revoke-api-keys
+    nested_under:
+    - organizations
+    - users
+    identifiers:
+    - id
+    - orgId
+  - entity: audit-log
+    operations: 1
+    paths:
+    - /v1/organizations/{orgId}/audit-log
+    nested_under:
+    - organizations
+    identifiers:
+    - orgId
+- domain: ControlUp for Compliance
+  entity_count: 5
+  entities:
+  - entity: devices
+    operations: 2
+    paths:
+    - /compliance/devices
+    - /compliance/devices/{device_id}
+    identifiers:
+    - device_id
+  - entity: vulnerabilities
+    operations: 1
+    paths:
+    - /compliance/devices/{device_id}/vulnerabilities
+    nested_under:
+    - devices
+    identifiers:
+    - device_id
+  - entity: patches
+    operations: 1
+    paths:
+    - /compliance/devices/{device_id}/patches
+    nested_under:
+    - devices
+    identifiers:
+    - device_id
+  - entity: compliance
+    operations: 1
+    paths:
+    - /compliance/devices/{device_id}/compliance
+    nested_under:
+    - devices
+    identifiers:
+    - device_id
+  - entity: misconfig
+    operations: 1
+    paths:
+    - /compliance/devices/{device_id}/misconfig
+    nested_under:
+    - devices
+    identifiers:
+    - device_id
+- domain: ControlUp for Desktops
+  entity_count: 21
+  entities:
+  - entity: alerts
+    operations: 5
+    paths:
+    - /edge/api/alerts
+    - /edge/api/alerts/{id}
+    identifiers:
+    - id
+  - entity: data
+    operations: 4
+    paths:
+    - /edge/api/data
+    - /edge/api/data/{index_name}
+    - /edge/api/data/{index_name}/{documentID}
+    identifiers:
+    - documentID
+    - index_name
+  - entity: surveys
+    operations: 4
+    paths:
+    - /edge/api/user-sentiment/surveys
+    - /edge/api/user-sentiment/surveys/{id}
+    nested_under:
+    - user-sentiment
+    identifiers:
+    - id
+  - entity: views
+    operations: 2
+    paths:
+    - /edge/api/data/views
+    - /edge/api/data/views/{id}
+    nested_under:
+    - data
+    identifiers:
+    - id
+  - entity: tags
+    operations: 2
+    paths:
+    - /edge/api/devices/tags
+    nested_under:
+    - devices
+  - entity: dal
+    operations: 1
+    paths:
+    - /edge/api/dal/{index}
+    identifiers:
+    - index
+  - entity: mappings
+    operations: 1
+    paths:
+    - /edge/api/data/{index_name}/mappings
+    nested_under:
+    - data
+    identifiers:
+    - index_name
+  - entity: devices
+    operations: 1
+    paths:
+    - /edge/api/devices
+  - entity: delete
+    operations: 1
+    paths:
+    - /edge/api/devices/delete
+    nested_under:
+    - devices
+  - entity: groups
+    operations: 1
+    paths:
+    - /edge/api/devices/groups
+    nested_under:
+    - devices
+  - entity: set-group
+    operations: 1
+    paths:
+    - /edge/api/devices/set-group
+    nested_under:
+    - devices
+  - entity: actions
+    operations: 1
+    paths:
+    - /edge/api/devices/{deviceID}/actions
+    nested_under:
+    - devices
+    identifiers:
+    - deviceID
+  - entity: action
+    operations: 1
+    paths:
+    - /edge/api/devices/action
+    nested_under:
+    - devices
+  - entity: events
+    operations: 1
+    paths:
+    - /edge/api/events
+  - entity: query
+    operations: 1
+    paths:
+    - /edge/api/events/query
+    nested_under:
+    - events
+  - entity: scripts
+    operations: 1
+    paths:
+    - /edge/api/scripts
+  - entity: pause
+    operations: 1
+    paths:
+    - /edge/api/user-sentiment/surveys/{id}/pause
+    nested_under:
+    - surveys
+    - user-sentiment
+    identifiers:
+    - id
+  - entity: resume
+    operations: 1
+    paths:
+    - /edge/api/user-sentiment/surveys/{id}/resume
+    nested_under:
+    - surveys
+    - user-sentiment
+    identifiers:
+    - id
+  - entity: complete
+    operations: 1
+    paths:
+    - /edge/api/user-sentiment/surveys/{id}/complete
+    nested_under:
+    - surveys
+    - user-sentiment
+    identifiers:
+    - id
+  - entity: results
+    operations: 1
+    paths:
+    - /edge/api/user-sentiment/results
+    nested_under:
+    - user-sentiment
+  - entity: raw
+    operations: 1
+    paths:
+    - /edge/api/user-sentiment/results/answers/raw
+    nested_under:
+    - answers
+    - results
+    - user-sentiment
+- domain: DaaS IQ
+  entity_count: 83
+  entities:
+  - entity: subscriptions
+    operations: 8
+    paths:
+    - /daas-iq/v1/cloud/overview/subscriptions
+    - /daas-iq/v1/cloud/subscriptions
+    - /daas-iq/v1/cloud/subscriptions/{id}
+    - /daas-iq/v1/cloud/tenants/{tenantId}/discover/subscriptions
+    nested_under:
+    - cloud
+    - discover
+    - overview
+    - tenants
+    identifiers:
+    - id
+    - tenantId
+  - entity: credentials
+    operations: 6
+    paths:
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/{credentialId}
+    nested_under:
+    - cloud
+    - tenants
+    identifiers:
+    - credentialId
+    - tenantId
+  - entity: tenants
+    operations: 6
+    paths:
+    - /daas-iq/v1/cloud/tenants
+    - /daas-iq/v1/cloud/tenants/{id}
+    nested_under:
+    - cloud
+    identifiers:
+    - id
+  - entity: status
+    operations: 5
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/status
+    - /daas-iq/v1/cloud/tenants/{id}/status
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/status
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/status
+    - /daas-iq/v1/jobs/{jobId}/status
+    nested_under:
+    - cloud
+    - credentials
+    - jobs
+    - subscriptions
+    - tenants
+    identifiers:
+    - credentialId
+    - id
+    - jobId
+    - tenantId
+  - entity: scaling-profiles
+    operations: 5
+    paths:
+    - /daas-iq/v1/cloud/scaling-profiles
+    - /daas-iq/v1/cloud/scaling-profiles/{id}
+    nested_under:
+    - cloud
+    identifiers:
+    - id
+  - entity: host-pools
+    operations: 4
+    paths:
+    - /daas-iq/v1/cloud/host-pools
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}
+    - /daas-iq/v1/cloud/overview/host-pools
+    nested_under:
+    - cloud
+    - overview
+    identifiers:
+    - hostPoolId
+  - entity: transcript
+    operations: 4
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/credentials/verify/transcript
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/verify/transcript
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify/transcript
+    - /daas-iq/v1/jobs/{jobId}/logs/transcript
+    nested_under:
+    - cloud
+    - credentials
+    - jobs
+    - logs
+    - subscriptions
+    - tenants
+    - verify
+    identifiers:
+    - credentialId
+    - id
+    - jobId
+    - tenantId
+  - entity: master-images
+    operations: 4
+    paths:
+    - /daas-iq/v1/cloud/master-images
+    - /daas-iq/v1/cloud/master-images/{id}
+    - /daas-iq/v1/cloud/master-images/{masterImageId}
+    - /daas-iq/v1/cloud/overview/master-images
+    nested_under:
+    - cloud
+    - overview
+    identifiers:
+    - id
+    - masterImageId
+  - entity: scaling-policy
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/scaling-policy
+    nested_under:
+    - cloud
+    - host-pools
+    identifiers:
+    - hostPoolId
+  - entity: user-sessions
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/user-sessions
+    - /daas-iq/v1/cloud/overview/user-sessions
+    - /daas-iq/v1/cloud/session-hosts/{sessionHostId}/user-sessions
+    nested_under:
+    - cloud
+    - host-pools
+    - overview
+    - session-hosts
+    identifiers:
+    - hostPoolId
+    - sessionHostId
+  - entity: vm-settings
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/vm-settings
+    nested_under:
+    - cloud
+    - host-pools
+    identifiers:
+    - hostPoolId
+  - entity: actions
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/master-images/{id}/actions
+    - /daas-iq/v1/cloud/session-hosts/{sessionHostId}/actions
+    - /daas-iq/v1/cloud/user-sessions/{userSessionId}/actions
+    nested_under:
+    - cloud
+    - master-images
+    - session-hosts
+    - user-sessions
+    identifiers:
+    - id
+    - sessionHostId
+    - userSessionId
+  - entity: onboarding
+    operations: 3
+    paths:
+    - /daas-iq/v1/onboarding
+    - /daas-iq/v1/onboarding/{flowKey}
+    identifiers:
+    - flowKey
+  - entity: regions
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/overview/regions
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/metadata/regions
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/metadata/regions/{region}
+    nested_under:
+    - cloud
+    - metadata
+    - overview
+    - subscriptions
+    identifiers:
+    - region
+    - subscriptionId
+  - entity: images
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/overview/images
+    - /daas-iq/v1/cloud/subscriptions/{id}/resources/discover/images
+    - /daas-iq/v1/cloud/tenants/{tenantId}/discover/resources/images
+    nested_under:
+    - cloud
+    - discover
+    - overview
+    - resources
+    - subscriptions
+    - tenants
+    identifiers:
+    - id
+    - tenantId
+  - entity: verify
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/credentials/verify
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/verify
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify
+    nested_under:
+    - cloud
+    - credentials
+    - subscriptions
+    - tenants
+    identifiers:
+    - credentialId
+    - id
+    - tenantId
+  - entity: stream
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/credentials/verify/stream
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/verify/stream
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify/stream
+    nested_under:
+    - cloud
+    - credentials
+    - subscriptions
+    - tenants
+    - verify
+    identifiers:
+    - credentialId
+    - id
+    - tenantId
+  - entity: sse
+    operations: 3
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/credentials/verify/sse
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/verify/sse
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify/sse
+    nested_under:
+    - cloud
+    - credentials
+    - subscriptions
+    - tenants
+    - verify
+    identifiers:
+    - credentialId
+    - id
+    - tenantId
+  - entity: auth-types
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/providers/auth-types
+    - /daas-iq/v1/cloud/providers/{provider}/auth-types
+    nested_under:
+    - cloud
+    - providers
+    identifiers:
+    - provider
+  - entity: features
+    operations: 2
+    paths:
+    - /daas-iq/v1/features
+    - /daas-iq/v1/features/{feature}
+    identifiers:
+    - feature
+  - entity: cost
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/cost
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/session-hosts/cost
+    nested_under:
+    - cloud
+    - host-pools
+    - session-hosts
+    identifiers:
+    - hostPoolId
+  - entity: session-hosts
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/session-hosts
+    - /daas-iq/v1/cloud/overview/session-hosts
+    nested_under:
+    - cloud
+    - host-pools
+    - overview
+    identifiers:
+    - hostPoolId
+  - entity: jobs
+    operations: 2
+    paths:
+    - /daas-iq/v1/jobs
+    - /daas-iq/v1/jobs/{jobId}
+    identifiers:
+    - jobId
+  - entity: operation-state
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/master-images/{id}/operation-state
+    - /daas-iq/v1/cloud/master-images/{masterImageId}/versions/{versionId}/operation-state
+    nested_under:
+    - cloud
+    - master-images
+    - versions
+    identifiers:
+    - id
+    - masterImageId
+    - versionId
+  - entity: versions
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/master-images/{masterImageId}/versions
+    - /daas-iq/v1/cloud/master-images/{masterImageId}/versions/{versionId}
+    nested_under:
+    - cloud
+    - master-images
+    identifiers:
+    - masterImageId
+    - versionId
+  - entity: resource-groups
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/overview/resource-groups
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/lookup/resource-groups
+    nested_under:
+    - cloud
+    - lookup
+    - overview
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: workspaces
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/overview/workspaces
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/lookup/resources/workspaces
+    nested_under:
+    - cloud
+    - lookup
+    - overview
+    - resources
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: hostpools
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/resources/discover/hostpools
+    - /daas-iq/v1/cloud/tenants/{tenantId}/discover/resources/hostpools
+    nested_under:
+    - cloud
+    - discover
+    - resources
+    - subscriptions
+    - tenants
+    identifiers:
+    - id
+    - tenantId
+  - entity: import
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/resources/import
+    - /daas-iq/v1/cloud/tenants/{tenantId}/resources/import
+    nested_under:
+    - cloud
+    - resources
+    - subscriptions
+    - tenants
+    identifiers:
+    - id
+    - tenantId
+  - entity: refresh
+    operations: 2
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/status/refresh
+    - /daas-iq/v1/cloud/tenants/{id}/status/refresh
+    nested_under:
+    - cloud
+    - status
+    - subscriptions
+    - tenants
+    identifiers:
+    - id
+  - entity: providers
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/providers
+    nested_under:
+    - cloud
+  - entity: savings
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/cost/savings
+    nested_under:
+    - cloud
+    - cost
+    - host-pools
+    identifiers:
+    - hostPoolId
+  - entity: export
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/cost/export
+    nested_under:
+    - cloud
+    - cost
+    - host-pools
+    identifiers:
+    - hostPoolId
+  - entity: host-pool-deployments
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/host-pool-deployments
+    nested_under:
+    - cloud
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: active-profile
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/scaling-policy/active-profile
+    nested_under:
+    - cloud
+    - host-pools
+    - scaling-policy
+    identifiers:
+    - hostPoolId
+  - entity: session-host-deployments
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/session-host-deployments
+    nested_under:
+    - cloud
+    - host-pools
+    identifiers:
+    - hostPoolId
+  - entity: validation
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/vm-settings/validation
+    nested_under:
+    - cloud
+    - host-pools
+    - vm-settings
+    identifiers:
+    - hostPoolId
+  - entity: statistics
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/statistics
+    nested_under:
+    - cloud
+    - host-pools
+  - entity: details
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/details
+    nested_under:
+    - cloud
+    - host-pools
+    identifiers:
+    - hostPoolId
+  - entity: metrics
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/metrics
+    nested_under:
+    - cloud
+    - host-pools
+    identifiers:
+    - hostPoolId
+  - entity: deletion
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/host-pools/{hostPoolId}/deletion
+    nested_under:
+    - cloud
+    - host-pools
+    identifiers:
+    - hostPoolId
+  - entity: parameters
+    operations: 1
+    paths:
+    - /daas-iq/v1/jobs/{jobId}/parameters
+    nested_under:
+    - jobs
+    identifiers:
+    - jobId
+  - entity: cancel
+    operations: 1
+    paths:
+    - /daas-iq/v1/jobs/{jobId}/cancel
+    nested_under:
+    - jobs
+    identifiers:
+    - jobId
+  - entity: retry
+    operations: 1
+    paths:
+    - /daas-iq/v1/jobs/{jobId}/retry
+    nested_under:
+    - jobs
+    identifiers:
+    - jobId
+  - entity: logs
+    operations: 1
+    paths:
+    - /daas-iq/v1/jobs/{jobId}/logs
+    nested_under:
+    - jobs
+    identifiers:
+    - jobId
+  - entity: license
+    operations: 1
+    paths:
+    - /daas-iq/v1/license
+  - entity: rdp
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/{id}/rdp
+    nested_under:
+    - cloud
+    - master-images
+    identifiers:
+    - id
+  - entity: os-families
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/os-families
+    nested_under:
+    - cloud
+    - master-images
+  - entity: marketplace-images
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/marketplace-images
+    nested_under:
+    - cloud
+    - master-images
+  - entity: decommission-plan
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/{id}/decommission-plan
+    nested_under:
+    - cloud
+    - master-images
+    identifiers:
+    - id
+  - entity: promote
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/promote
+    nested_under:
+    - cloud
+    - master-images
+  - entity: deploy-from-gallery
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/deploy-from-gallery
+    nested_under:
+    - cloud
+    - master-images
+  - entity: deploy-from-marketplace
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/deploy-from-marketplace
+    nested_under:
+    - cloud
+    - master-images
+  - entity: deploy-from-managed-image
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/deploy-from-managed-image
+    nested_under:
+    - cloud
+    - master-images
+  - entity: publish
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/{masterImageId}/publish
+    nested_under:
+    - cloud
+    - master-images
+    identifiers:
+    - masterImageId
+  - entity: cleanup-plan
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/{masterImageId}/versions/{versionId}/publish-artifacts/cleanup-plan
+    nested_under:
+    - cloud
+    - master-images
+    - publish-artifacts
+    - versions
+    identifiers:
+    - masterImageId
+    - versionId
+  - entity: publish-artifacts
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/{masterImageId}/versions/{versionId}/publish-artifacts
+    nested_under:
+    - cloud
+    - master-images
+    - versions
+    identifiers:
+    - masterImageId
+    - versionId
+  - entity: retry-publish
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/master-images/{masterImageId}/versions/{versionId}/retry-publish
+    nested_under:
+    - cloud
+    - master-images
+    - versions
+    identifiers:
+    - masterImageId
+    - versionId
+  - entity: start
+    operations: 1
+    paths:
+    - /daas-iq/v1/onboarding/{flowKey}/start
+    nested_under:
+    - onboarding
+    identifiers:
+    - flowKey
+  - entity: steps
+    operations: 1
+    paths:
+    - /daas-iq/v1/onboarding/{flowKey}/steps/{stepKey}
+    nested_under:
+    - onboarding
+    identifiers:
+    - flowKey
+    - stepKey
+  - entity: dismiss
+    operations: 1
+    paths:
+    - /daas-iq/v1/onboarding/{flowKey}/dismiss
+    nested_under:
+    - onboarding
+    identifiers:
+    - flowKey
+  - entity: graph
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/overview/graph
+    nested_under:
+    - cloud
+    - overview
+  - entity: application-groups
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/overview/application-groups
+    nested_under:
+    - cloud
+    - overview
+  - entity: color
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/scaling-profiles/{id}/color
+    nested_under:
+    - cloud
+    - scaling-profiles
+    identifiers:
+    - id
+  - entity: vm-sizes
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/metadata/vm-sizes
+    nested_under:
+    - cloud
+    - metadata
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: os-disks
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/metadata/os-disks
+    nested_under:
+    - cloud
+    - metadata
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: compute-quota
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/metadata/compute-quota
+    nested_under:
+    - cloud
+    - metadata
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: host-pool-create
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/preflight/permissions/host-pool-create
+    nested_under:
+    - cloud
+    - permissions
+    - preflight
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: session-host-create
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/preflight/permissions/session-host-create
+    nested_under:
+    - cloud
+    - permissions
+    - preflight
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: virtual-networks
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/lookup/resources/virtual-networks
+    nested_under:
+    - cloud
+    - lookup
+    - resources
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: virtual-machines
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/lookup/resources/virtual-machines
+    nested_under:
+    - cloud
+    - lookup
+    - resources
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: galleries
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/lookup/resources/galleries
+    nested_under:
+    - cloud
+    - lookup
+    - resources
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: managed-images
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/lookup/resources/managed-images
+    nested_under:
+    - cloud
+    - lookup
+    - resources
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: gallery-images
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/lookup/resources/gallery-images
+    nested_under:
+    - cloud
+    - lookup
+    - resources
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: gallery-image-versions
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{subscriptionId}/lookup/resources/gallery-image-versions
+    nested_under:
+    - cloud
+    - lookup
+    - resources
+    - subscriptions
+    identifiers:
+    - subscriptionId
+  - entity: discover
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/subscriptions/{id}/resources/discover
+    nested_under:
+    - cloud
+    - resources
+    - subscriptions
+    identifiers:
+    - id
+  - entity: enable
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/enable
+    nested_under:
+    - cloud
+    - credentials
+    - tenants
+    identifiers:
+    - credentialId
+    - tenantId
+  - entity: disable
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/disable
+    nested_under:
+    - cloud
+    - credentials
+    - tenants
+    identifiers:
+    - credentialId
+    - tenantId
+  - entity: resources
+    operations: 1
+    paths:
+    - /daas-iq/v1/cloud/tenants/{tenantId}/discover/resources
+    nested_under:
+    - cloud
+    - discover
+    - tenants
+    identifiers:
+    - tenantId
+  - entity: user-info
+    operations: 1
+    paths:
+    - /daas-iq/v1/users/user-info
+    nested_under:
+    - users
+  - entity: health
+    operations: 1
+    paths:
+    - /daas-iq/v1/health
+  - entity: live
+    operations: 1
+    paths:
+    - /daas-iq/v1/health/live
+    nested_under:
+    - health
+  - entity: info
+    operations: 1
+    paths:
+    - /daas-iq/v1/health/info
+    nested_under:
+    - health
+- domain: Events and Alerts
+  entity_count: 4
+  entities:
+  - entity: desktop
+    operations: 4
+    paths:
+    - /events/v1/alerts/organizations/{orgId}/alert-configs/desktop
+    - /events/v1/alerts/organizations/{orgId}/alert-configs/desktop/{id}
+    nested_under:
+    - alert-configs
+    - organizations
+    identifiers:
+    - id
+    - orgId
+  - entity: events
+    operations: 2
+    paths:
+    - /events/v1/events/organizations/{orgId}/events
+    - /events/v1/events/organizations/{orgId}/events/{eventId}
+    nested_under:
+    - events
+    - organizations
+    identifiers:
+    - eventId
+    - orgId
+  - entity: alert-configs
+    operations: 1
+    paths:
+    - /events/v1/alerts/organizations/{orgId}/alert-configs
+    nested_under:
+    - organizations
+    identifiers:
+    - orgId
+  - entity: total
+    operations: 1
+    paths:
+    - /events/v1/events/organizations/{orgId}/events/total
+    nested_under:
+    - events
+    - organizations
+    identifiers:
+    - orgId
+- domain: Synthetic Monitoring
+  entity_count: 8
+  entities:
+  - entity: alerts
+    operations: 7
+    paths:
+    - /synthetic-monitoring/v2/alerts
+    - /synthetic-monitoring/v2/alerts/{scoutId}
+    - /synthetic-monitoring/v2/scouts/{scoutId}/alerts
+    - /synthetic-monitoring/v2/scouts/{scoutId}/alerts/{alertId}
+    nested_under:
+    - scouts
+    identifiers:
+    - alertId
+    - scoutId
+  - entity: scouts
+    operations: 6
+    paths:
+    - /synthetic-monitoring/v2/alerts/scouts
+    - /synthetic-monitoring/v2/scouts
+    - /synthetic-monitoring/v2/scouts/{scoutId}
+    nested_under:
+    - alerts
+    identifiers:
+    - scoutId
+  - entity: disabled
+    operations: 1
+    paths:
+    - /synthetic-monitoring/v2/scouts/{scoutId}/disabled
+    nested_under:
+    - scouts
+    identifiers:
+    - scoutId
+  - entity: mfas
+    operations: 1
+    paths:
+    - /synthetic-monitoring/v2/mfas
+  - entity: tests
+    operations: 1
+    paths:
+    - /synthetic-monitoring/v2/tests
+  - entity: hives
+    operations: 1
+    paths:
+    - /synthetic-monitoring/v2/hives
+  - entity: cloud_hives
+    operations: 1
+    paths:
+    - /synthetic-monitoring/v2/cloud_hives
+  - entity: integrations
+    operations: 1
+    paths:
+    - /synthetic-monitoring/v2/integrations
+- domain: VDI and DaaS Configuration
+  entity_count: 3
+  entities:
+  - entity: machines
+    operations: 4
+    paths:
+    - /vdi/config/v1/machines
+    - /vdi/config/v1/machines/{objectGuid}
+    identifiers:
+    - objectGuid
+  - entity: Triggers
+    operations: 2
+    paths:
+    - /vdi/config/v1/Triggers
+    - /vdi/config/v1/Triggers/{triggerId}
+    identifiers:
+    - triggerId
+  - entity: trigger-schedules
+    operations: 2
+    paths:
+    - /vdi/config/v1/trigger-schedules
+    - /vdi/config/v1/trigger-schedules/{scheduleId}
+    identifiers:
+    - scheduleId
+- domain: VDI and DaaS Historical
+  entity_count: 19
+  entities:
+  - entity: system
+    operations: 2
+    paths:
+    - /historical/v1/netscaler/usage/system
+    - /historical/v2/netscaler/usage/system
+    nested_under:
+    - netscaler
+    - usage
+  - entity: loadbalancer
+    operations: 2
+    paths:
+    - /historical/v1/netscaler/usage/loadbalancer
+    - /historical/v2/netscaler/usage/loadbalancer
+    nested_under:
+    - netscaler
+    - usage
+  - entity: gateway
+    operations: 2
+    paths:
+    - /historical/v1/netscaler/usage/gateway
+    - /historical/v2/netscaler/usage/gateway
+    nested_under:
+    - netscaler
+    - usage
+  - entity: aggregated
+    operations: 2
+    paths:
+    - /historical/v1/machines/aggregated
+    - /historical/v1/sessions/aggregated
+    nested_under:
+    - machines
+    - sessions
+  - entity: single
+    operations: 2
+    paths:
+    - /historical/v1/applications/usage/single
+    - /historical/v1/processes/usage/single
+    nested_under:
+    - applications
+    - processes
+    - usage
+  - entity: all
+    operations: 2
+    paths:
+    - /historical/v1/applications/usage/all
+    - /historical/v1/processes/usage/all
+    nested_under:
+    - applications
+    - processes
+    - usage
+  - entity: statistics
+    operations: 2
+    paths:
+    - /historical/v1/applications/statistics
+    - /historical/v1/machines/statistics/{grouping}
+    nested_under:
+    - applications
+    - machines
+    identifiers:
+    - grouping
+  - entity: execute
+    operations: 1
+    paths:
+    - /historical/v1/dynamic-query/execute
+    nested_under:
+    - dynamic-query
+  - entity: windowsEvents
+    operations: 1
+    paths:
+    - /historical/v1/windowsEvents
+  - entity: activity
+    operations: 1
+    paths:
+    - /historical/v1/users/activity
+    nested_under:
+    - users
+  - entity: uploadstartstatus
+    operations: 1
+    paths:
+    - /historical/v1/uploadstartstatus
+  - entity: sessions
+    operations: 1
+    paths:
+    - /historical/v1/sessions
+  - entity: timeline
+    operations: 1
+    paths:
+    - /historical/v1/sessions/timeline/{sessionUid}
+    nested_under:
+    - sessions
+    identifiers:
+    - sessionUid
+  - entity: details
+    operations: 1
+    paths:
+    - /historical/v1/sessions/details
+    nested_under:
+    - sessions
+  - entity: virtualization
+    operations: 1
+    paths:
+    - /historical/v1/machines/sizing_recommendation/virtualization
+    nested_under:
+    - machines
+    - sizing_recommendation
+  - entity: azure
+    operations: 1
+    paths:
+    - /historical/v1/machines/sizing_recommendation/azure
+    nested_under:
+    - machines
+    - sizing_recommendation
+  - entity: metrics
+    operations: 1
+    paths:
+    - /historical/v1/hosts/metrics
+    nested_under:
+    - hosts
+  - entity: counts
+    operations: 1
+    paths:
+    - /historical/v1/hosts/counts
+    nested_under:
+    - hosts
+  - entity: schema
+    operations: 1
+    paths:
+    - /historical/v1/dynamic-query/schema
+    nested_under:
+    - dynamic-query
+- domain: VDI and DaaS Realtime
+  entity_count: 2
+  entities:
+  - entity: tables
+    operations: 2
+    paths:
+    - /vdi/realtime/v1/metrics/schema/tables
+    - /vdi/realtime/v1/metrics/schema/tables/{tableName}
+    nested_under:
+    - metrics
+    - schema
+    identifiers:
+    - tableName
+  - entity: query
+    operations: 1
+    paths:
+    - /vdi/realtime/v1/metrics/query
+    nested_under:
+    - metrics
+- domain: Workflows
+  entity_count: 7
+  entities:
+  - entity: flows
+    operations: 4
+    paths:
+    - /workflows/v1/flows
+    - /workflows/v1/flows/{flowId}
+    nested_under:
+    - workflows
+    identifiers:
+    - flowId
+  - entity: forms
+    operations: 3
+    paths:
+    - /workflows/v1/forms
+    - /workflows/v1/forms/{formId}
+    nested_under:
+    - workflows
+    identifiers:
+    - formId
+  - entity: integrations
+    operations: 3
+    paths:
+    - /workflows/v1/integrations
+    - /workflows/v1/integrations/{integrationId}
+    nested_under:
+    - workflows
+    identifiers:
+    - integrationId
+  - entity: actions
+    operations: 2
+    paths:
+    - /workflows/v1/integrations/{integration_id}/actions
+    - /workflows/v1/integrations/{integration_id}/actions/{node_type}
+    nested_under:
+    - integrations
+    - workflows
+    identifiers:
+    - integration_id
+    - node_type
+  - entity: runs
+    operations: 1
+    paths:
+    - /workflows/v1/flows/{flowId}/runs
+    nested_under:
+    - flows
+    - workflows
+    identifiers:
+    - flowId
+  - entity: launch
+    operations: 1
+    paths:
+    - /workflows/v1/flows/launch
+    nested_under:
+    - flows
+    - workflows
+  - entity: execute
+    operations: 1
+    paths:
+    - /workflows/v1/integrations/{integration_id}/actions/{node_type}/execute
+    nested_under:
+    - actions
+    - integrations
+    - workflows
+    identifiers:
+    - integration_id
+    - node_type
+schema_graph:
+  total_schemas: 563
+  total_ref_relationships: 599
+  note: Counted across all twelve definitions. The most-referenced shared shapes are UserMetadata (31 references), DiscoverableResourceType
+    (14), ErrorResponseMetadata (10), CloudProvider (10), CloudProviderAuthType (9), OrganizationProductAllocation (8),
+    MetricDataPoint (7) and VmSecurityType (7). There is no shared component library across definitions — each product surface
+    redeclares its own schemas, so the same real-world concept (a device, an organization) has a different schema in each
+    spec.
+  cross_spec_reuse: false
+cross_domain_keys:
+- key: orgId
+  description: Organization identifier. Path parameter on every ControlUp ONE Platform operation and the ORG_ID the MCP
+    server requires. The tenancy boundary for the whole estate.
+- key: device id
+  description: A device is the central entity in both ControlUp for Desktops and ControlUp for Compliance, but the two products
+    address it through separate specs and separate path spaces (/edge/api/devices vs /compliance/devices) with no documented
+    shared identifier.
+- key: scoutId
+  description: Synthetic Monitoring Scout. Parent of alert policies, test results and triggered alerts.
+- key: flowId / integrationId
+  description: Workflows. A flow has runs; an integration has actions addressed by nodeType, each with its own input/output
+    schema.

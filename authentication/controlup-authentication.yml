@@ -1,0 +1,88 @@
+generated: '2026-08-04'
+method: searched
+source: https://api.controlup.io/reference/how-to-create-api-keys, https://api.controlup.io/reference/how-to-make-api-requests-1,
+  https://support.controlup.com/docs/mcp-server + openapi/controlup-compliance-openapi.yml, openapi/controlup-daas-iq-openapi.yml,
+  openapi/controlup-desktops-openapi.yml, openapi/controlup-dex-alerts-openapi.yml, openapi/controlup-dex-events-openapi.yml,
+  openapi/controlup-dex-platform-openapi.yml, openapi/controlup-synthetic-monitoring-openapi.yml, openapi/controlup-vdi-daas-configuration-openapi.yml,
+  openapi/controlup-vdi-daas-historical-openapi.yml, openapi/controlup-vdi-daas-realtime-metrics-openapi.yml, openapi/controlup-workflows-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - cookie
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  sources:
+  - openapi/controlup-compliance-openapi.yml
+  - openapi/controlup-daas-iq-openapi.yml
+  - openapi/controlup-desktops-openapi.yml
+  - openapi/controlup-dex-alerts-openapi.yml
+  - openapi/controlup-dex-events-openapi.yml
+  - openapi/controlup-dex-platform-openapi.yml
+  - openapi/controlup-synthetic-monitoring-openapi.yml
+  - openapi/controlup-vdi-daas-configuration-openapi.yml
+  - openapi/controlup-vdi-daas-historical-openapi.yml
+  - openapi/controlup-vdi-daas-realtime-metrics-openapi.yml
+  - openapi/controlup-workflows-openapi.yml
+- name: CookieAuth
+  type: apiKey
+  in: cookie
+  parameter: user_dex_token
+  description: '**Cookie Authentication** (Browser use)
+
+
+    ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+    To authenticate in browser:
+
+    1. Login via DEX authentication service (same browser session)
+
+    2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+  sources:
+  - openapi/controlup-daas-iq-openapi.yml
+docs: https://api.controlup.io/reference/how-to-create-api-keys
+documented:
+  primary_scheme: bearer-api-key
+  header: 'Authorization: Bearer <API_KEY>'
+  additional_required_input: ControlUp organization ID, supplied as the orgId path parameter on platform operations and
+    as ORG_ID to the MCP server. Found on the API Key Management page.
+  key_creation: ControlUp ONE console > profile icon > API Key Management > + Create new. A duration is set at creation;
+    the key stops working when the duration ends.
+  key_permissions: Keys inherit the permissions of the creating user and update automatically when those permissions change.
+    Permissions assigned indirectly through identity-provider group membership do NOT grant API access — the permission
+    must sit directly on the ControlUp user account.
+  key_revocation:
+  - 'Self-service: API Key Management > X to revoke, trash icon to revoke and remove.'
+  - 'Admin: Settings > User Settings > select user > Revoke API Keys.'
+  - 'API: POST /v1/organizations/{orgId}/users/{id}/revoke-api-keys (OrgUsersPublicController_revoke) — irreversible.'
+  - Deleting a user revokes their keys; disabling a user suspends them until reactivation.
+  legacy: The legacy API key settings page was removed in the June 2026 release; key management is consolidated into the
+    ControlUp ONE console.
+oauth2:
+  supported: false
+  note: No oauth2 security scheme in any of the twelve published definitions and no /.well-known/oauth-authorization-server
+    or /.well-known/openid-configuration on any host. OAuth/OIDC and SAML are used for CONSOLE login federation (Microsoft
+    Entra ID, Okta) and are configurable per organization through the platform API, but they are not an API authentication
+    path. scopes/ is therefore intentionally absent from this repo.
+  console_federation_docs:
+  - https://support.controlup.com/docs/how-to-set-up-oauth-with-entra-id
+  - https://support.controlup.com/docs/microsoft-entra-id-integration
+  - https://support.controlup.com/docs/okta-integration
+  - https://support.controlup.com/docs/identity-provider-integrations
+network_controls:
+  ip_allowlist: Organization-level IP allowlist, enforceable via organization settings and managed at /v1/organizations/{orgId}/ip-allowlist.
+    When enabled, only users from allowlisted addresses can reach the organization.
+  docs: https://support.controlup.com/docs/ip-allow-list
+mfa:
+  note: MFA options are organization settings and per-user configuration on the platform API, applying to console login
+    rather than API key use.
+  docs: https://support.controlup.com/docs/security-policy-pane
+gaps:
+- No OAuth 2.0 or OIDC for API access — a long-lived organization API key is the only mechanism.
+- 'No scoped tokens: a key carries the full permission set of its creating user, so least-privilege for an agent means creating
+  a dedicated restricted ControlUp user, not a scoped key.'
+- No key rotation API — keys can be revoked programmatically but not created programmatically.

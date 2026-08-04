@@ -1,0 +1,223 @@
+generated: '2026-08-04'
+method: derived
+source: openapi/*.yml (12 definitions, 303 operations) harvested from https://api.controlup.io/.well-known/api-catalog
+format: vendor-json
+rfc9457: false
+envelope_note: No operation in any of the twelve published definitions returns application/problem+json. Error responses
+  are ordinary application/json (some operations also advertise application/xml and text/csv). ControlUp publishes no consolidated
+  error-code reference in its documentation, so the catalog below is derived from declared response objects rather than
+  from a published registry.
+coverage:
+  specs: 12
+  operations: 303
+  error_responses_declared: 1493
+problems:
+- status: 400
+  title: Bad Request
+  occurrences: 224
+  specs:
+  - controlup-daas-iq-openapi.yml
+  - controlup-desktops-openapi.yml
+  - controlup-dex-alerts-openapi.yml
+  - controlup-dex-events-openapi.yml
+  - controlup-dex-platform-openapi.yml
+  - controlup-synthetic-monitoring-openapi.yml
+  - controlup-vdi-config-triggers-openapi.yml
+  - controlup-vdi-daas-configuration-openapi.yml
+  - controlup-vdi-daas-historical-openapi.yml
+  - controlup-vdi-daas-realtime-metrics-openapi.yml
+  descriptions:
+  - Bad Request
+  - Bad Request - one of the inputs isn't correct
+  - Bad request. Invalid pagination parameters.
+  - Bad request. Invalid pagination, sort, or filter parameters.
+  remediation: Validate query parameters and request body against the operation's schema. The platform filter parameters
+    are contains-matchers, not exact matchers, and pagination uses _page/_limit on the platform surfaces but page/pageSize
+    on DaaS IQ and Synthetic Monitoring.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#GetProviderAuthTypes
+  - openapi/controlup-daas-iq-openapi.yml#GetHostPoolCost
+  - openapi/controlup-daas-iq-openapi.yml#GetHostPoolSavings
+- status: 401
+  title: Unauthorized
+  occurrences: 247
+  specs:
+  - controlup-daas-iq-openapi.yml
+  - controlup-desktops-openapi.yml
+  - controlup-dex-alerts-openapi.yml
+  - controlup-dex-events-openapi.yml
+  - controlup-dex-platform-openapi.yml
+  - controlup-synthetic-monitoring-openapi.yml
+  - controlup-vdi-daas-configuration-openapi.yml
+  - controlup-vdi-daas-historical-openapi.yml
+  - controlup-vdi-daas-realtime-metrics-openapi.yml
+  descriptions:
+  - Unauthorized. User is not authenticated.
+  - 'Unauthorized: Access is denied'
+  - User is not authorized to access the resource
+  - Unauthorized - Missing or invalid authentication
+  remediation: Send the organization API key as an HTTP bearer token in the Authorization header. Keys expire at the duration
+    set when they were created and stop working once revoked or once the owning user is disabled or deleted.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#GetProviders
+  - openapi/controlup-daas-iq-openapi.yml#GetAllAuthTypes
+  - openapi/controlup-daas-iq-openapi.yml#GetProviderAuthTypes
+- status: 402
+  title: Payment Required
+  occurrences: 146
+  specs:
+  - controlup-daas-iq-openapi.yml
+  descriptions:
+  - Payment required. No active license for the organization.
+  remediation: The organization has no active licence for the requested DaaS IQ capability. Resolve with ControlUp commercially;
+    retrying will not clear it.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#GetProviders
+  - openapi/controlup-daas-iq-openapi.yml#GetAllAuthTypes
+  - openapi/controlup-daas-iq-openapi.yml#GetProviderAuthTypes
+- status: 403
+  title: Forbidden
+  occurrences: 228
+  specs:
+  - controlup-daas-iq-openapi.yml
+  - controlup-desktops-openapi.yml
+  - controlup-dex-alerts-openapi.yml
+  - controlup-dex-events-openapi.yml
+  - controlup-dex-platform-openapi.yml
+  - controlup-vdi-daas-configuration-openapi.yml
+  - controlup-vdi-daas-historical-openapi.yml
+  - controlup-vdi-daas-realtime-metrics-openapi.yml
+  descriptions:
+  - 'Forbidden: Access to this resource is denied'
+  - Authorization details are not provided
+  - Forbidden. User does not have access to this organization.
+  - Forbidden. User does not have view permissions.
+  remediation: The authenticated user lacks the permission for this operation, or the orgId in the path is not an organization
+    the key can reach. Permissions must be assigned directly to the ControlUp user account — permissions inherited through
+    an identity-provider group do not apply to API access.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#GetProviders
+  - openapi/controlup-daas-iq-openapi.yml#GetAllAuthTypes
+  - openapi/controlup-daas-iq-openapi.yml#GetProviderAuthTypes
+- status: 404
+  title: Not Found
+  occurrences: 169
+  specs:
+  - controlup-daas-iq-openapi.yml
+  - controlup-desktops-openapi.yml
+  - controlup-dex-alerts-openapi.yml
+  - controlup-dex-events-openapi.yml
+  - controlup-dex-platform-openapi.yml
+  - controlup-synthetic-monitoring-openapi.yml
+  - controlup-vdi-config-triggers-openapi.yml
+  - controlup-vdi-daas-configuration-openapi.yml
+  descriptions:
+  - 'Not Found: The requested resource could not be found'
+  - Not found. The specified subscription does not exist.
+  - Not found. The specified tenant does not exist.
+  - Not found. Host pool does not exist or does not belong to the organization.
+  remediation: Confirm the resource id and the orgId path parameter. Ids are organization-scoped.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#GetProviderAuthTypes
+  - openapi/controlup-daas-iq-openapi.yml#GetHostPoolCost
+  - openapi/controlup-daas-iq-openapi.yml#GetHostPoolSavings
+- status: 409
+  title: Conflict
+  occurrences: 13
+  specs:
+  - controlup-daas-iq-openapi.yml
+  descriptions:
+  - Conflict. A scaling profile with the same name already exists.
+  - Conflict. The host pool or application group already exists.
+  - Conflict. Ownership claim failed due to concurrent updates, host pool already owned by another organization, or an Azure-level
+    rejection (e.g., disabled subscri
+  - Conflict. Ownership release failed due to concurrent updates, ownership belongs to another organization, or an Azure-level
+    rejection (e.g., disabled subscriptio
+  remediation: A resource with the same name already exists, or a concurrent update won the race. Re-read the resource and
+    retry with fresh state — there is no idempotency key to make the retry safe.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#CreateHostPoolDeployment
+  - openapi/controlup-daas-iq-openapi.yml#SaveHostPoolScalingPolicy
+  - openapi/controlup-daas-iq-openapi.yml#DeleteHostPoolScalingPolicy
+- status: 422
+  title: Unprocessable Entity
+  occurrences: 19
+  specs:
+  - controlup-daas-iq-openapi.yml
+  - controlup-vdi-config-triggers-openapi.yml
+  - controlup-workflows-openapi.yml
+  descriptions:
+  - Validation Error
+  - Unprocessable entity. Cloud provider authentication failed because the stored credentials are invalid or expired.
+  - One or more unknown include keys.
+  remediation: The request parsed but failed validation — commonly an unknown include key, or stored cloud-provider credentials
+    that are invalid or expired.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#DiscoverTenantSubscriptions
+  - openapi/controlup-daas-iq-openapi.yml#DiscoverTenantResources
+  - openapi/controlup-daas-iq-openapi.yml#DiscoverTenantHostPools
+- status: 500
+  title: Internal Server Error
+  occurrences: 249
+  specs:
+  - controlup-daas-iq-openapi.yml
+  - controlup-desktops-openapi.yml
+  - controlup-dex-alerts-openapi.yml
+  - controlup-dex-events-openapi.yml
+  - controlup-dex-platform-openapi.yml
+  - controlup-synthetic-monitoring-openapi.yml
+  - controlup-vdi-daas-configuration-openapi.yml
+  - controlup-vdi-daas-historical-openapi.yml
+  - controlup-vdi-daas-realtime-metrics-openapi.yml
+  descriptions:
+  - Internal server error.
+  - Internal Server Error
+  - Internal server error
+  - Internal server error occurred during verification.
+  remediation: Server-side failure. Retry with backoff; if persistent, open a ticket at support.controlup.com.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#GetProviders
+  - openapi/controlup-daas-iq-openapi.yml#GetAllAuthTypes
+  - openapi/controlup-daas-iq-openapi.yml#GetProviderAuthTypes
+- status: 501
+  title: Not Implemented
+  occurrences: 26
+  specs:
+  - controlup-vdi-daas-historical-openapi.yml
+  descriptions:
+  - Internal Server Error
+  remediation: The requested capability is not implemented on this endpoint.
+  source_operations:
+  - openapi/controlup-vdi-daas-historical-openapi.yml#execute
+  - openapi/controlup-vdi-daas-historical-openapi.yml#getNetscalerUsageWithTimeSeries
+  - openapi/controlup-vdi-daas-historical-openapi.yml#getLoadbalancerUsageWithTimeSeries
+- status: 503
+  title: Service Unavailable
+  occurrences: 146
+  specs:
+  - controlup-daas-iq-openapi.yml
+  descriptions:
+  - Service unavailable. License status could not be verified. Try again later.
+  remediation: Licence status could not be verified. Retry after a delay.
+  source_operations:
+  - openapi/controlup-daas-iq-openapi.yml#GetProviders
+  - openapi/controlup-daas-iq-openapi.yml#GetAllAuthTypes
+  - openapi/controlup-daas-iq-openapi.yml#GetProviderAuthTypes
+- status: 504
+  title: Gateway Timeout
+  occurrences: 26
+  specs:
+  - controlup-vdi-daas-historical-openapi.yml
+  descriptions:
+  - Internal Server Error
+  remediation: Upstream timeout. VDI historical queries can be long-running; narrow the _timeFrom/_timeTo window and remember
+    only 15 requests may be in flight at once.
+  source_operations:
+  - openapi/controlup-vdi-daas-historical-openapi.yml#execute
+  - openapi/controlup-vdi-daas-historical-openapi.yml#getNetscalerUsageWithTimeSeries
+  - openapi/controlup-vdi-daas-historical-openapi.yml#getLoadbalancerUsageWithTimeSeries
+gaps:
+- No stable machine-readable error `code` or `type` field is documented across the estate — clients must branch on HTTP
+  status alone.
+- No RFC 9457 problem+json representation.
+- No published error-code reference page in the ControlUp knowledge base or the ReadMe API hub.

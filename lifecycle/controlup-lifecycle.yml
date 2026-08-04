@@ -1,0 +1,97 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  https://support.controlup.com/docs/controlup-product-version-lifecycle-quick-guide,
+  https://support.controlup.com/docs/service-level-agreement-and-support-definitions,
+  https://support.controlup.com/docs/release-notes,
+  https://status.controlup.com/,
+  https://support.controlup.com/docs/get-support-and-product-status
+versioning:
+  scheme: uri-path
+  note: >-
+    The version segment is part of the path and differs per product surface — /v1 (ControlUp ONE Platform,
+    Workflows, VDI historical), /events/v1 (events and alerts), /daas-iq/v1, /synthetic-monitoring/v2 — while
+    /compliance, /edge/api, /vdi/config and /vdi/realtime carry no version segment at all. The VDI historical API
+    serves /v1 and /v2 NetScaler usage endpoints concurrently, which is the only observed in-place version
+    transition in the estate.
+  current:
+    controlup-one-platform: v1
+    events-and-alerts: v1
+    workflows: v1
+    daas-iq: v1
+    vdi-daas-historical: v1 (v2 for NetScaler usage)
+    synthetic-monitoring: v2
+    compliance: unversioned
+    desktops: unversioned
+    vdi-configuration: unversioned
+  docs: https://api.controlup.io/reference
+deprecation:
+  api_policy_url: null
+  api_policy_published: false
+  sunset_header: false
+  deprecated_operations: []
+  note: >-
+    ControlUp publishes no API-level deprecation policy, declares no `deprecated: true` operation across the twelve
+    definitions, and documents no RFC 8594 Sunset / Deprecation header support. What it does publish is a PRODUCT
+    version lifecycle, recorded below — that governs agent and console software versions, not API contracts.
+product_version_lifecycle:
+  policy_url: https://support.controlup.com/docs/controlup-product-version-lifecycle-quick-guide
+  phases:
+  - phase: General Availability (GA)
+    meaning: Latest stable version with complete feature updates, bug fixes and support.
+  - phase: End of Maintenance (EOM)
+    meaning: Security updates only; no regular bug fixes.
+  - phase: End of Support (EOS)
+    meaning: No technical support or updates. Reached 18 months after the next version's GA date.
+  per_product_policies:
+  - product: ControlUp for Desktops
+    url: https://support.controlup.com/docs/edge-dx-agent-version-lifecycle
+  - product: ControlUp for VDI
+    url: https://support.controlup.com/docs/controlup-version-lifecycle
+  - product: ControlUp On-Premises (COP)
+    url: https://support.controlup.com/docs/controlup-version-lifecycle-on-premises-only
+  caveats:
+  - Applies only to customers who purchased ControlUp software directly.
+  - Covers ControlUp software only, not third-party software or hardware used with it.
+  - ControlUp reserves the right to change the policy without prior notice.
+sla:
+  url: https://support.controlup.com/docs/service-level-agreement-and-support-definitions
+  type: support-response-time
+  uptime_target: null
+  note: >-
+    The published SLA is a support-response commitment, not an availability commitment. No uptime percentage is
+    published on the public documentation surface.
+  severity_levels:
+  - {level: 1 - Urgent, definition: Production or mission-critical system down with no immediate workaround, substantial data at risk, or severe business disruption.}
+  - {level: 2 - High, definition: Major functionality severely impaired; restricted operation with a temporary workaround.}
+  - {level: 3 - Normal, definition: Partial, non-critical loss of functionality.}
+  - {level: 4 - Low, definition: General usage questions and cosmetic or documentation issues.}
+  response_times:
+  - {plan: ControlUp One / Advanced, severity: 1 - Urgent, initial_response: 2 hours, 24x7}
+  - {plan: ControlUp One / Advanced, severity: 2 - High, initial_response: 2 business hours}
+  - {plan: ControlUp One / Advanced, severity: 3 - Normal, initial_response: 4 business hours}
+  - {plan: ControlUp One / Advanced, severity: 4 - Low, initial_response: 8 business hours}
+  - {plan: Essential, severity: 1 - Urgent, initial_response: 2 business hours}
+  - {plan: Essential, severity: 2 - High, initial_response: 4 business hours}
+  - {plan: Essential, severity: 3 - Normal, initial_response: 8 business hours}
+  - {plan: Essential, severity: 4 - Low, initial_response: 12 business hours}
+  - {plan: Enterprise Plan Addon, severity: all, initial_response: 2 hours 24x7}
+  business_hours: 06:00-00:00 UTC, Monday to Friday
+  support_channels:
+  - {channel: web, detail: 'support.controlup.com > Submit a Ticket (preferred)'}
+  - {channel: console, detail: ControlUp application console, Help tab}
+  - {channel: email, detail: support@controlup.com (subject "Severity1" for urgent tickets)}
+status_page:
+  url: https://status.controlup.com/
+  provider: Atlassian Statuspage
+  page_id: 30hzyhzp2pjy
+  machine_readable: https://status.controlup.com/api/v2/summary.json
+  components_note: Component set is regional (US, EU and other regions per product), grouped by product.
+  probe: {fetched: '2026-08-04', http_status: 200}
+changelog:
+  url: https://support.controlup.com/docs/release-notes
+  cadence: monthly
+  see: changelog/controlup-changelog.yml
+roadmap:
+  url: https://support.controlup.com/docs/submit-and-vote-on-feature-requests
+  type: public feature-request and voting portal
