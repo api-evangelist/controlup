@@ -1,0 +1,162 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Onboarding API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Onboarding",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List onboarding flows",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/onboarding",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a summary of every onboarding flow for the signed-in user, with each flow's progress and dismissal state.\nScoped to the current user rather than the organization, and summaries only — per-step detail is not included."
+        },
+        {
+          "info": {
+            "name": "Get onboarding flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/onboarding/:flowKey",
+            "params": [
+              {
+                "name": "flowKey",
+                "value": "",
+                "type": "path",
+                "description": "Onboarding flow slug."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one onboarding flow for the signed-in user, identified by its slug, including per-step state and the currently active step.\nExpands the step detail that the flow summaries omit."
+        },
+        {
+          "info": {
+            "name": "Update onboarding flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/daas-iq/v1/onboarding/:flowKey",
+            "params": [
+              {
+                "name": "flowKey",
+                "value": "",
+                "type": "path",
+                "description": "Onboarding flow slug."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Changes flow-level state for the signed-in user: how the flow is displayed, and which step is active.\nMoves the pointer between steps; it does not change whether any individual step is complete."
+        },
+        {
+          "info": {
+            "name": "Start onboarding flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/onboarding/:flowKey/start",
+            "params": [
+              {
+                "name": "flowKey",
+                "value": "",
+                "type": "path",
+                "description": "Onboarding flow slug."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Marks a flow as begun for the signed-in user and returns it with its steps initialised.\nOpens the flow; recording progress within it and closing it are separate operations."
+        },
+        {
+          "info": {
+            "name": "Update onboarding step",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.controlup.com/daas-iq/v1/onboarding/:flowKey/steps/:stepKey",
+            "params": [
+              {
+                "name": "flowKey",
+                "value": "",
+                "type": "path",
+                "description": "Onboarding flow slug."
+              },
+              {
+                "name": "stepKey",
+                "value": "",
+                "type": "path",
+                "description": "Onboarding step key."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Sets the completion state of one named step and returns the whole flow with that step updated.\nThe only way to mark a step done; flow-level updates change the active step but never its state."
+        },
+        {
+          "info": {
+            "name": "Dismiss onboarding flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/onboarding/:flowKey/dismiss",
+            "params": [
+              {
+                "name": "flowKey",
+                "value": "",
+                "type": "path",
+                "description": "Onboarding flow slug."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Hides the flow for the signed-in user who chose to skip it, leaving step progress untouched.\nReflects the user opting out rather than finishing: dismissing does not complete the remaining steps."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

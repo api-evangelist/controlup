@@ -1,0 +1,261 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Features API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Features
+paths:
+  /features:
+    get:
+      tags:
+      - Features
+      summary: Get all features
+      description: 'Returns every feature flag with its enabled state for the caller''s organization, as a map of name to boolean.
+
+        Rollout toggles, not entitlements: a flag being on says the functionality is switched on for the organization,
+
+        not that its license permits or has capacity for it.'
+      responses:
+        '200':
+          description: Successfully retrieved all features and their status.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+              example:
+                advanced_analytics: true
+                edge_deployment: true
+                custom_reports: false
+                multi_cloud_support: true
+                real_time_monitoring: false
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /features/{feature}:
+    get:
+      tags:
+      - Features
+      summary: Get a feature status
+      description: 'Returns the enabled state of one named feature flag, for callers that already know which flag they care
+
+        about and want a single answer rather than the whole map. Names are case-sensitive.'
+      parameters:
+      - name: feature
+        in: path
+        description: The name of the feature to check (case-sensitive).
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved the feature status.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+              example:
+                advanced_analytics: true
+        '400':
+          description: Bad request. Feature name is null or empty.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified feature does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

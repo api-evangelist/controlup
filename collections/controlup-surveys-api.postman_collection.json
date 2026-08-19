@@ -1,0 +1,1620 @@
+{
+  "item": [
+    {
+      "id": "225cdba3-522b-4119-be32-76f8977eb06f",
+      "name": "Surveys",
+      "description": {
+        "content": "These endpoints are for interacting with Employee Sentiment surveys.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b82b64d2-83f2-40d9-8e36-dfe3dd3b5af3",
+          "name": "List all surveys",
+          "request": {
+            "name": "List all surveys",
+            "description": {
+              "content": "Returns a list of all surveys. You can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your surveys.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "surveys"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "size",
+                  "value": "10000",
+                  "description": "The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page returned. The number of rows per page is set with the `size` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][field]",
+                  "value": "<string>",
+                  "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][type]",
+                  "value": "<string>",
+                  "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][value]",
+                  "value": "<string>",
+                  "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][field]",
+                  "value": "<string>",
+                  "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][dir]",
+                  "value": "<string>",
+                  "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f91cb00a-65d1-4e10-8025-6ca18ceb78ec",
+              "name": "A list of surveys",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a5fe96f4-d14c-4c1a-a78a-665c51b3862c",
+          "name": "Publish a survey",
+          "request": {
+            "name": "Publish a survey",
+            "description": {
+              "content": "Publishes a new survey.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "surveys"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dates_type\": \"<string>\",\n  \"expiration_date\": \"<string>\",\n  \"name\": \"<string>\",\n  \"retries_interval\": \"<integer>\",\n  \"start_date\": \"<string>\",\n  \"status\": \"<string>\",\n  \"targeting_type\": \"<string>\",\n  \"template_id\": \"<string>\",\n  \"type\": \"<string>\",\n  \"once_per_user\": false,\n  \"targets_percentage\": 100,\n  \"included_users\": {\n    \"all\": \"<boolean>\",\n    \"directory_services_groups\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"included_devices\": {\n    \"all\": \"<boolean>\",\n    \"directory_service_groups\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"devices\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"groups\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"tags\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"excluded_devices\": {\n    \"directory_services_groups\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"devices\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"groups\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"tags\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"excluded_users\": {\n    \"directory_services_groups\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"is_identified\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "380ab69c-479d-4645-92e0-e4da9d1af513",
+              "name": "Survey created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"dates_type\": \"<string>\",\n  \"expiration_date\": \"2023-11-30T05:00:00.000Z\",\n  \"name\": \"<string>\",\n  \"retries_interval\": \"<integer>\",\n  \"start_date\": \"2023-11-01T04:00:00.000Z\",\n  \"status\": \"<string>\",\n  \"targeting_type\": \"<string>\",\n  \"template_id\": \"<string>\",\n  \"type\": \"<string>\",\n  \"once_per_user\": false,\n  \"targets_percentage\": 100,\n  \"included_users\": {\n    \"all\": \"<boolean>\",\n    \"directory_services_groups\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"included_devices\": {\n    \"all\": \"<boolean>\",\n    \"directory_service_groups\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"devices\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"groups\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"tags\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"excluded_devices\": {\n    \"directory_services_groups\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"devices\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"groups\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"tags\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"excluded_users\": {\n    \"directory_services_groups\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"is_identified\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2431fffd-bbc1-4816-9cb8-c94573d0359f",
+          "name": "Get a survey",
+          "request": {
+            "name": "Get a survey",
+            "description": {
+              "content": "Returns the details of the specified survey.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "surveys",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The ID of the survey to retrieve."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ef1837d6-f7b6-4374-ab44-30378dd24743",
+              "name": "Survey details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The ID of the survey to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "90d62f3a-7f61-4aca-80b8-34465f4661f5",
+          "name": "Delete a survey",
+          "request": {
+            "name": "Delete a survey",
+            "description": {
+              "content": "Deletes a survey",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "surveys",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) ID of the survey to delete."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3bb0332c-3962-4317-8a69-f568cc16e4e1",
+              "name": "Survey successfully deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e6969dfd-8f15-4571-8007-42aca9988e31",
+              "name": "Specified survey doesn't exist",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "75c431ce-2453-41b2-97a6-83bed31baf53",
+              "name": "Something went wrong at the API service.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f7dcb5f6-bdb2-4fd0-b3bc-507bd404d79e",
+          "name": "Pause a survey",
+          "request": {
+            "name": "Pause a survey",
+            "description": {
+              "content": "Pauses a survey",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "surveys",
+                ":id",
+                "pause"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) ID of the survey to pause."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "138bd0cd-0376-449a-8d95-559f03dd53f4",
+              "name": "Survey successfully paused",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to pause."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "029256fb-ba26-4747-92e8-53b661d23d01",
+              "name": "Survey can't be paused because it isn't active",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to pause."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4c4f52bb-a29b-43ce-9a3d-a967ed837891",
+              "name": "Specified survey doesn't exist",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to pause."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "308a206d-a861-493e-8a89-88254ca6ffe9",
+          "name": "Resume a survey",
+          "request": {
+            "name": "Resume a survey",
+            "description": {
+              "content": "Resume a paused survey",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "surveys",
+                ":id",
+                "resume"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) ID of the survey to resume."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "676ae1b1-f630-4c58-901c-9595e51f4f4c",
+              "name": "Survey resumed successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "resume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to resume."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "203bf0c1-923b-42d3-94cf-1325f8599997",
+              "name": "Survey can't be resumed because it wasn't paused",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "resume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to resume."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9ed45fbf-4122-4a78-937c-2bbbf76ff41c",
+              "name": "Specified survey doesn't exist",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "resume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to resume."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c4dc1117-eb7a-4c32-b875-bfeecfa058b8",
+          "name": "Complete a survey",
+          "request": {
+            "name": "Complete a survey",
+            "description": {
+              "content": "Completes a survey",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "surveys",
+                ":id",
+                "complete"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) ID of the survey to complete."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b2f77e25-b2f2-4ef6-b4ce-3d7a862e50e5",
+              "name": "Survey succesfully completed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "complete"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to complete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2a04a675-499e-4d4c-9157-b06b1af0d995",
+              "name": "Survey can't be completed because it isn't active",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "complete"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to complete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0dce66d4-a7d5-48fa-8037-c1763e4a482b",
+              "name": "Specified survey doesn't exist",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "surveys",
+                    ":id",
+                    "complete"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the survey to complete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4ffdf064-263b-447e-8447-e06bb6017b43",
+          "name": "Get survey results",
+          "request": {
+            "name": "Get survey results",
+            "description": {
+              "content": "Returns one row for each time a survey was opened, started, or completed. Optionally, use the `include_answers` parameter to also return survey answers.\n\nIf you are interested only in returning survey completions (results), you should add a filter to return only rows with `type=Result`. While you can use this endpoint to view all answers in a survey result, you can't query the endpoint based on the answers. To query survey answers, you can use GET [/user-sentiment/results/answers/raw](get-survey-answers).\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your survey results.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "results"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "include_answers",
+                  "value": "false",
+                  "description": "Sets whether to return the answers to each survey question."
+                },
+                {
+                  "disabled": false,
+                  "key": "size",
+                  "value": "10000",
+                  "description": "The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page returned. The number of rows per page is set with the `size` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][field]",
+                  "value": "<string>",
+                  "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][type]",
+                  "value": "<string>",
+                  "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][value]",
+                  "value": "<string>",
+                  "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][field]",
+                  "value": "<string>",
+                  "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][dir]",
+                  "value": "<string>",
+                  "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bef3d7ff-b3d9-4c66-97d8-5ebaf2d4ab97",
+              "name": "A list of surveys responses",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "results"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include_answers",
+                      "value": "false"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"links\": {\n    \"survey\": \"string\",\n    \"survey-results\": \"string\"\n  },\n  \"id\": \"string\",\n  \"created\": \"1993-12-31T07:39:39.751Z\",\n  \"updated\": \"1978-10-11T03:08:57.901Z\",\n  \"type\": \"string\",\n  \"date\": \"1973-10-05T12:47:10.063Z\",\n  \"survey_id\": \"string\",\n  \"survey_dates_type\": \"string\",\n  \"category\": \"string\",\n  \"instance_id\": \"string\",\n  \"device_tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"device_groups\": [\n    \"string\",\n    \"string\"\n  ],\n  \"device_ds_groups\": [\n    \"string\",\n    \"string\"\n  ],\n  \"user_ds_groups\": [\n    \"string\",\n    \"string\"\n  ],\n  \"started_at\": \"2001-08-15T21:45:27.032Z\",\n  \"completed_at\": \"1974-09-13T18:39:20.022Z\",\n  \"time_taken\": 8467,\n  \"answers\": [\n    {\n      \"type\": \"string\",\n      \"question_id\": \"4fda2203-08eb-d9c6-b96b-a054d5cbd937\",\n      \"time_taken\": 8292,\n      \"selection\": \"string\",\n      \"score\": 9593,\n      \"is_global\": false,\n      \"text\": \"string\"\n    },\n    {\n      \"type\": \"string\",\n      \"question_id\": \"b270d2cd-e71e-434f-ba81-161dde8b7fac\",\n      \"time_taken\": 4807,\n      \"selection\": \"string\",\n      \"score\": 3913,\n      \"is_global\": false,\n      \"text\": \"string\"\n    }\n  ],\n  \"score\": 6927.276998902543,\n  \"score_raw\": 2187.374872111766\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9ad52cfd-da49-4f59-a22a-9e948730e268",
+              "name": "Something went wrong at the API service.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "results"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include_answers",
+                      "value": "false"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4b08cc5f-1c45-4be8-86e7-ffd810d8167f",
+          "name": "Get survey answers",
+          "request": {
+            "name": "Get survey answers",
+            "description": {
+              "content": "Returns a list of all answers to survey questions.\n\nEach row represents one answer to a survey question per user per device.\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your survey results.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "user-sentiment",
+                "results",
+                "answers",
+                "raw"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "size",
+                  "value": "10000",
+                  "description": "The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page returned. The number of rows per page is set with the `size` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][field]",
+                  "value": "<string>",
+                  "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][type]",
+                  "value": "<string>",
+                  "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][value]",
+                  "value": "<string>",
+                  "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][field]",
+                  "value": "<string>",
+                  "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][dir]",
+                  "value": "<string>",
+                  "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c8a2b6e2-4d7e-42f4-bb6d-b4d4e6fdb113",
+              "name": "A list of surveys answers",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "results",
+                    "answers",
+                    "raw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"links\": {\n    \"survey\": \"https://FgCnqBIonyHypXRVWplAgXAdeMJG.pxsnI\",\n    \"survey-results\": \"http://HkvLOqYscdI.mmKLr8anIQpizB-Ro5-0\"\n  },\n  \"created\": \"1957-05-19T10:04:56.203Z\",\n  \"updated\": \"1949-03-04T18:15:28.760Z\",\n  \"date\": \"1956-05-21T20:29:38.965Z\",\n  \"survey_id\": \"string\",\n  \"survey_version\": \"string\",\n  \"survey_type\": \"string\",\n  \"survey_start_date\": \"2024-07-30T22:58:21.045Z\",\n  \"survey_dates_type\": \"string\",\n  \"is_identified\": true,\n  \"category\": \"string\",\n  \"instance_id\": \"string\",\n  \"result_id\": \"string\",\n  \"device_id\": \"string\",\n  \"device_name\": \"string\",\n  \"device_tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"device_groups\": [\n    \"string\",\n    \"string\"\n  ],\n  \"device_ds_groups\": [\n    \"string\",\n    \"string\"\n  ],\n  \"upn\": \"string\",\n  \"username\": \"string\",\n  \"user\": \"string\",\n  \"user_ds_groups\": [\n    \"string\",\n    \"string\"\n  ],\n  \"result_started_at\": \"2010-08-11T12:39:17.352Z\",\n  \"result_completed_at\": \"1950-12-16T20:35:00.976Z\",\n  \"type\": \"string\",\n  \"question_id\": \"df0b845f-9f3f-45b4-b74a-6cdc64ed945c\",\n  \"time_taken\": 936,\n  \"selection\": \"7ad599a3-a233-b086-d34a-73665c768930\",\n  \"text\": \"string\",\n  \"is_global\": false,\n  \"_id\": \"string\",\n  \"_score\": 6878\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "245f1aec-afd3-470c-a3bb-f47facc3518e",
+              "name": "Something went wrong at the API service.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "user-sentiment",
+                    "results",
+                    "answers",
+                    "raw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "fee5a411-7723-4489-9548-68557231244b",
+    "name": "ControlUp for Desktops Surveys API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves.",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Scaling profiles API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Scaling profiles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get scaling profiles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/scaling-profiles",
+            "params": [
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncolor, description, elasticScalingMode, id, name, provisioningMode\n\nDefault when omitted: name:asc."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter expression for filtering results.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\ncolor, description, elasticScalingMode, id, name, provisioningMode"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns every scaling profile in the organization — reusable autoscale configurations that a host pool's weekly schedule assigns to time blocks.\nProfiles are organization-wide and not bound to any pool, so this does not say where a profile is used.\nFilterable and sortable on Id, Name, Description, Color."
+        },
+        {
+          "info": {
+            "name": "Create a scaling profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/scaling-profiles",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new scaling profile with the specified configuration."
+        },
+        {
+          "info": {
+            "name": "Get a scaling profile by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/scaling-profiles/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique scaling profile identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one scaling profile with its complete nested configuration, including thresholds and host count rules.\nReturns the definition only — it does not say which host pools use the profile or whether it is currently active."
+        },
+        {
+          "info": {
+            "name": "Update a scaling profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/scaling-profiles/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique scaling profile identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates an existing scaling profile with the specified configuration."
+        },
+        {
+          "info": {
+            "name": "Delete a scaling profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/scaling-profiles/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique scaling profile identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes a scaling profile. Cannot delete profiles that are currently in use by schedules."
+        },
+        {
+          "info": {
+            "name": "Update scaling profile color",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/scaling-profiles/:id/color",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique scaling profile identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates the display color of a scaling profile."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

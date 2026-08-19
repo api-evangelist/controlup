@@ -1,0 +1,1699 @@
+openapi: 3.2.0
+info:
+  title: Dex Roles API
+  version: 1.0.0
+  description: Dex API Description
+  contact: {}
+servers:
+- url: https://api.controlup.com/v1
+tags:
+- name: Roles
+paths:
+  /organizations/{orgId}/roles:
+    get:
+      operationId: OrgRolesPublicController_getAll
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllRolesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Returns a list of all roles.
+      summary: List all roles
+      tags:
+      - Roles
+      security:
+      - apiKey: []
+      parameters:
+      - description: 'The page of results to return.
+
+          The first page is page number 1.'
+        in: query
+        name: _page
+        required: false
+        schema:
+          default: '1'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 1
+        style: form
+      - description: The number of results returned per page.
+        in: query
+        name: _limit
+        required: false
+        schema:
+          default: '10'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 10
+        style: form
+      - description: Sorts results according to the specified field.
+        in: query
+        name: _sortBy
+        required: false
+        schema:
+          default: id
+          type: string
+          enum:
+          - description
+          - id
+          - createdAt
+          - updatedAt
+          - name
+          - isDefault
+          - childOrganizationIds
+        example: id
+        style: form
+      - description: The sort order (ascending / descending) of the field specified by the `_sortBy` parameter.
+        in: query
+        name: _order
+        required: false
+        schema:
+          default: asc
+          type: string
+          enum:
+          - asc
+          - desc
+        example: asc
+        style: form
+      - description: 'A search filter that is applied to all fields.
+
+          Only results that contain the specified string are returned.'
+        in: query
+        name: _search
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The format of returned results.
+        in: query
+        name: _format
+        required: false
+        schema:
+          default: json
+          type: string
+          enum:
+          - json
+          - xml
+          - csv
+        example: json
+        style: form
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: 'Filter roles by a specific tenant manager child organization ID.
+
+          Returns roles that apply to this child organization (either roles with no specific child organizations, or roles that include this child organization).'
+        in: query
+        name: childOrganizationId
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: A search filter on the `isDefault` field.
+        in: query
+        name: isDefault
+        required: false
+        schema:
+          type: array
+          items:
+            type: boolean
+        style: form
+      - description: A search filter on the `description` field.
+        in: query
+        name: description
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `name` field.
+        in: query
+        name: name
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `id` field.
+        in: query
+        name: id
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+    post:
+      operationId: OrgRolesPublicController_create
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoleResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Creates a new role.
+      summary: Create a role
+      tags:
+      - Roles
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleToCreate'
+  /organizations/{orgId}/roles/{id}:
+    get:
+      operationId: OrgRolesPublicController_getOneById
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRoleResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Returns the details for a role, including the permissions within the role and the users to which the role is assigned.
+      summary: Retrieve a role
+      tags:
+      - Roles
+      security:
+      - apiKey: []
+      parameters:
+      - description: The format of returned results.
+        in: query
+        name: _format
+        required: false
+        schema:
+          default: json
+          type: string
+          enum:
+          - json
+          - xml
+          - csv
+        example: json
+        style: form
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: 'ID of the role to retrieve. You can use [GET /roles](orgrolespubliccontroller_getall) to see the ID of each role.
+
+
+          Default role IDs:
+
+          * Admin - 1
+
+          * Editor - 2
+
+          * Viewer - 3
+
+          * No Permissions - 4
+
+          * VDI and DaaS Admins - 5
+
+          * Access Real-Time DX Console - 6'
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/PositiveInteger'
+    patch:
+      operationId: OrgRolesPublicController_update
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoleResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Updates an existing role by its ID.
+      summary: Update a role
+      tags:
+      - Roles
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: ID of the role to update. You can use [GET /roles](orgrolespubliccontroller_getall) to see the ID of each role.
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/PositiveInteger'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleToUpdate'
+    delete:
+      operationId: OrgRolesPublicController_delete
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_DeletedActionResponse_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: 'Deletes a role.
+
+        If you delete a role, then the role is removed from any users/groups that are assigned the role.'
+      summary: Delete a role
+      tags:
+      - Roles
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: ID of the role to delete. You can use [GET /roles](orgrolespubliccontroller_getall) to see the ID of each role.
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/PositiveInteger'
+components:
+  schemas:
+    DeletedActionResponse:
+      properties:
+        affectedRows:
+          type: number
+          format: double
+      required:
+      - affectedRows
+      type: object
+    RoleWithData:
+      allOf:
+      - $ref: '#/components/schemas/RolePublic'
+      - properties:
+          usersIds:
+            items:
+              $ref: '#/components/schemas/UUID'
+            type: array
+            description: IDs of users who are assigned the role.
+          groupsIds:
+            items:
+              $ref: '#/components/schemas/UUID'
+            type: array
+            description: IDs of IDP groups that are assigned the role.
+          permissions:
+            items:
+              $ref: '#/components/schemas/RolePermissions'
+            type: array
+            description: A list of all permissions in the role, organized by the top-level permission category.
+        required:
+        - usersIds
+        - groupsIds
+        - permissions
+        type: object
+    API_KEYS:
+      enum:
+      - manage_api_keys
+      - vdi_daas_host_get_metrics_per_folder
+      - vdi_daas_host_get_host_counts
+      - vdi_daas_user_get_user_activity_status
+      - vdi_daas_netscaler_get_netscaler_metrics
+      - vdi_daas_netscaler_get_loadbalancer_metrics
+      - vdi_daas_netscaler_get_gateway_metrics
+      - vdi_daas_machine_get_machine_statistics
+      - vdi_daas_machine_get_virtual_environments_sizing_recommendations
+      - vdi_daas_machine_get_azure_environment_sizing_recommendations
+      - vdi_daas_session_get_session_statistics
+      - vdi_daas_apps_get_app_usage_details
+      - vdi_daas_apps_get_all_apps_usage_details
+      - vdi_daas_apps_get_app_statistics
+      - access_dex_settings
+      type: string
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    APIPaginatedResponse_RolePublic-Array_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_RolePublic-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
+        type: object
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    employees:
+      items:
+        $ref: '#/components/schemas/EMPLOYEES'
+      type: array
+      description: The "Employees" permission category.
+    workflow:
+      items:
+        $ref: '#/components/schemas/WORKFLOW'
+      type: array
+      description: The "Workflows" permission category.
+    EMPLOYEES:
+      enum:
+      - access_app_group_ai
+      - access_employees
+      - manage_experience_score_rules
+      - view_experience_score_rules
+      type: string
+    CUSTOMER_SUCCESS_HUB:
+      enum:
+      - usage_and_analytics
+      - my_success_hub
+      type: string
+    GetRoleResponse:
+      $ref: '#/components/schemas/APIResponse_RoleWithData_'
+      example:
+        id: 1
+        name: Admin
+        description: null
+        isDefault: true
+        usersIds:
+        - d1cb6131-7361-4e39-84c7-049e06921a18
+        - 775448cf-4f16-472d-904a-2983c10b380e
+        groupsIds:
+        - 69cdd6bc-e81f-4c0e-8f21-a8f35ce4763c
+        - 991419b2-cd58-408c-a5e4-4675916941d5
+        permissions:
+        - permissionTreeName: dex_access_control
+          selectedPermissions:
+          - id: view_settings
+            scopes:
+            - type: device_groups
+              values:
+              - All Devices
+            - type: device_tags
+              values:
+              - All Devices
+          - id: manage_users
+            scopes:
+            - type: device_groups
+              values:
+              - All Devices
+            - type: device_tags
+              values:
+              - All Devices
+          - id: manage_roles
+            scopes:
+            - type: device_groups
+              values:
+              - All Devices
+            - type: device_tags
+              values:
+              - All Devices
+          - id: manage_sso_access
+            scopes:
+            - type: device_groups
+              values:
+              - All Devices
+            - type: device_tags
+              values:
+              - All Devices
+    Scope:
+      properties:
+        type:
+          type: string
+          description: The method of targeting devices for the permission scope.
+        values:
+          items:
+            type: string
+          type: array
+          description: The values of the permission scope targets.
+      required:
+      - values
+      - type
+      type: object
+    NonEmptyString:
+      type: string
+      minLength: 1
+    api_keys:
+      items:
+        $ref: '#/components/schemas/API_KEYS'
+      type: array
+      description: The "API keys" permission category.
+    app_dx:
+      items:
+        $ref: '#/components/schemas/APP_DX'
+      type: array
+      description: The "ControlUp for Apps" permission category.
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    REPORTS:
+      enum:
+      - environment_assessment
+      - sizing_recommendations
+      - session_count
+      - session_activity
+      - logon_duration
+      - protocol_trends
+      - machine_trends
+      - machine_statistics
+      - host_trends
+      - host_statistics
+      - top_windows_errors
+      - netscaler
+      - load_balancing
+      - gateway
+      - citrix_license_usage
+      - app_statistics
+      - app_usage_details
+      - app_trends
+      - published_apps
+      - personal_automated_reports
+      - all_automated_reports
+      - cost_saving_reports
+      type: string
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+    REMEDIATION_FLOW:
+      enum:
+      - manage_remediation_flow_mappings
+      - view_remediation_flow_mappings
+      type: string
+    edge_unified_communications_and_collaboration:
+      items:
+        $ref: '#/components/schemas/EDGE_UNIFIED_COMMUNICATIONS_AND_COLLABORATION'
+      type: array
+      description: The "Unified Communications and Collaboration" permission category.
+    SECURITY_RISK_MANAGEMENT:
+      enum:
+      - sdx_overview
+      - sdx_devices_remediate
+      - sdx_devices_scan
+      - sdx_devices_view_devices_page
+      - sdx_devices_view_drill_down_device_page
+      - sdx_issues_remediate
+      - sdx_issues_view_issues_page
+      - sdx_issues_view_drill_down_issue_page
+      - sdx_templates_view_page
+      - sdx_templates_view_drill_down_page
+      - sdx_templates_create
+      - sdx_templates_edit
+      - sdx_templates_delete
+      - sdx_templates_disable
+      - sdx_templates_scan_categories_misconfig
+      - sdx_templates_scan_categories_compliance
+      - sdx_templates_scan_categories_vulnerabilities
+      - sdx_templates_scan_categories_patches
+      - sdx_templates_remediation_categories_misconfig
+      - sdx_templates_remediation_categories_compliance
+      - sdx_templates_remediation_categories_vulnerabilities
+      - sdx_templates_remediation_categories_patches
+      - sdx_apps_remediate
+      - sdx_apps_view_page
+      - sdx_apps_view_drill_down_page
+      - sdx_jobs_view_page
+      - sdx_jobs_view_drill_down_page
+      - sdx_users_view_page
+      - sdx_users_view_drill_down_page
+      - sdx_settings_manage_devices
+      - sdx_settings_license_information
+      - sdx_settings_manage_agent
+      - sdx_settings_manage_custom_issues
+      - sdx_settings_manage_identity_risk
+      type: string
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    ENRICH:
+      enum:
+      - manage_sites
+      type: string
+    PositiveInteger:
+      type: integer
+      format: int32
+      minimum: 1
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    vdi_and_daas:
+      items:
+        $ref: '#/components/schemas/VDI_AND_DAAS'
+      type: array
+      description: The "VDI & DaaS" permission category.
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    CUSTOM_DASHBOARDS:
+      enum:
+      - view_custom_dashboards
+      - edit_custom_dashboards
+      - edit_organizational_dashboards
+      - view_dashboard_gallery
+      type: string
+    INCIDENTS:
+      enum:
+      - incidents_view_desktop_events
+      - incidents_view_vdi_events
+      - incidents_view_synthetic_events
+      - incidents_edit_desktop_events
+      - incidents_edit_vdi_events
+      - incidents_edit_synthetic_events
+      - incidents_view_desktop_alerts_configuration
+      - incidents_edit_desktop_alerts_configuration
+      type: string
+    VDI_AND_DAAS:
+      enum:
+      - overview_utilization
+      - details_utilization
+      - access_rtdx_console
+      type: string
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    EDGE_ASSET_LIBRARY:
+      enum:
+      - pc_upload_edit_view_delete_from_asset_library
+      type: string
+    Permission:
+      properties:
+        id:
+          type: string
+          description: The name of the permission.
+        scopes:
+          items:
+            $ref: '#/components/schemas/Scope'
+          type: array
+          description: The device targets for the permission. A permission applies to a device only if the device is within one of the permission scopes.
+      required:
+      - scopes
+      - id
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    PaginatedResponseMetadata:
+      properties:
+        total:
+          type: number
+          format: double
+          description: The total number of results across all pages.
+        limitPerPage:
+          type: number
+          format: double
+          description: The maximum number of results returned per page (set by the `_limit` parameter).
+        currentPageNumber:
+          type: number
+          format: double
+          description: The page of result returned (set by the `_page` parameter).
+        currentPageSize:
+          type: number
+          format: double
+          description: The number of results on the current page.
+        remaining:
+          type: number
+          format: double
+          description: The total number of results on all pages higher than the current page.
+      required:
+      - remaining
+      - currentPageSize
+      - currentPageNumber
+      - limitPerPage
+      - total
+      type: object
+      example:
+        total: 18
+        limitPerPage: 10
+        currentPageNumber: 1
+        currentPageSize: 10
+        remaining: 8
+    sb_monitoring:
+      items:
+        $ref: '#/components/schemas/SB_MONITORING'
+      type: array
+      description: The "Synthetic testing" permission category.
+    enrich:
+      items:
+        $ref: '#/components/schemas/ENRICH'
+      type: array
+      description: The "Enrich" permission category.
+    CHATBOT:
+      enum:
+      - access_chatbot
+      type: string
+    edge_asset_library:
+      items:
+        $ref: '#/components/schemas/EDGE_ASSET_LIBRARY'
+      type: array
+      description: The "Media Library" permission category.
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    EDGE_DEVICES:
+      enum:
+      - pc_run_a_command
+      - pc_send_message
+      - pc_power_actions
+      - pc_terminate_a_process
+      - pr_run_level_0_script
+      - pr_run_level_1_script
+      - pr_run_level_2_script
+      - pr_run_level_3_script
+      - pr_run_level_4_script
+      - pr_run_level_5_script
+      - pc_set_device_group
+      - pc_set_device_tags
+      - pc_configure_agent_settings
+      - pc_delete_devices
+      - pr_allow_remote_shell_connections
+      - pr_disable_audit_of_admin_commands
+      - pr_allow_remote_control_connections
+      - pr_rc_file_transfer
+      - pr_rc_elevated_cmd
+      - pc_view_only
+      - pc_allow_to_not_require_user_consent
+      - pr_rc_invite_viewers
+      - pr_allow_um_remote_control_connections
+      - pr_allow_um_rc_file_transfer
+      - pr_view_non_security_events
+      - pr_view_security_events
+      - pr_create_delete_and_change_alerts
+      - pr_view_and_configure_servicenow_incidents
+      - pr_view_scripts
+      - pr_create_delete_and_change_scripts
+      - pr_view_index_data
+      - pr_read_indexes
+      - pr_delete_indexes
+      - pr_prune_data
+      - pr_view_custom_reports
+      - pr_create_edit_and_delete_custom_reports
+      - pr_publish_reports
+      - pr_create_edit_and_delete_filter_presets
+      - pr_publish_filter_presets
+      - pr_export_csv
+      - pr_change_production_agent_versions
+      - pr_configure_agent_intervals
+      - pr_configure_agent_feature_settings
+      - pr_configure_auto_deletion_of_old_devices
+      - pr_change_custom_settings
+      - pr_change_device_dashboards_settings
+      - pr_configure_user_activity_collection
+      - pr_enable_user-level_data_collection
+      - pr_change_extended_settings
+      - pr_configure_network_latency_targets
+      - pr_configure_servicenow_connector
+      - pr_configure_google_cloud_api_connector
+      - pr_configure_sustainability_integration_settings
+      - pr_license_assignment
+      - pr_view_agent_download_page
+      - pr_configure_remote_control
+      - pr_configure_remote_control_settings
+      - pc_view_reports_with_private_information
+      - pc_view_user_activity_report_for_all_devices
+      - pc_view_ssid_and_mac
+      - pr_performance
+      - pr_access_processes
+      - pr_end_process
+      - pr_view_network_traffic
+      - pr_view_map
+      - pr_storage
+      - pr_view_user_files
+      - pr_view_user_folders
+      - pr_modify_user_files
+      - pr_modify_user_folders
+      - pr_create_user_files
+      - pr_create_user_folders
+      - pr_delete_user_files
+      - pr_delete_user_folders
+      - pr_download_user_files
+      - pr_upload_user_files
+      - pr_view_system_files
+      - pr_view_system_folders
+      - pr_modify_system_files
+      - pr_modify_system_folders
+      - pr_create_system_files
+      - pr_create_system_folders
+      - pr_delete_system_files
+      - pr_delete_system_folders
+      - pr_download_system_files
+      - pr_upload_system_files
+      - pr_view_system_hives
+      - pr_modify_system_hives
+      - pr_import_system_registry
+      - pr_export_system_registry
+      - pr_view_user_hives
+      - pr_modify_user_hives
+      - pr_import_user_registry
+      - pr_export_user_registry
+      - pr_view_device_location
+      type: string
+    APIResponse_DeletedActionResponse_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/DeletedActionResponse'
+      required:
+      - data
+      type: object
+    CreateRoleResponse:
+      $ref: '#/components/schemas/APIResponse_RoleWithData_'
+      example:
+        id: 1
+        name: Admin
+        description: null
+        isDefault: true
+        usersIds:
+        - d1cb6131-7361-4e39-84c7-049e06921a18
+        - 775448cf-4f16-472d-904a-2983c10b380e
+        groupsIds:
+        - 69cdd6bc-e81f-4c0e-8f21-a8f35ce4763c
+        - 991419b2-cd58-408c-a5e4-4675916941d5
+        permissions:
+        - permissionTreeName: dex_access_control
+          selectedPermissions:
+          - id: view_settings
+            scopes:
+            - type: device_groups
+              values:
+              - All Devices
+            - type: device_tags
+              values:
+              - All Devices
+          - id: manage_users
+            scopes:
+            - type: device_groups
+              values:
+              - All Devices
+            - type: device_tags
+              values:
+              - All Devices
+          - id: manage_roles
+            scopes:
+            - type: device_groups
+              values:
+              - All Devices
+            - type: device_tags
+              values:
+              - All Devices
+          - id: manage_sso_access
+            scopes:
+            - type: device_groups
+              values:
+              - All Devices
+            - type: device_tags
+              values:
+              - All Devices
+    GetAllRolesResponse:
+      $ref: '#/components/schemas/APIPaginatedResponse_RolePublic-Array_'
+      example:
+        metadata:
+          total: 7
+          limitPerPage: 3
+          currentPageNumber: 1
+          currentPageSize: 3
+          remaining: 4
+        data:
+        - id: 1
+          name: Admin
+          description: null
+          isDefault: true
+          createdAt: '2024-08-01T13:09:41.640Z'
+          updatedAt: '2024-08-01T13:09:41.640Z'
+        - id: 2
+          name: Editor
+          description: null
+          isDefault: true
+          createdAt: '2024-08-01T13:09:41.640Z'
+          updatedAt: '2024-08-01T13:09:41.640Z'
+        - id: 709
+          name: Help Desk
+          description: Role for Help desk employees
+          isDefault: false
+          childOrganizationIds:
+          - 12345678-1234-1234-1234-123456789012
+          createdAt: '2024-08-01T13:09:41.640Z'
+          updatedAt: '2024-08-01T13:09:41.640Z'
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    edge_user_sentiment:
+      items:
+        $ref: '#/components/schemas/EDGE_USER_SENTIMENT'
+      type: array
+      description: The "Sentiment" permission category.
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    WORKFLOW:
+      enum:
+      - view_flows
+      - create_new_flows
+      - edit_existing_flows
+      - delete_flows
+      - enable_disable_flows
+      - view_integrations
+      - configure_new_integration_connections
+      - edit_integration_settings
+      - delete_integration_connections
+      - create_api_keys
+      - delete_api_keys
+      - view_forms
+      - create_new_forms
+      - edit_existing_forms
+      - delete_forms
+      - view_ai_agent
+      - create_ai_agent
+      - edit_ai_agent
+      - delete_ai_agent
+      - view_templates
+      - create_new_templates
+      - edit_existing_templates
+      - delete_templates
+      type: string
+    RolePublic:
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: ID of the role.
+          minimum: 1
+        name:
+          type: string
+          description: The role's name.
+        description:
+          type: string
+          description: The role's description.
+        isDefault:
+          type: boolean
+          description: Whether the role is one of the default roles configured by ControlUp.
+        childOrganizationIds:
+          items:
+            type: string
+          type: array
+          description: 'Specifies the target organizations where this role is applied. This parameter is relevant only for Tenant Manager organizations.
+
+
+            * **If omitted or empty:** The role is automatically applied to the Tenant Manager organization AND all of its child organizations.
+
+
+            * **If IDs are provided:** The role is restricted only to the specific organization IDs listed. You can include the IDs of child organizations and/or the ID of the Tenant Manager organization itself. If you target exactly one organization ID, you can use the `permissions.scopes` object to further restrict permissions to specific device groups or tags within that organization.'
+        createdAt:
+          type: string
+          description: The date at which the role was first created.
+        updatedAt:
+          type: string
+          description: The date at which the role was last updated.
+      required:
+      - isDefault
+      - description
+      - name
+      - id
+      type: object
+    customer_success_hub:
+      items:
+        $ref: '#/components/schemas/CUSTOMER_SUCCESS_HUB'
+      type: array
+      description: The "Customer Success Hub" permission category.
+    RolePermissions:
+      properties:
+        permissionTreeName:
+          type: string
+          description: The top-level permission category.
+          example: dex_access_control
+          default: dex_access_control
+        selectedPermissions:
+          items:
+            $ref: '#/components/schemas/Permission'
+          type: array
+          description: The permissions selected from within the top-level permission category.
+      required:
+      - selectedPermissions
+      - permissionTreeName
+      type: object
+    incidents:
+      items:
+        $ref: '#/components/schemas/INCIDENTS'
+      type: array
+      description: The "Events & Alert Management" permission category.
+    RoleToUpdate:
+      properties:
+        name:
+          $ref: '#/components/schemas/NonEmptyString'
+          description: The role’s name.
+        description:
+          type: string
+          description: The role’s description.
+        permissions:
+          properties:
+            foundry:
+              $ref: '#/components/schemas/foundry'
+            custom_dashboards:
+              $ref: '#/components/schemas/custom_dashboards'
+            remediation_flow:
+              $ref: '#/components/schemas/remediation_flow'
+            incidents:
+              $ref: '#/components/schemas/incidents'
+            customer_success_hub:
+              $ref: '#/components/schemas/customer_success_hub'
+            workflow:
+              $ref: '#/components/schemas/workflow'
+            enrich:
+              $ref: '#/components/schemas/enrich'
+            app_dx:
+              $ref: '#/components/schemas/app_dx'
+            dex_access_control:
+              $ref: '#/components/schemas/dex_access_control'
+            employees:
+              $ref: '#/components/schemas/employees'
+            edge_devices:
+              $ref: '#/components/schemas/edge_devices'
+            edge_user_sentiment:
+              $ref: '#/components/schemas/edge_user_sentiment'
+            edge_asset_library:
+              $ref: '#/components/schemas/edge_asset_library'
+            edge_unified_communications_and_collaboration:
+              $ref: '#/components/schemas/edge_unified_communications_and_collaboration'
+            vdi_and_daas:
+              $ref: '#/components/schemas/vdi_and_daas'
+            sb_monitoring:
+              $ref: '#/components/schemas/sb_monitoring'
+            api_keys:
+              $ref: '#/components/schemas/api_keys'
+            security_risk_management:
+              $ref: '#/components/schemas/security_risk_management'
+            reports:
+              $ref: '#/components/schemas/reports'
+            chatbot:
+              $ref: '#/components/schemas/chatbot'
+            scopes:
+              properties:
+                deviceGroups:
+                  items:
+                    type: string
+                  type: array
+                  description: 'Targeted device groups.
+
+                    You must enter the names of existing device groups.
+
+                    You can use [List all device groups](list-device-groups) to get a list of device groups.
+
+                    To target all device groups, enter ‘All Devices’.'
+                  example: All Devices
+                deviceTags:
+                  items:
+                    type: string
+                  type: array
+                  description: 'Targeted device tags.
+
+                    You must enter the names of existing device tags.
+
+                    You can use [List all device tags](list-device-groups) to get a list of device tags.
+
+                    To target all device tags, enter ‘All Devices’.'
+                  example: All Devices
+              type: object
+              description: "Sets the scope for the role so that the permissions apply only to certain devices.\nPermissions in the role apply to a device only if the device is in one of the targeted groups OR has at least one of the targeted tags.\nBy default, if you don’t provide any scopes, then permissions in the role apply to all devices. \n[Learn more](https://support.controlup.com/docs/dex-platform-account-permissions#limit-permission-scope-to-certain-devices)."
+          type: object
+          description: 'A list of all permissions in the role, organized by the top-level permission category.
+
+            The `permissions` object also contains the `scopes` object which sets the device scope for the role.
+
+
+            The permissions and scopes for the role are overwritten with what you send in the request.
+
+            This means that to add a single permission to a role, you must send all existing permissions plus the new permission.
+
+            If you don’t send this parameter, then the permissions and scopes are unchanged.'
+        groupsIdsToRemove:
+          items:
+            $ref: '#/components/schemas/UUID'
+          type: array
+          description: 'IDs of groups to remove from the role.
+
+            You can use [GET /sso-groups](orgssogroupspubliccontroller_getall) to see the ID of each SSO group.'
+        groupsIdsToAssign:
+          items:
+            $ref: '#/components/schemas/UUID'
+          type: array
+          description: 'IDs of groups to assign to the role.
+
+            You can use [GET /sso-groups](orgssogroupspubliccontroller_getall) to see the ID of each SSO group.'
+        usersIdsToRemove:
+          items:
+            $ref: '#/components/schemas/UUID'
+          type: array
+          description: 'IDs of users to remove from the role.
+
+            You can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user.'
+        usersIdsToAssign:
+          items:
+            $ref: '#/components/schemas/UUID'
+          type: array
+          description: 'IDs of users to assign to the role.
+
+            You can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user.'
+        childOrganizationIds:
+          items:
+            type: string
+          type: array
+          description: 'Specifies the target organizations where this role is applied. This parameter is relevant only for Tenant Manager organizations.
+
+
+            * **If omitted or empty:** The role is automatically applied to the Tenant Manager organization AND all of its child organizations.
+
+
+            * **If IDs are provided:** The role is restricted only to the specific organization IDs listed. You can include the IDs of child organizations and/or the ID of the Tenant Manager organization itself. If you target exactly one organization ID, you can use the `permissions.scopes` object to further restrict permissions to specific device groups or tags within that organization.'
+      type: object
+    EDGE_UNIFIED_COMMUNICATIONS_AND_COLLABORATION:
+      enum:
+      - pr_ucc_view_dashboard
+      - pr_ucc_view_zoom_call_topic
+      - pc_ucc_api_configuration
+      type: string
+    reports:
+      items:
+        $ref: '#/components/schemas/REPORTS'
+      type: array
+      description: The "Reports" permission category.
+    RoleToCreate:
+      properties:
+        name:
+          $ref: '#/components/schemas/NonEmptyString'
+          description: The role’s name.
+        description:
+          type: string
+          description: The role’s description.
+        childOrganizationIds:
+          items:
+            type: string
+          type: array
+          description: 'Specifies the target organizations where this role is applied. This parameter is relevant only for Tenant Manager organizations.
+
+
+            * **If omitted or empty:** The role is automatically applied to the Tenant Manager organization AND all of its child organizations.
+
+
+            * **If IDs are provided:** The role is restricted only to the specific organization IDs listed. You can include the IDs of child organizations and/or the ID of the Tenant Manager organization itself. If you target exactly one organization ID, you can use the `permissions.scopes` object to further restrict permissions to specific device groups or tags within that organization.'
+        permissions:
+          properties:
+            foundry:
+              $ref: '#/components/schemas/foundry'
+            custom_dashboards:
+              $ref: '#/components/schemas/custom_dashboards'
+            remediation_flow:
+              $ref: '#/components/schemas/remediation_flow'
+            incidents:
+              $ref: '#/components/schemas/incidents'
+            customer_success_hub:
+              $ref: '#/components/schemas/customer_success_hub'
+            workflow:
+              $ref: '#/components/schemas/workflow'
+            enrich:
+              $ref: '#/components/schemas/enrich'
+            app_dx:
+              $ref: '#/components/schemas/app_dx'
+            dex_access_control:
+              $ref: '#/components/schemas/dex_access_control'
+            employees:
+              $ref: '#/components/schemas/employees'
+            edge_devices:
+              $ref: '#/components/schemas/edge_devices'
+            edge_user_sentiment:
+              $ref: '#/components/schemas/edge_user_sentiment'
+            edge_asset_library:
+              $ref: '#/components/schemas/edge_asset_library'
+            edge_unified_communications_and_collaboration:
+              $ref: '#/components/schemas/edge_unified_communications_and_collaboration'
+            vdi_and_daas:
+              $ref: '#/components/schemas/vdi_and_daas'
+            sb_monitoring:
+              $ref: '#/components/schemas/sb_monitoring'
+            api_keys:
+              $ref: '#/components/schemas/api_keys'
+            security_risk_management:
+              $ref: '#/components/schemas/security_risk_management'
+            reports:
+              $ref: '#/components/schemas/reports'
+            chatbot:
+              $ref: '#/components/schemas/chatbot'
+            scopes:
+              properties:
+                deviceGroups:
+                  items:
+                    type: string
+                  type: array
+                  description: 'Targeted device groups.
+
+                    You must enter the names of existing device groups.
+
+                    You can use [List all device groups](list-device-groups) to get a list of device groups.
+
+                    To target all device groups, enter ‘All Devices’.'
+                  example: All Devices
+                deviceTags:
+                  items:
+                    type: string
+                  type: array
+                  description: 'Targeted device tags.
+
+                    You must enter the names of existing device tags.
+
+                    You can use [List all device tags](list-device-groups) to get a list of device tags.
+
+                    To target all device tags, enter ‘All Devices’.'
+                  example: All Devices
+              type: object
+              description: "Sets the scope for the role so that the permissions apply only to certain devices.\nPermissions in the role apply to a device only if the device is in one of the targeted groups OR has at least one of the targeted tags.\nBy default, if you don’t provide any scopes, then permissions in the role apply to all devices. \n[Learn more](https://support.controlup.com/docs/dex-platform-account-permissions#limit-permission-scope-to-certain-devices)."
+          type: object
+          description: 'A list of all permissions in the role, organized by the top-level permission category.
+
+            The `permissions` object also contains the `scopes` object which sets the device scope for the role.'
+        groupsIdsToAssign:
+          items:
+            $ref: '#/components/schemas/UUID'
+          type: array
+          description: 'IDs of groups to assign to the role.
+
+            You can use [GET /sso-groups](orgssogroupspubliccontroller_getall) to see the ID of each SSO group.'
+        usersIdsToAssign:
+          items:
+            $ref: '#/components/schemas/UUID'
+          type: array
+          description: 'IDs of users to assign to the role.
+
+            You can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user.'
+      required:
+      - name
+      type: object
+    custom_dashboards:
+      items:
+        $ref: '#/components/schemas/CUSTOM_DASHBOARDS'
+      type: array
+      description: The "Custom Dashboards" permission category.
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    dex_access_control:
+      items:
+        $ref: '#/components/schemas/DEX_ACCESS_CONTROL'
+      type: array
+      description: The "Access Control" permission category.
+    APIResponse_RoleWithData_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/RoleWithData'
+      required:
+      - data
+      type: object
+    remediation_flow:
+      items:
+        $ref: '#/components/schemas/REMEDIATION_FLOW'
+      type: array
+      description: The "Virtual Expert" permission category.
+    FOUNDRY:
+      enum:
+      - foundry_view_all
+      - foundry_manage_hosts
+      - foundry_manage_sessions
+      - foundry_apply_scaling_policies
+      - foundry_manage_scaling_profiles
+      - foundry_view_settings
+      - foundry_manage_settings
+      - foundry_manage_host_pool_settings
+      - foundry_create_host_pool
+      - foundry_delete_host_pool
+      type: string
+    foundry:
+      items:
+        $ref: '#/components/schemas/FOUNDRY'
+      type: array
+      description: The "Foundry" permission category.
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    chatbot:
+      items:
+        $ref: '#/components/schemas/CHATBOT'
+      type: array
+      description: The "Chatbot" permission category.
+    EDGE_USER_SENTIMENT:
+      enum:
+      - pc_create_edit_view_delete_surveys_from_library
+      - pc_create_edit_view_results_delete_surveys_owned_by_user
+      - pc_edit_delete_surveys_owned_by_other_user
+      - pc_view_survey_results_from_other_users
+      - pc_use_custom_action_surveys
+      - pc_sentiment_configure_global_settings
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    APIResponse_RolePublic-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/RolePublic'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    edge_devices:
+      items:
+        $ref: '#/components/schemas/EDGE_DEVICES'
+      type: array
+      description: The "Device Permissions" permission category.
+    SB_MONITORING:
+      enum:
+      - sb_create_scout
+      - sb_read_scout
+      - sb_update_scout
+      - sb_delete_scout
+      - sb_create_alert
+      - sb_read_alert
+      - sb_update_alert
+      - sb_delete_alert
+      - sb_create_hive
+      - sb_read_hive
+      - sb_update_hive
+      - sb_delete_hive
+      - sb_create_maintenance_window
+      - sb_read_maintenance_window
+      - sb_update_maintenance_window
+      - sb_delete_maintenance_window
+      - sb_create_integration
+      - sb_read_integration
+      - sb_update_integration
+      - sb_delete_integration
+      - sb_create_api_key
+      - sb_read_api_key
+      - sb_update_api_key
+      - sb_delete_api_key
+      - sb_update_organization_settings
+      type: string
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    APP_DX:
+      enum:
+      - access_app_dx
+      - configure_app_dx
+      type: string
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    DEX_ACCESS_CONTROL:
+      enum:
+      - view_settings
+      - manage_users
+      - view_users
+      - manage_roles
+      - view_roles
+      - manage_sso_access
+      - manage_integrations
+      - manage_login_methods
+      - manage_mfa
+      - manage_session_timeout
+      - view_audit_log
+      - manage_ip_restrictions
+      - manage_default_home_page
+      - tv_mode
+      - manage_tags
+      - associate_synthetic_monitoring_tags
+      type: string
+    security_risk_management:
+      items:
+        $ref: '#/components/schemas/SECURITY_RISK_MANAGEMENT'
+      type: array
+      description: The "Secure DX Management" permission category.
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

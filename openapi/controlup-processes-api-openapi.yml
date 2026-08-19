@@ -1,0 +1,456 @@
+openapi: 3.2.0
+info:
+  title: VDI & DAAS Processes API
+  version: 1.0.0
+  description: Process usage reports
+servers:
+- url: https://api.controlup.com/historical
+security:
+- bearer-jwt:
+  - read
+  - write
+tags:
+- name: Processes
+  description: Process usage reports
+paths:
+  /v1/processes/usage/single:
+    get:
+      tags:
+      - Processes
+      summary: Get usage details for a process
+      description: Returns usage details for the specified process including usage per machine, per user account, peak concurrent instances, and unique user count throughout the search period.
+      operationId: getProcessUsageSingle
+      parameters:
+      - name: processName
+        in: query
+        description: The name of the process
+        required: true
+        schema:
+          type: string
+          pattern: ^[\w.\-\s]+$
+        example: notepad.exe
+      - name: processVersion
+        in: query
+        description: Only return usage details for the specified process version.
+        required: false
+        schema:
+          type: string
+          pattern: ^[\w.\-\s]+$
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: userAccounts
+        in: query
+        description: Filter by user accounts in Domain\username format. Maximum 50 items.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: computerNames
+        in: query
+        description: Filter by computer names. Maximum 100 items. Unknown names are resolved to -1 and match nothing.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalSingleResponseProcessUsageSingleResult'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalSingleResponseProcessUsageSingleResult'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/processes/usage/all:
+    get:
+      tags:
+      - Processes
+      summary: Get usage details for all processes
+      description: Returns usage details for all processes (number of unique users and, when no filters are supplied, peak concurrent users) per calendar day throughout the search period. When computerNames or userAccounts filters are supplied, peak_concurrency is omitted and the maximum date span is 90 days.
+      operationId: getProcessUsageAll
+      parameters:
+      - name: _timeFrom
+        in: query
+        description: 'Start date of the search period in the format: YYYY-MM-DD'
+        required: true
+        schema:
+          type: string
+          format: date
+        example: '2025-02-01'
+      - name: _timeTo
+        in: query
+        description: 'End date of the search period in the format: YYYY-MM-DD'
+        required: true
+        schema:
+          type: string
+          format: date
+        example: '2025-02-02'
+      - name: userAccounts
+        in: query
+        description: Filter by user accounts in Domain\username format. Maximum 50 items. An empty list is treated as no filter.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: computerNames
+        in: query
+        description: Filter by computer names. Maximum 100 items. Unknown names are resolved to -1 and match nothing. An empty list is treated as no filter.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalListResponseProcessUsageAllResult'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalListResponseProcessUsageAllResult'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+components:
+  schemas:
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    ByUser:
+      type: object
+      properties:
+        user_account:
+          type: string
+        total_instances:
+          type: integer
+          format: int32
+        unique_machines:
+          type: integer
+          format: int32
+        process_name:
+          type: string
+        last_use_time:
+          type: string
+          format: date-time
+        process_version:
+          type: string
+    HistoricalListResponseProcessUsageAllResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcessUsageAllResult'
+    ProcessUsageAllResult:
+      type: object
+      properties:
+        process_name:
+          type: string
+        process_version:
+          type: string
+        peak_concurrency:
+          type: integer
+          format: int32
+        unique_user_count:
+          type: integer
+          format: int32
+        update_time:
+          type: string
+          format: date-time
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    ProcessUsageSingleResult:
+      type: object
+      properties:
+        computer_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByComputer'
+        user_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByUser'
+        concurrent_instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConcurrentInstances'
+        unique_users:
+          type: integer
+          format: int32
+    ByComputer:
+      type: object
+      properties:
+        computer_name:
+          type: string
+        unique_users:
+          type: integer
+          format: int32
+        total_instances:
+          type: integer
+          format: int32
+        process_name:
+          type: string
+        process_version:
+          type: string
+    ConcurrentInstances:
+      type: object
+      properties:
+        process_name:
+          type: string
+        process_version:
+          type: string
+        peak_concurrency:
+          type: integer
+          format: int32
+        date_time:
+          type: string
+          format: date-time
+    HistoricalSingleResponseProcessUsageSingleResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          $ref: '#/components/schemas/ProcessUsageSingleResult'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false
+  explorer-enabled: true
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

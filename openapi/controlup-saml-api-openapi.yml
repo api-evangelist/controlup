@@ -1,0 +1,663 @@
+openapi: 3.2.0
+info:
+  title: Dex SAML API
+  version: 1.0.0
+  description: Dex API Description
+  contact: {}
+servers:
+- url: https://api.controlup.com/v1
+tags:
+- name: SAML
+paths:
+  /organizations/{orgId}/saml:
+    get:
+      operationId: OrgSamlPublicController_getOneById
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_OrganizationSamlSettingsPublic_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Returns your currently saved SAML configuration.
+      summary: Get SAML configuration
+      tags:
+      - SAML
+      security:
+      - apiKey: []
+      parameters:
+      - description: The format of returned results.
+        in: query
+        name: _format
+        required: false
+        schema:
+          default: json
+          type: string
+          enum:
+          - json
+          - xml
+          - csv
+        example: json
+        style: form
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+    post:
+      operationId: OrgSamlPublicController_create
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_OrganizationSamlSettingsPublic_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: 'Replaces your current SAML configuration by setting the values of the parameters passed.
+
+        Any existing SAML configuration is overwritten.'
+      summary: Create SAML settings
+      tags:
+      - SAML
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationSamlSettings'
+    patch:
+      operationId: OrgSamlPublicController_update
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_OrganizationSamlSettingsPublic_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: 'Updates your current SAML configuration by setting the values of the parameters passed.
+
+        Any parameters not passed are not changed.'
+      summary: Update SAML settings
+      tags:
+      - SAML
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationSamlSettings'
+  /organizations/{orgId}/saml/{idpName}:
+    post:
+      operationId: OrgSamlPublicController_configureByIdp
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_OrganizationSamlSettingsPublic_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: 'Automatically configures SAML SSO based on an existing integration with Entra ID. Any existing SAML configuration is overwritten.
+
+        To use this endpoint, you must have already created an integration with Entra ID with the permissions required to configure Entra ID SAML settings.
+
+        Use this endpoint as a shortcut so that you don''t have to manually set up SAML SSO. [Learn more](https://support.controlup.com/docs/automatically-configure-saml-using-an-idp-integration).'
+      summary: Create SAML settings from IdP integration
+      tags:
+      - SAML
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: The IdP to use for SAML SSO.
+        in: path
+        name: idpName
+        required: true
+        schema:
+          $ref: '#/components/schemas/SamlConfigureIdpName'
+components:
+  schemas:
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    OrganizationSamlSettingsPublic:
+      properties:
+        ssoServiceUrl:
+          type: string
+          description: IdP login URL.
+        sloServiceUrl:
+          type: string
+          description: IdP logout URL.
+        certificate:
+          type: string
+          description: IdP signing certificate.
+        idpPartnerName:
+          type: string
+          description: Entity / Issuer ID.
+        urn:
+          type: string
+          description: Relying party trust identifier.
+        defaultRoleId:
+          type: number
+          format: double
+          description: 'ID of the role assigned to ControlUp accounts automatically provisioned by SAML.
+
+
+            Default role IDs:
+
+            * Admin - 1
+
+            * Editor - 2
+
+            * Viewer - 3
+
+            * No Permissions - 4
+
+            * VDI and DaaS Admins - 5
+
+            * Access Real-Time DX Console - 6'
+        createdAt:
+          type: string
+          description: The date at which the SAML settings were first created.
+        updatedAt:
+          type: string
+          description: The date at which the SAML settings were last updated.
+      required:
+      - defaultRoleId
+      - urn
+      - idpPartnerName
+      - certificate
+      - sloServiceUrl
+      - ssoServiceUrl
+      type: object
+      example:
+        urn: urn:controlup:dev
+        idpPartnerName: urn:dev-3ezru5wuvaevqm0t.us.auth0.com
+        ssoServiceUrl: https://dev-3ezru5wuvaevqm0t.us.auth0.com/samlp/6iom84fUqvicEqWzDgV4zYxoARvIIX8u
+        sloServiceUrl: https://dev-3ezru5wuvaevqm0t.us.auth0.com/samlp/6iom84fUqvicEqWzDgV4zYxoARvIIX8u
+        certificate: 'MIIDHTCCAgWgAwIBAgIJfmBK1ZYElWb0MA0GCSqGSIb3DQEBCwUAMCwxKjAoBgNV
+
+          KGtROwtMVWJW7rrOImKLpEqdv9bzYp3NJhuxpwuQPNXs02LSamwGJFxh2arEKZmR
+
+          KryUffbrcOc3+9gErIx0U58yJK52oEdHJcRq4HvINlBc'
+        defaultRoleId: 1
+        createdAt: '2024-08-08T19:20:09.859Z'
+        updatedAt: '2024-08-08T20:27:47.156Z'
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    UpdateOrganizationSamlSettings:
+      properties:
+        ssoServiceUrl:
+          type: string
+          description: IdP login URL.
+        sloServiceUrl:
+          type: string
+          description: IdP logout URL.
+        certificate:
+          type: string
+          description: IdP signing certificate.
+        idpPartnerName:
+          type: string
+          description: Entity / Issuer ID.
+        urn:
+          type: string
+          description: Relying party trust identifier.
+        defaultRoleId:
+          type: number
+          format: double
+          description: 'ID of the role assigned to ControlUp accounts automatically provisioned by SAML.
+
+
+            Default role IDs:
+
+            * Admin - 1
+
+            * Editor - 2
+
+            * Viewer - 3
+
+            * No Permissions - 4
+
+            * VDI and DaaS Admins - 5
+
+            * Access Real-Time DX Console - 6'
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    SamlConfigureIdpName:
+      enum:
+      - entra_id
+      type: string
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    APIResponse_OrganizationSamlSettingsPublic_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationSamlSettingsPublic'
+      required:
+      - data
+      type: object
+    CreateOrganizationSamlSettings:
+      properties:
+        ssoServiceUrl:
+          type: string
+          description: IdP login URL.
+        sloServiceUrl:
+          type: string
+          description: IdP logout URL.
+        certificate:
+          type: string
+          description: IdP signing certificate.
+        idpPartnerName:
+          type: string
+          description: Entity / Issuer ID.
+        urn:
+          type: string
+          description: Relying party trust identifier.
+        defaultRoleId:
+          type: number
+          format: double
+          description: 'ID of the role assigned to ControlUp accounts automatically provisioned by SAML.
+
+
+            Default role IDs:
+
+            * Admin - 1
+
+            * Editor - 2
+
+            * Viewer - 3
+
+            * No Permissions - 4
+
+            * VDI and DaaS Admins - 5
+
+            * Access Real-Time DX Console - 6'
+      required:
+      - defaultRoleId
+      - urn
+      - idpPartnerName
+      - certificate
+      - ssoServiceUrl
+      type: object
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

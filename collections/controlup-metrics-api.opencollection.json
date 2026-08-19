@@ -1,0 +1,75 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VDI & DaaS Realtime Metrics API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Metrics",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Query metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/vdi/realtime/v1/metrics/query",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieves realtime metrics data with optional filtering, sorting, pagination, and aggregation capabilities"
+        },
+        {
+          "info": {
+            "name": "Get Tables",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/vdi/realtime/v1/metrics/schema/tables",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieves a list of available metric tables"
+        },
+        {
+          "info": {
+            "name": "Get Table Fields",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/vdi/realtime/v1/metrics/schema/tables/:tableName",
+            "params": [
+              {
+                "name": "tableName",
+                "value": "",
+                "type": "path",
+                "description": "The name of the table to retrieve fields for"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieves the fields available for a specific metric table"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

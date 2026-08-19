@@ -1,0 +1,129 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Health API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Health
+paths:
+  /health:
+    get:
+      tags:
+      - Health
+      summary: Get health status
+      description: Returns the health status of the API and its dependencies.
+      responses:
+        '200':
+          description: Health check successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Healthy
+  /health/live:
+    get:
+      tags:
+      - Health
+      summary: Get liveness status
+      description: Returns a lightweight process liveness response without checking external dependencies.
+      responses:
+        '200':
+          description: API process is running
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Healthy
+  /health/info:
+    get:
+      tags:
+      - Health
+      summary: Get build info
+      description: Returns build metadata for deployment verification (version, etc.).
+      responses:
+        '200':
+          description: Build info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: 1.2.3
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

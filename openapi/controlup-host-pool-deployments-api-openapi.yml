@@ -1,0 +1,602 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Host pool deployments API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Host pool deployments
+paths:
+  /cloud/subscriptions/{subscriptionId}/host-pool-deployments:
+    post:
+      tags:
+      - Host pool deployments
+      summary: Create host pool deployment
+      description: 'Starts an asynchronous shell deployment for an Azure Virtual Desktop host pool.
+
+        The job creates the host pool ARM resource, application group, workspace registration,
+
+        then imports the created control-plane tree into Foundry.'
+      operationId: CreateHostPoolDeployment
+      parameters:
+      - name: subscriptionId
+        in: path
+        description: Foundry cloud subscription identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Host pool shell deployment request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHostPoolDeploymentRequest'
+            example:
+              name: hp-prod-001
+              resourceGroupName: rg-prod-avd
+              region: eastus
+              appGroupType: desktop
+              appGroupName: dag-prod-001
+              hostPoolType: pooled
+              loadBalancingAlgorithm: breadthFirst
+              maxSessionLimit: 10
+              initialHostCount: 0
+              workspaceResourceId: /subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001
+              tags:
+                environment: prod
+                owner: daasiq
+        required: true
+      responses:
+        '201':
+          description: Deployment job accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Invalid payload or precondition failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have create host pool permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified subscription, resource group, or workspace does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict. The host pool or application group already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    HostPoolLoadBalancingAlgorithm:
+      enum:
+      - depthFirst
+      - breadthFirst
+      type: string
+      description: Azure Virtual Desktop load balancing algorithm for host pool session distribution.
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    SaveHostPoolVmSettingsRequest:
+      required:
+      - availabilityZones
+      - deploymentRegion
+      - deploymentResourceGroupName
+      - imageSource
+      - integrityMonitoring
+      - intuneEnrollment
+      - joinType
+      - localAdminUsername
+      - networkSecurityGroup
+      - osDiskSizeBytes
+      - osDiskStorageAccountType
+      - primaryVmSize
+      - publicInboundPorts
+      - secureBoot
+      - securityType
+      - subnetResourceId
+      - virtualNetworkResourceId
+      - vmNamingPrefix
+      - vTpm
+      type: object
+      properties:
+        deploymentRegion:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: 'Region code (e.g. `eastus`) where session hosts are deployed.
+
+            Drives region-sensitive compatibility validation and the deployment location.'
+        deploymentResourceGroupName:
+          maxLength: 90
+          minLength: 1
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type: string
+          description: 'Name of the resource group session hosts are deployed into (e.g. `rg-avd-prod`).
+
+            Resolved within the subscription that owns the host pool.'
+        vmNamingPrefix:
+          maxLength: 11
+          minLength: 1
+          type: string
+          description: Prefix used for newly created session host VM names.
+        primaryVmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Primary VM size used for provisioning.
+        alternativeVmSize:
+          maxLength: 64
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional fallback VM size used when the primary size is unavailable.
+        availabilityZones:
+          type: array
+          items:
+            type: string
+          description: Requested availability zones for session host deployment.
+        imageSource:
+          $ref: '#/components/schemas/HostPoolVmImageSource'
+        imageResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image when gallery image source is used.
+        imageVersionResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image version when gallery image source is used.
+        existingVmResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the existing VM when existing VM image source is used.
+        osDiskStorageAccountType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: OS disk storage account type.
+        osDiskSizeBytes:
+          minimum: 1
+          type: integer
+          description: Requested OS disk size in bytes.
+          format: int64
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        secureBoot:
+          type: boolean
+          description: Indicates whether Secure Boot is enabled.
+        vTpm:
+          type: boolean
+          description: Indicates whether virtual TPM is enabled.
+        integrityMonitoring:
+          type: boolean
+          description: Indicates whether integrity monitoring is enabled.
+        virtualNetworkResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the virtual network.
+        subnetResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the subnet (identifies both the virtual network and subnet).
+        networkSecurityGroup:
+          $ref: '#/components/schemas/HostPoolVmNetworkSecurityGroup'
+        publicInboundPorts:
+          type: boolean
+          description: Indicates whether public inbound ports are allowed.
+        joinType:
+          $ref: '#/components/schemas/HostPoolVmJoinType'
+        adDomain:
+          type:
+          - string
+          - 'null'
+          description: Active Directory domain for AD join scenarios.
+        domainJoinUpn:
+          type:
+          - string
+          - 'null'
+          description: Domain join user principal name for AD join scenarios.
+        ouPath:
+          type:
+          - string
+          - 'null'
+          description: Organizational unit path for AD join scenarios.
+        localAdminUsername:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: Local administrator username configured on session hosts.
+        profileStoragePath:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional FSLogix profile storage UNC path.
+        intuneEnrollment:
+          type: boolean
+          description: Indicates whether Intune enrollment is enabled.
+        tags:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Tags applied to created session host resources.
+        localAdminPassword:
+          maxLength: 256
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional local administrator password to set or update.
+        domainJoinPassword:
+          maxLength: 256
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional domain join password used when AD join is selected.
+      additionalProperties: false
+      description: Full request payload for creating or replacing VM settings for a host pool.
+    HostPoolVmImageSource:
+      enum:
+      - gallery
+      - existingVm
+      type: string
+      description: Image source selection for host pool VM settings.
+    HostPoolAppGroupType:
+      enum:
+      - desktop
+      - remoteApp
+      type: string
+      description: Azure Virtual Desktop application group type for host pools.
+    HostPoolType:
+      enum:
+      - pooled
+      - personal
+      type: string
+      description: Represents the type of Azure Virtual Desktop host pool.
+    HostPoolVmJoinType:
+      enum:
+      - ad
+      - entraId
+      type: string
+      description: Directory join strategy for session host VMs.
+    HostPoolVmNetworkSecurityGroup:
+      enum:
+      - basic
+      type: string
+      description: Network security group preset for host pool VM settings.
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    HostPoolAssignmentType:
+      enum:
+      - automatic
+      - direct
+      type: string
+      description: Assignment strategy for personal Azure Virtual Desktop host pools.
+    CreateHostPoolDeploymentRequest:
+      required:
+      - appGroupType
+      - hostPoolType
+      - name
+      - region
+      - resourceGroupName
+      - workspaceResourceId
+      type: object
+      properties:
+        name:
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9_.-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
+          type: string
+          description: Host pool name.
+        resourceGroupName:
+          maxLength: 90
+          minLength: 1
+          type: string
+          description: Existing Azure resource group name where control-plane resources are created.
+        region:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Azure region for the host pool and application group metadata.
+        appGroupType:
+          $ref: '#/components/schemas/HostPoolAppGroupType'
+        appGroupName:
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9_.-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
+          type:
+          - string
+          - 'null'
+          description: Optional application group name. Defaults to the host pool name when omitted.
+        hostPoolType:
+          $ref: '#/components/schemas/HostPoolType'
+        loadBalancingAlgorithm:
+          $ref: '#/components/schemas/HostPoolLoadBalancingAlgorithm'
+        maxSessionLimit:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of user sessions per host for pooled host pools.
+          format: int32
+        assignmentType:
+          $ref: '#/components/schemas/HostPoolAssignmentType'
+        initialHostCount:
+          maximum: 100
+          minimum: 0
+          type: integer
+          description: 'Initial session host count to provision after creating the host pool.
+
+            Defaults to 0, creating the host pool without session hosts.'
+          format: int32
+          default: 0
+        vmSettings:
+          $ref: '#/components/schemas/SaveHostPoolVmSettingsRequest'
+        workspaceResourceId:
+          minLength: 1
+          type: string
+          description: Existing AVD workspace ARM resource ID to register the application group with.
+        tags:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Azure tags to apply to created control-plane resources.
+      additionalProperties: false
+      description: Request to create an Azure Virtual Desktop host pool shell deployment.
+    VmSecurityType:
+      enum:
+      - trustedLaunch
+      - standard
+      - confidentialVM
+      type: string
+      description: Security profile for Azure VMs.
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

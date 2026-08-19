@@ -1,0 +1,595 @@
+{
+  "item": [
+    {
+      "id": "f8308761-67fa-42ab-a20e-89ae69820c13",
+      "name": "User sessions",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f0fc0ba6-9c3a-4fde-bcf3-409fe13fc547",
+          "name": "Execute an action on a user session",
+          "request": {
+            "name": "Execute an action on a user session",
+            "description": {
+              "content": "Creates a background job to perform the action (send message, sign out, disconnect). Poll the statusUrl for progress updates.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "user-sessions",
+                ":userSessionId",
+                "actions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "userSessionId",
+                  "description": "(Required) The unique identifier of the user session."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6882602c-197f-43b1-8c36-d8b6911ba8af",
+              "name": "Action job created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "user-sessions",
+                    ":userSessionId",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userSessionId",
+                      "description": "(Required) The unique identifier of the user session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a1b2c3d4-5678-90ab-cdef-1234567890ab\",\n  \"jobType\": \"cloudResourceImport\",\n  \"action\": \"Cloud Resource Import\",\n  \"jobUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab\",\n  \"statusUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status\",\n  \"logsUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs\",\n  \"message\": \"Import job created successfully. Poll statusUrl for progress updates.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "27ef038c-68c0-4b76-9714-36c10a2817ac",
+              "name": "Bad request. Invalid request parameters or action not applicable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "user-sessions",
+                    ":userSessionId",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userSessionId",
+                      "description": "(Required) The unique identifier of the user session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 3450,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ebbc94fb-97ab-4df1-a34c-af5245dad011",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "user-sessions",
+                    ":userSessionId",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userSessionId",
+                      "description": "(Required) The unique identifier of the user session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 3450,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a614a66c-b2a5-4d75-b7c2-1011c006c09f",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "user-sessions",
+                    ":userSessionId",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userSessionId",
+                      "description": "(Required) The unique identifier of the user session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 3450,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2cf3e031-ce30-4899-8ab8-8b73c5fae49c",
+              "name": "Forbidden. User does not have permission to manage user sessions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "user-sessions",
+                    ":userSessionId",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userSessionId",
+                      "description": "(Required) The unique identifier of the user session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 3450,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fb6d0cda-385f-46c3-bdc6-955aa1ceacdf",
+              "name": "Not found. User session does not exist or does not belong to the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "user-sessions",
+                    ":userSessionId",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userSessionId",
+                      "description": "(Required) The unique identifier of the user session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 3450,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "50bbb92d-0f10-4be2-a611-234d28733a16",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "user-sessions",
+                    ":userSessionId",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userSessionId",
+                      "description": "(Required) The unique identifier of the user session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 3450,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dab6949c-460f-4f70-8651-973d730eeb93",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "user-sessions",
+                    ":userSessionId",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userSessionId",
+                      "description": "(Required) The unique identifier of the user session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"actionType\": \"<string>\",\n  \"messageTitle\": \"<string,null>\",\n  \"messageBody\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 3450,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/daas-iq/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "e1b79ac1-139b-4988-9415-fc186d5334ef",
+    "name": "DaaS IQ User sessions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)\n\n🔒 **Authentication**\n\nThis API supports two authentication methods:\n\n**1. API Key (Bearer Token)** - Recommended for programmatic access\n- Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)\n- Include in requests: `Authorization: Bearer YOUR_API_KEY`\n\n**2. Cookie Authentication** - For browser-based access\n- Login via DEX authentication service\n- The `user_dex_token` cookie will be automatically included\n\nContact Support:\n Name: ControlUp Support\n Email: support@controlup.com",
+      "type": "text/plain"
+    }
+  }
+}

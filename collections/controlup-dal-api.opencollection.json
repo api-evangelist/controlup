@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ControlUp for Desktops Dal API",
+    "version": "2.159.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Dal",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get scoped data index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/dal/:index",
+            "params": [
+              {
+                "name": "index",
+                "value": "",
+                "type": "path",
+                "description": "Name of the data index to return."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the content of the specified data index, after applying a filter so that only data from devices within the `device_query` scope is returned.\n\nThe endpoint first executes `device_query` against the _devices index to get a list of device IDs. The endpoint then executes `data_query` against the index you specify in the `index` parameter, only returning data that matches the list of device IDs.\nFor example, you can use this endpoint to search the disk_info data index, but only return data fo"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,963 @@
+openapi: 3.2.0
+info:
+  title: Controlup Events API
+  version: '1.0'
+  description: 'Operations tagged Events across 2 of this provider''s published API definitions: controlup-desktops-openapi.yml, controlup-dex-events-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.controlup.com/edge/api
+- url: https://api.controlup.com/events/v1
+tags:
+- name: Events
+  description: The System Events log reports important events and alerts in your ControlUp for Desktops environment.
+paths:
+  /events:
+    servers:
+    - url: https://api.controlup.com/edge/api
+    get:
+      summary: Get system events
+      tags:
+      - Events
+      description: 'Returns entries from the System Events log, which contains alerts, actions, configuration changes, etc. By default, the endpoint returns 10000 events starting with the oldest event. A maximum of 10000 events can be returned per request.
+
+        '
+      operationId: get-system-events
+      parameters:
+      - in: query
+        name: size
+        description: The number of rows returned per page.
+        schema:
+          type: integer
+          default: 10000
+          maximum: 10000
+      - in: query
+        name: page
+        description: The page returned. The number of rows per page is set with the `size` parameter.
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: from
+        description: The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded.
+        schema:
+          type: integer
+          example: 2
+      - $ref: '#/components/parameters/FilterField'
+      - $ref: '#/components/parameters/FilterType'
+      - $ref: '#/components/parameters/FilterValue'
+      - $ref: '#/components/parameters/SorterField'
+      - $ref: '#/components/parameters/SorterDir'
+      responses:
+        '200':
+          description: System Events log contents.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+        '400':
+          description: The provided query is invalid.
+      security:
+      - bearerAuth: []
+  /events/query:
+    servers:
+    - url: https://api.controlup.com/edge/api
+    post:
+      summary: Get system events with query
+      operationId: get-system-events-query
+      x-readme:
+        explorer-enabled: false
+      tags:
+      - Events
+      description: Returns the same data as [GET /events](get-system-events), but lets you send an OpenSearch query in the request body.
+      requestBody:
+        description: OpenSearch query
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              query:
+                term:
+                  _id: ERhcqwwow455mzZoBiDB-aE
+      responses:
+        '200':
+          description: System Events log contents.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+        '400':
+          description: The provided query is invalid.
+      security:
+      - bearerAuth: []
+  /events/organizations/{orgId}/events:
+    servers:
+    - url: https://api.controlup.com/events/v1
+    post:
+      description: Returns a list of events based on specified time ranges and filtering criteria. This endpoint uses field projection, returning only the specific event attributes requested in the fields parameter.
+      operationId: EventsController_getEventsList
+      parameters:
+      - name: orgId
+        required: true
+        in: path
+        description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GridQueryDTO'
+      responses:
+        '200':
+          description: Successfully retrieved events list with cursor-based pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Array of events on the current page. The event fields returned depends on the `fields` parameter.
+                    items:
+                      $ref: '#/components/schemas/EventEntity'
+                  nextCursor:
+                    type:
+                    - string
+                    - 'null'
+                    description: Base64-encoded cursor for the next page. Null if this is the last page.
+                  previousCursor:
+                    type:
+                    - string
+                    - 'null'
+                    description: Base64-encoded cursor for the previous page. Null if this is the first page.
+                  page:
+                    type: number
+                    description: Current page number.
+                  pageSize:
+                    type: number
+                    description: Number of items in the current page.
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+        '500':
+          description: Internal Server Error - Unexpected server error
+      summary: List all Events
+      tags:
+      - Events
+      security:
+      - apiKey: []
+  /events/organizations/{orgId}/events/total:
+    servers:
+    - url: https://api.controlup.com/events/v1
+    get:
+      description: Returns the count of unique values (cardinality) for a specified field within a defined time range. This endpoint allows you to quantify the diversity of your event data such as counting unique users, distinct error types, or total event volume, while applying filters to narrow the scope.
+      operationId: EventsController_getTotalEvents
+      parameters:
+      - name: filters
+        required: false
+        in: query
+        description: 'To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group''s logic operator (AND/OR).
+
+
+          Do not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to "user is Bob AND (severity is high OR severity is low)".
+
+
+          Note that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder.'
+        style: deepObject
+        explode: true
+        schema:
+          type: object
+          properties:
+            and:
+              description: Array of filters/groups where ALL conditions must match (AND logic)
+              type: array
+              items:
+                type: object
+                properties:
+                  filter:
+                    description: Single filter condition
+                    type: object
+                    properties:
+                      key:
+                        description: Field name to filter on
+                        type: string
+                        enum:
+                        - uuid
+                        - timestampUtcMs
+                        - name
+                        - severity
+                        - sourceName
+                        - guestName
+                        - userName
+                        - type
+                        - utcOffsetSeconds
+                      op:
+                        description: 'Comparison operator.
+
+                          - Use equals/not_equals for exact matches (works with all fields).
+
+                          - Use contains for partial string matching (only for string fields like name, userName, guestName, sourceName, NOT for severity enum).
+
+                          - Use greater/less/greater_or_equals/less_or_equals for numeric comparisons.
+
+                          - Use between for range queries.'
+                        type: string
+                        enum:
+                        - equals
+                        - contains
+                        - not_equals
+                        - between
+                        - greater
+                        - less
+                        - greater_or_equals
+                        - less_or_equals
+                      value:
+                        description: Value to compare against. Can be string, number, or array for between operator.
+                        oneOf:
+                        - type: string
+                        - type: number
+                        - type: array
+                          items:
+                            oneOf:
+                            - type: string
+                            - type: number
+                  group:
+                    description: A nested AND/OR group. Use group to create complex queries with nested AND/OR logic.
+                    type: object
+                    properties:
+                      and:
+                        type: array
+                        description: Array of filters/groups where ALL conditions must match (AND logic)
+                      or:
+                        type: array
+                        description: Array of filters/groups where ANY condition can match (OR logic)
+            or:
+              description: Array of filters/groups where ANY condition can match (OR logic)
+              type: array
+              items:
+                type: object
+                properties:
+                  filter:
+                    description: Single filter condition
+                    type: object
+                    properties:
+                      key:
+                        description: Field name to filter on
+                        type: string
+                        enum:
+                        - uuid
+                        - timestampUtcMs
+                        - name
+                        - severity
+                        - sourceName
+                        - guestName
+                        - userName
+                        - type
+                        - utcOffsetSeconds
+                      op:
+                        description: 'Comparison operator.
+
+                          - Use equals/not_equals for exact matches (works with all fields).
+
+                          - Use contains for partial string matching (only for string fields like name, userName, guestName, sourceName, NOT for severity enum).
+
+                          - Use greater/less/greater_or_equals/less_or_equals for numeric comparisons.
+
+                          - Use between for range queries.'
+                        type: string
+                        enum:
+                        - equals
+                        - contains
+                        - not_equals
+                        - between
+                        - greater
+                        - less
+                        - greater_or_equals
+                        - less_or_equals
+                      value:
+                        description: Value to compare against. Can be string, number, or array for between operator.
+                        oneOf:
+                        - type: string
+                        - type: number
+                        - type: array
+                          items:
+                            oneOf:
+                            - type: string
+                            - type: number
+                  group:
+                    description: A nested AND/OR group. Use group to create complex queries with nested AND/OR logic.
+                    type: object
+                    properties:
+                      and:
+                        type: array
+                        description: Array of filters/groups where ALL conditions must match (AND logic)
+                      or:
+                        type: array
+                        description: Array of filters/groups where ANY condition can match (OR logic)
+      - name: timeFrom
+        required: true
+        in: query
+        description: Return events starting from the specified time in epoch timestamp (milliseconds).
+        schema:
+          example: 1705057200000
+          type: number
+        style: form
+      - name: timeTo
+        required: true
+        in: query
+        description: Return events up to the specified time in epoch timestamp (milliseconds).
+        schema:
+          example: 1705143600000
+          type: number
+        style: form
+      - name: field
+        required: true
+        in: query
+        description: The event attribute to aggregate for unique values. You can use uuid to calculate the total number of unique events.
+        schema:
+          type: string
+          enum:
+          - additionalData
+          - applicationName
+          - folderPath
+          - guestName
+          - hostName
+          - ipAddress
+          - name
+          - orgUuid
+          - publicIpAddress
+          - remoteSessionClientIp
+          - remoteVirtualSession
+          - sourceName
+          - timestampUtcMs
+          - triggerCondition
+          - type
+          - userName
+          - utcOffsetSeconds
+          - uuid
+          - severity
+          - sourceType
+          - alertId
+          - groupId
+          - fieldsUrlNames
+          - fieldsUrlParams
+          - actionUrlNames
+          - actionUrlParams
+          - tags
+          - groups
+        style: form
+      - name: orgId
+        required: true
+        in: path
+        description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns total count of events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      result:
+                        type: number
+                        description: Total count of events
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+        '500':
+          description: Internal Server Error - Unexpected server error
+      summary: Get total count of events
+      tags:
+      - Events
+      security:
+      - apiKey: []
+  /events/organizations/{orgId}/events/{eventId}:
+    servers:
+    - url: https://api.controlup.com/events/v1
+    get:
+      description: Retrieves the details of a specific event.
+      operationId: EventsController_getEventByUUID
+      parameters:
+      - name: orgId
+        required: true
+        in: path
+        description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        schema:
+          type: string
+      - name: eventId
+        required: true
+        in: path
+        description: The UUID of the event to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns a single event by UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventEntity'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+        '404':
+          description: Not Found - Event not found
+        '500':
+          description: Internal Server Error - Unexpected server error
+      summary: Retrieve an event
+      tags:
+      - Events
+      security:
+      - apiKey: []
+components:
+  parameters:
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    FilterType:
+      name: filters[0][type]
+      in: query
+      description: 'The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>
+
+        `<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>
+
+        `boolean` is used to filter boolean fields.<br>
+
+        `like` is used to filter text fields.
+
+        '
+      schema:
+        type: string
+        example: '>='
+        enum:
+        - <
+        - <=
+        - '='
+        - '!='
+        - '>='
+        - '>'
+        - like
+        - boolean
+  schemas:
+    EventEntity:
+      type: object
+      properties:
+        groups:
+          description: A list of groups the source product belongs to.
+          type: array
+          items:
+            type: string
+        tags:
+          description: A list of tags associated with the source product.
+          type: array
+          items:
+            type: string
+        actionUrlParams:
+          type: object
+          description: For internal use only.
+        actionUrlNames:
+          description: For internal use only.
+          type: array
+          items:
+            type: string
+        fieldsUrlParams:
+          type: object
+          description: For internal use only.
+        fieldsUrlNames:
+          description: For internal use only.
+          type: array
+          items:
+            type: string
+        groupId:
+          type: string
+          description: Identifier for grouping related events together. Events with the same groupId are part of the same logical group or incident.
+          example: group-456-def
+        alertId:
+          type: string
+          description: Identifier of the alert rule that triggered this event. Links the event to its source alert definition.
+          example: alert-123-abc
+        sourceType:
+          type: string
+          description: Additional source type classification. Provides more granular detail about the source.
+          example: agent
+        severity:
+          type: string
+          description: 'The severity level of the event: Informational, Low, Medium, High, or Critical.'
+          example: High
+          enum:
+          - Informational
+          - Low
+          - Medium
+          - High
+          - Critical
+        uuid:
+          type: string
+          description: Unique identifier (UUID) for this event. Primary key used to retrieve the event.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        utcOffsetSeconds:
+          type: number
+          description: The UTC offset in seconds for the timezone where the event originated. Used to calculate local time at the source.
+          example: 0
+        userName:
+          type: string
+          description: The username of the employee associated with this event.
+          example: john.doe
+        type:
+          type: string
+          description: The category or type of the event. Used to classify events into logical groups.
+          example: Performance
+        triggerCondition:
+          type: string
+          description: A human-readable description of the conditions that triggered this event. Enriched by AI to provide a clear explanation of thresholds/rules met.
+          example: The trigger activates if the CPU load is 90% or more for at least 60 seconds.
+        timestampUtcMs:
+          type: number
+          description: The timestamp when the event occurred, as Unix epoch time in milliseconds (UTC).
+          example: 1705057200000
+        sourceName:
+          type: string
+          enum:
+          - SOURCE_NAME_UNSPECIFIED
+          - SOURCE_NAME_VDI
+          - SOURCE_NAME_DESKTOP
+          - SOURCE_NAME_SYNTHETIC
+          description: The ControlUp product/value stream that generated the event. SOURCE_NAME_VDI = VDI, SOURCE_NAME_DESKTOP = Devices, SOURCE_NAME_SYNTHETIC = Synthetic Monitoring.
+          example: SOURCE_NAME_DESKTOP
+        remoteVirtualSession:
+          type: string
+          description: For VDI environments, the identifier or name of the virtual session associated with this event.
+          example: session-123
+        remoteSessionClientIp:
+          type: string
+          description: For remote sessions (VDI/RDP), the IP address of the client machine connecting to the session.
+          example: 10.0.0.50
+        publicIpAddress:
+          type: string
+          description: The public-facing IP address of the device where the event occurred.
+          example: 203.0.113.1
+        ipAddress:
+          type: string
+          description: The private/internal IP address of the device where the event occurred.
+          example: 192.168.1.100
+        name:
+          type: string
+          description: The name/title of the event. Human-readable identifier for what occurred.
+          example: High CPU Load Detected
+        hostName:
+          type: string
+          description: The hostname of the machine where the event occurred. For VDI, this is the host server name.
+          example: host-1.example.com
+        guestName:
+          type: string
+          description: The name of the source device - guest machine/VM or device name where the event originated.
+          example: DESKTOP-ABC123
+        folderPath:
+          type: string
+          description: The file system path relevant to the event.
+          example: C:\Users\user1\Documents
+        applicationName:
+          type: string
+          description: The name of the application associated with the event.
+          example: chrome.exe
+        additionalData:
+          type: object
+          description: A flexible key-value map containing extra event data. May include device_id, os_version, app_version, or custom metrics.
+          example:
+            device_id: 00:1A:2B:3C:4D:0E
+            os_version: Windows 10 Pro
+      required:
+      - name
+      - sourceName
+      - timestampUtcMs
+      - utcOffsetSeconds
+      - uuid
+      - tags
+      - groups
+    GridQueryDTO:
+      type: object
+      properties:
+        timeFrom:
+          type: number
+          description: Return events starting from the specified time in epoch timestamp (milliseconds).
+          example: 1705057200000
+        timeTo:
+          type: number
+          description: Return events up to the specified time in epoch timestamp (milliseconds).
+          example: 1705143600000
+        sortBy:
+          type: string
+          enum:
+          - additionalData
+          - applicationName
+          - folderPath
+          - guestName
+          - hostName
+          - ipAddress
+          - name
+          - orgUuid
+          - publicIpAddress
+          - remoteSessionClientIp
+          - remoteVirtualSession
+          - sourceName
+          - timestampUtcMs
+          - triggerCondition
+          - type
+          - userName
+          - utcOffsetSeconds
+          - uuid
+          - severity
+          - sourceType
+          - alertId
+          - groupId
+          - fieldsUrlNames
+          - fieldsUrlParams
+          - actionUrlNames
+          - actionUrlParams
+          - tags
+          - groups
+        sortDir:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        cursor:
+          type: string
+          description: Base64-encoded cursor for pagination. Use nextCursor/previousCursor from previous response for navigation.
+        limit:
+          type: number
+          description: Number of items per page (1-100)
+          minimum: 1
+          maximum: 100
+        fields:
+          type: array
+          description: Array of fields to include in the response. Specify which event fields you want returned (e.g., uuid, name, severity, timestampUtcMs).
+          items:
+            type: string
+            enum:
+            - additionalData
+            - applicationName
+            - folderPath
+            - guestName
+            - hostName
+            - ipAddress
+            - name
+            - orgUuid
+            - publicIpAddress
+            - remoteSessionClientIp
+            - remoteVirtualSession
+            - sourceName
+            - timestampUtcMs
+            - triggerCondition
+            - type
+            - userName
+            - utcOffsetSeconds
+            - uuid
+            - severity
+            - sourceType
+            - alertId
+            - groupId
+            - fieldsUrlNames
+            - fieldsUrlParams
+            - actionUrlNames
+            - actionUrlParams
+            - tags
+            - groups
+        filters:
+          type: object
+          description: 'To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group''s logic operator (AND/OR).
+
+
+            Do not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to "user is Bob AND (severity is high OR severity is low)".'
+          properties:
+            and:
+              description: Array of filters/groups where ALL conditions must match (AND logic)
+              type: array
+              items:
+                type: object
+                properties:
+                  filter:
+                    description: Single filter condition
+                    type: object
+                    properties:
+                      key:
+                        description: Field name to filter on
+                        type: string
+                        enum:
+                        - uuid
+                        - timestampUtcMs
+                        - name
+                        - severity
+                        - sourceName
+                        - guestName
+                        - userName
+                        - type
+                        - utcOffsetSeconds
+                      op:
+                        description: 'Comparison operator.
+
+                          - Use equals/not_equals for exact matches (works with all fields).
+
+                          - Use contains for partial string matching (only for string fields like name, userName, guestName, sourceName, NOT for severity enum).
+
+                          - Use greater/less/greater_or_equals/less_or_equals for numeric comparisons.
+
+                          - Use between for range queries.'
+                        type: string
+                        enum:
+                        - equals
+                        - contains
+                        - not_equals
+                        - between
+                        - greater
+                        - less
+                        - greater_or_equals
+                        - less_or_equals
+                      value:
+                        description: Value to compare against. Can be string, number, or array for between operator.
+                        oneOf:
+                        - type: string
+                        - type: number
+                        - type: array
+                          items:
+                            oneOf:
+                            - type: string
+                            - type: number
+                  group:
+                    type: object
+                    description: A nested AND/OR group. Use group to create complex queries with nested AND/OR logic.
+                    properties:
+                      and:
+                        description: Array of filters/groups where ALL conditions must match (AND logic)
+                        type: array
+                      or:
+                        description: Array of filters/groups where ANY condition can match (OR logic)
+                        type: array
+            or:
+              description: Array of filters/groups where ANY condition can match (OR logic)
+              type: array
+              items:
+                type: object
+                properties:
+                  filter:
+                    description: Single filter condition
+                    type: object
+                    properties:
+                      key:
+                        description: Field name to filter on
+                        type: string
+                        enum:
+                        - uuid
+                        - timestampUtcMs
+                        - name
+                        - severity
+                        - sourceName
+                        - guestName
+                        - userName
+                        - type
+                        - utcOffsetSeconds
+                      op:
+                        description: 'Comparison operator.
+
+                          - Use equals/not_equals for exact matches (works with all fields).
+
+                          - Use contains for partial string matching (only for string fields like name, userName, guestName, sourceName, NOT for severity enum).
+
+                          - Use greater/less/greater_or_equals/less_or_equals for numeric comparisons.
+
+                          - Use between for range queries.'
+                        type: string
+                        enum:
+                        - equals
+                        - contains
+                        - not_equals
+                        - between
+                        - greater
+                        - less
+                        - greater_or_equals
+                        - less_or_equals
+                      value:
+                        description: Value to compare against. Can be string, number, or array for between operator.
+                        oneOf:
+                        - type: string
+                        - type: number
+                        - type: array
+                          items:
+                            oneOf:
+                            - type: string
+                            - type: number
+                  group:
+                    type: object
+                    description: A nested AND/OR group. Use group to create complex queries with nested AND/OR logic.
+                    properties:
+                      and:
+                        description: Array of filters/groups where ALL conditions must match (AND logic)
+                        type: array
+                      or:
+                        description: Array of filters/groups where ANY condition can match (OR logic)
+                        type: array
+          example:
+            and:
+            - filter:
+                key: severity
+                op: equals
+                value: Informational
+            - filter:
+                key: sourceName
+                op: equals
+                value: desktop
+      required:
+      - timeFrom
+      - timeTo
+      - fields
+      - limit
+    Event:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the event.
+        _created:
+          type: string
+          format: date-time
+          description: Timestamp of when the event was uploaded in the database.
+        _updated:
+          type: string
+          format: date-time
+          description: Timestamp of when the event was last updated.
+        created_local:
+          type: string
+          format: date-time
+          description: Local timestamp of when the event occured. For DEVICE events, this can be different than the `_created` time.
+        title:
+          type: string
+          description: Title of the event.
+        type:
+          type: string
+          description: Type of event.
+          enum:
+          - ALERT
+          - DEVICE
+          - SECURITY
+          - SYSTEM
+        action_type:
+          type:
+          - string
+          - 'null'
+          description: Whether device actions were performed manually by a user or automated by an alert.
+          enum:
+          - MANUAL
+          - AUTOMATED
+        description:
+          type: string
+          description: Detailed description of the event.
+        severity:
+          type: integer
+          description: Severity level of the event.
+        meta:
+          type: string
+          description: Additional metadata for DEVICE events.
+        local_id:
+          type: string
+          description: Local identifier for DEVICE events.
+        associated_id:
+          type: string
+          description: For events associated with a managed device, the device ID.
+        associated_name:
+          type: string
+          description: For events associated with a managed device, the name of the device.
+        action_name:
+          type: string
+          description: For actions performed from ControlUp, this is the name of the action.
+        console_user_upn:
+          type:
+          - string
+          - 'null'
+          description: User Principal Name of the console user involved (if applicable).
+        alert_id:
+          type: string
+          description: ID of the alert that triggered the event. Returned only for alerts.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+    apiKey:
+      type: http
+      scheme: bearer
+x-refined-from:
+- controlup-desktops-openapi.yml
+- controlup-dex-events-openapi.yml

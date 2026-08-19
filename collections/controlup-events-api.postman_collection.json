@@ -1,0 +1,2147 @@
+{
+  "item": [
+    {
+      "id": "6fa34899-59a0-4414-a1dc-01d68494e9ae",
+      "name": "Events",
+      "description": {
+        "content": "The System Events log reports important events and alerts in your ControlUp for Desktops environment.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "afc27a73-18a0-47ba-b894-7ed7775ceabe",
+          "name": "Get system events",
+          "request": {
+            "name": "Get system events",
+            "description": {
+              "content": "Returns entries from the System Events log, which contains alerts, actions, configuration changes, etc. By default, the endpoint returns 10000 events starting with the oldest event. A maximum of 10000 events can be returned per request.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "events"
+              ],
+              "host": [
+                "{{events-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "size",
+                  "value": "10000",
+                  "description": "The number of rows returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page returned. The number of rows per page is set with the `size` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][field]",
+                  "value": "<string>",
+                  "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][type]",
+                  "value": "<string>",
+                  "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][value]",
+                  "value": "<string>",
+                  "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][field]",
+                  "value": "<string>",
+                  "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][dir]",
+                  "value": "<string>",
+                  "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8eb0730a-43b3-406d-b43a-2f30a08e8aa3",
+              "name": "System Events log contents.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events"
+                  ],
+                  "host": [
+                    "{{events-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rows\": [\n    {\n      \"_id\": \"string\",\n      \"_created\": \"1988-05-13T09:13:44.472Z\",\n      \"_updated\": \"1963-07-27T08:57:17.096Z\",\n      \"created_local\": \"1981-08-30T20:29:04.864Z\",\n      \"title\": \"string\",\n      \"type\": \"ALERT\",\n      \"action_type\": \"MANUAL\",\n      \"description\": \"string\",\n      \"severity\": 6013,\n      \"meta\": \"string\",\n      \"local_id\": \"string\",\n      \"associated_id\": \"string\",\n      \"associated_name\": \"string\",\n      \"action_name\": \"string\",\n      \"console_user_upn\": null,\n      \"alert_id\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"_created\": \"2020-06-06T08:44:16.545Z\",\n      \"_updated\": \"2016-02-19T11:05:53.692Z\",\n      \"created_local\": \"1959-07-18T07:40:33.351Z\",\n      \"title\": \"string\",\n      \"type\": \"SECURITY\",\n      \"action_type\": \"AUTOMATED\",\n      \"description\": \"string\",\n      \"severity\": 1575,\n      \"meta\": \"string\",\n      \"local_id\": \"string\",\n      \"associated_id\": \"string\",\n      \"associated_name\": \"string\",\n      \"action_name\": \"string\",\n      \"console_user_upn\": null,\n      \"alert_id\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b0ff806e-ee86-4a35-aaa6-79af7a202e10",
+              "name": "The provided query is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events"
+                  ],
+                  "host": [
+                    "{{events-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ac7e2284-cac3-4e95-a6be-f82b94b6e2cd",
+          "name": "Get system events with query",
+          "request": {
+            "name": "Get system events with query",
+            "description": {
+              "content": "Returns the same data as [GET /events](get-system-events), but lets you send an OpenSearch query in the request body.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "events",
+                "query"
+              ],
+              "host": [
+                "{{events-query-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "27c560a4-fe90-4831-9225-09d1c340c8f5",
+              "name": "System Events log contents.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "query"
+                  ],
+                  "host": [
+                    "{{events-query-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": {\n    \"term\": {\n      \"_id\": \"ERhcqwwow455mzZoBiDB-aE\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rows\": [\n    {\n      \"_id\": \"string\",\n      \"_created\": \"1988-05-13T09:13:44.472Z\",\n      \"_updated\": \"1963-07-27T08:57:17.096Z\",\n      \"created_local\": \"1981-08-30T20:29:04.864Z\",\n      \"title\": \"string\",\n      \"type\": \"ALERT\",\n      \"action_type\": \"MANUAL\",\n      \"description\": \"string\",\n      \"severity\": 6013,\n      \"meta\": \"string\",\n      \"local_id\": \"string\",\n      \"associated_id\": \"string\",\n      \"associated_name\": \"string\",\n      \"action_name\": \"string\",\n      \"console_user_upn\": null,\n      \"alert_id\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"_created\": \"2020-06-06T08:44:16.545Z\",\n      \"_updated\": \"2016-02-19T11:05:53.692Z\",\n      \"created_local\": \"1959-07-18T07:40:33.351Z\",\n      \"title\": \"string\",\n      \"type\": \"SECURITY\",\n      \"action_type\": \"AUTOMATED\",\n      \"description\": \"string\",\n      \"severity\": 1575,\n      \"meta\": \"string\",\n      \"local_id\": \"string\",\n      \"associated_id\": \"string\",\n      \"associated_name\": \"string\",\n      \"action_name\": \"string\",\n      \"console_user_upn\": null,\n      \"alert_id\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9e0bec5c-d634-4dbb-8555-46a29552f253",
+              "name": "The provided query is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "query"
+                  ],
+                  "host": [
+                    "{{events-query-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": {\n    \"term\": {\n      \"_id\": \"ERhcqwwow455mzZoBiDB-aE\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bb6d08d6-7724-4e25-aece-897790a18959",
+          "name": "List all Events",
+          "request": {
+            "name": "List all Events",
+            "description": {
+              "content": "Returns a list of events based on specified time ranges and filtering criteria. This endpoint uses field projection, returning only the specific event attributes requested in the fields parameter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "events",
+                "organizations",
+                ":orgId",
+                "events"
+              ],
+              "host": [
+                "{{events-organizations-orgId-events-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"timeFrom\": \"<number>\",\n  \"timeTo\": \"<number>\",\n  \"fields\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"limit\": \"<number>\",\n  \"sortBy\": \"<string>\",\n  \"sortDir\": \"desc\",\n  \"cursor\": \"<string>\",\n  \"filters\": {\n    \"and\": [\n      {\n        \"filter\": {\n          \"key\": \"<string>\",\n          \"op\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        \"group\": {\n          \"and\": \"<array>\",\n          \"or\": \"<array>\"\n        }\n      },\n      {\n        \"filter\": {\n          \"key\": \"<string>\",\n          \"op\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        \"group\": {\n          \"and\": \"<array>\",\n          \"or\": \"<array>\"\n        }\n      }\n    ],\n    \"or\": [\n      {\n        \"filter\": {\n          \"key\": \"<string>\",\n          \"op\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        \"group\": {\n          \"and\": \"<array>\",\n          \"or\": \"<array>\"\n        }\n      },\n      {\n        \"filter\": {\n          \"key\": \"<string>\",\n          \"op\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        \"group\": {\n          \"and\": \"<array>\",\n          \"or\": \"<array>\"\n        }\n      }\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "697f103a-0624-4338-8f8d-611e29e6488c",
+              "name": "Successfully retrieved events list with cursor-based pagination",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"timeFrom\": 1705057200000,\n  \"timeTo\": 1705143600000,\n  \"fields\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"limit\": \"<number>\",\n  \"sortBy\": \"<string>\",\n  \"sortDir\": \"desc\",\n  \"cursor\": \"<string>\",\n  \"filters\": {\n    \"and\": [\n      {\n        \"filter\": {\n          \"key\": \"severity\",\n          \"op\": \"equals\",\n          \"value\": \"Informational\"\n        }\n      },\n      {\n        \"filter\": {\n          \"key\": \"sourceName\",\n          \"op\": \"equals\",\n          \"value\": \"desktop\"\n        }\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"name\": \"High CPU Load Detected\",\n      \"sourceName\": \"SOURCE_NAME_DESKTOP\",\n      \"timestampUtcMs\": 1705057200000,\n      \"utcOffsetSeconds\": 0,\n      \"uuid\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"groups\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actionUrlParams\": {},\n      \"actionUrlNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"fieldsUrlParams\": {},\n      \"fieldsUrlNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"groupId\": \"group-456-def\",\n      \"alertId\": \"alert-123-abc\",\n      \"sourceType\": \"agent\",\n      \"severity\": \"High\",\n      \"userName\": \"john.doe\",\n      \"type\": \"Performance\",\n      \"triggerCondition\": \"The trigger activates if the CPU load is 90% or more for at least 60 seconds.\",\n      \"remoteVirtualSession\": \"session-123\",\n      \"remoteSessionClientIp\": \"10.0.0.50\",\n      \"publicIpAddress\": \"203.0.113.1\",\n      \"ipAddress\": \"192.168.1.100\",\n      \"hostName\": \"host-1.example.com\",\n      \"guestName\": \"DESKTOP-ABC123\",\n      \"folderPath\": \"C:\\\\Users\\\\user1\\\\Documents\",\n      \"applicationName\": \"chrome.exe\",\n      \"additionalData\": {\n        \"device_id\": \"00:1A:2B:3C:4D:0E\",\n        \"os_version\": \"Windows 10 Pro\"\n      }\n    },\n    {\n      \"name\": \"High CPU Load Detected\",\n      \"sourceName\": \"SOURCE_NAME_DESKTOP\",\n      \"timestampUtcMs\": 1705057200000,\n      \"utcOffsetSeconds\": 0,\n      \"uuid\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"groups\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actionUrlParams\": {},\n      \"actionUrlNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"fieldsUrlParams\": {},\n      \"fieldsUrlNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"groupId\": \"group-456-def\",\n      \"alertId\": \"alert-123-abc\",\n      \"sourceType\": \"agent\",\n      \"severity\": \"High\",\n      \"userName\": \"john.doe\",\n      \"type\": \"Performance\",\n      \"triggerCondition\": \"The trigger activates if the CPU load is 90% or more for at least 60 seconds.\",\n      \"remoteVirtualSession\": \"session-123\",\n      \"remoteSessionClientIp\": \"10.0.0.50\",\n      \"publicIpAddress\": \"203.0.113.1\",\n      \"ipAddress\": \"192.168.1.100\",\n      \"hostName\": \"host-1.example.com\",\n      \"guestName\": \"DESKTOP-ABC123\",\n      \"folderPath\": \"C:\\\\Users\\\\user1\\\\Documents\",\n      \"applicationName\": \"chrome.exe\",\n      \"additionalData\": {\n        \"device_id\": \"00:1A:2B:3C:4D:0E\",\n        \"os_version\": \"Windows 10 Pro\"\n      }\n    }\n  ],\n  \"nextCursor\": \"string\",\n  \"previousCursor\": \"string\",\n  \"page\": 9636.46211573472,\n  \"pageSize\": 8107.385394936476\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "49be4b22-4785-4577-9faa-8a9836abaa3e",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"timeFrom\": 1705057200000,\n  \"timeTo\": 1705143600000,\n  \"fields\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"limit\": \"<number>\",\n  \"sortBy\": \"<string>\",\n  \"sortDir\": \"desc\",\n  \"cursor\": \"<string>\",\n  \"filters\": {\n    \"and\": [\n      {\n        \"filter\": {\n          \"key\": \"severity\",\n          \"op\": \"equals\",\n          \"value\": \"Informational\"\n        }\n      },\n      {\n        \"filter\": {\n          \"key\": \"sourceName\",\n          \"op\": \"equals\",\n          \"value\": \"desktop\"\n        }\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "32284086-f8c1-4d7e-9b38-e4c573fcdc4b",
+              "name": "Unauthorized - Invalid or missing authentication token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"timeFrom\": 1705057200000,\n  \"timeTo\": 1705143600000,\n  \"fields\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"limit\": \"<number>\",\n  \"sortBy\": \"<string>\",\n  \"sortDir\": \"desc\",\n  \"cursor\": \"<string>\",\n  \"filters\": {\n    \"and\": [\n      {\n        \"filter\": {\n          \"key\": \"severity\",\n          \"op\": \"equals\",\n          \"value\": \"Informational\"\n        }\n      },\n      {\n        \"filter\": {\n          \"key\": \"sourceName\",\n          \"op\": \"equals\",\n          \"value\": \"desktop\"\n        }\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "36207dc3-acdd-4963-966f-634c1db47901",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"timeFrom\": 1705057200000,\n  \"timeTo\": 1705143600000,\n  \"fields\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"limit\": \"<number>\",\n  \"sortBy\": \"<string>\",\n  \"sortDir\": \"desc\",\n  \"cursor\": \"<string>\",\n  \"filters\": {\n    \"and\": [\n      {\n        \"filter\": {\n          \"key\": \"severity\",\n          \"op\": \"equals\",\n          \"value\": \"Informational\"\n        }\n      },\n      {\n        \"filter\": {\n          \"key\": \"sourceName\",\n          \"op\": \"equals\",\n          \"value\": \"desktop\"\n        }\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7fed67c0-e504-454e-9eb0-a757090002a5",
+              "name": "Internal Server Error - Unexpected server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"timeFrom\": 1705057200000,\n  \"timeTo\": 1705143600000,\n  \"fields\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"limit\": \"<number>\",\n  \"sortBy\": \"<string>\",\n  \"sortDir\": \"desc\",\n  \"cursor\": \"<string>\",\n  \"filters\": {\n    \"and\": [\n      {\n        \"filter\": {\n          \"key\": \"severity\",\n          \"op\": \"equals\",\n          \"value\": \"Informational\"\n        }\n      },\n      {\n        \"filter\": {\n          \"key\": \"sourceName\",\n          \"op\": \"equals\",\n          \"value\": \"desktop\"\n        }\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "50b34510-6d48-4d32-8e9e-fa20a7652b73",
+          "name": "Get total count of events",
+          "request": {
+            "name": "Get total count of events",
+            "description": {
+              "content": "Returns the count of unique values (cardinality) for a specified field within a defined time range. This endpoint allows you to quantify the diversity of your event data such as counting unique users, distinct error types, or total event volume, while applying filters to narrow the scope.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "events",
+                "organizations",
+                ":orgId",
+                "events",
+                "total"
+              ],
+              "host": [
+                "{{events-organizations-orgId-events-total-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filters[and][0][filter][key]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][0][filter][op]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][0][filter][value]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][0][group][and]",
+                  "value": "<array>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][0][group][or]",
+                  "value": "<array>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][1][filter][key]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][1][filter][op]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][1][filter][value]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][1][group][and]",
+                  "value": "<array>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[and][1][group][or]",
+                  "value": "<array>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][0][filter][key]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][0][filter][op]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][0][filter][value]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][0][group][and]",
+                  "value": "<array>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][0][group][or]",
+                  "value": "<array>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][1][filter][key]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][1][filter][op]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][1][filter][value]",
+                  "value": "<string>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][1][group][and]",
+                  "value": "<array>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[or][1][group][or]",
+                  "value": "<array>",
+                  "description": "To use the filter builder, you must first select a single top-level logic group (AND/OR) and then add your filter conditions within the group. All conditions in the group are evaluated together using the group's logic operator (AND/OR).\n\nDo not include both operator types at the top-level. If you need to combine AND/OR logic, you can switch the logic type by adding a new nested group object within the first group, such as AND[user is Bob, OR[severity is high, severity is low]]. This translates to \"user is Bob AND (severity is high OR severity is low)\".\n\nNote that you can also send the filter object as a JSON-encoded string. Ensure your JSON follows the same structure as the query builder."
+                },
+                {
+                  "disabled": false,
+                  "key": "timeFrom",
+                  "value": "<number>",
+                  "description": "(Required) Return events starting from the specified time in epoch timestamp (milliseconds)."
+                },
+                {
+                  "disabled": false,
+                  "key": "timeTo",
+                  "value": "<number>",
+                  "description": "(Required) Return events up to the specified time in epoch timestamp (milliseconds)."
+                },
+                {
+                  "disabled": false,
+                  "key": "field",
+                  "value": "<string>",
+                  "description": "(Required) The event attribute to aggregate for unique values. You can use uuid to calculate the total number of unique events."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "891535fa-376f-4e30-92ac-add3da6095ff",
+              "name": "Returns total count of events",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    "total"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-total-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filters[and][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "timeFrom",
+                      "value": "1705057200000"
+                    },
+                    {
+                      "key": "timeTo",
+                      "value": "1705143600000"
+                    },
+                    {
+                      "key": "field",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"result\": 5934.186238092205\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b446a950-d1ec-48f8-8672-50cf5df5b36b",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    "total"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-total-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filters[and][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "timeFrom",
+                      "value": "1705057200000"
+                    },
+                    {
+                      "key": "timeTo",
+                      "value": "1705143600000"
+                    },
+                    {
+                      "key": "field",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b0a0f3ad-5cb1-43f6-8499-99bf2baf1403",
+              "name": "Unauthorized - Invalid or missing authentication token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    "total"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-total-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filters[and][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "timeFrom",
+                      "value": "1705057200000"
+                    },
+                    {
+                      "key": "timeTo",
+                      "value": "1705143600000"
+                    },
+                    {
+                      "key": "field",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ab8beff2-7a0d-4192-9bf3-8a536a8fba5e",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    "total"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-total-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filters[and][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "timeFrom",
+                      "value": "1705057200000"
+                    },
+                    {
+                      "key": "timeTo",
+                      "value": "1705143600000"
+                    },
+                    {
+                      "key": "field",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3a0bd30c-f6ac-4b2a-80f1-295f741ac7ac",
+              "name": "Internal Server Error - Unexpected server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    "total"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-total-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filters[and][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[and][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[and][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][0][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][0][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][key]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][op]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][filter][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters[or][1][group][and]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "filters[or][1][group][or]",
+                      "value": "<array>"
+                    },
+                    {
+                      "key": "timeFrom",
+                      "value": "1705057200000"
+                    },
+                    {
+                      "key": "timeTo",
+                      "value": "1705143600000"
+                    },
+                    {
+                      "key": "field",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "af655c37-0fd7-4248-b2cb-c0e9041397e4",
+          "name": "Retrieve an event",
+          "request": {
+            "name": "Retrieve an event",
+            "description": {
+              "content": "Retrieves the details of a specific event.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "events",
+                "organizations",
+                ":orgId",
+                "events",
+                ":eventId"
+              ],
+              "host": [
+                "{{events-organizations-orgId-events-eventId-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eventId",
+                  "description": "(Required) The UUID of the event to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f3973ee7-35dd-435e-afd2-0b8ba5c0da1c",
+              "name": "Returns a single event by UUID",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-eventId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eventId",
+                      "description": "(Required) The UUID of the event to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"High CPU Load Detected\",\n  \"sourceName\": \"SOURCE_NAME_DESKTOP\",\n  \"timestampUtcMs\": 1705057200000,\n  \"utcOffsetSeconds\": 0,\n  \"uuid\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"groups\": [\n    \"string\",\n    \"string\"\n  ],\n  \"actionUrlParams\": {},\n  \"actionUrlNames\": [\n    \"string\",\n    \"string\"\n  ],\n  \"fieldsUrlParams\": {},\n  \"fieldsUrlNames\": [\n    \"string\",\n    \"string\"\n  ],\n  \"groupId\": \"group-456-def\",\n  \"alertId\": \"alert-123-abc\",\n  \"sourceType\": \"agent\",\n  \"severity\": \"High\",\n  \"userName\": \"john.doe\",\n  \"type\": \"Performance\",\n  \"triggerCondition\": \"The trigger activates if the CPU load is 90% or more for at least 60 seconds.\",\n  \"remoteVirtualSession\": \"session-123\",\n  \"remoteSessionClientIp\": \"10.0.0.50\",\n  \"publicIpAddress\": \"203.0.113.1\",\n  \"ipAddress\": \"192.168.1.100\",\n  \"hostName\": \"host-1.example.com\",\n  \"guestName\": \"DESKTOP-ABC123\",\n  \"folderPath\": \"C:\\\\Users\\\\user1\\\\Documents\",\n  \"applicationName\": \"chrome.exe\",\n  \"additionalData\": {\n    \"device_id\": \"00:1A:2B:3C:4D:0E\",\n    \"os_version\": \"Windows 10 Pro\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "50386231-95a6-4a71-99c5-b0a2f38c162d",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-eventId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eventId",
+                      "description": "(Required) The UUID of the event to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cdef7de7-d13f-414b-b688-481c698340bb",
+              "name": "Unauthorized - Invalid or missing authentication token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-eventId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eventId",
+                      "description": "(Required) The UUID of the event to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7e10c6e3-c0f4-4c32-8b07-fc1173c4abb3",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-eventId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eventId",
+                      "description": "(Required) The UUID of the event to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c13bafc4-8fab-4974-9554-0a88fc49d546",
+              "name": "Not Found - Event not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-eventId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eventId",
+                      "description": "(Required) The UUID of the event to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fc684406-f775-4762-a706-1d5951a1833b",
+              "name": "Internal Server Error - Unexpected server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "organizations",
+                    ":orgId",
+                    "events",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{events-organizations-orgId-events-eventId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eventId",
+                      "description": "(Required) The UUID of the event to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "baseUrl"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "events-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "events-query-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/events/v1",
+      "key": "events-organizations-orgId-events-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/events/v1",
+      "key": "events-organizations-orgId-events-total-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/events/v1",
+      "key": "events-organizations-orgId-events-eventId-Url"
+    }
+  ],
+  "info": {
+    "_postman_id": "b00f14af-2cd8-4412-912d-e44706a2bc68",
+    "name": "Controlup Events API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Operations tagged Events across 2 of this provider's published API definitions: controlup-desktops-openapi.yml, controlup-dex-events-openapi.yml. Each path carries the servers of the definition it was published in.",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VDI & DAAS Processes API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Processes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get usage details for a process",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/processes/usage/single",
+            "params": [
+              {
+                "name": "processName",
+                "value": "notepad.exe",
+                "type": "query",
+                "description": "The name of the process"
+              },
+              {
+                "name": "processVersion",
+                "value": "",
+                "type": "query",
+                "description": "Only return usage details for the specified process version."
+              },
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01T00:00:00.000Z",
+                "type": "query",
+                "description": "Start date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02T00:00:00.000Z",
+                "type": "query",
+                "description": "End date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "userAccounts",
+                "value": "",
+                "type": "query",
+                "description": "Filter by user accounts in Domain\\username format. Maximum 50 items."
+              },
+              {
+                "name": "computerNames",
+                "value": "",
+                "type": "query",
+                "description": "Filter by computer names. Maximum 100 items. Unknown names are resolved to -1 and match nothing."
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns usage details for the specified process including usage per machine, per user account, peak concurrent instances, and unique user count throughout the search period."
+        },
+        {
+          "info": {
+            "name": "Get usage details for all processes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/processes/usage/all",
+            "params": [
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01",
+                "type": "query",
+                "description": "Start date of the search period in the format: YYYY-MM-DD"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02",
+                "type": "query",
+                "description": "End date of the search period in the format: YYYY-MM-DD"
+              },
+              {
+                "name": "userAccounts",
+                "value": "",
+                "type": "query",
+                "description": "Filter by user accounts in Domain\\username format. Maximum 50 items. An empty list is treated as no filter."
+              },
+              {
+                "name": "computerNames",
+                "value": "",
+                "type": "query",
+                "description": "Filter by computer names. Maximum 100 items. Unknown names are resolved to -1 and match nothing. An empty list is treated as no filter."
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns usage details for all processes (number of unique users and, when no filters are supplied, peak concurrent users) per calendar day throughout the search period. When computerNames or userAccounts filters are supplied, peak_concurrency is omitted and the maximum date span is 90 days."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

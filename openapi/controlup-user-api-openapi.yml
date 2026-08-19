@@ -1,0 +1,257 @@
+openapi: 3.2.0
+info:
+  title: VDI & DAAS User API
+  version: 1.0.0
+  description: User activity reports
+servers:
+- url: https://api.controlup.com/historical
+security:
+- bearer-jwt:
+  - read
+  - write
+tags:
+- name: User
+  description: User activity reports
+paths:
+  /v1/users/activity:
+    get:
+      tags:
+      - User
+      summary: Get user activity status
+      description: Returns a list of users and their activity status throughout the search period. The search period is divided into smaller time windows according to the granularity parameter. The endpoint returns a user's activity status for each time window.
+      operationId: getUserActivity
+      parameters:
+      - name: userAccount
+        in: query
+        description: Only return activity data for the specified user account (user_account).
+        required: false
+        schema:
+          type: string
+      - name: granularity
+        in: query
+        description: Sets the length of the time windows in which a user activity statuses are returned. For example, if you set this to 5m then you can see a user's activity status for each 5 minute interval throughout the search period.
+        required: true
+        schema:
+          type: string
+          description: Sets the length of the time windows in which a user activity statuses are returned. For example, if you set this to 5m then you can see a user's activity status for each 5 minute interval throughout the search period.
+          enum:
+          - 1h
+          - 5m
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalListResponseUserActivityResult'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalListResponseUserActivityResult'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+components:
+  schemas:
+    HistoricalListResponseUserActivityResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserActivityResult'
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    UserActivityResult:
+      type: object
+      properties:
+        user_name:
+          type: string
+        user_account:
+          type: string
+        user_id:
+          type: string
+        activity_statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityStatus'
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    ActivityStatus:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        activity_status:
+          type: string
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false
+  explorer-enabled: true
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

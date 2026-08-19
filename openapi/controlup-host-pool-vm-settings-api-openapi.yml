@@ -1,0 +1,2054 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Host pool VM settings API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Host pool VM settings
+paths:
+  /cloud/host-pools/{hostPoolId}/vm-settings:
+    get:
+      tags:
+      - Host pool VM settings
+      summary: Get VM settings for a host pool
+      description: 'Returns the template used when adding new session hosts to the pool: deployment region and resource group,
+
+        primary and alternative VM size, source image and version, OS disk size, and virtual network.
+
+        Password fields return placeholders, never plaintext.
+
+        Describes hosts that would be created, not hosts that exist.'
+      operationId: GetHostPoolVmSettings
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: Host pool identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Returns VM settings for the specified host pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolVmSettingsDto'
+              example:
+                hostPoolId: 201abf62-50ac-429b-bbf9-33bb07a5467b
+                localAdminPassword: '***'
+                details:
+                  deploymentRegion:
+                    name: eastus
+                    displayName: East US
+                    regionalDisplayName: (US) East US
+                    geography: United States
+                    regionCategory: Recommended
+                    isPhysical: true
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                  deploymentResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: RG-AVD-Lab
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                  primaryVmSize:
+                    name: Standard_D4s_v5
+                    displayName: Standard D4s_v5
+                    tier: Standard
+                    size: D4s_v5
+                    cores: 4
+                    memoryBytes: 17179869184
+                    maxDataDisks: 8
+                    osDiskSizeBytes: 1098437885952
+                    localStorageBytes: 0
+                    family: standardDSv5Family
+                    maxIops: 6400
+                    maxNetworkInterfaces: 2
+                    supportsPremiumStorage: true
+                    supportsAcceleratedNetworking: true
+                    supportsEphemeralOSDisk: true
+                    supportsTrustedLaunch: false
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                    hyperVGenerations:
+                    - V1
+                    - V2
+                    diskControllerTypes:
+                    - SCSI
+                    supportsHyperVGenerationV1: true
+                    supportsHyperVGenerationV2: true
+                    supportsDiskControllerSCSI: true
+                    supportsDiskControllerNVMe: false
+                    isRestricted: false
+                  alternativeVmSize:
+                    name: Standard_D4as_v5
+                    displayName: Standard D4as_v5
+                    tier: Standard
+                    size: D4as_v5
+                    cores: 4
+                    memoryBytes: 17179869184
+                    maxDataDisks: 8
+                    osDiskSizeBytes: 1098437885952
+                    localStorageBytes: 0
+                    family: standardDASv5Family
+                    maxIops: 6400
+                    maxNetworkInterfaces: 2
+                    supportsPremiumStorage: true
+                    supportsAcceleratedNetworking: true
+                    supportsEphemeralOSDisk: true
+                    supportsTrustedLaunch: false
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                    hyperVGenerations:
+                    - V1
+                    - V2
+                    diskControllerTypes:
+                    - SCSI
+                    supportsHyperVGenerationV1: true
+                    supportsHyperVGenerationV2: true
+                    supportsDiskControllerSCSI: true
+                    supportsDiskControllerNVMe: false
+                    isRestricted: false
+                  image:
+                    hasVersion: true
+                    galleryId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery
+                    galleryName: AVDGoldenImageGallery
+                    imageSourceType: sharedImageGallery
+                    hyperVGeneration: V2
+                    diskControllerTypes:
+                    - SCSI
+                    osType: Windows
+                    osState: Generalized
+                    sku: de-gallery-03
+                    offer: windows-11-multisession
+                    publisher: ControlUp
+                    securityType: trustedLaunch
+                    isAlreadyManaged: false
+                    resourceGroup: RG-AVD-Lab
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: de-gallery-03
+                    type: galleryImage
+                    location: eastus
+                    tags: {}
+                  imageResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: RG-AVD-Lab
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                  imageVersion:
+                    galleryId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery
+                    galleryName: AVDGoldenImageGallery
+                    imageDefinitionId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                    imageDefinitionName: de-gallery-03
+                    osDiskSizeBytes: 137438953472
+                    storageAccountType: Standard_LRS
+                    diskControllerTypes:
+                    - SCSI
+                    targetRegions:
+                    - eastus
+                    - westus
+                    resourceGroup: RG-AVD-Lab
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03/versions/1.0.0
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: 1.0.0
+                    type: galleryImageVersion
+                    location: eastus
+                    tags: {}
+                  osDiskSize:
+                    type: Standard_LRS
+                    typeDisplayName: Standard HDD
+                    size: S30
+                    tier: Standard
+                    minSizeBytes: 34359738368
+                    maxSizeBytes: 35184372088832
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                  virtualNetwork:
+                    subnets:
+                    - id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                      name: default
+                      addressPrefixes:
+                      - 10.0.1.0/24
+                    resourceGroup: rg-network
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: vnet-avd
+                    type: virtualNetwork
+                    location: eastus
+                    tags: {}
+                  virtualNetworkResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: rg-network
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                deploymentRegion: eastus
+                deploymentResourceGroupName: RG-AVD-Lab
+                vmNamingPrefix: e2ehost
+                primaryVmSize: Standard_D4s_v5
+                alternativeVmSize: Standard_D4as_v5
+                availabilityZones: []
+                imageSource: gallery
+                imageResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                imageVersionResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03/versions/1.0.0
+                osDiskStorageAccountType: Standard_LRS
+                osDiskSizeBytes: 137438953472
+                securityType: trustedLaunch
+                secureBoot: true
+                vTpm: true
+                integrityMonitoring: false
+                virtualNetworkResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd
+                subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                networkSecurityGroup: basic
+                publicInboundPorts: false
+                joinType: entraId
+                localAdminUsername: localadmin
+                intuneEnrollment: false
+                tags:
+                  environment: dev
+                  owner: avd-team
+        '204':
+          description: No VM settings are configured for the specified host pool
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified host pool does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    put:
+      tags:
+      - Host pool VM settings
+      summary: Create or replace VM settings for a host pool
+      description: 'Stores the template future session hosts are built from: naming, domain join, image, VM size, disk, and network.
+
+        A full replacement, not a patch — omitted fields are cleared, so send the complete settings every time.
+
+        Adding hosts later reads these saved settings rather than taking them in the request.'
+      operationId: SaveHostPoolVmSettings
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: Host pool identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: VM settings payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveHostPoolVmSettingsRequest'
+        required: true
+      responses:
+        '200':
+          description: Returns the saved VM settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolVmSettingsDto'
+              example:
+                hostPoolId: 201abf62-50ac-429b-bbf9-33bb07a5467b
+                localAdminPassword: '***'
+                details:
+                  deploymentRegion:
+                    name: eastus
+                    displayName: East US
+                    regionalDisplayName: (US) East US
+                    geography: United States
+                    regionCategory: Recommended
+                    isPhysical: true
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                  deploymentResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: RG-AVD-Lab
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                  primaryVmSize:
+                    name: Standard_D4s_v5
+                    displayName: Standard D4s_v5
+                    tier: Standard
+                    size: D4s_v5
+                    cores: 4
+                    memoryBytes: 17179869184
+                    maxDataDisks: 8
+                    osDiskSizeBytes: 1098437885952
+                    localStorageBytes: 0
+                    family: standardDSv5Family
+                    maxIops: 6400
+                    maxNetworkInterfaces: 2
+                    supportsPremiumStorage: true
+                    supportsAcceleratedNetworking: true
+                    supportsEphemeralOSDisk: true
+                    supportsTrustedLaunch: false
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                    hyperVGenerations:
+                    - V1
+                    - V2
+                    diskControllerTypes:
+                    - SCSI
+                    supportsHyperVGenerationV1: true
+                    supportsHyperVGenerationV2: true
+                    supportsDiskControllerSCSI: true
+                    supportsDiskControllerNVMe: false
+                    isRestricted: false
+                  alternativeVmSize:
+                    name: Standard_D4as_v5
+                    displayName: Standard D4as_v5
+                    tier: Standard
+                    size: D4as_v5
+                    cores: 4
+                    memoryBytes: 17179869184
+                    maxDataDisks: 8
+                    osDiskSizeBytes: 1098437885952
+                    localStorageBytes: 0
+                    family: standardDASv5Family
+                    maxIops: 6400
+                    maxNetworkInterfaces: 2
+                    supportsPremiumStorage: true
+                    supportsAcceleratedNetworking: true
+                    supportsEphemeralOSDisk: true
+                    supportsTrustedLaunch: false
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                    hyperVGenerations:
+                    - V1
+                    - V2
+                    diskControllerTypes:
+                    - SCSI
+                    supportsHyperVGenerationV1: true
+                    supportsHyperVGenerationV2: true
+                    supportsDiskControllerSCSI: true
+                    supportsDiskControllerNVMe: false
+                    isRestricted: false
+                  image:
+                    hasVersion: true
+                    galleryId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery
+                    galleryName: AVDGoldenImageGallery
+                    imageSourceType: sharedImageGallery
+                    hyperVGeneration: V2
+                    diskControllerTypes:
+                    - SCSI
+                    osType: Windows
+                    osState: Generalized
+                    sku: de-gallery-03
+                    offer: windows-11-multisession
+                    publisher: ControlUp
+                    securityType: trustedLaunch
+                    isAlreadyManaged: false
+                    resourceGroup: RG-AVD-Lab
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: de-gallery-03
+                    type: galleryImage
+                    location: eastus
+                    tags: {}
+                  imageResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: RG-AVD-Lab
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                  imageVersion:
+                    galleryId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery
+                    galleryName: AVDGoldenImageGallery
+                    imageDefinitionId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                    imageDefinitionName: de-gallery-03
+                    osDiskSizeBytes: 137438953472
+                    storageAccountType: Standard_LRS
+                    diskControllerTypes:
+                    - SCSI
+                    targetRegions:
+                    - eastus
+                    - westus
+                    resourceGroup: RG-AVD-Lab
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03/versions/1.0.0
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: 1.0.0
+                    type: galleryImageVersion
+                    location: eastus
+                    tags: {}
+                  osDiskSize:
+                    type: Standard_LRS
+                    typeDisplayName: Standard HDD
+                    size: S30
+                    tier: Standard
+                    minSizeBytes: 34359738368
+                    maxSizeBytes: 35184372088832
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                  virtualNetwork:
+                    subnets:
+                    - id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                      name: default
+                      addressPrefixes:
+                      - 10.0.1.0/24
+                    resourceGroup: rg-network
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: vnet-avd
+                    type: virtualNetwork
+                    location: eastus
+                    tags: {}
+                  virtualNetworkResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: rg-network
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                deploymentRegion: eastus
+                deploymentResourceGroupName: RG-AVD-Lab
+                vmNamingPrefix: e2ehost
+                primaryVmSize: Standard_D4s_v5
+                alternativeVmSize: Standard_D4as_v5
+                availabilityZones: []
+                imageSource: gallery
+                imageResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                imageVersionResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03/versions/1.0.0
+                osDiskStorageAccountType: Standard_LRS
+                osDiskSizeBytes: 137438953472
+                securityType: trustedLaunch
+                secureBoot: true
+                vTpm: true
+                integrityMonitoring: false
+                virtualNetworkResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd
+                subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                networkSecurityGroup: basic
+                publicInboundPorts: false
+                joinType: entraId
+                localAdminUsername: localadmin
+                intuneEnrollment: false
+                tags:
+                  environment: dev
+                  owner: avd-team
+        '400':
+          description: Bad request. Request payload failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage host pool settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified host pool does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    delete:
+      tags:
+      - Host pool VM settings
+      summary: Delete VM settings for a host pool
+      description: 'Discards the stored template, after which the pool has no settings to build new hosts from until they are saved again.
+
+        Affects the template only: existing session hosts keep running and are not modified or deleted.
+
+        Idempotent — deleting settings that were never configured still succeeds.'
+      operationId: DeleteHostPoolVmSettings
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: Host pool identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: VM settings were deleted or did not exist
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage host pool settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified host pool does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/{hostPoolId}/vm-settings/validation:
+    post:
+      tags:
+      - Host pool VM settings
+      summary: Validate VM settings for a host pool
+      description: 'Checks a VM settings payload and echoes it back enriched with resolved lookup details, without saving anything.
+
+        Send a body to test settings before committing them; omit the body to re-validate what is already stored.
+
+        A dry run only — use the save operation to persist.'
+      operationId: ValidateHostPoolVmSettings
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: Host pool identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Optional VM settings payload to validate; when omitted, validates persisted settings
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveHostPoolVmSettingsRequest'
+      responses:
+        '200':
+          description: Validation succeeded and returns resolved details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolVmSettingsDto'
+              example:
+                hostPoolId: 201abf62-50ac-429b-bbf9-33bb07a5467b
+                localAdminPassword: '***'
+                details:
+                  deploymentRegion:
+                    name: eastus
+                    displayName: East US
+                    regionalDisplayName: (US) East US
+                    geography: United States
+                    regionCategory: Recommended
+                    isPhysical: true
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                  deploymentResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: RG-AVD-Lab
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                  primaryVmSize:
+                    name: Standard_D4s_v5
+                    displayName: Standard D4s_v5
+                    tier: Standard
+                    size: D4s_v5
+                    cores: 4
+                    memoryBytes: 17179869184
+                    maxDataDisks: 8
+                    osDiskSizeBytes: 1098437885952
+                    localStorageBytes: 0
+                    family: standardDSv5Family
+                    maxIops: 6400
+                    maxNetworkInterfaces: 2
+                    supportsPremiumStorage: true
+                    supportsAcceleratedNetworking: true
+                    supportsEphemeralOSDisk: true
+                    supportsTrustedLaunch: false
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                    hyperVGenerations:
+                    - V1
+                    - V2
+                    diskControllerTypes:
+                    - SCSI
+                    supportsHyperVGenerationV1: true
+                    supportsHyperVGenerationV2: true
+                    supportsDiskControllerSCSI: true
+                    supportsDiskControllerNVMe: false
+                    isRestricted: false
+                  alternativeVmSize:
+                    name: Standard_D4as_v5
+                    displayName: Standard D4as_v5
+                    tier: Standard
+                    size: D4as_v5
+                    cores: 4
+                    memoryBytes: 17179869184
+                    maxDataDisks: 8
+                    osDiskSizeBytes: 1098437885952
+                    localStorageBytes: 0
+                    family: standardDASv5Family
+                    maxIops: 6400
+                    maxNetworkInterfaces: 2
+                    supportsPremiumStorage: true
+                    supportsAcceleratedNetworking: true
+                    supportsEphemeralOSDisk: true
+                    supportsTrustedLaunch: false
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                    hyperVGenerations:
+                    - V1
+                    - V2
+                    diskControllerTypes:
+                    - SCSI
+                    supportsHyperVGenerationV1: true
+                    supportsHyperVGenerationV2: true
+                    supportsDiskControllerSCSI: true
+                    supportsDiskControllerNVMe: false
+                    isRestricted: false
+                  image:
+                    hasVersion: true
+                    galleryId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery
+                    galleryName: AVDGoldenImageGallery
+                    imageSourceType: sharedImageGallery
+                    hyperVGeneration: V2
+                    diskControllerTypes:
+                    - SCSI
+                    osType: Windows
+                    osState: Generalized
+                    sku: de-gallery-03
+                    offer: windows-11-multisession
+                    publisher: ControlUp
+                    securityType: trustedLaunch
+                    isAlreadyManaged: false
+                    resourceGroup: RG-AVD-Lab
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: de-gallery-03
+                    type: galleryImage
+                    location: eastus
+                    tags: {}
+                  imageResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: RG-AVD-Lab
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                  imageVersion:
+                    galleryId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery
+                    galleryName: AVDGoldenImageGallery
+                    imageDefinitionId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                    imageDefinitionName: de-gallery-03
+                    osDiskSizeBytes: 137438953472
+                    storageAccountType: Standard_LRS
+                    diskControllerTypes:
+                    - SCSI
+                    targetRegions:
+                    - eastus
+                    - westus
+                    resourceGroup: RG-AVD-Lab
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03/versions/1.0.0
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: 1.0.0
+                    type: galleryImageVersion
+                    location: eastus
+                    tags: {}
+                  osDiskSize:
+                    type: Standard_LRS
+                    typeDisplayName: Standard HDD
+                    size: S30
+                    tier: Standard
+                    minSizeBytes: 34359738368
+                    maxSizeBytes: 35184372088832
+                    availableZones:
+                    - '1'
+                    - '2'
+                    - '3'
+                  virtualNetwork:
+                    subnets:
+                    - id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                      name: default
+                      addressPrefixes:
+                      - 10.0.1.0/24
+                    resourceGroup: rg-network
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: vnet-avd
+                    type: virtualNetwork
+                    location: eastus
+                    tags: {}
+                  virtualNetworkResourceGroup:
+                    id: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network
+                    subscriptionId: 25ae2df7-d61d-4cb0-a746-4b67e1cf8535
+                    name: rg-network
+                    type: resourceGroup
+                    location: eastus
+                    tags: {}
+                deploymentRegion: eastus
+                deploymentResourceGroupName: RG-AVD-Lab
+                vmNamingPrefix: e2ehost
+                primaryVmSize: Standard_D4s_v5
+                alternativeVmSize: Standard_D4as_v5
+                availabilityZones: []
+                imageSource: gallery
+                imageResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03
+                imageVersionResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/de-gallery-03/versions/1.0.0
+                osDiskStorageAccountType: Standard_LRS
+                osDiskSizeBytes: 137438953472
+                securityType: trustedLaunch
+                secureBoot: true
+                vTpm: true
+                integrityMonitoring: false
+                virtualNetworkResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd
+                subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                networkSecurityGroup: basic
+                publicInboundPorts: false
+                joinType: entraId
+                localAdminUsername: localadmin
+                intuneEnrollment: false
+                tags:
+                  environment: dev
+                  owner: avd-team
+        '204':
+          description: No VM settings are configured for the specified host pool when request payload is omitted
+        '400':
+          description: Bad request. Request payload failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage host pool settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified host pool does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    VmSizeDto:
+      required:
+      - cores
+      - displayName
+      - isRestricted
+      - localStorageBytes
+      - maxDataDisks
+      - memoryBytes
+      - name
+      - osDiskSizeBytes
+      - size
+      - supportsAcceleratedNetworking
+      - supportsDiskControllerNVMe
+      - supportsDiskControllerSCSI
+      - supportsEphemeralOSDisk
+      - supportsHyperVGenerationV1
+      - supportsHyperVGenerationV2
+      - supportsPremiumStorage
+      - supportsTrustedLaunch
+      type: object
+      properties:
+        name:
+          type: string
+          description: VM size name (e.g., "Standard_D2s_v3", "Standard_B2ms").
+        displayName:
+          type: string
+          description: 'Display name combining tier and size (e.g., "Standard D2s_v3", "Basic A1").
+
+            User-friendly formatted name for UI presentation.'
+        tier:
+          type:
+          - string
+          - 'null'
+          description: VM size tier (e.g., "Basic", "Standard").
+        size:
+          type: string
+          description: 'Size identifier without the tier prefix (e.g., "D2s_v3", "B2ms").
+
+            Useful for grouping VM sizes by family/series.'
+        cores:
+          type: integer
+          description: Number of virtual CPU cores.
+          format: int32
+        memoryBytes:
+          type: integer
+          description: Memory size in bytes.
+          format: int64
+        maxDataDisks:
+          type: integer
+          description: Maximum number of data disks that can be attached.
+          format: int32
+        osDiskSizeBytes:
+          type: integer
+          description: OS disk size in bytes.
+          format: int64
+        localStorageBytes:
+          type: integer
+          description: Temporary/local storage size in bytes.
+          format: int64
+        family:
+          type:
+          - string
+          - 'null'
+          description: 'VM family/series (e.g., "standardDSv3Family", "standardBSFamily").
+
+            Matches ControlUp.Foundry.Api.Dtos.Cloud.ComputeQuotaDto.Name from the compute-quota endpoint
+
+            to check whether the subscription has enough cores available for this VM size.'
+        maxIops:
+          type:
+          - integer
+          - 'null'
+          description: Maximum IOPS for the VM.
+          format: int64
+        maxNetworkInterfaces:
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of network interfaces (NICs).
+          format: int32
+        supportsPremiumStorage:
+          type: boolean
+          description: Whether the VM size supports premium storage (SSD).
+        supportsAcceleratedNetworking:
+          type: boolean
+          description: Whether the VM size supports accelerated networking.
+        supportsEphemeralOSDisk:
+          type: boolean
+          description: Whether the VM size supports ephemeral OS disks.
+        supportsTrustedLaunch:
+          type: boolean
+          description: 'Whether this VM size supports Trusted Launch deployments.
+
+            Derived from the Azure Resource SKU `TrustedLaunchDisabled` capability (inverted: absent or false means supported).
+
+            Not related to gallery/managed image `securityType` (Standard / TrustedLaunch / ConfidentialVM), which describes the image definition.
+
+            Filterable: use `filter=eq(supportsTrustedLaunch,true)` to get only Trusted-Launch-capable sizes.'
+        availableZones:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'List of availability zone numbers where this VM size is available in the region.
+
+            Example: ["1", "2", "3"] for regions with 3 availability zones.
+
+            Null if the region doesn''t support availability zones or zone information is unavailable.
+
+            Not all VM sizes are available in all zones - check this field for zone-specific deployment planning.'
+        hyperVGenerations:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Hyper-V generations supported by this VM size.
+
+            Example: ["V1", "V2"] for sizes that support both generations, ["V2"] for Gen2-only sizes.
+
+            Null when generation metadata is unavailable.
+
+            Use this to filter VM sizes by the source image''s HyperV generation
+
+            (e.g., only show V2-capable sizes when deploying a Gen2 gallery image).'
+        diskControllerTypes:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Disk controller types supported by this VM size.
+
+            Example: ["SCSI", "NVMe"] for sizes that support both controllers, ["NVMe"] for NVMe-only sizes.
+
+            Defaults to ["SCSI"] when the Azure SKU omits the capability.
+
+            Use this to filter VM sizes by the source image''s disk controller requirement.'
+        cpuArchitectureType:
+          type:
+          - string
+          - 'null'
+          description: 'CPU architecture type supported by this VM size (e.g., "x64", "Arm64").
+
+            Sourced from the Azure Resource SKU CpuArchitectureType capability.
+
+            Null when the capability is absent.'
+        supportsHyperVGenerationV1:
+          type: boolean
+          description: 'Whether this VM size supports Hyper-V Generation 1 images.
+
+            Derived from ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.HyperVGenerations; false when generation metadata is unavailable.
+
+            Filterable: use `filter=eq(supportsHyperVGenerationV1,true)` to get only V1-compatible sizes.'
+        supportsHyperVGenerationV2:
+          type: boolean
+          description: 'Whether this VM size supports Hyper-V Generation 2 images.
+
+            Derived from ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.HyperVGenerations; false when generation metadata is unavailable.
+
+            Filterable: use `filter=eq(supportsHyperVGenerationV2,true)` to get only V2-compatible sizes.'
+        supportsDiskControllerSCSI:
+          type: boolean
+          description: 'Whether this VM size supports SCSI disk controller images.
+
+            Derived from ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.DiskControllerTypes; false when metadata is unavailable.
+
+            Filterable: use `filter=eq(supportsDiskControllerSCSI,true)` to get only SCSI-compatible sizes.'
+        supportsDiskControllerNVMe:
+          type: boolean
+          description: 'Whether this VM size supports NVMe disk controller images.
+
+            Derived from ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.DiskControllerTypes; false when metadata is unavailable.
+
+            Filterable: use `filter=eq(supportsDiskControllerNVMe,true)` to get only NVMe-compatible sizes.'
+        isRestricted:
+          type: boolean
+          description: 'Whether this VM size is restricted for the current subscription in this region.
+
+            True when Azure reports a subscription-level restriction (NotAvailableForSubscription),
+
+            meaning the SKU is not enabled for this subscription regardless of capacity.
+
+            Restricted sizes will fail deployment even though they appear in the catalog.'
+      additionalProperties: false
+      description: 'Data transfer object representing a virtual machine size/SKU.
+
+        Contains specifications and capabilities for capacity planning and provisioning.'
+    VmSecurityType:
+      enum:
+      - trustedLaunch
+      - standard
+      - confidentialVM
+      type: string
+      description: Security profile for Azure VMs.
+    HostPoolVmImageSource:
+      enum:
+      - gallery
+      - existingVm
+      type: string
+      description: Image source selection for host pool VM settings.
+    HostPoolVmNetworkSecurityGroup:
+      enum:
+      - basic
+      type: string
+      description: Network security group preset for host pool VM settings.
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    DiscoverableResourceType:
+      enum:
+      - subscription
+      - resourceGroup
+      - workspace
+      - image
+      - gallery
+      - galleryImage
+      - galleryImageVersion
+      - hostPool
+      - virtualMachine
+      - virtualNetwork
+      type: string
+      description: 'Public API enum for resource types that users can discover/import.
+
+        Only includes high-level resource types exposed to end users.'
+    RegionMetadataDto:
+      required:
+      - displayName
+      - isPhysical
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Region code (canonical identifier).
+        displayName:
+          type: string
+          description: Human-friendly display name.
+        regionalDisplayName:
+          type:
+          - string
+          - 'null'
+          description: Regional display name.
+        geography:
+          type:
+          - string
+          - 'null'
+          description: Geography group.
+        regionCategory:
+          type:
+          - string
+          - 'null'
+          description: 'Provider-specific region category.
+
+            Azure examples: Recommended, Other, Extended.'
+        isPhysical:
+          type: boolean
+          description: Whether the provider classifies this location as a physical region.
+        availableZones:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Availability zone IDs for the region.
+
+            Null when zone data was not requested; empty array when the region has no zones.'
+      additionalProperties: false
+      description: Region metadata for a subscription.
+    HostPoolVmSettingsDto:
+      required:
+      - availabilityZones
+      - deploymentRegion
+      - deploymentResourceGroupName
+      - hostPoolId
+      - imageSource
+      - integrityMonitoring
+      - intuneEnrollment
+      - joinType
+      - localAdminUsername
+      - networkSecurityGroup
+      - osDiskSizeBytes
+      - osDiskStorageAccountType
+      - primaryVmSize
+      - publicInboundPorts
+      - secureBoot
+      - securityType
+      - subnetResourceId
+      - virtualNetworkResourceId
+      - vmNamingPrefix
+      - vTpm
+      type: object
+      properties:
+        deploymentRegion:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: 'Region code (e.g. `eastus`) where session hosts are deployed.
+
+            Drives region-sensitive compatibility validation and the deployment location.'
+        deploymentResourceGroupName:
+          maxLength: 90
+          minLength: 1
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type: string
+          description: 'Name of the resource group session hosts are deployed into (e.g. `rg-avd-prod`).
+
+            Resolved within the subscription that owns the host pool.'
+        vmNamingPrefix:
+          maxLength: 11
+          minLength: 1
+          type: string
+          description: Prefix used for newly created session host VM names.
+        primaryVmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Primary VM size used for provisioning.
+        alternativeVmSize:
+          maxLength: 64
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional fallback VM size used when the primary size is unavailable.
+        availabilityZones:
+          type: array
+          items:
+            type: string
+          description: Requested availability zones for session host deployment.
+        imageSource:
+          $ref: '#/components/schemas/HostPoolVmImageSource'
+        imageResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image when gallery image source is used.
+        imageVersionResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image version when gallery image source is used.
+        existingVmResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the existing VM when existing VM image source is used.
+        osDiskStorageAccountType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: OS disk storage account type.
+        osDiskSizeBytes:
+          minimum: 1
+          type: integer
+          description: Requested OS disk size in bytes.
+          format: int64
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        secureBoot:
+          type: boolean
+          description: Indicates whether Secure Boot is enabled.
+        vTpm:
+          type: boolean
+          description: Indicates whether virtual TPM is enabled.
+        integrityMonitoring:
+          type: boolean
+          description: Indicates whether integrity monitoring is enabled.
+        virtualNetworkResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the virtual network.
+        subnetResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the subnet (identifies both the virtual network and subnet).
+        networkSecurityGroup:
+          $ref: '#/components/schemas/HostPoolVmNetworkSecurityGroup'
+        publicInboundPorts:
+          type: boolean
+          description: Indicates whether public inbound ports are allowed.
+        joinType:
+          $ref: '#/components/schemas/HostPoolVmJoinType'
+        adDomain:
+          type:
+          - string
+          - 'null'
+          description: Active Directory domain for AD join scenarios.
+        domainJoinUpn:
+          type:
+          - string
+          - 'null'
+          description: Domain join user principal name for AD join scenarios.
+        ouPath:
+          type:
+          - string
+          - 'null'
+          description: Organizational unit path for AD join scenarios.
+        localAdminUsername:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: Local administrator username configured on session hosts.
+        profileStoragePath:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional FSLogix profile storage UNC path.
+        intuneEnrollment:
+          type: boolean
+          description: Indicates whether Intune enrollment is enabled.
+        tags:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Tags applied to created session host resources.
+        hostPoolId:
+          type: string
+          description: Host pool identifier associated with these settings.
+          format: uuid
+        localAdminPassword:
+          type:
+          - string
+          - 'null'
+          description: 'Local administrator password placeholder value.
+
+            Secret values are not returned in plaintext.'
+        domainJoinPassword:
+          type:
+          - string
+          - 'null'
+          description: 'Domain join password placeholder value.
+
+            Secret values are not returned in plaintext.'
+        details:
+          $ref: '#/components/schemas/HostPoolVmSettingsDetailsDto'
+      additionalProperties: false
+      description: 'VM settings response for a host pool.
+
+        Secret values are never returned in plaintext.'
+    LookedUpImageDto:
+      required:
+      - hasVersion
+      - id
+      - imageSourceType
+      - isAlreadyManaged
+      - location
+      - name
+      - osType
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
+        galleryId:
+          type:
+          - string
+          - 'null'
+          description: Parent gallery ARM resource ID. Null for managed images.
+        galleryName:
+          type:
+          - string
+          - 'null'
+          description: Parent gallery name. Null for managed images.
+        imageSourceType:
+          $ref: '#/components/schemas/ImageSourceType'
+        hyperVGeneration:
+          type:
+          - string
+          - 'null'
+          description: Hyper-V generation of the image (V1 or V2). Null for managed images.
+        diskControllerTypes:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Disk controller types supported by the image definition, when available.
+        cpuArchitectureType:
+          type:
+          - string
+          - 'null'
+          description: CPU architecture type of the image (e.g., "x64", "Arm64"). Null when Azure omits the architecture property.
+        osType:
+          type: string
+          description: Operating system type (Windows or Linux).
+        osState:
+          type:
+          - string
+          - 'null'
+          description: OS state of the image (Generalized or Specialized).
+        sku:
+          type:
+          - string
+          - 'null'
+          description: Image SKU if from Shared Image Gallery.
+        offer:
+          type:
+          - string
+          - 'null'
+          description: Image offer if from Shared Image Gallery.
+        publisher:
+          type:
+          - string
+          - 'null'
+          description: Image publisher if from Shared Image Gallery.
+        version:
+          type:
+          - string
+          - 'null'
+          description: Image version if from Shared Image Gallery.
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        recommendedMemoryMinBytes:
+          type:
+          - integer
+          - 'null'
+          description: Recommended minimum memory size in bytes for the image.
+          format: int64
+        recommendedMemoryMaxBytes:
+          type:
+          - integer
+          - 'null'
+          description: Recommended maximum memory size in bytes for the image.
+          format: int64
+        recommendedCoresMin:
+          type:
+          - integer
+          - 'null'
+          description: Recommended minimum core count for the image.
+          format: int32
+        recommendedCoresMax:
+          type:
+          - integer
+          - 'null'
+          description: Recommended maximum core count for the image.
+          format: int32
+        hasVersion:
+          type: boolean
+          description: Whether the gallery image has at least one available image version.
+          example: true
+      additionalProperties: false
+      description: Represents a looked-up image resource.
+    SaveHostPoolVmSettingsRequest:
+      required:
+      - availabilityZones
+      - deploymentRegion
+      - deploymentResourceGroupName
+      - imageSource
+      - integrityMonitoring
+      - intuneEnrollment
+      - joinType
+      - localAdminUsername
+      - networkSecurityGroup
+      - osDiskSizeBytes
+      - osDiskStorageAccountType
+      - primaryVmSize
+      - publicInboundPorts
+      - secureBoot
+      - securityType
+      - subnetResourceId
+      - virtualNetworkResourceId
+      - vmNamingPrefix
+      - vTpm
+      type: object
+      properties:
+        deploymentRegion:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: 'Region code (e.g. `eastus`) where session hosts are deployed.
+
+            Drives region-sensitive compatibility validation and the deployment location.'
+        deploymentResourceGroupName:
+          maxLength: 90
+          minLength: 1
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type: string
+          description: 'Name of the resource group session hosts are deployed into (e.g. `rg-avd-prod`).
+
+            Resolved within the subscription that owns the host pool.'
+        vmNamingPrefix:
+          maxLength: 11
+          minLength: 1
+          type: string
+          description: Prefix used for newly created session host VM names.
+        primaryVmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Primary VM size used for provisioning.
+        alternativeVmSize:
+          maxLength: 64
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional fallback VM size used when the primary size is unavailable.
+        availabilityZones:
+          type: array
+          items:
+            type: string
+          description: Requested availability zones for session host deployment.
+        imageSource:
+          $ref: '#/components/schemas/HostPoolVmImageSource'
+        imageResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image when gallery image source is used.
+        imageVersionResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image version when gallery image source is used.
+        existingVmResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the existing VM when existing VM image source is used.
+        osDiskStorageAccountType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: OS disk storage account type.
+        osDiskSizeBytes:
+          minimum: 1
+          type: integer
+          description: Requested OS disk size in bytes.
+          format: int64
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        secureBoot:
+          type: boolean
+          description: Indicates whether Secure Boot is enabled.
+        vTpm:
+          type: boolean
+          description: Indicates whether virtual TPM is enabled.
+        integrityMonitoring:
+          type: boolean
+          description: Indicates whether integrity monitoring is enabled.
+        virtualNetworkResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the virtual network.
+        subnetResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the subnet (identifies both the virtual network and subnet).
+        networkSecurityGroup:
+          $ref: '#/components/schemas/HostPoolVmNetworkSecurityGroup'
+        publicInboundPorts:
+          type: boolean
+          description: Indicates whether public inbound ports are allowed.
+        joinType:
+          $ref: '#/components/schemas/HostPoolVmJoinType'
+        adDomain:
+          type:
+          - string
+          - 'null'
+          description: Active Directory domain for AD join scenarios.
+        domainJoinUpn:
+          type:
+          - string
+          - 'null'
+          description: Domain join user principal name for AD join scenarios.
+        ouPath:
+          type:
+          - string
+          - 'null'
+          description: Organizational unit path for AD join scenarios.
+        localAdminUsername:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: Local administrator username configured on session hosts.
+        profileStoragePath:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional FSLogix profile storage UNC path.
+        intuneEnrollment:
+          type: boolean
+          description: Indicates whether Intune enrollment is enabled.
+        tags:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Tags applied to created session host resources.
+        localAdminPassword:
+          maxLength: 256
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional local administrator password to set or update.
+        domainJoinPassword:
+          maxLength: 256
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional domain join password used when AD join is selected.
+      additionalProperties: false
+      description: Full request payload for creating or replacing VM settings for a host pool.
+    LookedUpVirtualNetworkSubnetDto:
+      required:
+      - addressPrefixes
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Subnet resource identifier.
+        name:
+          type: string
+          description: Subnet name.
+        addressPrefixes:
+          type: array
+          items:
+            type: string
+          description: Subnet address prefix(es).
+        nsgId:
+          type:
+          - string
+          - 'null'
+          description: Network security group resource identifier, when attached.
+      additionalProperties: false
+      description: Represents a looked-up subnet in a virtual network.
+    HostPoolVmJoinType:
+      enum:
+      - ad
+      - entraId
+      type: string
+      description: Directory join strategy for session host VMs.
+    LookedUpVirtualMachineDto:
+      required:
+      - generation
+      - id
+      - isAlreadyManaged
+      - location
+      - name
+      - osType
+      - powerState
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      - vmSize
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
+        generation:
+          type: string
+          description: Hyper-V generation ("V1" or "V2").
+        powerState:
+          type: string
+          description: 'Current power state: "PowerState/running", "PowerState/deallocated", "PowerState/stopped",
+
+            "PowerState/starting", or "PowerState/stopping".'
+          example: PowerState/running
+        vmSize:
+          type: string
+          description: Azure VM size (e.g., "Standard_D2s_v5").
+        osType:
+          type: string
+          description: OS type (e.g., "Windows", "Linux").
+      additionalProperties: false
+      description: Represents a looked-up virtual machine resource with promoted VM-specific properties.
+    LookedUpGalleryImageVersionDto:
+      required:
+      - id
+      - location
+      - name
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - targetRegions
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        galleryId:
+          type:
+          - string
+          - 'null'
+          description: Parent gallery ARM resource ID.
+        galleryName:
+          type:
+          - string
+          - 'null'
+          description: Parent gallery name.
+        imageDefinitionId:
+          type:
+          - string
+          - 'null'
+          description: Parent image definition ARM resource ID.
+        imageDefinitionName:
+          type:
+          - string
+          - 'null'
+          description: Parent image definition name.
+        osDiskSizeBytes:
+          type:
+          - integer
+          - 'null'
+          description: OS disk size in bytes.
+          format: int64
+        storageAccountType:
+          type:
+          - string
+          - 'null'
+          description: Publishing storage account type for the version.
+        diskControllerTypes:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Disk controller types supported by this image version, when available.
+        targetRegions:
+          type: array
+          items:
+            type: string
+          description: Azure regions where this image version has replicas.
+      additionalProperties: false
+      description: Represents a looked-up gallery image version resource.
+    ImageSourceType:
+      enum:
+      - managed
+      - sharedImageGallery
+      type: string
+      description: Represents the source type of a virtual machine image.
+    LookedUpResourceGroupDto:
+      required:
+      - id
+      - location
+      - name
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+      additionalProperties: false
+      description: 'Represents a looked-up Azure resource group.
+
+        Resource groups are containers, not resources — they derive from the entity base
+
+        rather than the resource DTO since they don''t belong to a resource group.'
+    DiskSizeDto:
+      required:
+      - size
+      - tier
+      - type
+      - typeDisplayName
+      type: object
+      properties:
+        type:
+          type: string
+          description: 'Disk SKU family name (for example: Premium_LRS).'
+        typeDisplayName:
+          type: string
+          description: 'User-friendly display name for disk family (for example: Premium SSD).'
+        size:
+          type: string
+          description: 'Azure disk SKU size code (for example: P10, E20, S30).'
+        tier:
+          type: string
+          description: 'Azure disk SKU tier (for example: Premium, Standard).'
+        minSizeBytes:
+          type:
+          - integer
+          - 'null'
+          description: Minimum supported size in bytes for this SKU option (if provided by provider capabilities).
+          format: int64
+        maxSizeBytes:
+          type:
+          - integer
+          - 'null'
+          description: Maximum supported size in bytes for this SKU option (if provided by provider capabilities).
+          format: int64
+        availableZones:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Zones where this size option is available.
+
+            Null when zone data is unavailable.'
+      additionalProperties: false
+      description: A flat OS disk size option row for VM-size catalog responses.
+    LookedUpVirtualNetworkDto:
+      required:
+      - id
+      - location
+      - name
+      - resourceGroup
+      - subnets
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        subnets:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpVirtualNetworkSubnetDto'
+          description: Gets the list of subnets in this virtual network.
+      additionalProperties: false
+      description: Represents a looked-up virtual network resource.
+    HostPoolVmSettingsDetailsDto:
+      type: object
+      properties:
+        deploymentRegion:
+          $ref: '#/components/schemas/RegionMetadataDto'
+        deploymentResourceGroup:
+          $ref: '#/components/schemas/LookedUpResourceGroupDto'
+        primaryVmSize:
+          $ref: '#/components/schemas/VmSizeDto'
+        alternativeVmSize:
+          $ref: '#/components/schemas/VmSizeDto'
+        image:
+          $ref: '#/components/schemas/LookedUpImageDto'
+        imageResourceGroup:
+          $ref: '#/components/schemas/LookedUpResourceGroupDto'
+        imageVersion:
+          $ref: '#/components/schemas/LookedUpGalleryImageVersionDto'
+        existingVM:
+          $ref: '#/components/schemas/LookedUpVirtualMachineDto'
+        osDiskSize:
+          $ref: '#/components/schemas/DiskSizeDto'
+        virtualNetwork:
+          $ref: '#/components/schemas/LookedUpVirtualNetworkDto'
+        virtualNetworkResourceGroup:
+          $ref: '#/components/schemas/LookedUpResourceGroupDto'
+      additionalProperties: false
+      description: Enriched lookup/resource details for host pool VM settings.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

@@ -1,0 +1,154 @@
+openapi: 3.2.0
+info:
+  title: ControlUp for Desktops Dal API
+  description: "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves."
+  version: 2.159.0
+servers:
+- url: https://api.controlup.com/edge/api
+security:
+- bearerAuth: []
+tags:
+- name: Dal
+  description: The DAL (data access layer) is an advanced way to get data from an index.
+paths:
+  /dal/{index}:
+    post:
+      summary: Get scoped data index
+      tags:
+      - Dal
+      description: 'Returns the content of the specified data index, after applying a filter so that only data from devices within the `device_query` scope is returned.
+
+
+        The endpoint first executes `device_query` against the _devices index to get a list of device IDs. The endpoint then executes `data_query` against the index you specify in the `index` parameter, only returning data that matches the list of device IDs.
+
+        For example, you can use this endpoint to search the disk_info data index, but only return data for devices located in New York.
+
+
+        A maximum of 10000 rows can be returned per request. To return more data, you must set `export` to true and use the `_source` parameter to set which fields to return in the data query. For example: `{"data_query":{"_source":["prop1","prop2"]},"export":true}`
+
+        '
+      operationId: get-scoped-data-index
+      parameters:
+      - in: path
+        name: index
+        description: Name of the data index to return.
+        required: true
+        schema:
+          type: string
+          example: disk_info
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_query:
+                  type: object
+                  description: An OpenSearch query of the _devices data index. Use this query to search for the list of devices to include in the scope for the search of the index specified by the `index` parameter.
+                data_query:
+                  type: object
+                  description: An OpenSearch query of the data index specified by the `index` parameter.
+              example:
+                device_query:
+                  query:
+                    bool:
+                      must:
+                        wildcard:
+                          public_ip_city: '*New York*'
+                data_query:
+                  query:
+                    bool:
+                      should:
+                        wildcard:
+                          bustype: '*SATA*'
+      responses:
+        '200':
+          description: Data index contents.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataIndexContents'
+        '400':
+          description: The provided query is invalid.
+        '404':
+          description: The provided index name is invalid.
+components:
+  schemas:
+    IndexMappings:
+      type: object
+      properties:
+        index:
+          type: string
+        name:
+          description: The name of the field.
+          type: string
+          example: _created
+        type:
+          description: The data type of the field.
+          type: string
+    DataIndexContents:
+      type: object
+      properties:
+        rows:
+          description: An array of the rows (documents) in the data index. Each entry in the array is a different document. The data in each document depends on the index being retrieved.
+          type: array
+          example:
+          - _id: lchs9wH4h2EKvgTVv8rd
+            _created: '2022-01-03T16:47:53.391Z'
+            favourite_website: www.controlup.com
+            phone_type: iPhone 3
+            name: John Doe
+        rows_available:
+          description: The total number of rows that are stored in the data index.
+          type: integer
+          example: 200
+        page_size:
+          description: The number of rows that are able to be displayed per page of results.
+          type: integer
+          example: 100
+        aggregations:
+          description: Placeholder
+          type: array
+        start_row:
+          description: The first row that can be returned on the current page.
+          type: integer
+          example: 1
+        end_row:
+          description: The last row that can be returned on the current page.
+          type: integer
+          example: 100
+        mappings:
+          description: Information about the fields (columns) in the index. Each entry in the array represents a different field.
+          type: array
+          items:
+            $ref: '#/components/schemas/IndexMappings'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

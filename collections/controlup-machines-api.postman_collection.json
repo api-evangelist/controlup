@@ -1,0 +1,1660 @@
+{
+  "item": [
+    {
+      "id": "51582b4b-cbc7-416d-b332-5df0a824c413",
+      "name": "Machines",
+      "description": {
+        "content": "Endpoints to manage and query machines",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "71cd697c-964e-478e-8257-2c4fa6d845f1",
+          "name": "List machines",
+          "request": {
+            "name": "List machines",
+            "description": {
+              "content": "Retrieves a paginated list of machines with optional filtering, sorting, and search capabilities",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "machines"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination (1-based)"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of items per page"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort",
+                  "value": "<string>",
+                  "description": "Field name to sort by. Valid fields: objectGuid, name, fqdn, netBiosName, siteId. Defaults to 'name' if invalid field provided."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "Asc",
+                  "description": "Sort order direction"
+                },
+                {
+                  "disabled": false,
+                  "key": "search",
+                  "value": "<string>",
+                  "description": "A case-insensitive search filter on the `fqdn` and `description` fields. If you enter multiple terms, such as `production server`, the endpoint returns all machines that contain 'production' in either of the searched fields AND 'server' in either of the searched fields. You can use double quotes to search for exact phrases (for example, `\"production server\"`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "folderPath",
+                  "value": "<string>",
+                  "description": "Filter machines by exact folder path match"
+                },
+                {
+                  "disabled": false,
+                  "key": "site",
+                  "value": "<string>",
+                  "description": "Filter machines by monitor site name"
+                },
+                {
+                  "disabled": false,
+                  "key": "outboundReady",
+                  "value": "<boolean>",
+                  "description": "If set to `true`, the endpoint only returns machines that are capable of establishing outbound connections from the machine to ControlUp's services."
+                },
+                {
+                  "disabled": false,
+                  "key": "includeDeleted",
+                  "value": "false",
+                  "description": "Include deleted machines in the results"
+                },
+                {
+                  "disabled": false,
+                  "key": "includeDetails",
+                  "value": "false",
+                  "description": "If set to true, the endpoint returns the following additional details:\n* Agent: Port number and install mode\n* LoadBalancing: Weight and preferred weight settings\n* Management: Information about which extension added the machine via sync\n* VdiStatus: Last outbound connection date and when the machine was missed in EUC\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "fields",
+                  "value": "<string>",
+                  "description": "Comma-separated list of fields to include in the response. When specified, only these fields will be returned for each machine."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e8444c99-cef2-437b-b4d9-fbd4d30f3e98",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name"
+                    },
+                    {
+                      "key": "order",
+                      "value": "Asc"
+                    },
+                    {
+                      "key": "search",
+                      "value": "web server"
+                    },
+                    {
+                      "key": "folderPath",
+                      "value": "\\orgname\\foldername"
+                    },
+                    {
+                      "key": "site",
+                      "value": "US-East"
+                    },
+                    {
+                      "key": "outboundReady",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "includeDeleted",
+                      "value": "false"
+                    },
+                    {
+                      "key": "includeDetails",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"objectGuid\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"name\": \"PROD-WEB-01\",\n      \"fqdn\": \"prod-web-01.contoso.com\",\n      \"netBiosName\": \"PROD-WEB-01\",\n      \"domainName\": \"contoso.com\",\n      \"folderPath\": \"\\\\orgname\\\\foldername\",\n      \"siteName\": \"US-East\",\n      \"description\": \"Production web server\",\n      \"associatedUser\": \"CONTOSO\\\\johndoe\",\n      \"status\": {\n        \"isDeleted\": false,\n        \"isOutboundReady\": false\n      },\n      \"capabilities\": {\n        \"outboundReady\": true,\n        \"frameworkVersion\": \"4.8\"\n      },\n      \"agent\": {\n        \"port\": 443,\n        \"installMode\": true\n      },\n      \"loadBalancing\": {\n        \"enabled\": false,\n        \"weight\": 100\n      },\n      \"management\": {\n        \"addedViaSyncByExtensionId\": \"horizon-extension-ID\"\n      },\n      \"vdiStatus\": {\n        \"lastOutboundConnectionDate\": \"2024-01-15T10:30:00Z\",\n        \"missedInEucSince\": \"2024-01-10T08:00:00Z\"\n      }\n    },\n    {\n      \"objectGuid\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"name\": \"PROD-WEB-01\",\n      \"fqdn\": \"prod-web-01.contoso.com\",\n      \"netBiosName\": \"PROD-WEB-01\",\n      \"domainName\": \"contoso.com\",\n      \"folderPath\": \"\\\\orgname\\\\foldername\",\n      \"siteName\": \"US-East\",\n      \"description\": \"Production web server\",\n      \"associatedUser\": \"CONTOSO\\\\johndoe\",\n      \"status\": {\n        \"isDeleted\": true,\n        \"isOutboundReady\": false\n      },\n      \"capabilities\": {\n        \"outboundReady\": false,\n        \"frameworkVersion\": \"4.8\"\n      },\n      \"agent\": {\n        \"port\": 443,\n        \"installMode\": false\n      },\n      \"loadBalancing\": {\n        \"enabled\": false,\n        \"weight\": 100\n      },\n      \"management\": {\n        \"addedViaSyncByExtensionId\": \"horizon-extension-ID\"\n      },\n      \"vdiStatus\": {\n        \"lastOutboundConnectionDate\": \"2024-01-15T10:30:00Z\",\n        \"missedInEucSince\": \"2024-01-10T08:00:00Z\"\n      }\n    }\n  ],\n  \"metadata\": {\n    \"total\": 150,\n    \"page\": 1,\n    \"limit\": 50,\n    \"sortedBy\": \"name\",\n    \"order\": \"Asc\",\n    \"filteredBy\": [\n      {\n        \"key\": \"string\",\n        \"value\": \"string\"\n      },\n      {\n        \"key\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afe1f772-0c79-498d-8dce-0aef75e5f887",
+              "name": "Bad request - Invalid parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name"
+                    },
+                    {
+                      "key": "order",
+                      "value": "Asc"
+                    },
+                    {
+                      "key": "search",
+                      "value": "web server"
+                    },
+                    {
+                      "key": "folderPath",
+                      "value": "\\orgname\\foldername"
+                    },
+                    {
+                      "key": "site",
+                      "value": "US-East"
+                    },
+                    {
+                      "key": "outboundReady",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "includeDeleted",
+                      "value": "false"
+                    },
+                    {
+                      "key": "includeDetails",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7d32f120-aa2f-49bd-b5e9-1998f2ee68c1",
+              "name": "Unauthorized - Missing or invalid authentication",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name"
+                    },
+                    {
+                      "key": "order",
+                      "value": "Asc"
+                    },
+                    {
+                      "key": "search",
+                      "value": "web server"
+                    },
+                    {
+                      "key": "folderPath",
+                      "value": "\\orgname\\foldername"
+                    },
+                    {
+                      "key": "site",
+                      "value": "US-East"
+                    },
+                    {
+                      "key": "outboundReady",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "includeDeleted",
+                      "value": "false"
+                    },
+                    {
+                      "key": "includeDetails",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fee38675-6869-44cc-a587-9dedf713412a",
+              "name": "Forbidden - Insufficient permissions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name"
+                    },
+                    {
+                      "key": "order",
+                      "value": "Asc"
+                    },
+                    {
+                      "key": "search",
+                      "value": "web server"
+                    },
+                    {
+                      "key": "folderPath",
+                      "value": "\\orgname\\foldername"
+                    },
+                    {
+                      "key": "site",
+                      "value": "US-East"
+                    },
+                    {
+                      "key": "outboundReady",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "includeDeleted",
+                      "value": "false"
+                    },
+                    {
+                      "key": "includeDetails",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a719ee07-9fd4-4ab9-b184-ae53ef5e97f1",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name"
+                    },
+                    {
+                      "key": "order",
+                      "value": "Asc"
+                    },
+                    {
+                      "key": "search",
+                      "value": "web server"
+                    },
+                    {
+                      "key": "folderPath",
+                      "value": "\\orgname\\foldername"
+                    },
+                    {
+                      "key": "site",
+                      "value": "US-East"
+                    },
+                    {
+                      "key": "outboundReady",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "includeDeleted",
+                      "value": "false"
+                    },
+                    {
+                      "key": "includeDetails",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "05f403d0-0bdd-432f-aa1a-4ad9f92f6bea",
+          "name": "Create or update machines",
+          "request": {
+            "name": "Create or update machines",
+            "description": {
+              "content": "Creates or updates machines in bulk. Identity is determined by FQDN computed as `computerName` or `computerName.domainName`.\nWhen a machine already exists, only provided fields that differ from current values are applied; unspecified fields are left unchanged.\n\nNote: If the ControlUp environment has the agent setting 'Deploy agents automatically (from monitor only)' enabled in the configuration console, adding a new machine (with isOutboundReady = false) via this endpoint will cause the ControlUp Monitor to attempt agent deployment to that machine automatically. This process runs from the Monitor service and requires valid domain credentials configured for the Monitor with local administrator rights on the target machines and necessary network/prerequisite access.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "machines"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"computerName\": \"<string>\",\n    \"domainName\": \"<string>\",\n    \"folderPath\": \"<string>\",\n    \"siteName\": \"<string>\",\n    \"description\": \"<string>\",\n    \"isOutboundReady\": \"<boolean>\"\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "17a6037c-c35e-43dc-8e4c-02fcb2af5a35",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"computerName\": \"PROD-WEB-01\",\n    \"domainName\": \"contoso.com\",\n    \"folderPath\": \"\\\\orgname\\\\foldername\",\n    \"siteName\": \"US-East\",\n    \"description\": \"Production web server\",\n    \"isOutboundReady\": \"<boolean>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"objectGuid\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"name\": \"PROD-WEB-01\",\n      \"fqdn\": \"prod-web-01.contoso.com\",\n      \"netBiosName\": \"PROD-WEB-01\",\n      \"domainName\": \"contoso.com\",\n      \"folderPath\": \"\\\\orgname\\\\foldername\",\n      \"siteName\": \"US-East\",\n      \"description\": \"Production web server\",\n      \"associatedUser\": \"CONTOSO\\\\johndoe\",\n      \"status\": {\n        \"isDeleted\": true,\n        \"isOutboundReady\": false\n      },\n      \"capabilities\": {\n        \"outboundReady\": false,\n        \"frameworkVersion\": \"4.8\"\n      },\n      \"agent\": {\n        \"port\": 443,\n        \"installMode\": true\n      },\n      \"loadBalancing\": {\n        \"enabled\": false,\n        \"weight\": 100\n      },\n      \"management\": {\n        \"addedViaSyncByExtensionId\": \"horizon-extension-ID\"\n      },\n      \"vdiStatus\": {\n        \"lastOutboundConnectionDate\": \"2024-01-15T10:30:00Z\",\n        \"missedInEucSince\": \"2024-01-10T08:00:00Z\"\n      }\n    },\n    {\n      \"objectGuid\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"name\": \"PROD-WEB-01\",\n      \"fqdn\": \"prod-web-01.contoso.com\",\n      \"netBiosName\": \"PROD-WEB-01\",\n      \"domainName\": \"contoso.com\",\n      \"folderPath\": \"\\\\orgname\\\\foldername\",\n      \"siteName\": \"US-East\",\n      \"description\": \"Production web server\",\n      \"associatedUser\": \"CONTOSO\\\\johndoe\",\n      \"status\": {\n        \"isDeleted\": true,\n        \"isOutboundReady\": true\n      },\n      \"capabilities\": {\n        \"outboundReady\": true,\n        \"frameworkVersion\": \"4.8\"\n      },\n      \"agent\": {\n        \"port\": 443,\n        \"installMode\": true\n      },\n      \"loadBalancing\": {\n        \"enabled\": true,\n        \"weight\": 100\n      },\n      \"management\": {\n        \"addedViaSyncByExtensionId\": \"horizon-extension-ID\"\n      },\n      \"vdiStatus\": {\n        \"lastOutboundConnectionDate\": \"2024-01-15T10:30:00Z\",\n        \"missedInEucSince\": \"2024-01-10T08:00:00Z\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "828c8ae6-4760-4366-895f-0d9cd0999f2e",
+              "name": "Bad request - Validation errors (unknown folderPath/siteName, duplicate FQDNs, or invalid payload)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"computerName\": \"PROD-WEB-01\",\n    \"domainName\": \"contoso.com\",\n    \"folderPath\": \"\\\\orgname\\\\foldername\",\n    \"siteName\": \"US-East\",\n    \"description\": \"Production web server\",\n    \"isOutboundReady\": \"<boolean>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5cf99451-e199-461d-bbc2-a9333c02a3e7",
+              "name": "Unauthorized - Missing or invalid authentication",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"computerName\": \"PROD-WEB-01\",\n    \"domainName\": \"contoso.com\",\n    \"folderPath\": \"\\\\orgname\\\\foldername\",\n    \"siteName\": \"US-East\",\n    \"description\": \"Production web server\",\n    \"isOutboundReady\": \"<boolean>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "623cc9e9-0ca2-4f3c-99cf-ee1c9c43ac85",
+              "name": "Forbidden - Insufficient permissions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"computerName\": \"PROD-WEB-01\",\n    \"domainName\": \"contoso.com\",\n    \"folderPath\": \"\\\\orgname\\\\foldername\",\n    \"siteName\": \"US-East\",\n    \"description\": \"Production web server\",\n    \"isOutboundReady\": \"<boolean>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3a23479c-cd2e-4ead-876f-befe26a65961",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"computerName\": \"PROD-WEB-01\",\n    \"domainName\": \"contoso.com\",\n    \"folderPath\": \"\\\\orgname\\\\foldername\",\n    \"siteName\": \"US-East\",\n    \"description\": \"Production web server\",\n    \"isOutboundReady\": \"<boolean>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "70b34a1a-353a-419c-9833-28a3916aa699",
+          "name": "Delete machines",
+          "request": {
+            "name": "Delete machines",
+            "description": {
+              "content": "Deletes machines in bulk by FQDN.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "machines"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"fqdn\": \"<string>\"\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a9277ae2-cca1-48fc-85f8-65463c765f49",
+              "name": "Successful deletion",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"fqdn\": \"prod-web-01.contoso.com\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"affectedMachines\": [\n    {\n      \"fqdn\": \"prod-web-01.contoso.com\",\n      \"status\": \"Unspecified\"\n    },\n    {\n      \"fqdn\": \"prod-web-01.contoso.com\",\n      \"status\": \"Unspecified\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c6f58d4a-84e9-4627-847d-c3472f2f252b",
+              "name": "Bad request - Validation errors or invalid payload",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"fqdn\": \"prod-web-01.contoso.com\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd65f697-a98e-4c79-a769-d219126b5397",
+              "name": "Unauthorized - Missing or invalid authentication",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"fqdn\": \"prod-web-01.contoso.com\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "889d629c-8f4f-4aea-9a1e-424bbddeb894",
+              "name": "Forbidden - Insufficient permissions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"fqdn\": \"prod-web-01.contoso.com\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f9cddc18-a1f8-4e5a-96cb-131027dd7114",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"fqdn\": \"prod-web-01.contoso.com\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5c941405-2882-42c4-b020-7867a075e168",
+          "name": "Get machine details",
+          "request": {
+            "name": "Get machine details",
+            "description": {
+              "content": "Retrieves detailed information for a specific machine by its unique identifier.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "machines",
+                ":objectGuid"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "includeDetails",
+                  "value": "true",
+                  "description": "If set to true, the endpoint returns the following additional details:\n* Agent: Port number and install mode\n* LoadBalancing: Weight and preferred weight settings\n* Management: Information about which extension added the machine via sync\n* VdiStatus: Last outbound connection date and when the machine was missed in EUC\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "fields",
+                  "value": "<string>",
+                  "description": "Comma-separated list of fields to include in the response. When specified, only these fields will be returned."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "objectGuid",
+                  "description": "(Required) Unique identifier of the machine"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9a5e9598-56e9-4837-ae1f-24ef7e720a44",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines",
+                    ":objectGuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeDetails",
+                      "value": "true"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "objectGuid",
+                      "description": "(Required) Unique identifier of the machine"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"objectGuid\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"name\": \"PROD-WEB-01\",\n    \"fqdn\": \"prod-web-01.contoso.com\",\n    \"netBiosName\": \"PROD-WEB-01\",\n    \"domainName\": \"contoso.com\",\n    \"folderPath\": \"\\\\orgname\\\\foldername\",\n    \"siteName\": \"US-East\",\n    \"description\": \"Production web server\",\n    \"associatedUser\": \"CONTOSO\\\\johndoe\",\n    \"status\": {\n      \"isDeleted\": true,\n      \"isOutboundReady\": false\n    },\n    \"capabilities\": {\n      \"outboundReady\": true,\n      \"frameworkVersion\": \"4.8\"\n    },\n    \"agent\": {\n      \"port\": 443,\n      \"installMode\": true\n    },\n    \"loadBalancing\": {\n      \"enabled\": true,\n      \"weight\": 100\n    },\n    \"management\": {\n      \"addedViaSyncByExtensionId\": \"horizon-extension-ID\"\n    },\n    \"vdiStatus\": {\n      \"lastOutboundConnectionDate\": \"2024-01-15T10:30:00Z\",\n      \"missedInEucSince\": \"2024-01-10T08:00:00Z\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eebdc27d-8162-4074-8ced-a972986b10f4",
+              "name": "Bad request - Invalid objectGuid format",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines",
+                    ":objectGuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeDetails",
+                      "value": "true"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "objectGuid",
+                      "description": "(Required) Unique identifier of the machine"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "97a52e1c-d516-414c-948f-fbeef3522367",
+              "name": "Unauthorized - Missing or invalid authentication",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines",
+                    ":objectGuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeDetails",
+                      "value": "true"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "objectGuid",
+                      "description": "(Required) Unique identifier of the machine"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "02bf91e4-ef00-4c66-8899-893cde790467",
+              "name": "Forbidden - Insufficient permissions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines",
+                    ":objectGuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeDetails",
+                      "value": "true"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "objectGuid",
+                      "description": "(Required) Unique identifier of the machine"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0ef1778-5664-48ad-be9e-4d1ad81f3fa7",
+              "name": "Machine not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines",
+                    ":objectGuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeDetails",
+                      "value": "true"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "objectGuid",
+                      "description": "(Required) Unique identifier of the machine"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a57715a7-e0cf-4599-8061-107f120f4025",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "machines",
+                    ":objectGuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeDetails",
+                      "value": "true"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "objectGuid,name,folderPath,status"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "objectGuid",
+                      "description": "(Required) Unique identifier of the machine"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Invalid request parameters\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/vdi/config",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "df4f4dfa-b792-44b7-afb1-59523964b69f",
+    "name": "VDI & DaaS Configuration Machines API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs to manage configurations in the VDI environment",
+      "type": "text/plain"
+    }
+  }
+}

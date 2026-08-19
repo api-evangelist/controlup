@@ -1,0 +1,71 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Cloud providers API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cloud providers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get supported cloud providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/providers",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the cloud providers this platform can integrate with, together with their display names.\nA static capability catalog describing what the product supports — not which providers the caller's\norganization has actually onboarded."
+        },
+        {
+          "info": {
+            "name": "Get supported authentication types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/providers/auth-types",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the union of authentication types across every supported cloud provider.\nThe unfiltered catalog: because entries span providers, not everything returned is valid for any one\nprovider. Narrow to a single provider when the provider is already known."
+        },
+        {
+          "info": {
+            "name": "Get authentication types for a provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/providers/:provider/auth-types",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path",
+                "description": "The cloud provider identifier (e.g., Azure = 1)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns only the authentication types valid for one named provider — the set to offer once a provider has\nbeen chosen, and the input a tenant or credential must be configured against."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

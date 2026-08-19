@@ -1,0 +1,227 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Host pools API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Host pools",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get host pools",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query",
+                "description": "Optional cloud provider filter. Null means all providers."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort specification string.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nactiveSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type\n\nDefault when omitted: name:asc."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter expression for filtering results.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\nactiveSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one row per host pool across all subscriptions, with identity (name, subscription, resource group, region, type)\nand latest-value counts for hosts, sessions, and average CPU.\nDoes not include cost, memory, or AVD configuration."
+        },
+        {
+          "info": {
+            "name": "Get host pool statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/statistics",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query",
+                "description": "Optional cloud provider filter. Null means all providers."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter expression for filtering results.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\nactiveSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns six organization-wide totals: pooled and personal pool counts, available and draining session host counts,\nand active and total session counts, across all pools matching the optional provider and filter criteria.\nNo per-pool rows, so a total cannot be traced back to the pools behind it, but far cheaper than paging the list."
+        },
+        {
+          "info": {
+            "name": "Get a host pool by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a single host pool in the same shape as one row of the host pool list: identity, resource metadata,\nand latest-value host, session, and CPU counts.\nDoes not include AVD configuration, cost, memory, or 7-day rollups."
+        },
+        {
+          "info": {
+            "name": "Delete host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Soft-deletes the host pool from DaaS IQ management without modifying the Azure resource.\nHistorical data is retained and becomes visible again if the host pool is re-imported.\nAutoscale configuration and VM settings are not retained."
+        },
+        {
+          "info": {
+            "name": "Get host pool extended details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/details",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool to retrieve details for."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the full host pool record: identity and resource metadata, AVD configuration (load balancing, max sessions per host,\ndrain mode, OS, VNet), 7-day session rollups, session capacity percentage, latest CPU and memory, and month-to-date cost.\nCost is one total with no breakdown or date range, and metrics are current or rolled-up values, never series.\nAggregates several sources, so use it per pool rather than iterating a list."
+        },
+        {
+          "info": {
+            "name": "Get host pool metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/metrics",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool."
+              },
+              {
+                "name": "pointCount",
+                "value": "",
+                "type": "query",
+                "description": "Number of data points to return (defaults to 60 if not specified).\nMust be between 10 and 500."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Start date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T00:00:00Z\" or \"2026-01-20T00:00:00+03:00\")."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T23:59:59Z\" or \"2026-01-20T23:59:59+03:00\")."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns timestamped series over a date range for active and total sessions, running and stopped hosts,\naverage CPU and memory, and connection errors — intended for charting.\nEvery value is a series rather than a current reading, and connection errors are available nowhere else."
+        },
+        {
+          "info": {
+            "name": "Delete host pool from Azure",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/deletion",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool to hard-delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Dispatches an Azure teardown job for associated resources\n(application groups, session host VMs, and the host pool ARM resource), then soft-deletes the host pool from DaaS IQ.\nVNet, subnet, resource group, workspace, and storage accounts are not deleted.\nAll session hosts must be deallocated before this operation is accepted."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

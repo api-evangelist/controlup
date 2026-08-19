@@ -1,0 +1,520 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Master images API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Master images",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Execute an action on a master image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:id/actions",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the master image."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a background job to perform the action (start, stop). Poll the statusUrl for progress updates."
+        },
+        {
+          "info": {
+            "name": "Download an RDP file for a master image",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:id/rdp",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the master image."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a downloadable .rdp connection descriptor for the master image's VM, built from its resolvable connection address.\nReturns a file attachment rather than JSON, and only generates the descriptor — it does not start the VM,\nopen a session, or supply credentials."
+        },
+        {
+          "info": {
+            "name": "Get supported OS families for Master Images",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/os-families",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the fixed set of operating system families that Azure Virtual Desktop supports, as id and display name.\nA static catalog containing no organization data; the values populate the OS family choice when promoting a VM."
+        },
+        {
+          "info": {
+            "name": "Get curated Marketplace images for deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/marketplace-images",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the curated catalog of Azure Marketplace OS images that can be deployed as new Master Images,\nall of them Gen 2, Generalized, and TrustedLaunch.\nA static catalog rather than anything the organization owns, and deliberately narrower than the full Azure Marketplace."
+        },
+        {
+          "info": {
+            "name": "List Master Images",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images",
+            "params": [
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncreatedAt, lastUpdated, latestPublishedVersion, latestVersion, name, osFamily, osVersion, region, sourceType, status\n\nDefault when omitted: lastUpdated:desc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one row per managed Master Image in the organization, paginated and sorted, each with status, power state,\nOS family and version, source type, region, gallery wiring, and latest published version.\nNo version history and no indication of which operations are currently running."
+        },
+        {
+          "info": {
+            "name": "Get Master Image by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one Master Image in the same shape as a list row: name, OS, status and power state, source type, region,\nVM and gallery resource IDs, disk and security settings, and latest published version.\nThe image itself — not which operations run or are permitted, and not its published versions."
+        },
+        {
+          "info": {
+            "name": "Get Master Image operation state",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:id/operation-state",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the image's single in-flight operation, if any, plus server-computed flags for the actions it now permits.\nTrust these flags rather than inferring availability from lifecycle and power-state fields.\nCovers the image as a whole, not any individual published version."
+        },
+        {
+          "info": {
+            "name": "Get decommission plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:id/decommission-plan",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Previews what retiring the whole Master Image would delete or retain — VM, disks, gallery definition,\nrelated Azure resources — with any warnings.\nA read-only dry run covering the whole image, not the leftovers of a single publish."
+        },
+        {
+          "info": {
+            "name": "Promote existing VM as Master Image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/promote",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new Master Image by registering an existing Azure VM.\nCreates a corresponding Image Definition in the specified Azure Compute Gallery.\nThe VM must be Gen 2 (Trusted Launch) and not already imported."
+        },
+        {
+          "info": {
+            "name": "Deploy Master Image from Gallery image version",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/deploy-from-gallery",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new Master Image by deploying a fresh VM from a gallery image version.\nThis is a long-running operation: the endpoint returns immediately with a Job tracking object.\nPoll the Job StatusUrl for progress updates. The Master Image starts in Deploying status\nand transitions to Ready when the VM is provisioned."
+        },
+        {
+          "info": {
+            "name": "Deploy Master Image from curated Marketplace",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/deploy-from-marketplace",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deploys a new Azure VM from a curated Marketplace OS image and registers it as a Master Image.\nThis is a long-running operation: the endpoint returns immediately with a Job tracking object.\nPoll the Job StatusUrl for progress updates. The background job deploys the VM, creates the ACG\nImage Definition, and transitions the Master Image from Deploying to Ready.\nAccepts only images drawn from the curated Marketplace catalog, not arbitrary Marketplace offers."
+        },
+        {
+          "info": {
+            "name": "Deploy Master Image from Managed Image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/deploy-from-managed-image",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deploys a new Azure VM from an existing Azure Managed Image and registers it as a Master Image.\nThis is a long-running operation: the endpoint returns immediately with a Job tracking object.\nPoll the Job StatusUrl for progress updates. The region is derived server-side from the managed\nimage's location. The Master Image starts in Deploying status and transitions to Ready when the\nVM is provisioned."
+        },
+        {
+          "info": {
+            "name": "Delete Master Image",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:masterImageId",
+            "params": [
+              {
+                "name": "masterImageId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              },
+              {
+                "name": "deprovision",
+                "value": "",
+                "type": "query",
+                "description": "Whether to deprovision managed Azure resources in a background job before deleting the record."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Soft deletes the Master Image record by default.\nWhen deprovision=true, dispatches a background cleanup job that removes managed Azure resources,\nthen soft deletes the Master Image record."
+        },
+        {
+          "info": {
+            "name": "Publish Master Image version",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:masterImageId/publish",
+            "params": [
+              {
+                "name": "masterImageId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Dispatches a background job that clones the Master VM into a temporary publish VM,\nruns AVD Agent Update and optional SXS Stack Update, runs sysprep, captures an ACG Image Version,\nthen cleans up the temporary publish VM. The Master VM must be in Ready status and stopped (deallocated)."
+        },
+        {
+          "info": {
+            "name": "List Master Image versions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:masterImageId/versions",
+            "params": [
+              {
+                "name": "masterImageId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncreatedAt, lastUpdated, name, publishedAt, publishedBy, publishedByDisplayName, status\n\nDefault when omitted: publishedAt:desc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the publish history of one Master Image, newest first: version name, publish time and author, status, target\nregions, and whether temporary artifacts remain.\nThe immutable gallery versions publishing produced — not the Master Image, nor the VM it was captured from."
+        },
+        {
+          "info": {
+            "name": "Get Master Image version operation state",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:masterImageId/versions/:versionId/operation-state",
+            "params": [
+              {
+                "name": "masterImageId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image version identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns in-flight operations on one published version, plus flags for the actions it permits, such as retrying a\nfailed publish or cleaning up leftovers.\nScoped to a single version and may report several concurrent operations, unlike the image-level equivalent."
+        },
+        {
+          "info": {
+            "name": "Get publish artifact cleanup plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:masterImageId/versions/:versionId/publish-artifacts/cleanup-plan",
+            "params": [
+              {
+                "name": "masterImageId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image version identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Previews the temporary resources one publish left behind and that DaaS IQ can remove.\nA read-only dry run scoped to those leftovers: never the published version, which stays in the gallery,\nnor the Master Image's own VM and gallery resources."
+        },
+        {
+          "info": {
+            "name": "Delete Master Image version",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:masterImageId/versions/:versionId",
+            "params": [
+              {
+                "name": "masterImageId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image version DB identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Dispatches a background job that removes one published gallery version, the deployable artifact itself.\nDestroys the version permanently, unlike artifact cleanup, which removes only the temporary resources a\npublish left behind and leaves the version in place. The Master Image and its other versions survive."
+        },
+        {
+          "info": {
+            "name": "Delete publish artifacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:masterImageId/versions/:versionId/publish-artifacts",
+            "params": [
+              {
+                "name": "masterImageId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image version DB identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Dispatches a background job that removes the temporary resources one publish left behind, such as the\nbuilder VM and its disks.\nThe execution counterpart of the cleanup plan, which previews the same set without deleting.\nThe published version stays in the gallery and remains deployable."
+        },
+        {
+          "info": {
+            "name": "Retry failed Master Image version publish",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/master-images/:masterImageId/versions/:versionId/retry-publish",
+            "params": [
+              {
+                "name": "masterImageId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image identifier"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "The Master Image version identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retries the latest failed publish job for the specified version by creating a new background job\nwith the same parameters. Use this instead of POST publish when recovering a failed version row."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

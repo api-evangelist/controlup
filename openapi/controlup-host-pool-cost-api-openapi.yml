@@ -1,0 +1,971 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Host pool cost API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Host pool cost
+paths:
+  /cloud/host-pools/{hostPoolId}/cost:
+    get:
+      tags:
+      - Host pool cost
+      summary: Get host pool cost breakdown and trend
+      description: 'Returns what the pool spent over a date range (default last 30 days), broken down by Compute, Disk, and Network,
+
+        with a day-by-day trend series carrying the same split, cost per active user, and comparison against the
+
+        previous equivalent period.
+
+        Totals cover the pool as a whole and are not attributed to individual session hosts.'
+      operationId: GetHostPoolCost
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: granularity
+        in: query
+        description: Cost data point granularity. Defaults to Daily.
+        schema:
+          $ref: '#/components/schemas/CostGranularity'
+      - name: startDate
+        in: query
+        description: 'Start date for the range (inclusive).
+
+          Accepts ISO 8601 format with optional timezone (e.g., "2026-01-20T00:00:00Z" or "2026-01-20T00:00:00+03:00").'
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: 'End date for the range (inclusive).
+
+          Accepts ISO 8601 format with optional timezone (e.g., "2026-01-20T23:59:59Z" or "2026-01-20T23:59:59+03:00").'
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Successfully retrieved cost data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolCostResult'
+        '400':
+          description: Bad request. Invalid date range parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/{hostPoolId}/cost/savings:
+    get:
+      tags:
+      - Host pool cost
+      summary: Get host pool autoscale savings
+      description: 'Returns what autoscale saved: projected always-on cost versus actual spend, the savings delta and percentage,
+
+        monthly and cumulative totals, and a daily trend.
+
+        Answers whether autoscale is paying off rather than what the pool actually cost;
+
+        returns autoscaleEnabled=false with zero savings when autoscale is not configured.'
+      operationId: GetHostPoolSavings
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: startDate
+        in: query
+        description: 'Start date for the range (inclusive).
+
+          Accepts ISO 8601 format with optional timezone (e.g., "2026-01-20T00:00:00Z" or "2026-01-20T00:00:00+03:00").'
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: 'End date for the range (inclusive).
+
+          Accepts ISO 8601 format with optional timezone (e.g., "2026-01-20T23:59:59Z" or "2026-01-20T23:59:59+03:00").'
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Successfully retrieved savings data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolSavingsResult'
+        '400':
+          description: Bad request. Invalid date range parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/{hostPoolId}/session-hosts/cost:
+    get:
+      tags:
+      - Host pool cost
+      summary: Get per-host cost breakdown
+      description: 'Returns paginated cost attributed to each session host, with Compute/Disk/Network split, disk tier,
+
+        power state, and Premium SSD optimization flags, including hosts that have since been deleted.
+
+        Answers which host in the pool is expensive; it gives no pool-level total or trend.'
+      operationId: GetHostPoolHostsCost
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: startDate
+        in: query
+        description: Start date for the cost range (inclusive). Defaults to 30 days ago.
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: End date for the range (inclusive). Defaults to today.
+        schema:
+          type: string
+          format: date-time
+      - name: sort
+        in: query
+        description: 'Sort expression for ordering results.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          computeCost, consecutiveDaysDeallocated, costRowOsDiskType, diskCost, diskTier, hostName, isDeleted, networkCost, otherCost, powerState, premiumSsdFlag, resourceId, savingEstimate, sessionHostId, totalCost, vmSku
+
+
+          Default when omitted: totalCost:desc.'
+        schema:
+          type: string
+        examples:
+          default:
+            summary: default
+            value: totalCost:desc
+        x-foundry-sort:
+          fields:
+          - computeCost
+          - consecutiveDaysDeallocated
+          - costRowOsDiskType
+          - diskCost
+          - diskTier
+          - hostName
+          - isDeleted
+          - networkCost
+          - otherCost
+          - powerState
+          - premiumSsdFlag
+          - resourceId
+          - savingEstimate
+          - sessionHostId
+          - totalCost
+          - vmSku
+          dynamicPaths: false
+          defaultField: totalCost
+          defaultAscending: false
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved per-host cost data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionHostCostResultPagedResult'
+        '400':
+          description: Bad request. Invalid date range, pagination, or sort parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/{hostPoolId}/cost/export:
+    get:
+      tags:
+      - Host pool cost
+      summary: Export host pool cost data as CSV
+      description: 'Streams a CSV file attachment of per-host daily cost records with savings data, one row per session host per day,
+
+        including deleted hosts. The response is flushed progressively, one day at a time.
+
+        Returns a file rather than queryable JSON — intended for bulk export and offline analysis, not for answering questions about a pool.'
+      operationId: GetHostPoolCostExport
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: startDate
+        in: query
+        description: 'Start date for the range (inclusive).
+
+          Accepts ISO 8601 format with optional timezone (e.g., "2026-01-20T00:00:00Z" or "2026-01-20T00:00:00+03:00").'
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: 'End date for the range (inclusive).
+
+          Accepts ISO 8601 format with optional timezone (e.g., "2026-01-20T23:59:59Z" or "2026-01-20T23:59:59+03:00").'
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: 'CSV file stream with Content-Disposition: attachment header.'
+        '400':
+          description: Bad request. Invalid date range parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    SessionHostCostResult:
+      required:
+      - computeCost
+      - diskCost
+      - diskTier
+      - hostName
+      - isDeleted
+      - networkCost
+      - otherCost
+      - premiumSsdFlag
+      - resourceId
+      - sessionHostId
+      - totalCost
+      - vmSku
+      type: object
+      properties:
+        sessionHostId:
+          type: string
+          description: Foundry session host identifier (FK to session host entity).
+          format: uuid
+        resourceId:
+          type: string
+          description: Azure session host ARM resource ID (path containing /sessionHosts/).
+        costRowOsDiskType:
+          type:
+          - string
+          - 'null'
+          description: 'Raw OS disk storage account type from persisted cost rows (e.g. Premium_LRS).
+
+            Used for enrichment; cleared before serialization so it is omitted from API output when null.'
+        hostName:
+          type: string
+          description: Display name of the session host.
+        isDeleted:
+          type: boolean
+          description: 'True when there is no matching row in `az_session_host` under the org-scoped live-inventory view
+
+            (session hosts removed in Azure carry `is_deleted` and are filtered out). Historical cost rows still appear.'
+        powerState:
+          type:
+          - string
+          - 'null'
+          description: Current VM power state. Null for deleted hosts.
+        vmSku:
+          type: string
+          description: Azure VM SKU (e.g., Standard_D4s_v5).
+        diskTier:
+          type: string
+          description: 'OS disk tier: StandardHDD, StandardSSD, or PremiumSSD.
+
+            Last known value for deleted hosts.'
+        computeCost:
+          type: number
+          description: Compute cost for the period in USD.
+          format: double
+        diskCost:
+          type: number
+          description: OS disk cost for the period in USD.
+          format: double
+        networkCost:
+          type: number
+          description: Network cost for the period in USD.
+          format: double
+        totalCost:
+          type: number
+          description: Total cost for the period in USD.
+          format: double
+        otherCost:
+          type: number
+          description: 'Cost from unmapped Azure meter categories not classified as Compute/Disk/Network.
+
+            Derived: max(0, totalCost - computeCost - diskCost - networkCost). Clamped to zero.'
+          format: double
+        premiumSsdFlag:
+          type: boolean
+          description: 'Optimization flag: host is deallocated >= 3 consecutive days on Premium SSD.'
+        consecutiveDaysDeallocated:
+          type:
+          - integer
+          - 'null'
+          description: Number of consecutive days the host has been deallocated. Null for deleted hosts.
+          format: int32
+        savingEstimate:
+          type:
+          - number
+          - 'null'
+          description: 'Estimated monthly saving from downgrading disk tier.
+
+            Only populated when PremiumSsdFlag is true.'
+          format: double
+      additionalProperties: false
+      description: 'Per-session-host cost breakdown within a host pool for a date range.
+
+        Includes disk tier optimization flags for Premium SSD waste detection.'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    CostDataPoint:
+      required:
+      - computeCost
+      - date
+      - diskCost
+      - networkCost
+      - otherCost
+      - totalCost
+      type: object
+      properties:
+        date:
+          type: string
+          description: Date of the cost record.
+          format: date-time
+        totalCost:
+          type: number
+          description: Total cost for this date in USD.
+          format: double
+        computeCost:
+          type: number
+          description: Compute cost for this date in USD.
+          format: double
+        diskCost:
+          type: number
+          description: Disk cost for this date in USD.
+          format: double
+        networkCost:
+          type: number
+          description: Network cost for this date in USD.
+          format: double
+        otherCost:
+          type: number
+          description: Unmapped meter category cost for this date in USD. Clamped to zero.
+          format: double
+      additionalProperties: false
+      description: Single data point in a cost time series.
+    SessionHostCostResultPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionHostCostResult'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    HostPoolCostResult:
+      required:
+      - activeUsers
+      - computeCost
+      - diskCost
+      - networkCost
+      - otherCost
+      - periodEnd
+      - periodStart
+      - premiumTierSessionHosts
+      - totalCost
+      - totalSessionHosts
+      - trend
+      type: object
+      properties:
+        totalCost:
+          type: number
+          description: Total cost in USD for the requested period.
+          format: double
+        computeCost:
+          type: number
+          description: Compute (VM) cost in USD for the period.
+          format: double
+        diskCost:
+          type: number
+          description: OS disk storage cost in USD for the period.
+          format: double
+        networkCost:
+          type: number
+          description: Network cost in USD for the period.
+          format: double
+        otherCost:
+          type: number
+          description: 'Cost from unmapped Azure meter categories (e.g., Bandwidth) not classified as Compute/Disk/Network.
+
+            Derived: max(0, totalCost - computeCost - diskCost - networkCost). Clamped to zero
+
+            because rounding differences between Azure''s daily totals and category breakdown queries
+
+            can produce small negative residuals.'
+          format: double
+        totalSessionHosts:
+          type: integer
+          description: Number of distinct session hosts with cost data in the period.
+          format: int32
+        premiumTierSessionHosts:
+          type: integer
+          description: 'Number of session hosts using Premium SSD OS disks.
+
+            Based on the latest OsDiskType recorded in cost data for the period.'
+          format: int32
+        diskCostPerSessionHost:
+          type:
+          - number
+          - 'null'
+          description: 'OS disk cost per session host: diskCost / totalSessionHosts.
+
+            Null when no session hosts have cost data in the period.'
+          format: double
+        activeUsers:
+          type: integer
+          description: Number of unique users with at least one session during the period.
+          format: int32
+        costPerActiveUser:
+          type:
+          - number
+          - 'null'
+          description: 'Average cost per active user: totalCost / activeUsers.
+
+            Null when no active users exist in the period.'
+          format: double
+        periodStart:
+          type: string
+          description: Start of the cost period (inclusive).
+          format: date-time
+        periodEnd:
+          type: string
+          description: End of the cost period (inclusive).
+          format: date-time
+        previousPeriodTotalCost:
+          type:
+          - number
+          - 'null'
+          description: 'Total cost for the equivalent previous period (for comparison).
+
+            Null when no previous period data exists.'
+          format: double
+        costChangePercent:
+          type:
+          - number
+          - 'null'
+          description: 'Percentage change vs the previous equivalent period.
+
+            Positive = cost increased; negative = cost decreased.'
+          format: double
+        trend:
+          type: array
+          items:
+            $ref: '#/components/schemas/CostDataPoint'
+          description: Cost data points over time at the requested granularity.
+      additionalProperties: false
+      description: 'Cost breakdown and trend for a host pool over a date range.
+
+        Includes Compute/Disk/Network split, cost-per-user, and period comparison.'
+    SavingsDataPoint:
+      required:
+      - actualComputeCost
+      - actualTotalCost
+      - computeSavings
+      - date
+      - projectedComputeCost
+      type: object
+      properties:
+        date:
+          type: string
+          description: Date of the savings record.
+          format: date-time
+        projectedComputeCost:
+          type: number
+          description: Projected compute cost for this date (maxHosts x effectiveRate x 24).
+          format: double
+        actualComputeCost:
+          type: number
+          description: Actual compute cost for this date (excludes disk and network).
+          format: double
+        actualTotalCost:
+          type: number
+          description: Actual total cost for this date (compute + disk + network).
+          format: double
+        computeSavings:
+          type: number
+          description: 'Compute savings for this date: projectedComputeCost - actualComputeCost.'
+          format: double
+      additionalProperties: false
+      description: 'Single data point in a savings time series.
+
+        All savings fields compare compute costs only (disk/network are unaffected by autoscale).'
+    CostGranularity:
+      enum:
+      - daily
+      - monthly
+      type: string
+      description: Granularity for cost data aggregation in API responses.
+    HostPoolSavingsResult:
+      required:
+      - actualComputeCost
+      - actualTotalCost
+      - autoscaleEnabled
+      - computeSavings
+      - cumulativeComputeSavings
+      - explanation
+      - monthlyComputeSavings
+      - periodEnd
+      - periodStart
+      - projectedComputeCost
+      - scalingProfileMaxHosts
+      - trend
+      type: object
+      properties:
+        projectedComputeCost:
+          type: number
+          description: 'Projected compute cost if scalingProfileMaxHosts ran 24/7 at the effective hourly rate.
+
+            Formula: scalingProfileMaxHosts x effectiveHourlyRate x 24 x days.
+
+            Example: 6 hosts x $0.028/hr x 24h x 7 days = $28.22.'
+          format: double
+        actualComputeCost:
+          type: number
+          description: 'Actual compute cost from Azure Cost Management (excludes disk and network).
+
+            This is the value compared against projectedComputeCost to calculate savings.
+
+            Derived from DB: projectedComputeCost - computeSavings.'
+          format: double
+        actualTotalCost:
+          type: number
+          description: 'Actual total cost from Azure Cost Management (compute + disk + network).
+
+            Matches the totalCost from the /cost endpoint for the same period.'
+          format: double
+        computeSavings:
+          type: number
+          description: 'Compute savings: projectedComputeCost - actualComputeCost.
+
+            Positive = money saved by autoscale. Negative = spending more than projected baseline.
+
+            Example: projected=$4.04, actualCompute=$2.02, savings=+$2.02 (autoscale turned off 3 of 6 hosts).'
+          format: double
+        computeSavingsPercent:
+          type:
+          - number
+          - 'null'
+          description: 'Compute savings as a percentage of projected compute cost: (computeSavings / projectedComputeCost) x 100.
+
+            Null when projected cost is zero. Range is unbounded (can be negative beyond -100%).
+
+            Example: +50% means actual is half of projected. -200% means actual is 3x projected.'
+          format: double
+        scalingProfileMaxHosts:
+          type: integer
+          description: 'Maximum host count from the scaling profile configuration used in the projected cost calculation.
+
+            For static profiles: HostsToPowerOn. For elastic profiles: MaxHosts.
+
+            When multiple profiles are assigned, the highest value is used.
+
+            Resolved fresh on each daily collection — profile changes apply from the next collection forward;
+
+            historical savings records are not recalculated.'
+          format: int32
+        effectiveHourlyRate:
+          type:
+          - number
+          - 'null'
+          description: 'Effective hourly compute rate derived from actual cost data: actualComputeCost / runningHostHours.
+
+            Preserves EA/CSP discounts (uses real spend, not list pricing).
+
+            Null when host-hours cannot be determined (zero compute spend).
+
+            Example: $3.84 compute / 144 host-hours = $0.0267/hr per host.'
+          format: double
+        autoscaleEnabled:
+          type: boolean
+          description: Whether autoscale is currently enabled for this pool.
+        periodStart:
+          type: string
+          description: Start of the savings period (inclusive).
+          format: date-time
+        periodEnd:
+          type: string
+          description: End of the savings period (inclusive).
+          format: date-time
+        monthlyComputeSavings:
+          type: number
+          description: Total compute savings for the current calendar month (sum of daily computeSavings for current month).
+          format: double
+        cumulativeComputeSavings:
+          type: number
+          description: Cumulative compute savings since tracking began for this pool.
+          format: double
+        explanation:
+          type: string
+          description: Human-readable explanation of the savings calculation or autoscale status.
+          example: '"Your pool has 4 hosts (3 running). Your scaling profile allows up to 4 hosts..."'
+        trend:
+          type: array
+          items:
+            $ref: '#/components/schemas/SavingsDataPoint'
+          description: Daily savings trend data points.
+      additionalProperties: false
+      description: 'Autoscale savings comparison: projected always-on compute cost vs actual spend.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

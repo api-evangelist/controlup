@@ -1,0 +1,643 @@
+openapi: 3.2.0
+info:
+  title: VDI & DaaS Configuration Machines API
+  description: APIs to manage configurations in the VDI environment
+  version: 1.0.0
+servers:
+- url: https://api.controlup.com/vdi/config
+  description: Production address
+tags:
+- name: Machines
+  description: Endpoints to manage and query machines
+paths:
+  /v1/machines:
+    get:
+      tags:
+      - Machines
+      summary: List machines
+      description: Retrieves a paginated list of machines with optional filtering, sorting, and search capabilities
+      operationId: getMachines
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination (1-based)
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: limit
+        in: query
+        description: Number of items per page
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 50
+      - name: sort
+        in: query
+        description: 'Field name to sort by. Valid fields: objectGuid, name, fqdn, netBiosName, siteId. Defaults to ''name'' if invalid field provided.'
+        required: false
+        schema:
+          type: string
+          example: name
+      - name: order
+        in: query
+        description: Sort order direction
+        required: false
+        schema:
+          type: string
+          enum:
+          - Asc
+          - Desc
+          default: Asc
+      - name: search
+        in: query
+        description: A case-insensitive search filter on the `fqdn` and `description` fields. If you enter multiple terms, such as `production server`, the endpoint returns all machines that contain 'production' in either of the searched fields AND 'server' in either of the searched fields. You can use double quotes to search for exact phrases (for example, `"production server"`).
+        required: false
+        schema:
+          type: string
+          example: web server
+      - name: folderPath
+        in: query
+        description: Filter machines by exact folder path match
+        required: false
+        schema:
+          type: string
+          example: \orgname\foldername
+      - name: site
+        in: query
+        description: Filter machines by monitor site name
+        required: false
+        schema:
+          type: string
+          example: US-East
+      - name: outboundReady
+        in: query
+        description: If set to `true`, the endpoint only returns machines that are capable of establishing outbound connections from the machine to ControlUp's services.
+        required: false
+        schema:
+          type: boolean
+      - name: includeDeleted
+        in: query
+        description: Include deleted machines in the results
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: includeDetails
+        in: query
+        description: 'If set to true, the endpoint returns the following additional details:
+
+          * Agent: Port number and install mode
+
+          * LoadBalancing: Weight and preferred weight settings
+
+          * Management: Information about which extension added the machine via sync
+
+          * VdiStatus: Last outbound connection date and when the machine was missed in EUC
+
+          '
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: fields
+        in: query
+        description: Comma-separated list of fields to include in the response. When specified, only these fields will be returned for each machine.
+        required: false
+        schema:
+          type: string
+          example: objectGuid,name,folderPath,status
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMachinesResponse'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      x-required-headers:
+      - InfraGuid
+      - Region
+    post:
+      tags:
+      - Machines
+      summary: Create or update machines
+      description: 'Creates or updates machines in bulk. Identity is determined by FQDN computed as `computerName` or `computerName.domainName`.
+
+        When a machine already exists, only provided fields that differ from current values are applied; unspecified fields are left unchanged.
+
+
+        Note: If the ControlUp environment has the agent setting ''Deploy agents automatically (from monitor only)'' enabled in the configuration console, adding a new machine (with isOutboundReady = false) via this endpoint will cause the ControlUp Monitor to attempt agent deployment to that machine automatically. This process runs from the Monitor service and requires valid domain credentials configured for the Monitor with local administrator rights on the target machines and necessary network/prerequisite access.
+
+        '
+      operationId: upsertMachines
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                $ref: '#/components/schemas/UpdateMachineDataContract'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertMachinesResponse'
+        '400':
+          description: Bad request - Validation errors (unknown folderPath/siteName, duplicate FQDNs, or invalid payload)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      x-required-headers:
+      - InfraGuid
+      - Region
+    delete:
+      tags:
+      - Machines
+      summary: Delete machines
+      description: Deletes machines in bulk by FQDN.
+      operationId: deleteMachines
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                $ref: '#/components/schemas/DeleteMachineDataContract'
+      responses:
+        '200':
+          description: Successful deletion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteMachinesResponse'
+        '400':
+          description: Bad request - Validation errors or invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      x-required-headers:
+      - InfraGuid
+      - Region
+  /v1/machines/{objectGuid}:
+    get:
+      tags:
+      - Machines
+      summary: Get machine details
+      description: Retrieves detailed information for a specific machine by its unique identifier.
+      operationId: getMachine
+      parameters:
+      - name: objectGuid
+        in: path
+        description: Unique identifier of the machine
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+      - name: includeDetails
+        in: query
+        description: 'If set to true, the endpoint returns the following additional details:
+
+          * Agent: Port number and install mode
+
+          * LoadBalancing: Weight and preferred weight settings
+
+          * Management: Information about which extension added the machine via sync
+
+          * VdiStatus: Last outbound connection date and when the machine was missed in EUC
+
+          '
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - name: fields
+        in: query
+        description: Comma-separated list of fields to include in the response. When specified, only these fields will be returned.
+        required: false
+        schema:
+          type: string
+          example: objectGuid,name,folderPath,status
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMachineResponse'
+        '400':
+          description: Bad request - Invalid objectGuid format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Machine not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      x-required-headers:
+      - InfraGuid
+      - Region
+components:
+  schemas:
+    MachineLoadBalancingDataContract:
+      type: object
+      description: Load balancing configuration for the machine. Returned only if `includeDetails` is set to `true`.
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates if load balancing is enabled
+        weight:
+          type: integer
+          description: Load balancing weight
+          minimum: 0
+          maximum: 1000
+          example: 100
+    MachineStatusDataContract:
+      type: object
+      description: Machine status information
+      properties:
+        isDeleted:
+          type: boolean
+          description: Indicates if the machine is marked as deleted
+        isOutboundReady:
+          type: boolean
+          description: Indicates if the machine is ready for outbound connections
+    MachineVdiStatusDataContract:
+      type: object
+      description: VDI-specific status information. Returned only if `includeDetails` is set to `true`.
+      properties:
+        lastOutboundConnectionDate:
+          type: string
+          format: date-time
+          description: Date and time of the last successful outbound connection
+          example: '2024-01-15T10:30:00Z'
+        missedInEucSince:
+          type: string
+          format: date-time
+          description: Date since when the machine has been missing in the EUC API
+          example: '2024-01-10T08:00:00Z'
+    DeleteMachineResponse:
+      type: object
+      properties:
+        fqdn:
+          type: string
+          description: FQDN of the affected machine
+          example: prod-web-01.contoso.com
+        status:
+          $ref: '#/components/schemas/ItemDeletionStatus'
+      required:
+      - fqdn
+      - status
+    ItemDeletionStatus:
+      type: string
+      description: Result status of the deletion operation for a given item
+      enum:
+      - Unspecified
+      - Deleted
+      - NotFound
+      - AlreadyWasDeleted
+    MachineCapabilitiesDataContract:
+      type: object
+      description: Machine capabilities information
+      properties:
+        outboundReady:
+          type: boolean
+          description: Indicates if the machine supports outbound connections
+        frameworkVersion:
+          type: string
+          description: .NET Framework version installed on the machine
+          example: '4.8'
+    GetMachinesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineDataContract'
+          description: List of machines
+        metadata:
+          $ref: '#/components/schemas/SearchMetadataContract'
+      required:
+      - data
+      - metadata
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+              example: Invalid request parameters
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    description: Field name that caused the error
+                  message:
+                    type: string
+                    description: Specific error message for the field
+              description: Detailed error information per field
+          required:
+          - code
+          - message
+      required:
+      - error
+    SearchMetadataContract:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of machines matching the query
+          minimum: 0
+          example: 150
+        page:
+          type: integer
+          description: Current page number
+          minimum: 1
+          example: 1
+        limit:
+          type: integer
+          description: Number of items per page
+          minimum: 1
+          maximum: 500
+          example: 50
+        sortedBy:
+          type: string
+          description: Field name used for sorting
+          example: name
+        order:
+          type: string
+          enum:
+          - Asc
+          - Desc
+          description: Sort order direction
+          example: Asc
+        filteredBy:
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: Filter parameter name
+              value:
+                type: string
+                description: Filter parameter value
+          description: Applied filters as key-value pairs
+      required:
+      - total
+      - page
+      - limit
+    MachineAgentDataContract:
+      type: object
+      description: Agent information for the machine. Returned only if `includeDetails` is set to `true`.
+      properties:
+        port:
+          type: integer
+          description: Port number the agent is listening on
+          example: 443
+        installMode:
+          type: boolean
+          description: Indicates if the agent is in install mode
+    GetMachineResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/MachineDataContract'
+      required:
+      - data
+    MachineManagementDataContract:
+      type: object
+      description: Management information for the machine. Returned only if `includeDetails` is set to `true`.
+      properties:
+        addedViaSyncByExtensionId:
+          type: string
+          description: Extension ID that added this machine via built-in folder sync (supported from version 9.0)
+          example: horizon-extension-ID
+    DeleteMachinesResponse:
+      type: object
+      properties:
+        affectedMachines:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeleteMachineResponse'
+      required:
+      - affectedMachines
+    DeleteMachineDataContract:
+      type: object
+      required:
+      - fqdn
+      properties:
+        fqdn:
+          type: string
+          description: Fully qualified domain name of the machine to delete
+          maxLength: 255
+          example: prod-web-01.contoso.com
+    UpdateMachineDataContract:
+      type: object
+      required:
+      - computerName
+      properties:
+        computerName:
+          type: string
+          description: Machine name (NetBIOS)
+          maxLength: 255
+          example: PROD-WEB-01
+        domainName:
+          type: string
+          description: Domain name the machine belongs to
+          maxLength: 255
+          example: contoso.com
+        folderPath:
+          type: string
+          description: Target folder path; must exist when provided
+          example: \orgname\foldername
+        siteName:
+          type: string
+          description: Target monitor site name; must exist when provided
+          maxLength: 255
+          example: US-East
+        description:
+          type: string
+          description: Machine description
+          maxLength: 255
+          example: Production web server
+        isOutboundReady:
+          type: boolean
+          description: Enables outbound connectivity when true; clears when false/null
+    MachineDataContract:
+      type: object
+      properties:
+        objectGuid:
+          type: string
+          format: uuid
+          description: Unique identifier for the machine
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          description: Machine name
+          example: PROD-WEB-01
+        fqdn:
+          type: string
+          description: Fully qualified domain name
+          example: prod-web-01.contoso.com
+        netBiosName:
+          type: string
+          description: NetBIOS name of the machine
+          example: PROD-WEB-01
+        domainName:
+          type: string
+          description: Domain name the machine belongs to
+          example: contoso.com
+        folderPath:
+          type: string
+          description: Folder path in the organizational folder tree
+          example: \orgname\foldername
+        siteName:
+          type: string
+          description: Monitor site name where the machine is located
+          example: US-East
+        description:
+          type: string
+          description: Machine description
+          example: Production web server
+        associatedUser:
+          type: string
+          description: User associated with the machine
+          example: CONTOSO\johndoe
+        status:
+          $ref: '#/components/schemas/MachineStatusDataContract'
+        capabilities:
+          $ref: '#/components/schemas/MachineCapabilitiesDataContract'
+        agent:
+          $ref: '#/components/schemas/MachineAgentDataContract'
+        loadBalancing:
+          $ref: '#/components/schemas/MachineLoadBalancingDataContract'
+        management:
+          $ref: '#/components/schemas/MachineManagementDataContract'
+        vdiStatus:
+          $ref: '#/components/schemas/MachineVdiStatusDataContract'
+    UpsertMachinesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineDataContract'
+      required:
+      - data
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from authentication service

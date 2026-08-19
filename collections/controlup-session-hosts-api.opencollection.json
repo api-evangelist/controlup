@@ -1,0 +1,86 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Session hosts API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Session hosts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Execute an action on a session host",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/session-hosts/:sessionHostId/actions",
+            "params": [
+              {
+                "name": "sessionHostId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the session host."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a background job to perform the action (restart, stop, drain mode, remove). Poll the statusUrl for progress updates."
+        },
+        {
+          "info": {
+            "name": "Get user sessions for a session host",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/session-hosts/:sessionHostId/user-sessions",
+            "params": [
+              {
+                "name": "sessionHostId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the session host."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort specification string.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nactiveDirectoryUserName, applicationType, currentStateDuration, currentStateStartTime, id, sessionDuration, sessionEndTime, sessionHostId, sessionHostName, sessionHostNameAlias, sessionName, sessionNumericAlias, sessionStartTime, sessionState, userPrincipalName\n\nDefault when omitted: sessionStartTime:desc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the people currently logged in to one session host, scoped to that host alone.\nIn Azure AVD this includes Active, Pending, and Disconnected sessions: any session where the user has not logged off.\nCovers a single host, not the whole pool."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

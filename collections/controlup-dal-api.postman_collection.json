@@ -1,0 +1,270 @@
+{
+  "item": [
+    {
+      "id": "0197231b-1bd5-4c1e-b92f-cc45acf04def",
+      "name": "Dal",
+      "description": {
+        "content": "The DAL (data access layer) is an advanced way to get data from an index.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "996fe532-90ae-42ab-9a32-f241c61d1f9f",
+          "name": "Get scoped data index",
+          "request": {
+            "name": "Get scoped data index",
+            "description": {
+              "content": "Returns the content of the specified data index, after applying a filter so that only data from devices within the `device_query` scope is returned.\n\nThe endpoint first executes `device_query` against the _devices index to get a list of device IDs. The endpoint then executes `data_query` against the index you specify in the `index` parameter, only returning data that matches the list of device IDs.\nFor example, you can use this endpoint to search the disk_info data index, but only return data for devices located in New York.\n\nA maximum of 10000 rows can be returned per request. To return more data, you must set `export` to true and use the `_source` parameter to set which fields to return in the data query. For example: `{\"data_query\":{\"_source\":[\"prop1\",\"prop2\"]},\"export\":true}`\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "dal",
+                ":index"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "index",
+                  "description": "(Required) Name of the data index to return."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_query\": \"<object>\",\n  \"data_query\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "63c065ba-3fc1-443b-a90e-2b04158f0822",
+              "name": "Data index contents.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "dal",
+                    ":index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index",
+                      "description": "(Required) Name of the data index to return."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device_query\": {\n    \"query\": {\n      \"bool\": {\n        \"must\": {\n          \"wildcard\": {\n            \"public_ip_city\": \"*New York*\"\n          }\n        }\n      }\n    }\n  },\n  \"data_query\": {\n    \"query\": {\n      \"bool\": {\n        \"should\": {\n          \"wildcard\": {\n            \"bustype\": \"*SATA*\"\n          }\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rows\": [\n    {\n      \"_id\": \"lchs9wH4h2EKvgTVv8rd\",\n      \"_created\": \"2022-01-03T16:47:53.391Z\",\n      \"favourite_website\": \"www.controlup.com\",\n      \"phone_type\": \"iPhone 3\",\n      \"name\": \"John Doe\"\n    }\n  ],\n  \"rows_available\": 200,\n  \"page_size\": 100,\n  \"start_row\": 1,\n  \"end_row\": 100,\n  \"mappings\": [\n    {\n      \"index\": \"string\",\n      \"name\": \"_created\",\n      \"type\": \"string\"\n    },\n    {\n      \"index\": \"string\",\n      \"name\": \"_created\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82db24f5-3350-4c91-9482-0860e70916b8",
+              "name": "The provided query is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "dal",
+                    ":index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index",
+                      "description": "(Required) Name of the data index to return."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device_query\": {\n    \"query\": {\n      \"bool\": {\n        \"must\": {\n          \"wildcard\": {\n            \"public_ip_city\": \"*New York*\"\n          }\n        }\n      }\n    }\n  },\n  \"data_query\": {\n    \"query\": {\n      \"bool\": {\n        \"should\": {\n          \"wildcard\": {\n            \"bustype\": \"*SATA*\"\n          }\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "dedb85c4-a5ce-4747-aee0-6860e100da16",
+              "name": "The provided index name is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "dal",
+                    ":index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index",
+                      "description": "(Required) Name of the data index to return."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device_query\": {\n    \"query\": {\n      \"bool\": {\n        \"must\": {\n          \"wildcard\": {\n            \"public_ip_city\": \"*New York*\"\n          }\n        }\n      }\n    }\n  },\n  \"data_query\": {\n    \"query\": {\n      \"bool\": {\n        \"should\": {\n          \"wildcard\": {\n            \"bustype\": \"*SATA*\"\n          }\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "86e80118-29c0-46c2-90c6-14f13b581dd2",
+    "name": "ControlUp for Desktops Dal API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves.",
+      "type": "text/plain"
+    }
+  }
+}

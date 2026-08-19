@@ -1,0 +1,3372 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Overview API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Overview
+paths:
+  /cloud/overview/graph:
+    get:
+      tags:
+      - Overview
+      summary: Get overview graph data
+      description: 'Returns one count per level of the hierarchy — subscriptions, regions, resource groups, host pools, session
+
+        hosts, images, sessions — for the funnel at the top of the Overview.
+
+        Scalars, not rows; a level that a filter pins to one item returns its name instead of a count.'
+      operationId: GetOverviewGraph
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved graph data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OverviewGraphData'
+              example:
+              - entityType: subscriptions
+                count: 3
+              - entityType: regions
+                count: 5
+              - entityType: resourceGroups
+                count: 12
+              - entityType: workspaces
+                count: 8
+              - entityType: applicationGroups
+                count: 10
+              - entityType: hostPools
+                count: 7
+              - entityType: sessionHosts
+                count: 24
+              - entityType: userSessions
+                count: 15
+              - entityType: images
+                count: 4
+              - entityType: masterImages
+                count: 3
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/subscriptions:
+    get:
+      tags:
+      - Overview
+      summary: Get overview subscriptions
+      description: 'Returns one row per subscription with counts of everything beneath it plus rolled-up cost and performance.
+
+        What a subscription contains and costs, unlike its registration record, which carries no metrics.'
+      operationId: GetOverviewSubscriptions
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved subscriptions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionOverviewPagedResult'
+              example:
+                items:
+                - subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  resourceGroupsCount: 8
+                  regionsCount: 3
+                  hostPoolsCount: 5
+                  runningHostsCount: 18
+                  stoppedHostsCount: 2
+                  totalSessionsCount: 42
+                  costMonthToDate: 1528.45
+                  avgCpu: 34.2
+                  avgMem: 61.8
+                  status: Healthy
+                - subscriptionId: a1b2c3d4-0001-4000-8000-000000000002
+                  subscriptionName: Dev/Test AVD
+                  resourceGroupsCount: 4
+                  regionsCount: 1
+                  hostPoolsCount: 2
+                  runningHostsCount: 3
+                  stoppedHostsCount: 1
+                  totalSessionsCount: 5
+                  costMonthToDate: 211.68
+                  avgCpu: 12.5
+                  avgMem: 38
+                  status: Healthy
+                page: 1
+                pageSize: 25
+                count: 2
+                hasMore: false
+                totalCount: 2
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/regions:
+    get:
+      tags:
+      - Overview
+      summary: Get overview regions
+      description: 'Returns one row per Azure region holding onboarded resources, with subscription counts, resource statistics,
+
+        cost, and performance rolled up within it.
+
+        Only regions in use, not the catalog of regions a subscription could deploy into.'
+      operationId: GetOverviewRegions
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved regions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionOverviewPagedResult'
+              example:
+                items:
+                - regionId: eastus
+                  regionName: East US
+                  subscriptionsCount: 2
+                  resourceGroupsCount: 7
+                  hostPoolsCount: 4
+                  runningHostsCount: 12
+                  stoppedHostsCount: 1
+                  totalSessionsCount: 28
+                  costMonthToDate: 982.3
+                  avgCpu: 38.5
+                  avgMem: 62
+                - regionId: westeurope
+                  regionName: West Europe
+                  subscriptionsCount: 1
+                  resourceGroupsCount: 3
+                  hostPoolsCount: 2
+                  runningHostsCount: 6
+                  stoppedHostsCount: 0
+                  totalSessionsCount: 14
+                  costMonthToDate: 445.12
+                  avgCpu: 27.3
+                  avgMem: 54.1
+                - regionId: eastus2
+                  regionName: East US 2
+                  subscriptionsCount: 1
+                  resourceGroupsCount: 2
+                  hostPoolsCount: 1
+                  runningHostsCount: 3
+                  stoppedHostsCount: 1
+                  totalSessionsCount: 5
+                  costMonthToDate: 312.71
+                  avgCpu: 22.1
+                  avgMem: 45.6
+                page: 1
+                pageSize: 25
+                count: 3
+                hasMore: false
+                totalCount: 3
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/resource-groups:
+    get:
+      tags:
+      - Overview
+      summary: Get overview resource groups
+      description: 'Returns one row per resource group, with host pool counts, host statistics, cost, and performance rolled up.
+
+        Only groups holding onboarded resources, not every group that exists in Azure.'
+      operationId: GetOverviewResourceGroups
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved resource groups.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceGroupOverviewPagedResult'
+              example:
+                items:
+                - resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  regionsCount: 1
+                  hostPoolsCount: 2
+                  runningHostsCount: 8
+                  stoppedHostsCount: 0
+                  totalSessionsCount: 20
+                  costMonthToDate: 542.18
+                  avgCpu: 41.2
+                  avgMem: 65.4
+                - resourceGroupId: b2c3d4e5-0001-4000-8000-000000000002
+                  resourceGroupName: rg-avd-prod-westeurope
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: westeurope
+                  regionName: West Europe
+                  regionsCount: 1
+                  hostPoolsCount: 1
+                  runningHostsCount: 4
+                  stoppedHostsCount: 0
+                  totalSessionsCount: 10
+                  costMonthToDate: 312.5
+                  avgCpu: 28.7
+                  avgMem: 52.3
+                - resourceGroupId: b2c3d4e5-0001-4000-8000-000000000003
+                  resourceGroupName: rg-avd-devtest
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000002
+                  subscriptionName: Dev/Test AVD
+                  regionId: eastus
+                  regionName: East US
+                  regionsCount: 1
+                  hostPoolsCount: 1
+                  runningHostsCount: 2
+                  stoppedHostsCount: 1
+                  totalSessionsCount: 3
+                  costMonthToDate: 87.44
+                  avgCpu: 15
+                  avgMem: 35.2
+                page: 1
+                pageSize: 25
+                count: 3
+                hasMore: true
+                totalCount: 12
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/host-pools:
+    get:
+      tags:
+      - Overview
+      summary: Get overview host pools
+      description: 'Returns one row per host pool with host statistics, session counts, cost, and performance metrics.
+
+        Carries cost and accepts filters from any level of the hierarchy; the plain host pool list is the one for simply
+
+        enumerating pools. Neither carries AVD configuration or time-series metrics.'
+      operationId: GetOverviewHostPools
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved host pools.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolOverviewPagedResult'
+              example:
+                items:
+                - hostPoolId: c3d4e5f6-0001-4000-8000-000000000001
+                  hostPoolName: HP-Finance-Prod
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  type: Pooled
+                  maxSessionsPerHost: 4
+                  runningHostsCount: 6
+                  stoppedHostsCount: 0
+                  totalSessionsCount: 15
+                  costMonthToDate: 324.5
+                  avgCpu: 42.3
+                  avgMem: 68.1
+                - hostPoolId: c3d4e5f6-0001-4000-8000-000000000002
+                  hostPoolName: HP-Engineering-VDI
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  type: Personal
+                  maxSessionsPerHost: 999999
+                  runningHostsCount: 4
+                  stoppedHostsCount: 1
+                  totalSessionsCount: 3
+                  costMonthToDate: 217.68
+                  avgCpu: 55
+                  avgMem: 72.5
+                - hostPoolId: c3d4e5f6-0001-4000-8000-000000000003
+                  hostPoolName: HP-Europe-Pooled
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: westeurope
+                  regionName: West Europe
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000002
+                  resourceGroupName: rg-avd-prod-westeurope
+                  type: Pooled
+                  maxSessionsPerHost: 3
+                  runningHostsCount: 4
+                  stoppedHostsCount: 0
+                  totalSessionsCount: 8
+                  costMonthToDate: 312.5
+                  avgCpu: 28.7
+                  avgMem: 52.3
+                page: 1
+                pageSize: 25
+                count: 3
+                hasMore: true
+                totalCount: 7
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/session-hosts:
+    get:
+      tags:
+      - Overview
+      summary: Get overview session hosts
+      description: 'Returns one row per session host VM with power state, session count, performance metrics, and cost.
+
+        Spans every host pool, so it answers "which hosts anywhere are unhealthy, idle, or expensive".'
+      operationId: GetOverviewSessionHosts
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved session hosts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionHostOverviewPagedResult'
+              example:
+                items:
+                - hostId: d4e5f6a7-0001-4000-8000-000000000001
+                  hostName: HP-Finance-Prod/FIN-SH-0
+                  hostNameAlias: FIN-SH-0
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  hostPoolId: c3d4e5f6-0001-4000-8000-000000000001
+                  hostPoolName: HP-Finance-Prod
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  powerState: running
+                  vmSku: Standard_D4s_v5
+                  sessionCount: 3
+                  currentCpu: 45.2
+                  currentMemory: 72
+                  image: MicrosoftWindowsDesktop:office-365:win11-24h2-avd-m365:26100.3476.250306
+                  costMonthToDate: 54.12
+                  virtualNetwork: vnet-avd-prod-eastus
+                  virtualNetworkResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-avd-prod-eastus/providers/Microsoft.Network/virtualNetworks/vnet-avd-prod-eastus
+                  subnet: snet-session-hosts
+                  subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-avd-prod-eastus/providers/Microsoft.Network/virtualNetworks/vnet-avd-prod-eastus/subnets/snet-session-hosts
+                - hostId: d4e5f6a7-0001-4000-8000-000000000002
+                  hostName: HP-Finance-Prod/FIN-SH-1
+                  hostNameAlias: FIN-SH-1
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  hostPoolId: c3d4e5f6-0001-4000-8000-000000000001
+                  hostPoolName: HP-Finance-Prod
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  powerState: running
+                  vmSku: Standard_D4s_v5
+                  sessionCount: 4
+                  currentCpu: 62.8
+                  currentMemory: 78.5
+                  image: MicrosoftWindowsDesktop:office-365:win11-24h2-avd-m365:26100.3476.250306
+                  costMonthToDate: 54.12
+                  virtualNetwork: vnet-avd-prod-eastus
+                  virtualNetworkResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-avd-prod-eastus/providers/Microsoft.Network/virtualNetworks/vnet-avd-prod-eastus
+                  subnet: snet-session-hosts
+                  subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-avd-prod-eastus/providers/Microsoft.Network/virtualNetworks/vnet-avd-prod-eastus/subnets/snet-session-hosts
+                - hostId: d4e5f6a7-0001-4000-8000-000000000003
+                  hostName: HP-Engineering-VDI/ENG-VM-0
+                  hostNameAlias: ENG-VM-0
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  hostPoolId: c3d4e5f6-0001-4000-8000-000000000002
+                  hostPoolName: HP-Engineering-VDI
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  powerState: deallocated
+                  vmSku: Standard_E8s_v5
+                  sessionCount: 0
+                  currentCpu: 0
+                  currentMemory: 0
+                  image: microsoftwindowsdesktop:windows-11:win11-24h2-ent:26100.3476.250306
+                  costMonthToDate: 12.3
+                  virtualNetwork: vnet-avd-prod-eastus
+                  virtualNetworkResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-avd-prod-eastus/providers/Microsoft.Network/virtualNetworks/vnet-avd-prod-eastus
+                  subnet: snet-vdi-hosts
+                  subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-avd-prod-eastus/providers/Microsoft.Network/virtualNetworks/vnet-avd-prod-eastus/subnets/snet-vdi-hosts
+                page: 1
+                pageSize: 25
+                count: 3
+                hasMore: true
+                totalCount: 24
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/images:
+    get:
+      tags:
+      - Overview
+      summary: Get overview images
+      description: 'Returns one row per image that onboarded resources are running, with version, status, and consumer count.
+
+        Covers images of any origin, unlike the master image view, which covers only what DaaS IQ builds.'
+      operationId: GetOverviewImages
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved images.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageOverviewPagedResult'
+              example:
+                items:
+                - imageId: e5f6a7b8-0001-4000-8000-000000000001
+                  imageName: Win11-Office365-24H2
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  version: 26100.3476.250306
+                  status: Active
+                  lastUpdated: '2026-05-10T14:30:00Z'
+                  hostPoolsUsingCount: 3
+                  hostsBasedOnCount: 12
+                - imageId: e5f6a7b8-0001-4000-8000-000000000002
+                  imageName: Win10-Enterprise-22H2
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000002
+                  subscriptionName: Dev/Test AVD
+                  regionId: eastus
+                  regionName: East US
+                  version: 19045.6456.251117
+                  status: Active
+                  lastUpdated: '2026-03-15T08:00:00Z'
+                  hostPoolsUsingCount: 1
+                  hostsBasedOnCount: 2
+                page: 1
+                pageSize: 25
+                count: 2
+                hasMore: false
+                totalCount: 2
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/master-images:
+    get:
+      tags:
+      - Overview
+      summary: Get overview master images
+      description: 'Returns one row per DaaS IQ-managed Master Image with its version count and display name.
+
+        A roll-up only; build configuration, publish history, and operation state live on the Master Images list.'
+      operationId: GetOverviewMasterImages
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved master images.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImageOverviewPagedResult'
+              example:
+                items:
+                - masterImageId: f6a7b8c9-0001-4000-8000-000000000001
+                  masterImageName: Finance-Gold-Master
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  osFamily: Windows11MultiSession
+                  osVersion: 24H2
+                  status: Ready
+                  powerState: Deallocated
+                  sourceType: PromotedVm
+                  latestVersion: 1.2.0
+                  publishedVersionCount: 3
+                  createdAt: '2026-02-15T10:00:00Z'
+                  lastUpdated: '2026-05-10T22:14:14Z'
+                - masterImageId: f6a7b8c9-0001-4000-8000-000000000002
+                  masterImageName: Win11-Europe-Gallery
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: westeurope
+                  regionName: West Europe
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000002
+                  resourceGroupName: rg-avd-prod-westeurope
+                  osFamily: Windows11MultiSession
+                  osVersion: 23H2
+                  status: Ready
+                  powerState: Running
+                  sourceType: DeployedFromGallery
+                  publishedVersionCount: 0
+                  createdAt: '2026-04-01T14:30:00Z'
+                  lastUpdated: '2026-05-15T06:00:56Z'
+                page: 1
+                pageSize: 25
+                count: 2
+                hasMore: false
+                totalCount: 2
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/user-sessions:
+    get:
+      tags:
+      - Overview
+      summary: Get overview user sessions
+      description: 'Returns one row per current user session (Active, Pending, or Disconnected), denormalised with its host pool,
+
+        subscription, and region. Ordered by user principal name.
+
+        Spans every host pool, so it answers "where is this user connected".'
+      operationId: GetOverviewUserSessions
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved user sessions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverviewUserSessionResultPagedResult'
+              example:
+                items:
+                - userSessionId: a7b8c9d0-0001-4000-8000-000000000001
+                  sessionHostId: d4e5f6a7-0001-4000-8000-000000000001
+                  sessionHostName: HP-Finance-Prod/FIN-SH-0
+                  sessionHostNameAlias: FIN-SH-0
+                  hostPoolId: c3d4e5f6-0001-4000-8000-000000000001
+                  hostPoolName: HP-Finance-Prod
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  userPrincipalName: jane.doe@contoso.com
+                  activeDirectoryUserName: CONTOSO\jane.doe
+                  sessionState: Active
+                  sessionStartTime: '2026-05-19T08:15:00Z'
+                  currentStateStartTime: '2026-05-19T08:15:00Z'
+                  currentStateDuration: 74.19:22:44.9329128
+                  sessionDuration: 74.19:22:44.9334174
+                  applicationType: Desktop
+                - userSessionId: a7b8c9d0-0001-4000-8000-000000000002
+                  sessionHostId: d4e5f6a7-0001-4000-8000-000000000002
+                  sessionHostName: HP-Finance-Prod/FIN-SH-1
+                  sessionHostNameAlias: FIN-SH-1
+                  hostPoolId: c3d4e5f6-0001-4000-8000-000000000001
+                  hostPoolName: HP-Finance-Prod
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  userPrincipalName: john.smith@contoso.com
+                  activeDirectoryUserName: CONTOSO\john.smith
+                  sessionState: Disconnected
+                  sessionStartTime: '2026-05-19T07:30:00Z'
+                  currentStateStartTime: '2026-05-19T12:45:00Z'
+                  currentStateDuration: 74.14:52:44.9335133
+                  sessionDuration: 74.20:07:44.9335145
+                  applicationType: Desktop
+                page: 1
+                pageSize: 25
+                count: 2
+                hasMore: false
+                totalCount: 2
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/application-groups:
+    get:
+      tags:
+      - Overview
+      summary: Get overview application groups
+      description: 'Returns one row per application group — the AVD object publishing RemoteApp programs or a full desktop —
+
+        with its type, host pool, and session statistics.
+
+        Sits between a workspace and a host pool, so it is neither what users pick nor what session hosts join.'
+      operationId: GetOverviewApplicationGroups
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved application groups.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationGroupOverviewPagedResult'
+              example:
+                items:
+                - applicationGroupId: b8c9d0e1-0001-4000-8000-000000000001
+                  applicationGroupName: HP-Finance-Prod-DAG
+                  type: Desktop
+                  description: Desktop Application Group created through the Hostpool Wizard
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  hostPoolId: c3d4e5f6-0001-4000-8000-000000000001
+                  hostPoolName: HP-Finance-Prod
+                  workspaceId: c9d0e1f2-0001-4000-8000-000000000001
+                  workspaceName: WS-Finance
+                  runningHostsCount: 6
+                  stoppedHostsCount: 0
+                  totalSessionsCount: 15
+                - applicationGroupId: b8c9d0e1-0001-4000-8000-000000000002
+                  applicationGroupName: HP-Engineering-VDI-DAG
+                  type: Desktop
+                  description: Personal desktop application group for engineering
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  hostPoolId: c3d4e5f6-0001-4000-8000-000000000002
+                  hostPoolName: HP-Engineering-VDI
+                  workspaceId: c9d0e1f2-0001-4000-8000-000000000002
+                  workspaceName: WS-Engineering
+                  runningHostsCount: 4
+                  stoppedHostsCount: 1
+                  totalSessionsCount: 3
+                page: 1
+                pageSize: 25
+                count: 2
+                hasMore: true
+                totalCount: 10
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/overview/workspaces:
+    get:
+      tags:
+      - Overview
+      summary: Get overview workspaces
+      description: 'Returns one row per AVD workspace with its application group count, host pools, and session statistics.
+
+        Top of the publishing hierarchy and what users see in their client; owns application groups, not hosts.'
+      operationId: GetOverviewWorkspaces
+      parameters:
+      - name: provider
+        in: query
+        description: Filter by cloud provider. Currently only Azure is supported.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: subscriptionId
+        in: query
+        description: Filter by cloud subscription (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: regionId
+        in: query
+        description: Filter by Azure region code (e.g., 'eastus', 'westeurope').
+        schema:
+          maxLength: 100
+          type: string
+      - name: resourceGroupId
+        in: query
+        description: Filter by resource group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: workspaceId
+        in: query
+        description: Filter by workspace (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: applicationGroupId
+        in: query
+        description: Filter by application group (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: hostPoolId
+        in: query
+        description: Filter by host pool (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: sessionHostId
+        in: query
+        description: Filter by session host (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: userSessionId
+        in: query
+        description: Filter by user session (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: imageId
+        in: query
+        description: Filter by image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: masterImageId
+        in: query
+        description: Filter by master image (internal ID).
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved workspaces.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceOverviewPagedResult'
+              example:
+                items:
+                - workspaceId: c9d0e1f2-0001-4000-8000-000000000001
+                  workspaceName: WS-Finance
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  applicationGroupsCount: 2
+                  hostPoolsCount: 1
+                  runningHostsCount: 6
+                  stoppedHostsCount: 0
+                  totalSessionsCount: 15
+                - workspaceId: c9d0e1f2-0001-4000-8000-000000000002
+                  workspaceName: WS-Engineering
+                  subscriptionId: a1b2c3d4-0001-4000-8000-000000000001
+                  subscriptionName: Production AVD
+                  regionId: eastus
+                  regionName: East US
+                  resourceGroupId: b2c3d4e5-0001-4000-8000-000000000001
+                  resourceGroupName: rg-avd-prod-eastus
+                  applicationGroupsCount: 1
+                  hostPoolsCount: 1
+                  runningHostsCount: 4
+                  stoppedHostsCount: 1
+                  totalSessionsCount: 3
+                page: 1
+                pageSize: 25
+                count: 2
+                hasMore: true
+                totalCount: 8
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    ImageOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    ApplicationGroupOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationGroupOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    RegionOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+    OverviewGraphData:
+      required:
+      - entityType
+      type: object
+      properties:
+        entityType:
+          type: string
+          description: 'Entity type identifier matching the graph item key.
+
+            Values: ''subscriptions'', ''regions'', ''resourceGroups'', ''hostPools'', ''hosts'', ''images'', ''sessions''.'
+        count:
+          type:
+          - integer
+          - 'null'
+          description: Count of entities at this level. Null if filtered to a single item.
+          format: int32
+        itemName:
+          type:
+          - string
+          - 'null'
+          description: Name of the single selected item when filtered. Null if showing count.
+      additionalProperties: false
+      description: 'Graph node data for the cloud integrations overview visualization.
+
+        Each instance represents a count of entities at a specific level in the hierarchy.'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    SessionHostOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionHostOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    WorkspaceOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    ApplicationGroupOverview:
+      required:
+      - applicationGroupId
+      - applicationGroupName
+      - hostPoolId
+      - hostPoolName
+      - regionId
+      - regionName
+      - resourceGroupId
+      - resourceGroupName
+      - runningHostsCount
+      - stoppedHostsCount
+      - subscriptionId
+      - subscriptionName
+      - totalSessionsCount
+      - type
+      type: object
+      properties:
+        applicationGroupId:
+          type: string
+          description: Internal Foundry application group ID.
+          format: uuid
+        applicationGroupName:
+          type: string
+          description: Application group friendly name.
+        type:
+          type: string
+          description: 'Application group type: ''Desktop'' or ''RemoteApp''.
+
+            Desktop groups publish full desktops, RemoteApp groups publish individual applications.'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Optional description of the application group.
+        subscriptionId:
+          type: string
+          description: Parent subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Parent subscription display name.
+        regionId:
+          type: string
+          description: Region code.
+        regionName:
+          type: string
+          description: Region display name.
+        resourceGroupId:
+          type: string
+          description: Resource group ID.
+          format: uuid
+        resourceGroupName:
+          type: string
+          description: Resource group name.
+        hostPoolId:
+          type: string
+          description: Associated host pool ID.
+          format: uuid
+        hostPoolName:
+          type: string
+          description: Associated host pool name.
+        workspaceId:
+          type:
+          - string
+          - 'null'
+          description: Associated workspace ID (Log Analytics workspace for diagnostics).
+          format: uuid
+        workspaceName:
+          type:
+          - string
+          - 'null'
+          description: Associated workspace name.
+        runningHostsCount:
+          type: integer
+          description: Number of running session hosts in the associated host pool.
+          format: int32
+        stoppedHostsCount:
+          type: integer
+          description: Number of stopped session hosts in the associated host pool.
+          format: int32
+        totalSessionsCount:
+          type: integer
+          description: Total number of active user sessions.
+          format: int32
+      additionalProperties: false
+      description: 'Application group summary with metrics for the overview page.
+
+        Application Groups are collections of RemoteApp programs or Desktops published to users.'
+    SubscriptionOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    WorkspaceOverview:
+      required:
+      - applicationGroupsCount
+      - hostPoolsCount
+      - regionId
+      - regionName
+      - resourceGroupId
+      - resourceGroupName
+      - runningHostsCount
+      - stoppedHostsCount
+      - subscriptionId
+      - subscriptionName
+      - totalSessionsCount
+      - workspaceId
+      - workspaceName
+      type: object
+      properties:
+        workspaceId:
+          type: string
+          description: Internal Foundry workspace ID.
+          format: uuid
+        workspaceName:
+          type: string
+          description: Workspace friendly name.
+        subscriptionId:
+          type: string
+          description: Parent subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Parent subscription display name.
+        regionId:
+          type: string
+          description: Region code.
+        regionName:
+          type: string
+          description: Region display name.
+        resourceGroupId:
+          type: string
+          description: Resource group ID.
+          format: uuid
+        resourceGroupName:
+          type: string
+          description: Resource group name.
+        applicationGroupsCount:
+          type: integer
+          description: Number of application groups associated with this workspace.
+          format: int32
+        hostPoolsCount:
+          type: integer
+          description: Number of host pools associated through application groups.
+          format: int32
+        runningHostsCount:
+          type: integer
+          description: Total number of running session hosts across associated host pools.
+          format: int32
+        stoppedHostsCount:
+          type: integer
+          description: Total number of stopped session hosts across associated host pools.
+          format: int32
+        totalSessionsCount:
+          type: integer
+          description: Total number of active user sessions.
+          format: int32
+      additionalProperties: false
+      description: 'Workspace summary with metrics for the overview page.
+
+        Workspaces represent the top-level user experience in Azure Virtual Desktop.
+
+        They group Application Groups that users see in their Remote Desktop client.'
+    MasterImageOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    ResourceGroupOverview:
+      required:
+      - avgCpu
+      - avgMem
+      - costMonthToDate
+      - hostPoolsCount
+      - regionId
+      - regionName
+      - regionsCount
+      - resourceGroupId
+      - resourceGroupName
+      - runningHostsCount
+      - stoppedHostsCount
+      - subscriptionId
+      - subscriptionName
+      - totalSessionsCount
+      type: object
+      properties:
+        resourceGroupId:
+          type: string
+          description: Internal Foundry resource group ID.
+          format: uuid
+        resourceGroupName:
+          type: string
+          description: Resource group name.
+        subscriptionId:
+          type: string
+          description: Parent subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Parent subscription display name.
+        regionId:
+          type: string
+          description: Region code where this resource group is located.
+        regionName:
+          type: string
+          description: Region display name.
+        regionsCount:
+          type: integer
+          description: Number of distinct regions used by resources in this resource group.
+          format: int32
+        hostPoolsCount:
+          type: integer
+          description: Number of host pools in this resource group.
+          format: int32
+        runningHostsCount:
+          type: integer
+          description: Number of running session hosts.
+          format: int32
+        stoppedHostsCount:
+          type: integer
+          description: Number of stopped session hosts.
+          format: int32
+        totalSessionsCount:
+          type: integer
+          description: Total number of active user sessions.
+          format: int32
+        costMonthToDate:
+          type: number
+          description: Month-to-date cost in USD.
+          format: double
+        avgCpu:
+          type: number
+          description: Average CPU percentage across all hosts.
+          format: double
+        avgMem:
+          type: number
+          description: Average memory percentage across all hosts.
+          format: double
+      additionalProperties: false
+      description: Resource group summary with aggregated metrics for the overview page.
+    RegionOverview:
+      required:
+      - avgCpu
+      - avgMem
+      - costMonthToDate
+      - hostPoolsCount
+      - regionId
+      - regionName
+      - resourceGroupsCount
+      - runningHostsCount
+      - stoppedHostsCount
+      - subscriptionsCount
+      - totalSessionsCount
+      type: object
+      properties:
+        regionId:
+          type: string
+          description: Azure region code (e.g., 'eastus', 'westeurope').
+        regionName:
+          type: string
+          description: Region display name (e.g., 'East US', 'West Europe').
+        subscriptionsCount:
+          type: integer
+          description: Number of subscriptions with resources in this region.
+          format: int32
+        resourceGroupsCount:
+          type: integer
+          description: Number of resource groups in this region.
+          format: int32
+        hostPoolsCount:
+          type: integer
+          description: Number of host pools in this region.
+          format: int32
+        runningHostsCount:
+          type: integer
+          description: Number of running session hosts.
+          format: int32
+        stoppedHostsCount:
+          type: integer
+          description: Number of stopped session hosts.
+          format: int32
+        totalSessionsCount:
+          type: integer
+          description: Total number of active user sessions.
+          format: int32
+        costMonthToDate:
+          type: number
+          description: Month-to-date cost in USD.
+          format: double
+        avgCpu:
+          type: number
+          description: Average CPU percentage across all hosts.
+          format: double
+        avgMem:
+          type: number
+          description: Average memory percentage across all hosts.
+          format: double
+      additionalProperties: false
+      description: Region summary with aggregated metrics for the overview page.
+    OverviewUserSessionResult:
+      required:
+      - currentStateDuration
+      - currentStateStartTime
+      - hostPoolId
+      - hostPoolName
+      - regionId
+      - regionName
+      - sessionDuration
+      - sessionHostId
+      - sessionHostName
+      - sessionHostNameAlias
+      - sessionStartTime
+      - sessionState
+      - subscriptionId
+      - subscriptionName
+      - userPrincipalName
+      - userSessionId
+      type: object
+      properties:
+        userSessionId:
+          type: string
+          description: Unique identifier for this user session.
+          format: uuid
+        sessionHostId:
+          type: string
+          description: Session host identifier.
+          format: uuid
+        sessionHostName:
+          type: string
+          description: Session host name (full Azure name)
+          example: HP-Contoso1/HP1-0
+        sessionHostNameAlias:
+          type: string
+          description: Short display name extracted from the host portion of the session host name
+          example: HP1-0
+        hostPoolId:
+          type: string
+          description: Host pool identifier.
+          format: uuid
+        hostPoolName:
+          type: string
+          description: 'Host pool name (denormalized for display).
+
+            Example: "HP-Contoso1"'
+        subscriptionId:
+          type: string
+          description: Subscription identifier.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: 'Subscription display name (denormalized for display).
+
+            Example: "Production Subscription"'
+        regionId:
+          type: string
+          description: Azure region code (e.g., 'eastus', 'westeurope').
+        regionName:
+          type: string
+          description: 'Region display name (denormalized for display).
+
+            Example: "East US"'
+        userPrincipalName:
+          type: string
+          description: 'User Principal Name (email).
+
+            Example: "john.smith@contoso.com"'
+        activeDirectoryUserName:
+          type:
+          - string
+          - 'null'
+          description: 'Active Directory username (domain\user format).
+
+            Example: "CONTOSO\\john.smith"'
+        sessionState:
+          type: string
+          description: 'Session state: Active, Disconnected, Pending, SignOut, etc.'
+        sessionStartTime:
+          type: string
+          description: When the session was created (user logged in).
+          format: date-time
+        currentStateStartTime:
+          type: string
+          description: 'When the session entered its current state.
+
+            Defaults to SessionStartTime if no state changes have occurred.
+
+            Used for "Last Activity" column in UI.'
+          format: date-time
+        currentStateDuration:
+          type: string
+          description: 'Duration of the current state.
+
+            Computed from CurrentStateStartTime to UtcNow.'
+          format: date-span
+          readOnly: true
+        sessionDuration:
+          type: string
+          description: Duration of the session (computed from SessionStartTime to UtcNow).
+          format: date-span
+          readOnly: true
+        applicationType:
+          type:
+          - string
+          - 'null'
+          description: 'Application type: Desktop, RemoteApp, etc.'
+      additionalProperties: false
+      description: 'Extended user session result for overview display.
+
+        Includes denormalized host pool, subscription, and region information.'
+    SubscriptionOverview:
+      required:
+      - avgCpu
+      - avgMem
+      - costMonthToDate
+      - hostPoolsCount
+      - regionsCount
+      - resourceGroupsCount
+      - runningHostsCount
+      - status
+      - stoppedHostsCount
+      - subscriptionId
+      - subscriptionName
+      - totalSessionsCount
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          description: Internal Foundry subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Subscription display name.
+        resourceGroupsCount:
+          type: integer
+          description: Number of resource groups in this subscription.
+          format: int32
+        regionsCount:
+          type: integer
+          description: Number of distinct regions used by resources in this subscription.
+          format: int32
+        hostPoolsCount:
+          type: integer
+          description: Number of host pools in this subscription.
+          format: int32
+        runningHostsCount:
+          type: integer
+          description: Number of running session hosts.
+          format: int32
+        stoppedHostsCount:
+          type: integer
+          description: Number of stopped session hosts.
+          format: int32
+        totalSessionsCount:
+          type: integer
+          description: Total number of active user sessions.
+          format: int32
+        costMonthToDate:
+          type: number
+          description: Month-to-date cost in USD.
+          format: double
+        avgCpu:
+          type: number
+          description: Average CPU percentage across all hosts.
+          format: double
+        avgMem:
+          type: number
+          description: Average memory percentage across all hosts.
+          format: double
+        status:
+          type: string
+          description: 'Subscription health status: ''Unknown'', ''Healthy'', ''Warning'', ''Error'', or ''InProgress''.
+
+            ''Unknown'' also covers subscriptions whose health has not been computed yet.'
+      additionalProperties: false
+      description: Subscription summary with aggregated metrics for the overview page.
+    HostPoolOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostPoolOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    ResourceGroupOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceGroupOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    OverviewUserSessionResultPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverviewUserSessionResult'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    HostPoolOverview:
+      required:
+      - avgCpu
+      - avgMem
+      - costMonthToDate
+      - hostPoolId
+      - hostPoolName
+      - regionId
+      - regionName
+      - resourceGroupId
+      - resourceGroupName
+      - runningHostsCount
+      - stoppedHostsCount
+      - subscriptionId
+      - subscriptionName
+      - totalSessionsCount
+      - type
+      type: object
+      properties:
+        hostPoolId:
+          type: string
+          description: Internal Foundry host pool ID.
+          format: uuid
+        hostPoolName:
+          type: string
+          description: Host pool friendly name.
+        subscriptionId:
+          type: string
+          description: Parent subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Parent subscription display name.
+        regionId:
+          type: string
+          description: Region code.
+        regionName:
+          type: string
+          description: Region display name.
+        resourceGroupId:
+          type: string
+          description: Resource group ID.
+          format: uuid
+        resourceGroupName:
+          type: string
+          description: Resource group name.
+        type:
+          type: string
+          description: 'Host pool type: ''Pooled'' or ''Personal''.'
+        maxSessionsPerHost:
+          type:
+          - integer
+          - 'null'
+          description: Maximum sessions allowed per host.
+          format: int32
+        runningHostsCount:
+          type: integer
+          description: Number of running session hosts.
+          format: int32
+        stoppedHostsCount:
+          type: integer
+          description: Number of stopped session hosts.
+          format: int32
+        totalSessionsCount:
+          type: integer
+          description: Total number of active user sessions in this pool.
+          format: int32
+        costMonthToDate:
+          type: number
+          description: Month-to-date cost in USD.
+          format: double
+        avgCpu:
+          type: number
+          description: Average CPU percentage across all hosts.
+          format: double
+        avgMem:
+          type: number
+          description: Average memory percentage across all hosts.
+          format: double
+      additionalProperties: false
+      description: Host pool summary with detailed metrics for the overview page.
+    MasterImageOverview:
+      required:
+      - createdAt
+      - lastUpdated
+      - masterImageId
+      - masterImageName
+      - osFamily
+      - osVersion
+      - powerState
+      - publishedVersionCount
+      - regionId
+      - regionName
+      - sourceType
+      - status
+      - subscriptionId
+      - subscriptionName
+      type: object
+      properties:
+        masterImageId:
+          type: string
+          description: Master image primary key.
+          format: uuid
+        masterImageName:
+          type: string
+          description: User-provided display name.
+        subscriptionId:
+          type: string
+          description: Internal Foundry subscription ID (az_subscription.id).
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Subscription display name (cloud_subscription.name).
+        regionId:
+          type: string
+          description: Azure region code (e.g., "eastus").
+        regionName:
+          type: string
+          description: Region display name joined from az_region.
+        resourceGroupId:
+          type:
+          - string
+          - 'null'
+          description: Foundry resource group ID (az_resource_group.id). Null when the master image's resource group has not been imported yet.
+          format: uuid
+        resourceGroupName:
+          type:
+          - string
+          - 'null'
+          description: Resource group name (master_image.resource_group).
+        osFamily:
+          type: string
+          description: OS family stored as its enum name (e.g., "Windows11MultiSession").
+        osVersion:
+          type: string
+          description: OS version/build string (e.g., "23H2").
+        status:
+          type: string
+          description: Lifecycle status stored as its enum name (e.g., "Ready", "Error").
+        powerState:
+          type: string
+          description: VM power state stored as its enum name (e.g., "Running", "Deallocated").
+        sourceType:
+          type: string
+          description: How the image was onboarded (e.g., "PromotedVm", "DeployedFromGallery").
+        latestVersion:
+          type:
+          - string
+          - 'null'
+          description: Latest published semantic version. Null until first successful publish.
+        publishedVersionCount:
+          type: integer
+          description: Total count of published image versions (master_image_version rows).
+          format: int32
+        createdAt:
+          type: string
+          description: When the master image was created.
+          format: date-time
+        lastUpdated:
+          type: string
+          description: When the master image was last updated.
+          format: date-time
+      additionalProperties: false
+      description: Read-only overview projection for a Foundry-managed master image.
+    SessionHostOverview:
+      required:
+      - costMonthToDate
+      - currentCpu
+      - currentMemory
+      - hostId
+      - hostName
+      - hostNameAlias
+      - hostPoolId
+      - hostPoolName
+      - image
+      - powerState
+      - regionId
+      - regionName
+      - resourceGroupId
+      - resourceGroupName
+      - sessionCount
+      - subnet
+      - subnetResourceId
+      - subscriptionId
+      - subscriptionName
+      - virtualNetwork
+      - virtualNetworkResourceId
+      - vmSku
+      type: object
+      properties:
+        hostId:
+          type: string
+          description: Internal Foundry session host ID.
+          format: uuid
+        hostName:
+          type: string
+          description: Session host name.
+        hostNameAlias:
+          type: string
+          description: Short display name extracted from the host portion of the session host name
+          example: HP1-0
+        subscriptionId:
+          type: string
+          description: Parent subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Parent subscription display name.
+        regionId:
+          type: string
+          description: Region code.
+        regionName:
+          type: string
+          description: Region display name.
+        hostPoolId:
+          type: string
+          description: Host pool ID.
+          format: uuid
+        hostPoolName:
+          type: string
+          description: Host pool name.
+        resourceGroupId:
+          type: string
+          description: Resource group ID.
+          format: uuid
+        resourceGroupName:
+          type: string
+          description: Resource group name.
+        powerState:
+          type: string
+          description: 'Virtual machine power state: ''running'', ''deallocated'', ''stopped'', ''starting'', or ''stopping''.
+
+            Empty until a power state metric has been collected.'
+          example: running, deallocated
+        vmSku:
+          type: string
+          description: Azure VM SKU (size) of the underlying virtual machine.
+          example: Standard_D2s_v3, Standard_D4s_v5, Standard_E8s_v5
+        sessionCount:
+          type: integer
+          description: Number of active sessions on this host.
+          format: int32
+        currentCpu:
+          type: number
+          description: Current CPU percentage.
+          format: double
+        currentMemory:
+          type: number
+          description: Current memory percentage.
+          format: double
+        image:
+          type: string
+          description: Image name used by this host.
+        costMonthToDate:
+          type: number
+          description: Month-to-date cost in USD.
+          format: double
+        virtualNetwork:
+          type: string
+          description: Virtual network short name.
+        virtualNetworkResourceId:
+          type: string
+          description: Full provider resource ID of the virtual network.
+        subnet:
+          type: string
+          description: Subnet short name.
+        subnetResourceId:
+          type: string
+          description: Full provider resource ID of the subnet.
+      additionalProperties: false
+      description: Session host summary with metrics for the overview page.
+    ImageOverview:
+      required:
+      - hostPoolsUsingCount
+      - hostsBasedOnCount
+      - imageId
+      - imageName
+      - lastUpdated
+      - regionId
+      - regionName
+      - status
+      - subscriptionId
+      - subscriptionName
+      - version
+      type: object
+      properties:
+        imageId:
+          type: string
+          description: Internal Foundry image ID.
+          format: uuid
+        imageName:
+          type: string
+          description: Image friendly name.
+        subscriptionId:
+          type: string
+          description: Parent subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Parent subscription display name.
+        regionId:
+          type: string
+          description: Region code.
+        regionName:
+          type: string
+          description: Region display name.
+        version:
+          type: string
+          description: Image version.
+        status:
+          type: string
+          description: Image status. Always 'Active'; no other status is currently returned.
+        lastUpdated:
+          type: string
+          description: Last update timestamp.
+          format: date-time
+        hostPoolsUsingCount:
+          type: integer
+          description: Number of host pools using this image.
+          format: int32
+        hostsBasedOnCount:
+          type: integer
+          description: Number of hosts based on this image.
+          format: int32
+      additionalProperties: false
+      description: Image summary with usage statistics for the overview page.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

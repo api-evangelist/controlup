@@ -1,0 +1,760 @@
+openapi: 3.2.0
+info:
+  title: Dex SSO Groups API
+  version: 1.0.0
+  description: Dex API Description
+  contact: {}
+servers:
+- url: https://api.controlup.com/v1
+tags:
+- name: SSO Groups
+paths:
+  /organizations/{orgId}/sso-groups:
+    get:
+      operationId: OrgSsoGroupsPublicController_getAll
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllSsoGroupsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Returns a list of all SSO groups in your organization.
+      summary: List all SSO groups
+      tags:
+      - SSO Groups
+      security:
+      - apiKey: []
+      parameters:
+      - description: 'The page of results to return.
+
+          The first page is page number 1.'
+        in: query
+        name: _page
+        required: false
+        schema:
+          default: '1'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 1
+        style: form
+      - description: The number of results returned per page.
+        in: query
+        name: _limit
+        required: false
+        schema:
+          default: '10'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 10
+        style: form
+      - description: Sorts results according to the specified field.
+        in: query
+        name: _sortBy
+        required: false
+        schema:
+          default: id
+          type: string
+          enum:
+          - id
+          - createdAt
+          - updatedAt
+          - externalId
+          - displayName
+        example: id
+        style: form
+      - description: The sort order (ascending / descending) of the field specified by the `_sortBy` parameter.
+        in: query
+        name: _order
+        required: false
+        schema:
+          default: asc
+          type: string
+          enum:
+          - asc
+          - desc
+        example: asc
+        style: form
+      - description: 'A search filter that is applied to all fields.
+
+          Only results that contain the specified string are returned.'
+        in: query
+        name: _search
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The format of returned results.
+        in: query
+        name: _format
+        required: false
+        schema:
+          default: json
+          type: string
+          enum:
+          - json
+          - xml
+          - csv
+        example: json
+        style: form
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: A search filter on the `externalId` field.
+        in: query
+        name: externalId
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `displayName` field.
+        in: query
+        name: displayName
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `id` field.
+        in: query
+        name: id
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+    post:
+      operationId: OrgSsoGroupsPublicController_create
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_SsoGroupPublic_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Creates a new SSO group.
+      summary: Create an SSO group
+      tags:
+      - SSO Groups
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Omit_SsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt_'
+  /organizations/{orgId}/sso-groups/{id}:
+    patch:
+      operationId: OrgSsoGroupsPublicController_update
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_SsoGroupPublic_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Updates an existing SSO group by its ID.
+      summary: Update an SSO Group
+      tags:
+      - SSO Groups
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: 'ID of the SSO group to update.
+
+          You can use [GET /sso-groups](orgssogroupspubliccontroller_getall) to see the ID of each SSO group.'
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Partial_CreateSsoGroupRequest_'
+    delete:
+      operationId: OrgSsoGroupsPublicController_delete
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_DeletedActionResponse_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Deletes an SSO group by its ID.
+      summary: Delete an SSO group
+      tags:
+      - SSO Groups
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: 'ID of the SSO group to delete.
+
+          You can use [GET /sso-groups](orgssogroupspubliccontroller_getall) to see the ID of each SSO group.'
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+components:
+  schemas:
+    APIResponse_SsoGroupPublic_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/SsoGroupPublic'
+      required:
+      - data
+      type: object
+    APIResponse_DeletedActionResponse_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/DeletedActionResponse'
+      required:
+      - data
+      type: object
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    Omit_SsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt_:
+      $ref: '#/components/schemas/Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__'
+      description: Construct a type with the properties of T except for those in type K.
+    DeletedActionResponse:
+      properties:
+        affectedRows:
+          type: number
+          format: double
+      required:
+      - affectedRows
+      type: object
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    SsoGroupPublic:
+      properties:
+        id:
+          type: string
+          description: ID of the SSO group.
+        externalId:
+          type: string
+          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
+        displayName:
+          type: string
+          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
+        createdAt:
+          type: string
+          format: date-time
+          description: When the SSO group was first created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the SSO group was last updated.
+      required:
+      - updatedAt
+      - createdAt
+      - displayName
+      - externalId
+      - id
+      type: object
+      example:
+        id: 6276ff2a-5a23-4067-ae3e-89ff82229472
+        externalId: c90f8b7f-7151-4ea8-a757-a80f997877dc
+        displayName: IT Admins
+        createdAt: '2024-08-08T19:03:03.178Z'
+        updatedAt: '2024-08-08T19:03:03.178Z'
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    Partial_CreateSsoGroupRequest_:
+      properties:
+        displayName:
+          type: string
+          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
+        externalId:
+          type: string
+          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
+      type: object
+      description: Make all properties in T optional
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    APIPaginatedResponse_SsoGroupPublic-Array_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_SsoGroupPublic-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
+        type: object
+    Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__:
+      properties:
+        displayName:
+          type: string
+          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
+        externalId:
+          type: string
+          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
+      required:
+      - externalId
+      - displayName
+      type: object
+      description: From T, pick a set of properties whose keys are in the union K
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
+    APIResponse_SsoGroupPublic-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SsoGroupPublic'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    PaginatedResponseMetadata:
+      properties:
+        total:
+          type: number
+          format: double
+          description: The total number of results across all pages.
+        limitPerPage:
+          type: number
+          format: double
+          description: The maximum number of results returned per page (set by the `_limit` parameter).
+        currentPageNumber:
+          type: number
+          format: double
+          description: The page of result returned (set by the `_page` parameter).
+        currentPageSize:
+          type: number
+          format: double
+          description: The number of results on the current page.
+        remaining:
+          type: number
+          format: double
+          description: The total number of results on all pages higher than the current page.
+      required:
+      - remaining
+      - currentPageSize
+      - currentPageNumber
+      - limitPerPage
+      - total
+      type: object
+      example:
+        total: 18
+        limitPerPage: 10
+        currentPageNumber: 1
+        currentPageSize: 10
+        remaining: 8
+    NonEmptyString:
+      type: string
+      minLength: 1
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    GetAllSsoGroupsResponse:
+      $ref: '#/components/schemas/APIPaginatedResponse_SsoGroupPublic-Array_'
+      example:
+        metadata:
+          total: 2
+          limitPerPage: 10
+          currentPageNumber: 1
+          currentPageSize: 2
+          remaining: 0
+        data:
+        - id: 991419b2-cd58-408c-a5e4-4675916941d5
+          externalId: be6d8285-8d28-4f70-b644-14f9bf6cc93b
+          displayName: IT Admins
+          createdAt: '2024-08-05T18:04:22.996Z'
+          updatedAt: '2024-08-05T18:04:22.996Z'
+        - id: fb260314-d2be-4804-a5dd-c6945a2c8c66
+          externalId: '123456'
+          displayName: Help Desk Employees
+          createdAt: '2024-08-05T18:04:22.996Z'
+          updatedAt: '2024-08-05T18:04:22.996Z'
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

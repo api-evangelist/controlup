@@ -1,0 +1,134 @@
+openapi: 3.2.0
+info:
+  title: Synthetic Monitoring MF As API
+  version: 2.0.0
+  x-logo:
+    url: https://app.scoutbees.io/static/media/scoutbees_new.ef578490.png
+  termsOfService: https://www.controlup.com/privacy-policy/controlup-eula/
+  description: 'Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms except Citrix Storefront. Use this resource to retrieve the sets of usernames and phone numbers that have been configured for phone or SMS verification.You must contact [Scoutbees Support](https://controlup.zendesk.com/hc/en-us/requests/new) to associate a username with a phone number for MFA.
+
+
+    Visit [Multi-Factor Authentication](https://support.controlup.com/docs/mfa) for more details on how to configure MFA.
+
+    '
+servers:
+- url: https://api.controlup.com/synthetic-monitoring/v2/
+tags:
+- name: MFAs
+  description: 'Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms except Citrix Storefront. Use this resource to retrieve the sets of usernames and phone numbers that have been configured for phone or SMS verification.You must contact [Scoutbees Support](https://controlup.zendesk.com/hc/en-us/requests/new) to associate a username with a phone number for MFA.
+
+
+    Visit [Multi-Factor Authentication](https://support.controlup.com/docs/mfa) for more details on how to configure MFA.
+
+    '
+paths:
+  /mfas:
+    get:
+      summary: List all MFA users
+      description: Returns a list of usernames for EUC gateway access that are associated with a phone number for MFA.
+      operationId: honeycomb.api.get_org_mfas
+      security:
+      - ApiKeyAuth:
+        - read
+      tags:
+      - MFAs
+      responses:
+        '200':
+          $ref: '#/components/responses/MFAList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+      x-codeSamples:
+      - lang: cURL
+        source: 'curl -X GET ''https://api.scoutbees.io/honeycomb/v2/mfas'' \
+
+          -H ''x-scoutbees-key: API-key-here''
+
+          '
+components:
+  responses:
+    MFAList:
+      description: A list of MFA users
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                description: An array of usernames and their associated phone numbers used for phone or SMS MFA.
+                items:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                      description: The username used for EUC gateway access.
+                    phone:
+                      type: string
+                      description: The phone number used for MFA.
+              success:
+                description: Whether the request was successful.
+                type: boolean
+          example:
+            success: true
+            data:
+            - username: hedgehog
+              phone: 12345678901
+            - username: atelerix
+              phone: 23456789012
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
+  schemas:
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

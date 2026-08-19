@@ -1,0 +1,244 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Jobs API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Jobs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a job by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The job ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one job's full record: status, progress, current step, and error details.\nDoes not include the job's input parameters, and is heavier than the status-only payload — prefer that for repeated polling.\nRegular users can only access jobs they initiated. Admins can access any job in their organization."
+        },
+        {
+          "info": {
+            "name": "Get job parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/jobs/:jobId/parameters",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The job ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the raw input parameters a job was created with, as a JSON object whose structure depends on JobType.\nCarries the inputs only — no status, progress, or errors.\nRegular users can only access parameters for jobs they initiated. Admins can access any job in their organization."
+        },
+        {
+          "info": {
+            "name": "Get jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/jobs",
+            "params": [
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\naction, cancellationRequested, cancellationRequestedAt, completedAt, createdAt, currentStep, errorCode, id, initiatedBy, initiationType, jobType, parentJobId, progress, retryOfJobId, retryRequestedBy, startedAt, status, targetResource, targetResourceName\n\nDefault when omitted: createdAt:desc."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter expression for filtering results.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\naction, cancellationRequested, cancellationRequestedAt, completedAt, createdAt, currentStep, errorCode, id, initiatedBy, initiationType, jobType, parentJobId, progress, retryOfJobId, retryRequestedBy, startedAt, status, targetResource, targetResourceName"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              },
+              {
+                "name": "includeSystemJobs",
+                "value": "",
+                "type": "query",
+                "description": "Whether to include system-scheduled background jobs (admin-only, default: false)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a paginated list of jobs for the current organization, each row carrying the job ID that per-job operations require.\nRegular users see only their own jobs. Admins see all user-initiated jobs, and system-scheduled background jobs only when includeSystemJobs=true.\nRows carry no job parameters and no logs."
+        },
+        {
+          "info": {
+            "name": "Get job status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/jobs/:jobId/status",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The job ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns six fields only — id, jobType, status, progress, currentStep, cancellationRequested — as the cheapest way to poll a running job.\nOmits error details, parameters, and logs, so it cannot explain why a job failed."
+        },
+        {
+          "info": {
+            "name": "Cancel a job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/jobs/:jobId/cancel",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The job ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Requests cancellation of a background job. The job will stop at the next safe checkpoint.\nRegular users can only cancel jobs they initiated. Admins can cancel any job in their organization."
+        },
+        {
+          "info": {
+            "name": "Retry a failed job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/jobs/:jobId/retry",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the failed job to retry."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new job by retrying a previously failed job with the same parameters.\nThe original failed job remains as a historical record. The new retry job is linked\nto the original via RetryOfJobId for traceability.\nOnly failed jobs whose type is registered as user-retriable can be retried, and a concurrency guard\npermits just one active retry per original job."
+        },
+        {
+          "info": {
+            "name": "Get job logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/jobs/:jobId/logs",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The job ID."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Cursor for pagination — returns logs with ID greater than this value.\nNull returns from the beginning."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of logs to return (default: 100, max: 1000)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a job's user-facing log entries as structured JSON, oldest first, with cursor-based pagination via after and limit.\nStructured records suited to filtering or incremental tailing, as opposed to the plain-text transcript of the same logs."
+        },
+        {
+          "info": {
+            "name": "Get job logs transcript",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/jobs/:jobId/logs/transcript",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The job ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of logs to include in the transcript (default: 1000, max: 10000)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the same log entries as a streamed plain-text document for reading or download (no cursor, so no incremental tailing).\nSuccess is `text/plain`; validation, not-found, and forbidden responses are `application/json` like other Jobs endpoints."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

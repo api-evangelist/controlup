@@ -1,0 +1,3151 @@
+{
+  "item": [
+    {
+      "id": "9267dad5-0d36-4d24-a393-62bcc20f62a8",
+      "name": "Users",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ef251976-d6c0-45f4-b48a-53ae279fd5cf",
+          "name": "Get current user information",
+          "request": {
+            "name": "Get current user information",
+            "description": {
+              "content": "Returns the calling user's identity, organization context, and permissions, read from the bearer token's claims.\nAnswers \"who am I\" and \"which organization am I in\"; it takes no user ID and cannot look anyone else up.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "user-info"
+              ],
+              "host": [
+                "{{users-user-info-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "98c46860-ebbf-4b3d-aebd-62bd494fc5db",
+              "name": "Successfully retrieved user information.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "user-info"
+                  ],
+                  "host": [
+                    "{{users-user-info-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"userId\": \"user-123\",\n  \"email\": \"user@example.com\",\n  \"name\": \"John Doe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"region\": \"us-east-1\",\n  \"organizationId\": \"12345678-1234-1234-1234-123456789012\",\n  \"organizationName\": \"Example Corp\",\n  \"organizationRegion\": \"us\",\n  \"isAdmin\": false,\n  \"permissions\": [\n    \"CanViewSubscriptions\",\n    \"CanCreateSubscriptions\"\n  ],\n  \"tokenExpiresAt\": \"2024-01-01T12:00:00Z\",\n  \"tokenIssuedAt\": \"2024-01-01T06:00:00Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ed9ce791-c7ce-4482-b315-27bf9e2730a2",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "user-info"
+                  ],
+                  "host": [
+                    "{{users-user-info-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 241,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": \"string\",\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c12ca490-30a1-4f1d-9205-3a016138e99c",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "user-info"
+                  ],
+                  "host": [
+                    "{{users-user-info-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 241,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": \"string\",\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fcda5eba-768a-4fa1-b08b-8433b35ae880",
+              "name": "Forbidden. User does not have permission to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "user-info"
+                  ],
+                  "host": [
+                    "{{users-user-info-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 241,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": \"string\",\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "192a5505-c134-44b4-97fd-7315461fa7f3",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "user-info"
+                  ],
+                  "host": [
+                    "{{users-user-info-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 241,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": \"string\",\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba60afc5-2c95-43c6-889a-1d32473a58f2",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "user-info"
+                  ],
+                  "host": [
+                    "{{users-user-info-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 241,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": \"string\",\n  \"instance\": null,\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "22df4f2b-eced-40a8-9157-4c4ae5d0b15d",
+          "name": "List all users",
+          "request": {
+            "name": "List all users",
+            "description": {
+              "content": "Returns a list of all users in your ControlUp organization, including users with a pending invitation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organizations",
+                ":orgId",
+                "users"
+              ],
+              "host": [
+                "{{organizations-orgId-users-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_page",
+                  "value": "1",
+                  "description": "The page of results to return.\nThe first page is page number 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "_limit",
+                  "value": "10",
+                  "description": "The number of results returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "_sortBy",
+                  "value": "id",
+                  "description": "Sorts results according to the specified field."
+                },
+                {
+                  "disabled": false,
+                  "key": "_order",
+                  "value": "asc",
+                  "description": "The sort order (ascending / descending) of the field specified by the `_sortBy` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "A search filter that is applied to all fields.\nOnly results that contain the specified string are returned."
+                },
+                {
+                  "disabled": false,
+                  "key": "_include",
+                  "value": "<string>",
+                  "description": "Include additional information about related resources in the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "_include",
+                  "value": "<string>",
+                  "description": "Include additional information about related resources in the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "_format",
+                  "value": "json",
+                  "description": "The format of returned results."
+                },
+                {
+                  "disabled": false,
+                  "key": "phone",
+                  "value": "<string>",
+                  "description": "A search filter on the `phone` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "phone",
+                  "value": "<string>",
+                  "description": "A search filter on the `phone` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "fullName",
+                  "value": "<string>",
+                  "description": "A search filter on the `fullName` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "fullName",
+                  "value": "<string>",
+                  "description": "A search filter on the `fullName` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "lastName",
+                  "value": "<string>",
+                  "description": "A search filter on the `lastName` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "lastName",
+                  "value": "<string>",
+                  "description": "A search filter on the `lastName` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "firstName",
+                  "value": "<string>",
+                  "description": "A search filter on the `firstName` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "firstName",
+                  "value": "<string>",
+                  "description": "A search filter on the `firstName` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "email",
+                  "value": "<string>",
+                  "description": "A search filter on the `email` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "email",
+                  "value": "<string>",
+                  "description": "A search filter on the `email` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "id",
+                  "value": "<string>",
+                  "description": "A search filter on the `id` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "id",
+                  "value": "<string>",
+                  "description": "A search filter on the `id` field."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9247a137-7200-4dc9-8742-7a8778324f6c",
+              "name": "Ok",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": null,\n  \"metadata\": {\n    \"total\": 18,\n    \"limitPerPage\": 10,\n    \"currentPageNumber\": 1,\n    \"currentPageSize\": 10,\n    \"remaining\": 8\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5c15f1cf-9d6f-4b18-9344-13e24ae522b4",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 400,\n    \"code\": 14,\n    \"message\": \"Invalid Params\",\n    \"data\": {\n      \"key_0\": 8552.875136866893\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd4c5b9a-68cc-463b-bd43-c4baab195275",
+              "name": "Unauthorized: Access is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 401,\n    \"code\": 3,\n    \"message\": \"Unauthorized\",\n    \"data\": {\n      \"key_0\": 7321\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c41502d8-2f4d-40c7-a47c-66b2e2cd38f8",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 403,\n    \"code\": 4,\n    \"message\": \"Forbidden\",\n    \"data\": {\n      \"key_0\": false\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c1a7eed7-3f7b-4074-ab40-78bf4c73f5b1",
+              "name": "Not Found: The requested resource could not be found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 404,\n    \"code\": 5,\n    \"message\": \"Not Found\",\n    \"data\": {\n      \"key_0\": 505,\n      \"key_1\": 1016.7230124904492\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0cc896bf-d67b-44da-8058-f4bb3fd3765f",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fullName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firstName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 500,\n    \"code\": 6,\n    \"message\": \"Internal Server Error\",\n    \"data\": {\n      \"key_0\": 7820.46005361864\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "61b593a6-f7a1-4989-8735-84bcd14399ab",
+          "name": "Retrieve a user",
+          "request": {
+            "name": "Retrieve a user",
+            "description": {
+              "content": "Returns details of a user.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organizations",
+                ":orgId",
+                "users",
+                ":id"
+              ],
+              "host": [
+                "{{organizations-orgId-users-id-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_format",
+                  "value": "json",
+                  "description": "The format of returned results."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) ID of the user to retrieve.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "448c4f79-2c23-4e04-98c0-c763c49147fc",
+              "name": "Ok",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to retrieve.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"email\": \"string\",\n    \"fullName\": \"string\",\n    \"firstName\": \"string\",\n    \"lastName\": \"string\",\n    \"phone\": \"string\",\n    \"avatar\": \"string\",\n    \"region\": \"eu\",\n    \"eulaVersion\": \"string\",\n    \"createdAt\": \"string\",\n    \"updatedAt\": \"string\",\n    \"roles\": [\n      {\n        \"isDefault\": true,\n        \"description\": \"string\",\n        \"name\": \"string\",\n        \"id\": 9007\n      },\n      {\n        \"isDefault\": false,\n        \"description\": \"string\",\n        \"name\": \"string\",\n        \"id\": 1897\n      }\n    ],\n    \"settings\": {\n      \"status\": \"pending\",\n      \"mfaType\": \"sms\",\n      \"loginMethods\": [\n        \"saml\",\n        \"google\"\n      ],\n      \"vdiDaasLdapLogin\": true\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0ed49ee1-06e2-4d29-9f78-c7cb6f2603fa",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to retrieve.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 400,\n    \"code\": 14,\n    \"message\": \"Invalid Params\",\n    \"data\": {\n      \"key_0\": 8552.875136866893\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3cb2a5bd-50e1-48ff-8cd2-139f0911ed37",
+              "name": "Unauthorized: Access is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to retrieve.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 401,\n    \"code\": 3,\n    \"message\": \"Unauthorized\",\n    \"data\": {\n      \"key_0\": 7321\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "180366fd-33d0-4c33-b0a3-1aff5c7dc993",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to retrieve.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 403,\n    \"code\": 4,\n    \"message\": \"Forbidden\",\n    \"data\": {\n      \"key_0\": false\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "378ce8c3-94a2-4fd3-a997-2b7ef15ff7fa",
+              "name": "Not Found: The requested resource could not be found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to retrieve.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 404,\n    \"code\": 5,\n    \"message\": \"Not Found\",\n    \"data\": {\n      \"key_0\": 505,\n      \"key_1\": 1016.7230124904492\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d6a81ca0-2bd9-4e55-ab47-1a5360acbee8",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_format",
+                      "value": "json"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to retrieve.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 500,\n    \"code\": 6,\n    \"message\": \"Internal Server Error\",\n    \"data\": {\n      \"key_0\": 7820.46005361864\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1881b6fe-f939-4e2c-81f3-5e426cda7456",
+          "name": "Update a user",
+          "request": {
+            "name": "Update a user",
+            "description": {
+              "content": "Updates a user by its ID. Any parameters not passed are not changed.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organizations",
+                ":orgId",
+                "users",
+                ":id"
+              ],
+              "host": [
+                "{{organizations-orgId-users-id-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) ID of the user to update.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vdiDaasLdapLogin\": \"<boolean,null>\",\n  \"loginMethods\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"mfaType\": \"<string>\",\n  \"roleIds\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"status\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a7d3b322-976f-4ddb-9ab1-f0c2955a408c",
+              "name": "Ok",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to update.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vdiDaasLdapLogin\": \"<boolean,null>\",\n  \"loginMethods\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"mfaType\": \"<string>\",\n  \"roleIds\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"status\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"email\": \"string\",\n    \"fullName\": \"string\",\n    \"firstName\": \"string\",\n    \"lastName\": \"string\",\n    \"phone\": \"string\",\n    \"avatar\": \"string\",\n    \"region\": \"eu\",\n    \"eulaVersion\": \"string\",\n    \"createdAt\": \"string\",\n    \"updatedAt\": \"string\",\n    \"roles\": [\n      {\n        \"isDefault\": false,\n        \"description\": \"string\",\n        \"name\": \"string\",\n        \"id\": 9312\n      },\n      {\n        \"isDefault\": false,\n        \"description\": \"string\",\n        \"name\": \"string\",\n        \"id\": 796\n      }\n    ],\n    \"settings\": {\n      \"status\": \"pending\",\n      \"mfaType\": \"<string>\",\n      \"loginMethods\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"vdiDaasLdapLogin\": true\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1a6f594d-6ccf-4a7e-ad70-9e0913749cfe",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to update.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vdiDaasLdapLogin\": \"<boolean,null>\",\n  \"loginMethods\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"mfaType\": \"<string>\",\n  \"roleIds\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"status\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 400,\n    \"code\": 14,\n    \"message\": \"Invalid Params\",\n    \"data\": {\n      \"key_0\": 8552.875136866893\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b775564-c256-4885-bc02-be233b1289e7",
+              "name": "Unauthorized: Access is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to update.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vdiDaasLdapLogin\": \"<boolean,null>\",\n  \"loginMethods\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"mfaType\": \"<string>\",\n  \"roleIds\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"status\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 401,\n    \"code\": 3,\n    \"message\": \"Unauthorized\",\n    \"data\": {\n      \"key_0\": 7321\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d562a8f-2e0e-439c-a253-e6ec70ca1a9e",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to update.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vdiDaasLdapLogin\": \"<boolean,null>\",\n  \"loginMethods\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"mfaType\": \"<string>\",\n  \"roleIds\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"status\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 403,\n    \"code\": 4,\n    \"message\": \"Forbidden\",\n    \"data\": {\n      \"key_0\": false\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "def37f70-8644-43b2-b4b0-1df479256d0a",
+              "name": "Not Found: The requested resource could not be found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to update.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vdiDaasLdapLogin\": \"<boolean,null>\",\n  \"loginMethods\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"mfaType\": \"<string>\",\n  \"roleIds\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"status\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 404,\n    \"code\": 5,\n    \"message\": \"Not Found\",\n    \"data\": {\n      \"key_0\": 505,\n      \"key_1\": 1016.7230124904492\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "73989cd7-bdcb-4a01-b3a5-15f3ac01a2f0",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to update.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vdiDaasLdapLogin\": \"<boolean,null>\",\n  \"loginMethods\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"mfaType\": \"<string>\",\n  \"roleIds\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"status\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 500,\n    \"code\": 6,\n    \"message\": \"Internal Server Error\",\n    \"data\": {\n      \"key_0\": 7820.46005361864\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7a0b6e04-66a3-491c-8222-4c348432a086",
+          "name": "Delete a user",
+          "request": {
+            "name": "Delete a user",
+            "description": {
+              "content": "Deletes a user by its ID from the organization.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organizations",
+                ":orgId",
+                "users",
+                ":id"
+              ],
+              "host": [
+                "{{organizations-orgId-users-id-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) ID of the user.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9b7ac63f-372c-40f2-b47a-73e7e8e01b57",
+              "name": "Ok",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"affectedRows\": 415.6062922134707\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bb6bfa3f-64ba-4921-9e33-d56ffb5a33a6",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 400,\n    \"code\": 14,\n    \"message\": \"Invalid Params\",\n    \"data\": {\n      \"key_0\": 8552.875136866893\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7787282d-91ed-4f08-a84e-ac31c0f537fd",
+              "name": "Unauthorized: Access is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 401,\n    \"code\": 3,\n    \"message\": \"Unauthorized\",\n    \"data\": {\n      \"key_0\": 7321\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "721fe208-af39-481a-b1fc-7df6d44a7a13",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 403,\n    \"code\": 4,\n    \"message\": \"Forbidden\",\n    \"data\": {\n      \"key_0\": false\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "437f1732-80e0-4494-a0eb-d86e949754eb",
+              "name": "Not Found: The requested resource could not be found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 404,\n    \"code\": 5,\n    \"message\": \"Not Found\",\n    \"data\": {\n      \"key_0\": 505,\n      \"key_1\": 1016.7230124904492\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d34dd873-1a70-48e2-b652-17b35fa58bab",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 500,\n    \"code\": 6,\n    \"message\": \"Internal Server Error\",\n    \"data\": {\n      \"key_0\": 7820.46005361864\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ac5b9284-873e-4c33-a507-8ef7ea834371",
+          "name": "Revoke a user’s API keys",
+          "request": {
+            "name": "Revoke a user’s API keys",
+            "description": {
+              "content": "Revokes all API keys created by the specified user in the organization.\nRevoked API keys can no longer be used to access any data.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organizations",
+                ":orgId",
+                "users",
+                ":id",
+                "revoke-api-keys"
+              ],
+              "host": [
+                "{{organizations-orgId-users-id-revoke-api-keys-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) ID of the user to delete.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c67d81e5-b27e-43fb-83bd-5fcc4949a1c2",
+              "name": "Ok",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id",
+                    "revoke-api-keys"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-revoke-api-keys-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to delete.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"affectedRows\": 415.6062922134707\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "154bcd35-258a-4fd8-933b-ec8817ca3e52",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id",
+                    "revoke-api-keys"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-revoke-api-keys-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to delete.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 400,\n    \"code\": 14,\n    \"message\": \"Invalid Params\",\n    \"data\": {\n      \"key_0\": 8552.875136866893\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "39127235-d266-4d32-8b53-41fa257f3dd4",
+              "name": "Unauthorized: Access is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id",
+                    "revoke-api-keys"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-revoke-api-keys-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to delete.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 401,\n    \"code\": 3,\n    \"message\": \"Unauthorized\",\n    \"data\": {\n      \"key_0\": 7321\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d2bfc16e-2fc1-4813-a480-497ebc2feb31",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id",
+                    "revoke-api-keys"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-revoke-api-keys-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to delete.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 403,\n    \"code\": 4,\n    \"message\": \"Forbidden\",\n    \"data\": {\n      \"key_0\": false\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eacbdff3-6041-43b0-96a6-93d40eafe72d",
+              "name": "Not Found: The requested resource could not be found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id",
+                    "revoke-api-keys"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-revoke-api-keys-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to delete.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 404,\n    \"code\": 5,\n    \"message\": \"Not Found\",\n    \"data\": {\n      \"key_0\": 505,\n      \"key_1\": 1016.7230124904492\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5a48604-7a12-4bff-9d56-20f70af7c912",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "users",
+                    ":id",
+                    "revoke-api-keys"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-users-id-revoke-api-keys-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) ID of the user to delete.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 500,\n    \"code\": 6,\n    \"message\": \"Internal Server Error\",\n    \"data\": {\n      \"key_0\": 7820.46005361864\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/daas-iq/v1",
+      "key": "baseUrl"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/daas-iq/v1",
+      "key": "users-user-info-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/v1",
+      "key": "organizations-orgId-users-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/v1",
+      "key": "organizations-orgId-users-id-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/v1",
+      "key": "organizations-orgId-users-id-revoke-api-keys-Url"
+    }
+  ],
+  "info": {
+    "_postman_id": "3ae66046-ac58-4afe-9d8d-96f4f7b30135",
+    "name": "Controlup Users API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Operations tagged Users across 2 of this provider's published API definitions: controlup-daas-iq-openapi.yml, controlup-dex-platform-openapi.yml. Each path carries the servers of the definition it was published in.",
+      "type": "text/plain"
+    }
+  }
+}

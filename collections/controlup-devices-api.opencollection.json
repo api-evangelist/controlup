@@ -1,0 +1,777 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Controlup Devices API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Devices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all devices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/compliance/devices",
+            "params": [
+              {
+                "name": "_page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. Pages are 1-based."
+              },
+              {
+                "name": "_limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page."
+              },
+              {
+                "name": "_filters",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+              },
+              {
+                "name": "_filterby",
+                "value": "",
+                "type": "query",
+                "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+              },
+              {
+                "name": "_sort",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+              },
+              {
+                "name": "_orderby",
+                "value": "",
+                "type": "query",
+                "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+              },
+              {
+                "name": "device_id",
+                "value": "IHAfqJoB-3oP8zTHt8c",
+                "type": "query",
+                "description": "Filter by the devive ID."
+              },
+              {
+                "name": "device_name",
+                "value": "my-device-001",
+                "type": "query",
+                "description": "Filter by the device name."
+              },
+              {
+                "name": "agent_status",
+                "value": "online",
+                "type": "query",
+                "description": "Filter by agent connection status."
+              },
+              {
+                "name": "os_name",
+                "value": "Microsoft Windows 11 Pro",
+                "type": "query",
+                "description": "Filter by operating system name."
+              },
+              {
+                "name": "mac_address",
+                "value": "00:1A:2B:3C:4D:5E",
+                "type": "query",
+                "description": "A search filter on the `mac_address` field."
+              },
+              {
+                "name": "score",
+                "value": "7",
+                "type": "query",
+                "description": "A search filter on the `score` field."
+              },
+              {
+                "name": "score_severity",
+                "value": "LOW",
+                "type": "query",
+                "description": "A search filter on the `score_severity` field."
+              },
+              {
+                "name": "issues_count",
+                "value": "0",
+                "type": "query",
+                "description": "A search filter on the `issues_count` field."
+              },
+              {
+                "name": "device_group",
+                "value": "SampleGroup",
+                "type": "query",
+                "description": "A search filter on the `device_group` field."
+              },
+              {
+                "name": "location",
+                "value": "United States - Chicago",
+                "type": "query",
+                "description": "A search filter on the `location` field."
+              },
+              {
+                "name": "client_version",
+                "value": "1.5.2510.08",
+                "type": "query",
+                "description": "A search filter on the `client_version` field."
+              }
+            ]
+          },
+          "docs": "Returns a list of all devices managed by ControlUp for Compliance."
+        },
+        {
+          "info": {
+            "name": "Get device details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/compliance/devices/:device_id",
+            "params": [
+              {
+                "name": "_page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. Pages are 1-based."
+              },
+              {
+                "name": "_limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page."
+              },
+              {
+                "name": "_filters",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+              },
+              {
+                "name": "_filterby",
+                "value": "",
+                "type": "query",
+                "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+              },
+              {
+                "name": "_sort",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+              },
+              {
+                "name": "_orderby",
+                "value": "",
+                "type": "query",
+                "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+              },
+              {
+                "name": "device_id",
+                "value": "IHAfqJoB-3oP8zTHt8c",
+                "type": "path",
+                "description": "ID of the device to get."
+              }
+            ]
+          },
+          "docs": "Returns details for a specific device, including a summary of the number of issues detected on the device."
+        },
+        {
+          "info": {
+            "name": "List device vulnerabilities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/compliance/devices/:device_id/vulnerabilities",
+            "params": [
+              {
+                "name": "_page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. Pages are 1-based."
+              },
+              {
+                "name": "_limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page."
+              },
+              {
+                "name": "_filters",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+              },
+              {
+                "name": "_filterby",
+                "value": "",
+                "type": "query",
+                "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+              },
+              {
+                "name": "_sort",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+              },
+              {
+                "name": "_orderby",
+                "value": "",
+                "type": "query",
+                "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+              },
+              {
+                "name": "device_id",
+                "value": "IHAfqJoB-3oP8zTHt8c",
+                "type": "path",
+                "description": "ID of the device."
+              }
+            ]
+          },
+          "docs": "Returns a list of vulnerabilities (CVEs) detected on a specific device."
+        },
+        {
+          "info": {
+            "name": "List device patches",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/compliance/devices/:device_id/patches",
+            "params": [
+              {
+                "name": "_page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. Pages are 1-based."
+              },
+              {
+                "name": "_limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page."
+              },
+              {
+                "name": "_filters",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+              },
+              {
+                "name": "_filterby",
+                "value": "",
+                "type": "query",
+                "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+              },
+              {
+                "name": "_sort",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+              },
+              {
+                "name": "_orderby",
+                "value": "",
+                "type": "query",
+                "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+              },
+              {
+                "name": "device_id",
+                "value": "IHAfqJoB-3oP8zTHt8c",
+                "type": "path",
+                "description": "ID of the device."
+              },
+              {
+                "name": "title",
+                "value": "KB890830",
+                "type": "query",
+                "description": "Filter by application name or OS patch KB number."
+              },
+              {
+                "name": "severity",
+                "value": "",
+                "type": "query",
+                "description": "Filter by issue severity."
+              },
+              {
+                "name": "remediation_status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by remediation availability."
+              },
+              {
+                "name": "release_date",
+                "value": "",
+                "type": "query",
+                "description": "Filter by patch release date."
+              },
+              {
+                "name": "patch_type",
+                "value": "patch",
+                "type": "query",
+                "description": "Filter by patch type detection type. `patch` means that a Template detected the patch by scanning for a specific application or OS patch. `vulnerability` means that a Template detected the patch by scanning for one of the relevant CVEs."
+              },
+              {
+                "name": "is_os",
+                "value": "true",
+                "type": "query",
+                "description": "Set to `true` to return OS patches and `false` to return application patches."
+              },
+              {
+                "name": "current_version",
+                "value": "10.0.22000",
+                "type": "query",
+                "description": "Filter by currently installed version."
+              },
+              {
+                "name": "vendor_name",
+                "value": "Microsoft Corporation",
+                "type": "query",
+                "description": "Filter by application vendor name."
+              },
+              {
+                "name": "last_remediation_status",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `last_remediation_status` field."
+              },
+              {
+                "name": "device_action_id",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `device_action_id` field."
+              },
+              {
+                "name": "remediation_availability",
+                "value": "",
+                "type": "query",
+                "description": "Filter by whether a remediation for the issue is available."
+              },
+              {
+                "name": "remediation_state",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `remediation_state` field."
+              },
+              {
+                "name": "last_event_action",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `last_event_action` field."
+              },
+              {
+                "name": "last_event_status",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `last_event_status` field."
+              },
+              {
+                "name": "last_event_metadata",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `last_event_metadata` field."
+              },
+              {
+                "name": "last_event_created_at",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `last_event_created_at` field."
+              }
+            ]
+          },
+          "docs": "Returns a list of missing OS and application patches detected on a specific device."
+        },
+        {
+          "info": {
+            "name": "List device compliance issues",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/compliance/devices/:device_id/compliance",
+            "params": [
+              {
+                "name": "_page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. Pages are 1-based."
+              },
+              {
+                "name": "_limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page."
+              },
+              {
+                "name": "_filters",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+              },
+              {
+                "name": "_filterby",
+                "value": "",
+                "type": "query",
+                "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+              },
+              {
+                "name": "_sort",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+              },
+              {
+                "name": "_orderby",
+                "value": "",
+                "type": "query",
+                "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+              },
+              {
+                "name": "device_id",
+                "value": "IHAfqJoB-3oP8zTHt8c",
+                "type": "path",
+                "description": "ID of the device."
+              },
+              {
+                "name": "title",
+                "value": "Disable Solicited Remote Assistance",
+                "type": "query",
+                "description": "Filter by the issue title."
+              },
+              {
+                "name": "severity",
+                "value": "LOW",
+                "type": "query",
+                "description": "Filter by the severity level of the issue."
+              },
+              {
+                "name": "last_remediation_status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the status of the last remediation attempt."
+              },
+              {
+                "name": "remediation_availability",
+                "value": "Unavailable",
+                "type": "query",
+                "description": "Filter by whether a remediation for the issue is available."
+              },
+              {
+                "name": "remediation_state",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the current remediation state."
+              },
+              {
+                "name": "last_event_action",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the last recorded action."
+              },
+              {
+                "name": "last_event_status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the status of the last recorded event."
+              },
+              {
+                "name": "last_event_metadata",
+                "value": "",
+                "type": "query",
+                "description": "Filter by metadata associated with the last event (assumes string filter for complexity)."
+              },
+              {
+                "name": "last_event_created_at",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the creation time of the last recorded event."
+              }
+            ]
+          },
+          "docs": "Returns a list of issues from the compliance category detected on a specific device."
+        },
+        {
+          "info": {
+            "name": "List device misconfigurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/compliance/devices/:device_id/misconfig",
+            "params": [
+              {
+                "name": "_page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. Pages are 1-based."
+              },
+              {
+                "name": "_limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page."
+              },
+              {
+                "name": "_filters",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+              },
+              {
+                "name": "_filterby",
+                "value": "",
+                "type": "query",
+                "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+              },
+              {
+                "name": "_sort",
+                "value": "",
+                "type": "query",
+                "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+              },
+              {
+                "name": "_orderby",
+                "value": "",
+                "type": "query",
+                "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+              },
+              {
+                "name": "device_id",
+                "value": "IHAfqJoB-3oP8zTHt8c",
+                "type": "path",
+                "description": "ID of the device."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by Issue ID."
+              },
+              {
+                "name": "title",
+                "value": "SSH Server Service detect and remediate",
+                "type": "query",
+                "description": "Filter by the issue title."
+              },
+              {
+                "name": "severity",
+                "value": "LOW",
+                "type": "query",
+                "description": "Filter by the severity level of the issue."
+              },
+              {
+                "name": "remediation_status",
+                "value": "Unavailable",
+                "type": "query",
+                "description": "Filter by whether ControlUp can remediate the issue."
+              },
+              {
+                "name": "last_remediation_status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the status of the last remediation attempt."
+              },
+              {
+                "name": "device_action_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by ID related to the device action."
+              },
+              {
+                "name": "remediation_availability",
+                "value": "",
+                "type": "query",
+                "description": "Filter by whether a remediation for the issue is available."
+              },
+              {
+                "name": "remediation_state",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the current remediation state."
+              },
+              {
+                "name": "last_event_action",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the last recorded action."
+              },
+              {
+                "name": "last_event_status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the status of the last recorded event."
+              },
+              {
+                "name": "last_event_metadata",
+                "value": "",
+                "type": "query",
+                "description": "Filter by event metadata."
+              },
+              {
+                "name": "last_event_created_at",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the creation time of the last recorded event."
+              }
+            ]
+          },
+          "docs": "Returns a list of misconfiguration issues detected on a specific device."
+        },
+        {
+          "info": {
+            "name": "Delete devices",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/compliance/devices/delete",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Delete devices by their device ID."
+        },
+        {
+          "info": {
+            "name": "List all device tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/compliance/devices/tags"
+          },
+          "docs": "Returns a list of all device tags, including how many devices are using each tag."
+        },
+        {
+          "info": {
+            "name": "Update device tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/compliance/devices/tags",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds or removes device tags."
+        },
+        {
+          "info": {
+            "name": "List all device groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/compliance/devices/groups"
+          },
+          "docs": "Returns a list of all device groups, including how many devices are in each group."
+        },
+        {
+          "info": {
+            "name": "Set device group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/compliance/devices/set-group",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the device group for the specified devices. A device can belong to only one group at a time."
+        },
+        {
+          "info": {
+            "name": "Perform action on a single device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/compliance/devices/:deviceID/actions",
+            "params": [
+              {
+                "name": "deviceID",
+                "value": "",
+                "type": "path",
+                "description": "ID of the device on which to perform the action. You can use [GET /devices](list-devices) to see the ID for each device."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Performs an action on the specified device."
+        },
+        {
+          "info": {
+            "name": "Perform action on multiple devices",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/compliance/devices/action",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Performs an action on the specified devices. If you want to perform an action on only a single device, we recommend that you use [POST /devices/{deviceID}/action](run-an-action-single) for more options."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

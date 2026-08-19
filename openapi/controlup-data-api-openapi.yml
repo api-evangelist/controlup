@@ -1,0 +1,454 @@
+openapi: 3.2.0
+info:
+  title: ControlUp for Desktops Data API
+  description: "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves."
+  version: 2.159.0
+servers:
+- url: https://api.controlup.com/edge/api
+security:
+- bearerAuth: []
+tags:
+- name: Data
+  description: These endpoints are for interacting with the raw data stored in data indices.
+paths:
+  /data:
+    get:
+      summary: List all data indices
+      tags:
+      - Data
+      description: Returns a list of all data indices, along with the size and number of rows in each index.
+      operationId: get-data-indices
+      parameters:
+      - in: query
+        name: collapse
+        description: Sets whether to collapse weekly data inidices into a single data index. By default, data indices are split into smaller weekly indices so that they are easier to manage. For example, the data index _highresourceprocs_20223400 contains data from the 34th week of 2022 (in UTC).
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: include_devices
+        description: Sets whether to return information about the _devices data index. This is the data index with the columns in the device details grid in the UI.
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: An array of data indices. Each entry in the array represents a data index.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      description: The name of the data index.
+                      type: string
+                      example: installed_apps
+                    size_bytes:
+                      description: The size of the data index in bytes.
+                      type: integer
+                      example: 39024
+                    count:
+                      description: The number of documents (rows) in the data index.
+                      type: integer
+                      example: 54
+    post:
+      summary: Create a data index
+      tags:
+      - Data
+      description: Creates a new data index.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                index:
+                  description: The name of the index.
+                  type: string
+                  example: sampleindexname
+                payload:
+                  type: string
+                  description: a JSON string with the data to be submitted to the new data index.
+                  example: '[{"exampleKey": "exampleValue"}]'
+              required:
+              - index
+              - payload
+      responses:
+        '200':
+          description: Data index created
+  /data/{index_name}:
+    get:
+      summary: Get a data index
+      tags:
+      - Data
+      description: 'Retrieves the contents of a data index.
+
+
+        Standard requests can return a maximum of 10000 rows across all pages. For example, if page 1 has 7000 rows, page 2 will be cut off at 3000 rows regardless of the number of rows in the dataset. If you need more rows, set `export`=`true` and use `_source` to specify which fields to include in the export. This method returns up to 65536 rows, or your license count (whichever is greater).
+
+        '
+      operationId: get-data-index
+      parameters:
+      - in: path
+        name: index_name
+        description: The name of the index to retrieve.
+        required: true
+        schema:
+          type: string
+          example: activities
+      - in: query
+        name: size
+        description: The number of rows returned per page. The maximum is 10000 rows per page. Read the endpoint description to learn more about the 10000 row limitation.
+        schema:
+          type: integer
+          default: 10000
+          maximum: 10000
+      - in: query
+        name: page
+        description: The page returned. The number of rows per page is set with the `size` parameter.
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: from
+        description: The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded.
+        schema:
+          type: integer
+          example: 2
+      - in: query
+        name: export
+        description: Sets whether to return the data index without any pagination, up to 65536 rows or your license count (whichever is greater). You must also use `_source` to specify which fields (columns) to return. `size`, `page`, and `from` parameters will be ignored if true.
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: _source[0]
+        description: If `export`=true, then this parameter sets which field of the data index to return. You can return multiple fields by sending more query parameters and changing the integer in the parameter name (for example, `_source[0]=_device_name&_source[1]=username`).
+        schema:
+          type: string
+          example: _device_name
+      - $ref: '#/components/parameters/FilterField'
+      - $ref: '#/components/parameters/FilterType'
+      - $ref: '#/components/parameters/FilterValue'
+      - $ref: '#/components/parameters/SorterField'
+      - $ref: '#/components/parameters/SorterDir'
+      responses:
+        '200':
+          description: Data index contents.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataIndexContents'
+        '400':
+          description: The provided query is invalid.
+        '404':
+          description: The provided index name is invalid.
+  /data/{index_name}/mappings:
+    get:
+      summary: Get data index mappings
+      tags:
+      - Data
+      description: Retrieves the fields within a data index, including the data type of each field.
+      operationId: get-data-index-mappings
+      parameters:
+      - in: path
+        name: index_name
+        description: The name of the data index.
+        required: true
+        schema:
+          type: string
+          example: activities
+      responses:
+        '200':
+          description: An array containing the data index mappings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IndexMappings'
+  /data/{index_name}/{documentID}:
+    get:
+      summary: Retrieve a document
+      tags:
+      - Data
+      description: Retrieves a document within a data index by its ID.
+      operationId: retrieve-document
+      parameters:
+      - in: path
+        name: index_name
+        description: Name of the data index that contains the document.
+        required: true
+        schema:
+          type: string
+          example: activites
+      - in: path
+        name: documentID
+        description: ID of the document to retrieve.
+        required: true
+        schema:
+          type: string
+          example: GtZWs7QBOFdS21OieyYt
+      responses:
+        '200':
+          description: Document retrieved successfully. The data in the document depends on the index being retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                _id: GtZWs7QBOFdS21OieyYt
+                _created: '2022-01-03T16:47:53.391Z'
+                favourite_website: www.controlup.com
+                phone_type: iPhone 3
+                name: John Doe
+        '400':
+          description: The index name or document ID is invalid.
+  /data/views:
+    get:
+      summary: List all custom reports
+      tags:
+      - Data
+      description: Returns a list of custom reports, including the configuration details of each report.
+      operationId: list-custom-reports
+      responses:
+        '200':
+          description: List of custom reports.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rows:
+                    description: An array of custom reports. Each entry in the array represents a different custom report.
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomReportDetails'
+                  rows_available:
+                    description: The total number of custom reports (rows) that are available.
+                    type: integer
+                    example: 12
+                  page_size:
+                    description: The number of custom reports that are able to be displayed per page of results.
+                    type: integer
+                    example: 100
+                  start_row:
+                    description: The first custom report than can be returned on the current page.
+                    type: integer
+                    example: 1
+                  end_row:
+                    description: The last custom report that can be returned on the current page.
+                    type: integer
+                    example: 100
+  /data/views/{id}:
+    get:
+      summary: Get a custom report
+      tags:
+      - Data
+      description: Retrieves the configuration details of a custom report by it's ID.
+      operationId: get-custom-report
+      parameters:
+      - in: path
+        name: id
+        description: ID of the custom report to retrieve.
+        required: true
+        schema:
+          type: string
+          example: GtZWs7QBOFdS21OieyYt
+      responses:
+        '200':
+          description: Details of the custom report.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomReportDetails'
+components:
+  schemas:
+    CustomReportDetails:
+      type: object
+      properties:
+        _id:
+          description: ID of the custom report.
+          type: string
+          example: ByRWs4IBOEdS79OieyLo
+        _created:
+          description: The UTC date and time that the custom report was created.
+          type: string
+          format: date-time
+          example: '2022-08-18T23:42:45.544Z'
+        _updated:
+          description: The UTC date and time that the custom report was last updated.
+          type: string
+          format: date-time
+          example: '2022-08-18T23:42:45.544Z'
+        _associated_id:
+          description: ID of the user who created the custom report.
+          type: string
+          example: lJTSkoIOBFdS691iFJzH
+        index:
+          description: The name of the index that contains the data for the custom report.
+          type: string
+          example: activities
+        name:
+          description: The name of the custom report.
+          type: string
+          example: sample-report-name
+        is_public:
+          description: If true, the custom report is available to all users in your organization. If false, it is only available to the user who created it.
+          type: boolean
+          example: true
+        config_data:
+          description: Placeholder.
+          type: string
+    DataIndexContents:
+      type: object
+      properties:
+        rows:
+          description: An array of the rows (documents) in the data index. Each entry in the array is a different document. The data in each document depends on the index being retrieved.
+          type: array
+          example:
+          - _id: lchs9wH4h2EKvgTVv8rd
+            _created: '2022-01-03T16:47:53.391Z'
+            favourite_website: www.controlup.com
+            phone_type: iPhone 3
+            name: John Doe
+        rows_available:
+          description: The total number of rows that are stored in the data index.
+          type: integer
+          example: 200
+        page_size:
+          description: The number of rows that are able to be displayed per page of results.
+          type: integer
+          example: 100
+        aggregations:
+          description: Placeholder
+          type: array
+        start_row:
+          description: The first row that can be returned on the current page.
+          type: integer
+          example: 1
+        end_row:
+          description: The last row that can be returned on the current page.
+          type: integer
+          example: 100
+        mappings:
+          description: Information about the fields (columns) in the index. Each entry in the array represents a different field.
+          type: array
+          items:
+            $ref: '#/components/schemas/IndexMappings'
+    IndexMappings:
+      type: object
+      properties:
+        index:
+          type: string
+        name:
+          description: The name of the field.
+          type: string
+          example: _created
+        type:
+          description: The data type of the field.
+          type: string
+  parameters:
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    FilterType:
+      name: filters[0][type]
+      in: query
+      description: 'The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>
+
+        `<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>
+
+        `boolean` is used to filter boolean fields.<br>
+
+        `like` is used to filter text fields.
+
+        '
+      schema:
+        type: string
+        example: '>='
+        enum:
+        - <
+        - <=
+        - '='
+        - '!='
+        - '>='
+        - '>'
+        - like
+        - boolean
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

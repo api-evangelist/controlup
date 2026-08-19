@@ -1,0 +1,114 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Host pool scaling policies API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Host pool scaling policies",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get scaling policy for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/scaling-policy",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique host pool identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the pool's weekly autoscale schedule: time blocks and which scaling profile each one assigns.\nReturns assignments only: profile bodies such as thresholds and host counts are not expanded,\nand the schedule does not indicate which block is in effect right now."
+        },
+        {
+          "info": {
+            "name": "Save scaling policy for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/scaling-policy",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique host pool identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates or updates the scaling policy for a specific host pool with time blocks and profile assignments."
+        },
+        {
+          "info": {
+            "name": "Delete scaling policy for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/scaling-policy",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique host pool identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Removes the scaling policy from a specific host pool."
+        },
+        {
+          "info": {
+            "name": "Get active scaling profile for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/scaling-policy/active-profile",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique host pool identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the one scaling profile in effect at the current UTC time, resolved from the pool's weekly schedule.\nCovers the present moment only, not the rest of the week."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

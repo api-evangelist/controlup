@@ -1,0 +1,1018 @@
+openapi: 3.2.0
+info:
+  title: Dex Organizations API
+  version: 1.0.0
+  description: Dex API Description
+  contact: {}
+servers:
+- url: https://api.controlup.com/v1
+tags:
+- name: Organizations
+paths:
+  /organizations/{tenantManagerOrgId}/tenants:
+    get:
+      operationId: OrgPublicController_getTenantOrganizations
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTenantManagerOrganizationsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: 'Returns a paginated list of tenants (organizations) under the Tenant Manager.
+
+        Only Tenant Manager admins with "Manage Settings" permission can access this endpoint.'
+      summary: List all tenants
+      tags:
+      - Organizations
+      security:
+      - apiKey: []
+      parameters:
+      - description: 'The page of results to return.
+
+          The first page is page number 1.'
+        in: query
+        name: _page
+        required: false
+        schema:
+          default: '1'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 1
+        style: form
+      - description: The number of results returned per page.
+        in: query
+        name: _limit
+        required: false
+        schema:
+          default: '10'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 10
+        style: form
+      - description: Sort by this field. Use "id" for organization_id.
+        in: query
+        name: _sortBy
+        required: false
+        schema:
+          $ref: '#/components/schemas/TenantManagerOrganizationSortField'
+        style: form
+      - description: 'Sort order: "asc" or "desc".'
+        in: query
+        name: _order
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        example: asc
+        style: form
+      - description: ID of the Tenant Manager organization.
+        in: path
+        name: tenantManagerOrgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: Filter by tenant organization ID. Only the tenant with this ID is returned (exact match).
+        in: query
+        name: organization_id
+        required: false
+        schema:
+          $ref: '#/components/schemas/UUID'
+        style: form
+      - description: Filter by account ID. Only organizations belonging to this account are returned.
+        in: query
+        name: account_id
+        required: false
+        schema:
+          $ref: '#/components/schemas/UUID'
+        style: form
+      - description: Filter by organization name (case-insensitive partial match).
+        in: query
+        name: name
+        required: false
+        schema:
+          type: string
+        example: Acme
+        style: form
+      - description: 'Filter by connection type: "direct" (same account) or "linked" (from another account).'
+        in: query
+        name: connection_type
+        required: false
+        schema:
+          $ref: '#/components/schemas/TenantManagerOrganizationConnectionType'
+        style: form
+      - description: 'Filter by organization status: "active" (enabled) or "inactive" (disabled).'
+        in: query
+        name: status
+        required: false
+        schema:
+          $ref: '#/components/schemas/TenantManagerOrganizationStatus'
+        style: form
+      - description: 'Filter by prospect: only prospects (true) or only non-prospects (false).'
+        in: query
+        name: prospect
+        required: false
+        schema:
+          type: boolean
+        example: false
+        style: form
+    post:
+      operationId: OrgPublicController_createTenantOrganization
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_CreateTenantOrganizationResponse_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: 'Creates a new tenant organization under the Tenant Manager organization.
+
+        This endpoint is relevant only if you are an MSP.'
+      summary: Create a tenant organization
+      tags:
+      - Organizations
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of the Tenant Manager organization.
+        in: path
+        name: tenantManagerOrgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        description: The details for creating the new tenant organization
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantOrganizationRequest'
+              description: The details for creating the new tenant organization
+  /organizations/{tenantManagerOrgId}/tenants/copy-edge-data:
+    post:
+      operationId: OrgPublicController_copyEdgeTenantData
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse__success-boolean__'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: 'Copies ControlUp for Desktops scripts, alerts, and dashboards from a source organization to a target organization.
+
+        Existing scripts, alerts, or dashboards in the target organization are not deleted.
+
+        This endpoint is relevant only if you are an MSP and both organizations are licensed for ControlUp for Desktops.
+
+        The copy process runs asynchronously and sends a notification to the email address associated with the API key when complete.'
+      summary: Copy Desktops data
+      tags:
+      - Organizations
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of the Tenant Manager organization.
+        in: path
+        name: tenantManagerOrgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        description: The details for the copy request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EdgeTenantCopyRequest'
+              description: The details for the copy request
+components:
+  schemas:
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    LoginMethod:
+      enum:
+      - manual
+      - azure
+      - google
+      - saml
+      - drill_down
+      type: string
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    CreateTenantOrganizationResponse:
+      properties:
+        organization:
+          $ref: '#/components/schemas/Organization'
+          description: The created organization details.
+        invitedUsers:
+          items:
+            type: string
+          type: array
+          description: List of users that were successfully invited.
+        uninvitedUsers:
+          items:
+            properties:
+              reason:
+                type: string
+              email:
+                type: string
+            required:
+            - reason
+            - email
+            type: object
+          type: array
+          description: List of users that could not be invited with reasons.
+      type: object
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    OrganizationProductAllocation:
+      properties:
+        amount_allocation:
+          type: number
+          format: double
+          description: 'For numeric products (controlUpForVDI, syntheticMonitoring, etc.): non-negative integer.
+
+            For boolean products (workflows, controlUpForApps): -1 = enabled, 0 = disabled only.'
+      required:
+      - amount_allocation
+      type: object
+    PositiveInteger:
+      type: integer
+      format: int32
+      minimum: 1
+    TenantManagerOrganizationSortField:
+      type: string
+      enum:
+      - id
+      - organization_id
+      - organization_name
+      - status
+      - prospect
+      description: 'Sortable fields for the Tenant Manager tenants list.
+
+        Use "id" as alias for organization_id.
+
+        Only these fields are supported for sorting by the API (account_id and connection_type are derived and not sortable).'
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    GetTenantManagerOrganizationsResponse:
+      $ref: '#/components/schemas/APIPaginatedResponse_TenantManagerOrganizationItem-Array_'
+      example:
+        metadata:
+          total: 25
+          limitPerPage: 10
+          currentPageNumber: 1
+          currentPageSize: 10
+          remaining: 15
+        data:
+        - organization_id: 6276ff2a-5a23-4067-ae3e-89ff82229472
+          organization_name: Acme Corp
+          account_id: a1b2c3d4-5678-90ab-cdef-111111111111
+          connection_type: direct
+          status: active
+          prospect: false
+        - organization_id: fb260314-d2be-4804-a5dd-c6945a2c8c66
+          organization_name: Contoso
+          account_id: b2c3d4e5-6789-01bc-def0-222222222222
+          connection_type: linked
+          status: inactive
+          prospect: true
+      description: Paginated response for the Tenant Manager tenants list API.
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    TenantManagerOrganizationConnectionType:
+      type: string
+      enum:
+      - direct
+      - linked
+      description: 'Connection type of an organization under a Tenant Manager.
+
+        - direct: Organization belongs to the same account as the Tenant Manager (or the filtered account).
+
+        - linked: Organization is connected from another account (linked organization).'
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    NonEmptyArray_PositiveInteger_:
+      items:
+        $ref: '#/components/schemas/PositiveInteger'
+      type: array
+      minItems: 1
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    APIPaginatedResponse_TenantManagerOrganizationItem-Array_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_TenantManagerOrganizationItem-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
+        type: object
+    APIResponse__success-boolean__:
+      properties:
+        data:
+          properties:
+            success:
+              type: boolean
+          required:
+          - success
+          type:
+          - object
+          - 'null'
+      required:
+      - data
+      type: object
+    APIResponse_TenantManagerOrganizationItem-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TenantManagerOrganizationItem'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    TenantManagerOrganizationItem:
+      properties:
+        organization_id:
+          $ref: '#/components/schemas/UUID'
+          description: ID of the organization.
+        organization_name:
+          type: string
+          description: Display name of the organization.
+        account_id:
+          $ref: '#/components/schemas/UUID'
+          description: ID of the account the organization belongs to.
+        connection_type:
+          $ref: '#/components/schemas/TenantManagerOrganizationConnectionType'
+          description: Whether the organization is in the same account (direct) or connected from another account (linked).
+        status:
+          $ref: '#/components/schemas/TenantManagerOrganizationStatus'
+          description: 'Organization status: active (enabled) or inactive (disabled).'
+        prospect:
+          type: boolean
+          description: Whether the organization is a prospect.
+      required:
+      - prospect
+      - status
+      - connection_type
+      - account_id
+      - organization_name
+      - organization_id
+      type: object
+      example:
+        organization_id: 6276ff2a-5a23-4067-ae3e-89ff82229472
+        organization_name: Acme Corp
+        account_id: a1b2c3d4-5678-90ab-cdef-111111111111
+        connection_type: direct
+        status: active
+        prospect: false
+      description: A single tenant (organization) in the Tenant Manager tenants list.
+    Region:
+      enum:
+      - us
+      - eu
+      - canadacentral
+      type: string
+    Organization:
+      properties:
+        id:
+          type: string
+        env_id:
+          type: string
+        name:
+          type: string
+        edge_tenant:
+          type: string
+        options:
+          additionalProperties: true
+          type: object
+        is_disabled:
+          type: boolean
+        login_methods:
+          items:
+            $ref: '#/components/schemas/LoginMethod'
+          type: array
+        mfas:
+          items:
+            $ref: '#/components/schemas/MFAType'
+          type: array
+        remember_me_token_lifetime_in_minutes:
+          type: number
+          format: double
+        session_timeout_in_minutes:
+          type: number
+          format: double
+        rtdx_session_timeout_in_minutes:
+          type: number
+          format: double
+        active_session_timeout_in_minutes:
+          type: number
+          format: double
+        region:
+          $ref: '#/components/schemas/Region'
+        url:
+          type: string
+        ad_synced:
+          type: boolean
+        ad_migrated:
+          type: boolean
+        platforms:
+          items:
+            $ref: '#/components/schemas/ControlupPlatform'
+          type: array
+        tenant_created_at:
+          type:
+          - string
+          - 'null'
+        tenant_initialized:
+          type: boolean
+        first_admin_web_login_done:
+          type: boolean
+        monitor_version:
+          type:
+          - string
+          - 'null'
+        region_version:
+          type:
+          - string
+          - 'null'
+        created_at_platform:
+          allOf:
+          - $ref: '#/components/schemas/ControlupPlatform'
+        settings:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationSettings'
+        hide_solve_saml:
+          type: boolean
+        show_in_organization_list:
+          type: boolean
+        origin:
+          type: string
+        salesforce_id:
+          type: string
+        is_account_management:
+          type: boolean
+        is_eligible_for_tenant_manager:
+          type: boolean
+        prospect:
+          type: boolean
+        allocations_disabled_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - tenant_initialized
+      - tenant_created_at
+      - platforms
+      - ad_migrated
+      - ad_synced
+      - url
+      - region
+      - active_session_timeout_in_minutes
+      - rtdx_session_timeout_in_minutes
+      - session_timeout_in_minutes
+      - remember_me_token_lifetime_in_minutes
+      - mfas
+      - login_methods
+      - edge_tenant
+      - name
+      - env_id
+      - id
+      type: object
+    OrganizationSettings:
+      properties:
+        vdi_dass_ldap_login:
+          type:
+          - boolean
+          - 'null'
+        oidc_enabled:
+          type:
+          - boolean
+          - 'null'
+        invite_template_enabled:
+          type: boolean
+        invite_template_id:
+          type: string
+        invite_template:
+          properties:
+            body:
+              type: string
+            subject:
+              type: string
+          required:
+          - body
+          - subject
+          type: object
+        ip_whitelist_enabled:
+          type: boolean
+        ip_whitelist_readonly_row_id:
+          type: string
+        default_home_page:
+          type: string
+        pii_encryption_enabled:
+          type: boolean
+        pii_encryption_updated_at:
+          type:
+          - string
+          - 'null'
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    Email:
+      type: string
+      format: email
+      description: Valid email address.
+      pattern: ^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    PaginatedResponseMetadata:
+      properties:
+        total:
+          type: number
+          format: double
+          description: The total number of results across all pages.
+        limitPerPage:
+          type: number
+          format: double
+          description: The maximum number of results returned per page (set by the `_limit` parameter).
+        currentPageNumber:
+          type: number
+          format: double
+          description: The page of result returned (set by the `_page` parameter).
+        currentPageSize:
+          type: number
+          format: double
+          description: The number of results on the current page.
+        remaining:
+          type: number
+          format: double
+          description: The total number of results on all pages higher than the current page.
+      required:
+      - remaining
+      - currentPageSize
+      - currentPageNumber
+      - limitPerPage
+      - total
+      type: object
+      example:
+        total: 18
+        limitPerPage: 10
+        currentPageNumber: 1
+        currentPageSize: 10
+        remaining: 8
+    ControlupPlatform:
+      enum:
+      - dex
+      - rt_dx
+      - admin_tool
+      type: string
+    CreateTenantOrganizationRequest:
+      properties:
+        organizationName:
+          type: string
+          description: The name of the new tenant organization to create.
+        region:
+          $ref: '#/components/schemas/Region'
+          description: The region where the organization will be created.
+        prospect:
+          type: boolean
+          description: Whether this is a prospect organization.
+        amounts:
+          $ref: '#/components/schemas/Partial_Record_PublicProduct.OrganizationProductAllocation__'
+          description: Licenses allocation for the organization.
+        invites:
+          items:
+            properties:
+              role:
+                $ref: '#/components/schemas/NonEmptyArray_PositiveInteger_'
+                description: Array of role IDs to assign to the user. You can use [GET /roles](orgrolespubliccontroller_getall) to see the ID of each role.
+              email:
+                $ref: '#/components/schemas/Email'
+                description: Email address of the user to invite.
+            required:
+            - role
+            - email
+            type: object
+          type: array
+          description: Array of user invitations for the new organization.
+        copyEdgeTenantFrom:
+          type: string
+          description: Optional ID of the Edge tenant organization to copy data from.
+      required:
+      - region
+      - organizationName
+      type: object
+      example:
+        organizationName: tenant-org
+        region: us
+        prospect: false
+        amounts:
+          controlUpForVDI:
+            amount_allocation: 100
+          syntheticMonitoring:
+            amount_allocation: 50
+          controlUpForDesktops:
+            amount_allocation: 75
+          controlUpForCompliance:
+            amount_allocation: 25
+          daasOptimizer:
+            amount_allocation: 25
+          controlUpForApps:
+            amount_allocation: -1
+          workflows:
+            amount_allocation: -1
+        invites:
+        - email: user@example.com
+          role:
+          - 1
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    APIResponse_CreateTenantOrganizationResponse_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/CreateTenantOrganizationResponse'
+      required:
+      - data
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    Partial_Record_PublicProduct.OrganizationProductAllocation__:
+      properties:
+        aiAssistant:
+          $ref: '#/components/schemas/OrganizationProductAllocation'
+        daasOptimizer:
+          $ref: '#/components/schemas/OrganizationProductAllocation'
+        workflows:
+          $ref: '#/components/schemas/OrganizationProductAllocation'
+        controlUpForApps:
+          $ref: '#/components/schemas/OrganizationProductAllocation'
+        controlUpForVDI:
+          $ref: '#/components/schemas/OrganizationProductAllocation'
+        controlUpForCompliance:
+          $ref: '#/components/schemas/OrganizationProductAllocation'
+        controlUpForDesktops:
+          $ref: '#/components/schemas/OrganizationProductAllocation'
+        syntheticMonitoring:
+          $ref: '#/components/schemas/OrganizationProductAllocation'
+      type: object
+      description: Make all properties in T optional
+    MFAType:
+      enum:
+      - sms
+      - google_totp
+      - microsoft_totp
+      type: string
+    TenantManagerOrganizationStatus:
+      type: string
+      enum:
+      - active
+      - inactive
+      description: 'Organization status: active (enabled) or inactive (disabled).'
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+    EdgeTenantCopyRequest:
+      properties:
+        sourceOrgId:
+          type: string
+          description: ID of the source organization to copy data from.
+        targetOrgId:
+          type: string
+          description: ID of the target organization to copy data to.
+        additionalEmails:
+          items:
+            type: string
+          type: array
+          description: List of additional emails to notify upon completion.
+      required:
+      - targetOrgId
+      - sourceOrgId
+      type: object
+      example:
+        sourceOrgId: 12345678-1234-1234-1234-123456789012
+        targetOrgId: 87654321-4321-4321-4321-210987654321
+        additionalEmails:
+        - user1@example.com
+        - user2@example.com
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

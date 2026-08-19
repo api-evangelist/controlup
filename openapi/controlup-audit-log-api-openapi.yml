@@ -1,0 +1,650 @@
+openapi: 3.2.0
+info:
+  title: Dex Audit Log API
+  version: 1.0.0
+  description: Dex API Description
+  contact: {}
+servers:
+- url: https://api.controlup.com/v1
+tags:
+- name: Audit Log
+paths:
+  /organizations/{orgId}/audit-log:
+    get:
+      operationId: OrgAuditLogPublicController_getAll
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllAuditLogEntriesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Returns your organization’s audit log. By default, events from the last 24 hours are returned, sorted from newest to oldest. All events are reported in UTC.
+      summary: Get audit log
+      tags:
+      - Audit Log
+      security:
+      - apiKey: []
+      parameters:
+      - description: 'The page of results to return.
+
+          The first page is page number 1.'
+        in: query
+        name: _page
+        required: false
+        schema:
+          default: '1'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 1
+        style: form
+      - description: The number of results returned per page.
+        in: query
+        name: _limit
+        required: false
+        schema:
+          default: '10'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 10
+        style: form
+      - description: Sorts results according to the specified field.
+        in: query
+        name: _sortBy
+        required: false
+        schema:
+          default: time
+          type: string
+          enum:
+          - activity
+          - description
+          - type
+          - time
+          - source
+          - module
+          - ip
+          - status
+          - origin
+        example: time
+        style: form
+      - description: The sort order (ascending / descending) of the field specified by the `_sortBy` parameter.
+        in: query
+        name: _order
+        required: false
+        schema:
+          default: desc
+          type: string
+          enum:
+          - asc
+          - desc
+        example: desc
+        style: form
+      - description: 'A search filter that is applied to all fields.
+
+          Only results that contain the specified string are returned.'
+        in: query
+        name: _search
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: 'Return events starting from the specified date and time in ISO string format (UTC).
+
+          If you don’t provide a value, then the default is 24 hours in the past from the time of the request.'
+        in: query
+        name: _timeFrom
+        required: false
+        schema:
+          $ref: '#/components/schemas/ISOString'
+        style: form
+      - description: Return events up to the specified date and time in ISO string format (UTC).
+        in: query
+        name: _timeTo
+        required: false
+        schema:
+          $ref: '#/components/schemas/ISOString'
+        style: form
+      - description: The format of returned results.
+        in: query
+        name: _format
+        required: false
+        schema:
+          default: json
+          type: string
+          enum:
+          - json
+          - xml
+          - csv
+        example: json
+        style: form
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: A search filter on the `activity` field.
+        in: query
+        name: activity
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+      - description: A search filter on the `description` field.
+        in: query
+        name: description
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+      - description: A search filter on the `type` field.
+        in: query
+        name: type
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionType'
+        style: form
+      - description: A search filter on the `source` field.
+        in: query
+        name: source
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+      - description: A search filter on the `module` field.
+        in: query
+        name: module
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModulePublic'
+        style: form
+      - description: A search filter on the `ip` field.
+        in: query
+        name: ip
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+      - description: A search filter on the `status` field.
+        in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusType'
+        style: form
+      - description: A search filter on the `origin` field.
+        in: query
+        name: origin
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventOrigin'
+        style: form
+components:
+  schemas:
+    AuditLogPublicEntry:
+      properties:
+        activity:
+          type: string
+          description: The event performed.
+        description:
+          type: string
+          description: A detailed description of the event.
+        type:
+          $ref: '#/components/schemas/ActionType'
+          description: The event type.
+        time:
+          type: string
+          format: date-time
+          description: The time of the event in UTC.
+        source:
+          type: string
+          description: The user who performed the event.
+        module:
+          $ref: '#/components/schemas/ModulePublic'
+          description: The relevant ControlUp product area for the event.
+        ip:
+          type: string
+          description: The remote IP address of the user that performed the event.
+        status:
+          $ref: '#/components/schemas/StatusType'
+          description: Whether the event was performed successfully.
+        origin:
+          $ref: '#/components/schemas/EventOrigin'
+          description: Whether the event was performed through the user interface (UI) or API.
+      required:
+      - status
+      - ip
+      - module
+      - source
+      - time
+      - type
+      - description
+      - activity
+      type: object
+    ModulePublic:
+      enum:
+      - dex
+      - employee
+      - synthetic monitoring
+      type: string
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    GetAllAuditLogEntriesResponse:
+      $ref: '#/components/schemas/APIPaginatedResponse_AuditLogPublicEntry-Array.GetAllAuditLogEntriesMetadata_'
+      example:
+        metadata:
+          total: 84
+          limitPerPage: 2
+          currentPageNumber: 1
+          currentPageSize: 2
+          remaining: 82
+          timeFrom: '2024-07-30T15:42:01.334Z'
+          timeTo: '2024-07-31T15:42:01.334Z'
+        data:
+        - activity: API key created
+          description: john.doe@controlup.com created a new API key *****97TwM
+          type: security
+          time: '2024-07-31T15:42:32.720Z'
+          source: john.doe@controlup.com
+          module: dex
+          ip: 198.162.1.0
+          status: success
+          origin: ui
+        - activity: Sign in
+          description: 'john.doe@controlup.com signed in with Google from 198.162.1.0
+
+            Roles: Admin'
+          type: security
+          time: '2024-07-31T15:42:01.334Z'
+          source: john.doe@controlup.com
+          module: dex
+          ip: 198.162.1.0
+          status: success
+          origin: ui
+    ActionType:
+      enum:
+      - action
+      - device
+      - security
+      - system
+      type: string
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    EventOrigin:
+      enum:
+      - ui
+      - api
+      - system
+      - aiAssistant
+      type: string
+    APIPaginatedResponse_AuditLogPublicEntry-Array.GetAllAuditLogEntriesMetadata_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_AuditLogPublicEntry-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - $ref: '#/components/schemas/GetAllAuditLogEntriesMetadata'
+        required:
+        - metadata
+        type: object
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    GetAllAuditLogEntriesMetadata:
+      properties:
+        timeFrom:
+          type: string
+          description: The earliest date from which results were retrieved.
+        timeTo:
+          type: string
+          description: The latest date up to which result were retrieved.
+      required:
+      - timeTo
+      - timeFrom
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    ISOString:
+      type: string
+      example: '2022-12-22T18:43:55.483Z'
+      format: ISO String YYYY-MM-DDTHH:mm:ss.sssZ
+      description: Valid ISO string
+      pattern: ^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.\d{3})?Z$
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    PaginatedResponseMetadata:
+      properties:
+        total:
+          type: number
+          format: double
+          description: The total number of results across all pages.
+        limitPerPage:
+          type: number
+          format: double
+          description: The maximum number of results returned per page (set by the `_limit` parameter).
+        currentPageNumber:
+          type: number
+          format: double
+          description: The page of result returned (set by the `_page` parameter).
+        currentPageSize:
+          type: number
+          format: double
+          description: The number of results on the current page.
+        remaining:
+          type: number
+          format: double
+          description: The total number of results on all pages higher than the current page.
+      required:
+      - remaining
+      - currentPageSize
+      - currentPageNumber
+      - limitPerPage
+      - total
+      type: object
+      example:
+        total: 18
+        limitPerPage: 10
+        currentPageNumber: 1
+        currentPageSize: 10
+        remaining: 8
+    APIResponse_AuditLogPublicEntry-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/AuditLogPublicEntry'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    StatusType:
+      enum:
+      - success
+      - failure
+      - none
+      type: string
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

@@ -1,0 +1,999 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Scaling profiles API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Scaling profiles
+paths:
+  /cloud/scaling-profiles:
+    get:
+      tags:
+      - Scaling profiles
+      summary: Get scaling profiles
+      description: 'Returns every scaling profile in the organization — reusable autoscale configurations that a host pool''s weekly schedule assigns to time blocks.
+
+        Profiles are organization-wide and not bound to any pool, so this does not say where a profile is used.
+
+        Filterable and sortable on Id, Name, Description, Color.'
+      operationId: GetScalingProfiles
+      parameters:
+      - name: sort
+        in: query
+        description: 'Sort expression for ordering results.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          color, description, elasticScalingMode, id, name, provisioningMode
+
+
+          Default when omitted: name:asc.'
+        schema:
+          maxLength: 256
+          type: string
+          example: color:desc,name:asc
+        examples:
+          default:
+            summary: default
+            value: name:asc
+        x-foundry-sort:
+          fields:
+          - color
+          - description
+          - elasticScalingMode
+          - id
+          - name
+          - provisioningMode
+          dynamicPaths: false
+          defaultField: name
+          defaultAscending: true
+      - name: filter
+        in: query
+        description: 'Filter expression for filtering results.
+
+
+          Supports JSON and RQL formats:
+
+
+          - JSON: {"and":[{"field":"status","op":"eq","value":"Active"},{"field":"name","op":"ct","value":"Smith, John"}]}
+
+          - RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters
+
+
+          Operators:
+
+          and, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)
+
+
+          Fields (names are matched case-insensitively):
+
+          color, description, elasticScalingMode, id, name, provisioningMode'
+        schema:
+          maxLength: 512
+          type: string
+          example: and(eq(color,blue),sw(name,dev))
+        examples:
+          json:
+            summary: json
+            value: '{"field":"name","op":"eq","value":"value"}'
+          rql:
+            summary: rql
+            value: eq(name,value)
+        x-foundry-filter:
+          fields:
+          - color
+          - description
+          - elasticScalingMode
+          - id
+          - name
+          - provisioningMode
+          operators:
+            logical:
+            - and
+            - or
+            - not
+            predicate:
+            - eq
+            - neq
+            - ct
+            - nct
+            - sw
+            - nsw
+            - ew
+            - new
+            - gt
+            - gte
+            - lt
+            - lte
+          dynamicPaths: false
+      responses:
+        '200':
+          description: Successfully retrieved the list of scaling profiles.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScalingProfileResult'
+        '400':
+          description: Bad request. Invalid filter or sort expression.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to view scaling profiles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    post:
+      tags:
+      - Scaling profiles
+      summary: Create a scaling profile
+      description: Creates a new scaling profile with the specified configuration.
+      operationId: CreateScalingProfile
+      requestBody:
+        description: The scaling profile data to create.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveScalingProfileRequest'
+        required: true
+      responses:
+        '201':
+          description: Successfully created the scaling profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScalingProfileResponseDto'
+        '400':
+          description: Bad request. Invalid scaling profile data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage scaling permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict. A scaling profile with the same name already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/scaling-profiles/{id}:
+    get:
+      tags:
+      - Scaling profiles
+      summary: Get a scaling profile by ID
+      description: 'Returns one scaling profile with its complete nested configuration, including thresholds and host count rules.
+
+        Returns the definition only — it does not say which host pools use the profile or whether it is currently active.'
+      operationId: GetScalingProfile
+      parameters:
+      - name: id
+        in: path
+        description: The unique scaling profile identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the scaling profile details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScalingProfileResponseDto'
+        '400':
+          description: Bad request. Invalid scaling profile ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage scaling permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified scaling profile does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    put:
+      tags:
+      - Scaling profiles
+      summary: Update a scaling profile
+      description: Updates an existing scaling profile with the specified configuration.
+      operationId: UpdateScalingProfile
+      parameters:
+      - name: id
+        in: path
+        description: The unique scaling profile identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The updated scaling profile data.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveScalingProfileRequest'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the scaling profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScalingProfileResponseDto'
+        '400':
+          description: Bad request. Invalid scaling profile data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage scaling permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified scaling profile does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict. A scaling profile with the same name already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    delete:
+      tags:
+      - Scaling profiles
+      summary: Delete a scaling profile
+      description: Deletes a scaling profile. Cannot delete profiles that are currently in use by schedules.
+      operationId: DeleteScalingProfile
+      parameters:
+      - name: id
+        in: path
+        description: The unique scaling profile identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Successfully deleted the scaling profile.
+        '400':
+          description: Bad request. Invalid scaling profile ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage scaling permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified scaling profile does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict. Cannot delete scaling profile that is currently in use by schedules.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/scaling-profiles/{id}/color:
+    patch:
+      tags:
+      - Scaling profiles
+      summary: Update scaling profile color
+      description: Updates the display color of a scaling profile.
+      operationId: UpdateScalingProfileColor
+      parameters:
+      - name: id
+        in: path
+        description: The unique scaling profile identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The color update request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeScalingProfileColorRequest'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the scaling profile color.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScalingProfileResult'
+        '400':
+          description: Bad request. Invalid color identifier.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage scaling permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified scaling profile does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    ScalingStrategyDto:
+      required:
+      - provisioningMode
+      - smartMinimums
+      type: object
+      properties:
+        provisioningMode:
+          $ref: '#/components/schemas/ProvisioningMode'
+        staticConfig:
+          $ref: '#/components/schemas/StaticConfigDto'
+        elasticConfig:
+          $ref: '#/components/schemas/ElasticConfigDto'
+        smartMinimums:
+          $ref: '#/components/schemas/SmartMinimumsDto'
+      additionalProperties: false
+      description: Scaling strategy including provisioning mode and mode-specific configuration.
+    StaticConfigDto:
+      required:
+      - createAdditionalHostsIfNeeded
+      - hostsToPowerOn
+      type: object
+      properties:
+        hostsToPowerOn:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: Number of hosts to keep powered on.
+          format: int32
+        createAdditionalHostsIfNeeded:
+          type: boolean
+          description: Whether to create additional hosts if not enough exist in the pool.
+      additionalProperties: false
+      description: Static provisioning configuration.
+    ScaleTriggersDto:
+      required:
+      - freeSessionsThreshold
+      type: object
+      properties:
+        cpuThresholdPercent:
+          maximum: 100
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: CPU usage threshold percentage. Null (omitted) means the metric is disabled and will not be evaluated.
+          format: int32
+        memoryThresholdPercent:
+          maximum: 100
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: Memory usage threshold percentage. Null (omitted) means the metric is disabled and will not be evaluated.
+          format: int32
+        freeSessionsThreshold:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: Free sessions threshold for scaling actions. Required — cannot be disabled.
+          format: int32
+      additionalProperties: false
+      description: Performance thresholds that trigger scaling actions.
+    ElasticScalingMode:
+      enum:
+      - powerManagementOnly
+      - dynamicHosts
+      type: string
+      description: Defines the elastic scaling mode for host pool capacity management.
+    ProvisioningMode:
+      enum:
+      - static
+      - elastic
+      type: string
+      description: Defines the provisioning and scaling mode for host pools.
+    ScalingProfileResult:
+      required:
+      - color
+      - description
+      - id
+      - name
+      - provisioningMode
+      - usedByHostPools
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the scaling profile.
+          format: uuid
+        name:
+          type: string
+          description: User-friendly name for the scaling profile.
+        description:
+          type: string
+          description: Description explaining the purpose and behavior of this scaling profile.
+        color:
+          type: string
+          description: 'Color identifier for this scaling profile. The UI maps this ID to actual colors.
+
+            Examples: "blue", "primary-1", "accent-red", etc.'
+        provisioningMode:
+          $ref: '#/components/schemas/ProvisioningMode'
+        elasticScalingMode:
+          $ref: '#/components/schemas/ElasticScalingMode'
+        usedByHostPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostPoolInfo'
+          description: Host pools currently using this scaling profile.
+      additionalProperties: false
+      description: Represents a scaling profile that defines scaling behavior and parameters.
+    ScalingProfileResponseDto:
+      required:
+      - color
+      - experience
+      - id
+      - name
+      - strategy
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 3
+          type: string
+          description: User-friendly name for the scaling profile.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the scaling profile.
+        color:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
+
+            Examples: "blue", "primary-1", "accent-red", etc.'
+        strategy:
+          $ref: '#/components/schemas/ScalingStrategyDto'
+        experience:
+          $ref: '#/components/schemas/UserExperienceDto'
+        id:
+          type: string
+          description: Unique identifier for the scaling profile.
+          format: uuid
+      additionalProperties: false
+      description: 'Full scaling profile response including all configuration details.
+
+        Returned when fetching a specific scaling profile by ID.'
+    NotificationSettingsDto:
+      required:
+      - allowSnooze
+      - gracePeriodMinutes
+      - maximumSnoozes
+      - notificationMessage
+      - notificationTitle
+      type: object
+      properties:
+        gracePeriodMinutes:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Grace period in minutes before users are logged off after notification.
+          format: int32
+        notificationTitle:
+          maxLength: 200
+          minLength: 1
+          type: string
+          description: Notification title displayed to users.
+        notificationMessage:
+          maxLength: 2000
+          minLength: 1
+          type: string
+          description: Notification message displayed to users.
+        allowSnooze:
+          type: boolean
+          description: Whether users are allowed to snooze the notification.
+        maximumSnoozes:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: Maximum number of times users can snooze notifications.
+          format: int32
+      additionalProperties: false
+      description: User notification settings when sessions are about to be ended.
+    ElasticPerformanceDto:
+      required:
+      - aggressiveness
+      - scaleInTriggers
+      - scaleOutTriggers
+      - stabilizationWindowMinutes
+      type: object
+      properties:
+        scaleOutTriggers:
+          $ref: '#/components/schemas/ScaleTriggersDto'
+        scaleInTriggers:
+          $ref: '#/components/schemas/ScaleTriggersDto'
+        aggressiveness:
+          $ref: '#/components/schemas/ScalingAggressiveness'
+        stabilizationWindowMinutes:
+          maximum: 60
+          minimum: 1
+          type: integer
+          description: Stabilization window in minutes before evaluating scaling actions.
+          format: int32
+      additionalProperties: false
+      description: Performance settings for elastic provisioning.
+    SaveScalingProfileRequest:
+      required:
+      - color
+      - experience
+      - name
+      - strategy
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 3
+          type: string
+          description: User-friendly name for the scaling profile.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the scaling profile.
+        color:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
+
+            Examples: "blue", "primary-1", "accent-red", etc.'
+        strategy:
+          $ref: '#/components/schemas/ScalingStrategyDto'
+        experience:
+          $ref: '#/components/schemas/UserExperienceDto'
+      additionalProperties: false
+      description: 'Consolidated request model for creating or updating a scaling profile.
+
+        Use for both POST (create) and PUT (update) operations.'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    SmartMinimumsDto:
+      required:
+      - enabled
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether smart minimums is enabled.
+        utilizationThresholdPercent:
+          maximum: 100
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: Utilization threshold percentage below which the minimum hosts rule is ignored.
+          format: int32
+        timeWindowMinutes:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: Time window in minutes to evaluate utilization before scaling down.
+          format: int32
+        scaleDownToHostCount:
+          maximum: 2147483647
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Number of hosts to scale down to when utilization is below threshold.
+          format: int32
+      additionalProperties: false
+      description: Smart minimums configuration to prevent scaling down during low utilization.
+    ScalingAggressiveness:
+      enum:
+      - gentle
+      - balanced
+      - aggressive
+      type: string
+      description: Defines the aggressiveness level for scaling operations.
+    UserExperienceDto:
+      required:
+      - notifications
+      type: object
+      properties:
+        notifications:
+          $ref: '#/components/schemas/NotificationSettingsDto'
+      additionalProperties: false
+      description: User experience settings for scaling operations.
+    ChangeScalingProfileColorRequest:
+      required:
+      - color
+      type: object
+      properties:
+        color:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
+
+            Examples: "blue", "primary-1", "accent-red", etc.'
+      additionalProperties: false
+      description: Request model for changing a scaling profile's color.
+    HostPoolInfo:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Internal Foundry host pool ID.
+          format: uuid
+        name:
+          type: string
+          description: Host pool friendly name.
+      additionalProperties: false
+      description: Minimal host pool information for scaling profile usage.
+    ElasticConfigDto:
+      required:
+      - burstBatchSize
+      - elasticScalingMode
+      - maxHosts
+      - minHosts
+      - performance
+      type: object
+      properties:
+        minHosts:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: Minimum number of hosts (floor) that should be available.
+          format: int32
+        maxHosts:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: Maximum number of hosts (ceiling) that can be active.
+          format: int32
+        burstBatchSize:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Number of hosts to start/stop in a single scaling operation.
+          format: int32
+        elasticScalingMode:
+          $ref: '#/components/schemas/ElasticScalingMode'
+        performance:
+          $ref: '#/components/schemas/ElasticPerformanceDto'
+      additionalProperties: false
+      description: Elastic provisioning configuration.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

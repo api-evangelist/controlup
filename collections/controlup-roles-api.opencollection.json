@@ -1,0 +1,231 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Dex Roles API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/roles",
+            "params": [
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page of results to return.\nThe first page is page number 1."
+              },
+              {
+                "name": "_limit",
+                "value": "10",
+                "type": "query",
+                "description": "The number of results returned per page."
+              },
+              {
+                "name": "_sortBy",
+                "value": "id",
+                "type": "query",
+                "description": "Sorts results according to the specified field."
+              },
+              {
+                "name": "_order",
+                "value": "asc",
+                "type": "query",
+                "description": "The sort order (ascending / descending) of the field specified by the `_sortBy` parameter."
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "A search filter that is applied to all fields.\nOnly results that contain the specified string are returned."
+              },
+              {
+                "name": "_format",
+                "value": "json",
+                "type": "query",
+                "description": "The format of returned results."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "childOrganizationId",
+                "value": "",
+                "type": "query",
+                "description": "Filter roles by a specific tenant manager child organization ID.\nReturns roles that apply to this child organization (either roles with no specific child organizations, or roles that include this child organization)."
+              },
+              {
+                "name": "isDefault",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `isDefault` field."
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `description` field."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `name` field."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `id` field."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of all roles."
+        },
+        {
+          "info": {
+            "name": "Create a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/roles",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new role."
+        },
+        {
+          "info": {
+            "name": "Retrieve a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/roles/:id",
+            "params": [
+              {
+                "name": "_format",
+                "value": "json",
+                "type": "query",
+                "description": "The format of returned results."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the role to retrieve. You can use [GET /roles](orgrolespubliccontroller_getall) to see the ID of each role.\n\nDefault role IDs:\n* Admin - 1\n* Editor - 2\n* Viewer - 3\n* No Permissions - 4\n* VDI and DaaS Admins - 5\n* Access Real-Time DX Console - 6"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the details for a role, including the permissions within the role and the users to which the role is assigned."
+        },
+        {
+          "info": {
+            "name": "Update a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/roles/:id",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the role to update. You can use [GET /roles](orgrolespubliccontroller_getall) to see the ID of each role."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates an existing role by its ID."
+        },
+        {
+          "info": {
+            "name": "Delete a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/roles/:id",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the role to delete. You can use [GET /roles](orgrolespubliccontroller_getall) to see the ID of each role."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes a role.\nIf you delete a role, then the role is removed from any users/groups that are assigned the role."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

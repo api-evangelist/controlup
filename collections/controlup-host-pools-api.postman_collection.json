@@ -1,0 +1,3423 @@
+{
+  "item": [
+    {
+      "id": "d01873b7-d879-42c7-91ed-899c59ad6fdc",
+      "name": "Host pools",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "94a88536-4f07-4b60-8332-3b6bba9ae9df",
+          "name": "Get host pools",
+          "request": {
+            "name": "Get host pools",
+            "description": {
+              "content": "Returns one row per host pool across all subscriptions, with identity (name, subscription, resource group, region, type)\nand latest-value counts for hosts, sessions, and average CPU.\nDoes not include cost, memory, or AVD configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "host-pools"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "provider",
+                  "value": "<string>",
+                  "description": "Optional cloud provider filter. Null means all providers."
+                },
+                {
+                  "disabled": false,
+                  "key": "sort",
+                  "value": "<string>",
+                  "description": "Sort specification string.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nactiveSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type\n\nDefault when omitted: name:asc."
+                },
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>",
+                  "description": "Filter expression for filtering results.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\nactiveSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "The page number to retrieve (1-based). Default: 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>",
+                  "description": "The number of items per page (1-100). Default: 50."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f462b92a-e08d-48fc-bd21-a565ec36da27",
+              "name": "Successfully retrieved host pools.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 7831,\n  \"hasMore\": false,\n  \"items\": [\n    {\n      \"activeSessions\": 8590,\n      \"avgCpuPercent\": 1595.0270231025697,\n      \"hasNativeScalingPlan\": true,\n      \"hasSessionHostConfig\": true,\n      \"id\": \"a2d3b07a-b8a9-1793-82f4-370014d2fca4\",\n      \"name\": \"string\",\n      \"provider\": \"<string>\",\n      \"region\": \"string\",\n      \"regionId\": \"string\",\n      \"resourceGroup\": \"string\",\n      \"resourceGroupId\": \"14c1ed11-e048-7640-a48f-6b900a76622b\",\n      \"runningHosts\": 9539,\n      \"stoppedHosts\": 4152,\n      \"subscription\": \"string\",\n      \"subscriptionId\": \"4c1a0a79-82b7-9da5-b7e4-b337d336609a\",\n      \"syncedAt\": \"2025-04-16T03:35:45.667Z\",\n      \"totalHosts\": 7943,\n      \"totalSessions\": 5368,\n      \"type\": \"string\",\n      \"assignmentType\": \"string\"\n    },\n    {\n      \"activeSessions\": 6541,\n      \"avgCpuPercent\": 1435.6062167963134,\n      \"hasNativeScalingPlan\": false,\n      \"hasSessionHostConfig\": true,\n      \"id\": \"a24da43b-4c02-f6a3-7305-581aa0fa2cb6\",\n      \"name\": \"string\",\n      \"provider\": \"<string>\",\n      \"region\": \"string\",\n      \"regionId\": \"string\",\n      \"resourceGroup\": \"string\",\n      \"resourceGroupId\": \"13b2ec2f-c074-be82-bbca-d0eb959ca8b1\",\n      \"runningHosts\": 9803,\n      \"stoppedHosts\": 5737,\n      \"subscription\": \"string\",\n      \"subscriptionId\": \"78b20f7a-3773-2b3d-5c71-fa1b43ddeb8a\",\n      \"syncedAt\": \"2022-08-16T10:24:50.974Z\",\n      \"totalHosts\": 7741,\n      \"totalSessions\": 9390,\n      \"type\": \"string\",\n      \"assignmentType\": \"string\"\n    }\n  ],\n  \"page\": 5111,\n  \"pageSize\": 3200,\n  \"totalCount\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b013e1e6-b5b9-413d-88aa-0a968f2c4f2a",
+              "name": "Bad request. Invalid pagination or sort parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c320efe9-deaf-47d4-9786-dabde95deee1",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85cd2999-9707-4b60-b490-7720d4abc973",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "606248da-b96d-4cb4-8db9-c318cf29cb56",
+              "name": "Forbidden. User does not have access to this organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a6e1b105-28fa-4f5b-a1b1-d924d7bf9c41",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "15a9df05-838e-480c-9e27-8771cb69fe35",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ae989f50-58f0-4efe-8702-9011d1235c9c",
+          "name": "Get host pool statistics",
+          "request": {
+            "name": "Get host pool statistics",
+            "description": {
+              "content": "Returns six organization-wide totals: pooled and personal pool counts, available and draining session host counts,\nand active and total session counts, across all pools matching the optional provider and filter criteria.\nNo per-pool rows, so a total cannot be traced back to the pools behind it, but far cheaper than paging the list.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "host-pools",
+                "statistics"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "provider",
+                  "value": "<string>",
+                  "description": "Optional cloud provider filter. Null means all providers."
+                },
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>",
+                  "description": "Filter expression for filtering results.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\nactiveSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b138e5f2-00dc-470e-b052-82ada97875f6",
+              "name": "Successfully retrieved host pool statistics.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"activeSessions\": 7881,\n  \"availableSessionHosts\": 9082,\n  \"drainingSessionHosts\": 8347,\n  \"totalPersonal\": 1889,\n  \"totalPooled\": 1529,\n  \"totalSessions\": 5632\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "32526cc9-2435-4bcd-98d3-433edaae1d6a",
+              "name": "Bad request. Invalid filter parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "355e40d1-8549-4dd9-8bbb-8bc01c32e338",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d80525bf-6e89-46d6-a6b8-aa7726dadcac",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7aa94cf2-2e81-4091-9f49-56c7d36eb9e5",
+              "name": "Forbidden. User does not have access to this organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "40cfe094-54c3-45ad-a3a6-cb7c105f1657",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "92fd5c44-b578-4453-b8de-779878fe95f8",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c890d1fa-344f-4c65-833c-892b2e75ea24",
+          "name": "Get a host pool by ID",
+          "request": {
+            "name": "Get a host pool by ID",
+            "description": {
+              "content": "Returns a single host pool in the same shape as one row of the host pool list: identity, resource metadata,\nand latest-value host, session, and CPU counts.\nDoes not include AVD configuration, cost, memory, or 7-day rollups.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "host-pools",
+                ":hostPoolId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "hostPoolId",
+                  "description": "(Required) The unique identifier of the host pool to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "d7f2223b-1b1d-4dee-90ff-46599ff43064",
+              "name": "Successfully retrieved the host pool.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"activeSessions\": 1333,\n  \"avgCpuPercent\": 7988.551037256908,\n  \"hasNativeScalingPlan\": true,\n  \"hasSessionHostConfig\": true,\n  \"id\": \"1535f5ca-a34f-42c9-3c9e-5b3e78124622\",\n  \"name\": \"string\",\n  \"provider\": \"<string>\",\n  \"region\": \"string\",\n  \"regionId\": \"string\",\n  \"resourceGroup\": \"string\",\n  \"resourceGroupId\": \"ef8e05aa-be85-7792-d91d-61f462fbfdbb\",\n  \"runningHosts\": 7228,\n  \"stoppedHosts\": 217,\n  \"subscription\": \"string\",\n  \"subscriptionId\": \"b3ca2f22-9d1e-d477-ac4f-d8f70f806a1d\",\n  \"syncedAt\": \"1964-02-25T11:38:48.168Z\",\n  \"totalHosts\": 2147,\n  \"totalSessions\": 5927,\n  \"type\": \"string\",\n  \"assignmentType\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b75458f4-0672-4ebf-97d0-b41ad67564c1",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b7ab4cfc-3d6a-4419-bc8f-04c286c77b82",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7c5f4f9c-056e-48ed-b08c-a1a1d1e31d73",
+              "name": "Forbidden. User does not have access to this organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f89fb309-539a-45b9-841b-6e4395aa223b",
+              "name": "Not found. Host pool does not exist or does not belong to the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "71443cc7-ee1f-4fb3-816f-65572aae6d42",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d0dd56a3-702e-4fd5-a2cf-3e5e1fdeb46e",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "463af191-f217-4e8f-b299-a426d7aad1be",
+          "name": "Delete host pool",
+          "request": {
+            "name": "Delete host pool",
+            "description": {
+              "content": "Soft-deletes the host pool from DaaS IQ management without modifying the Azure resource.\nHistorical data is retained and becomes visible again if the host pool is re-imported.\nAutoscale configuration and VM settings are not retained.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "host-pools",
+                ":hostPoolId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "hostPoolId",
+                  "description": "(Required) The unique identifier of the host pool to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2a601e78-53d9-4f91-9c35-c93d2d7440c9",
+              "name": "Successfully deleted the host pool from DaaS IQ.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "68b4eb6f-6ab0-4fd3-a7fd-e1f6bf0f171e",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6762f491-091f-4a93-8352-5cfb8f2d2440",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "603b93f2-f1e0-45d5-9cf1-0150a90238e0",
+              "name": "Forbidden. User does not have delete host pool permissions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0b78c52f-e62c-41df-80d0-5ee4b0b355a5",
+              "name": "Not found. Host pool does not exist or does not belong to the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "90500bab-7b06-4c25-b7a8-7e535f790d43",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9ca1ca8d-b4c5-45c8-a6b3-4fcc0288837a",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6c19f924-c01c-44d5-9732-5b0f1124aab8",
+          "name": "Get host pool extended details",
+          "request": {
+            "name": "Get host pool extended details",
+            "description": {
+              "content": "Returns the full host pool record: identity and resource metadata, AVD configuration (load balancing, max sessions per host,\ndrain mode, OS, VNet), 7-day session rollups, session capacity percentage, latest CPU and memory, and month-to-date cost.\nCost is one total with no breakdown or date range, and metrics are current or rolled-up values, never series.\nAggregates several sources, so use it per pool rather than iterating a list.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "host-pools",
+                ":hostPoolId",
+                "details"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "hostPoolId",
+                  "description": "(Required) The unique identifier of the host pool to retrieve details for."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f23dee48-55d6-46e8-a514-4d38fa8c73b3",
+              "name": "Successfully retrieved host pool details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve details for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"activeSessions\": 4755,\n  \"autoscaleEnabled\": true,\n  \"avgCpu24h\": 787.4793034902161,\n  \"avgCpuPercent\": 992.8447126794105,\n  \"avgMemoryPercent\": 4263.130378368674,\n  \"costMonthToDate\": 1237.2900813854958,\n  \"disconnectedSessions\": 3003,\n  \"drainMode\": false,\n  \"hasDynamicScaling\": false,\n  \"hasNativeScalingPlan\": true,\n  \"hasSessionHostConfig\": true,\n  \"healthyAgentHosts\": 3213,\n  \"id\": \"0f790499-8e2a-4b4e-8efa-c4121311905d\",\n  \"name\": \"string\",\n  \"provider\": \"<string>\",\n  \"region\": \"string\",\n  \"regionId\": \"string\",\n  \"resourceGroup\": \"string\",\n  \"resourceGroupId\": \"a5791187-4f3e-0c59-481c-ad935df92797\",\n  \"runningHosts\": 6896,\n  \"sessionCapacityPercent\": 3261.897229791152,\n  \"startVmOnConnect\": true,\n  \"stoppedHosts\": 4115,\n  \"subscription\": \"string\",\n  \"subscriptionId\": \"81df54e1-50fa-de74-ecfa-d59383b2fd76\",\n  \"syncedAt\": \"1982-10-10T18:15:58.943Z\",\n  \"totalHosts\": 9829,\n  \"totalSessions\": 8042,\n  \"type\": \"string\",\n  \"assignmentType\": null,\n  \"loadBalancingAlgorithm\": \"string\",\n  \"maxSessionsPerHost\": 320,\n  \"ring\": null,\n  \"weeklyMaxConcurrentActiveSessions\": null,\n  \"weeklyAvgConcurrentActiveSessions\": null,\n  \"weeklyMedianSessionDuration\": null,\n  \"weeklyAvgActiveSessionDuration\": null,\n  \"weeklyAvgDisconnectedSessionDuration\": \"string\",\n  \"osType\": \"string\",\n  \"monitoringStatus\": \"string\",\n  \"vnetId\": null,\n  \"subnetId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "24a89a18-f555-48fe-9eb2-dce5aad7366e",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve details for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "88df3f87-f878-4973-aa3a-3afdbf50431f",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve details for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "84682917-dc71-497d-89f5-1f8ade661706",
+              "name": "Forbidden. User does not have access to this organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve details for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "362085ab-848c-46d5-970e-2e73c8dc57e2",
+              "name": "Not found. Host pool does not exist or does not belong to the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve details for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f07c66d2-32f8-4c72-afd5-65cef9514526",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve details for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ab0ad59e-47a2-493e-baa3-b2d473b15634",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to retrieve details for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7f91366e-07f5-4775-995d-57fcd8c4b454",
+          "name": "Get host pool metrics",
+          "request": {
+            "name": "Get host pool metrics",
+            "description": {
+              "content": "Returns timestamped series over a date range for active and total sessions, running and stopped hosts,\naverage CPU and memory, and connection errors — intended for charting.\nEvery value is a series rather than a current reading, and connection errors are available nowhere else.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "host-pools",
+                ":hostPoolId",
+                "metrics"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pointCount",
+                  "value": "60",
+                  "description": "Number of data points to return (defaults to 60 if not specified).\nMust be between 10 and 500."
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<dateTime>",
+                  "description": "Start date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T00:00:00Z\" or \"2026-01-20T00:00:00+03:00\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<dateTime>",
+                  "description": "End date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T23:59:59Z\" or \"2026-01-20T23:59:59+03:00\")."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "hostPoolId",
+                  "description": "(Required) The unique identifier of the host pool."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4ec8edc0-1f62-45a1-9cb9-df223c10a79a",
+              "name": "Successfully retrieved metrics.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pointCount",
+                      "value": "60"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"activeSessions\": [\n    {\n      \"timestamp\": \"1949-01-05T06:49:15.631Z\",\n      \"value\": 4267.168819212859\n    },\n    {\n      \"timestamp\": \"1984-06-08T15:19:26.541Z\",\n      \"value\": 2493.626213250484\n    }\n  ],\n  \"avgCpu\": [\n    {\n      \"timestamp\": \"2025-08-14T19:43:50.432Z\",\n      \"value\": 9138.541240765768\n    },\n    {\n      \"timestamp\": \"2010-05-02T00:31:06.994Z\",\n      \"value\": 320.7882133843909\n    }\n  ],\n  \"avgMemory\": [\n    {\n      \"timestamp\": \"1948-04-23T04:03:36.720Z\",\n      \"value\": 1490.1057572261766\n    },\n    {\n      \"timestamp\": \"2012-05-08T01:50:25.938Z\",\n      \"value\": 6325.977209920014\n    }\n  ],\n  \"connectionErrors\": [\n    {\n      \"timestamp\": \"2020-02-02T14:25:30.590Z\",\n      \"value\": 5167.325538136395\n    },\n    {\n      \"timestamp\": \"2014-03-01T13:20:36.642Z\",\n      \"value\": 2963.164856415421\n    }\n  ],\n  \"runningHosts\": [\n    {\n      \"timestamp\": \"2004-12-19T07:35:27.771Z\",\n      \"value\": 8701.343107887407\n    },\n    {\n      \"timestamp\": \"1950-05-04T15:39:54.975Z\",\n      \"value\": 8552.265646304191\n    }\n  ],\n  \"stoppedHosts\": [\n    {\n      \"timestamp\": \"1998-05-14T09:31:41.713Z\",\n      \"value\": 3722.4246342830147\n    },\n    {\n      \"timestamp\": \"1966-08-21T13:49:09.713Z\",\n      \"value\": 2505.8529998452063\n    }\n  ],\n  \"totalSessions\": [\n    {\n      \"timestamp\": \"1982-09-01T21:35:46.040Z\",\n      \"value\": 249.9155627415539\n    },\n    {\n      \"timestamp\": \"1947-01-18T12:44:42.372Z\",\n      \"value\": 8474.69469282025\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c53ae510-3db5-44c2-80b2-2acde6d3a052",
+              "name": "Bad request. Invalid date range parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pointCount",
+                      "value": "60"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "67624127-579b-423c-b47a-8ae6607424eb",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pointCount",
+                      "value": "60"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cf985b7b-0db6-4cee-a25f-3cb79882d553",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pointCount",
+                      "value": "60"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "315bde08-7301-49cb-b44e-39367a1e6530",
+              "name": "Forbidden. User does not have access to this organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pointCount",
+                      "value": "60"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a6e5d858-5bfe-4ac8-8bf1-cf32393f71cd",
+              "name": "Not found. Host pool does not exist or does not belong to the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pointCount",
+                      "value": "60"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "90d4aad4-9083-41e3-9e90-4fbe1ee8494c",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pointCount",
+                      "value": "60"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd8cfd89-9481-47cd-a20d-db96ae801a20",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pointCount",
+                      "value": "60"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a86a90b6-9747-4c3e-adbf-bb5c0a72ff55",
+          "name": "Delete host pool from Azure",
+          "request": {
+            "name": "Delete host pool from Azure",
+            "description": {
+              "content": "Dispatches an Azure teardown job for associated resources\n(application groups, session host VMs, and the host pool ARM resource), then soft-deletes the host pool from DaaS IQ.\nVNet, subnet, resource group, workspace, and storage accounts are not deleted.\nAll session hosts must be deallocated before this operation is accepted.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "host-pools",
+                ":hostPoolId",
+                "deletion"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "hostPoolId",
+                  "description": "(Required) The unique identifier of the host pool to hard-delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2d51d10b-4e44-4b7b-bfbc-173bdda24dc5",
+              "name": "Hard-delete job accepted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a1b2c3d4-5678-90ab-cdef-1234567890ab\",\n  \"jobType\": \"cloudResourceImport\",\n  \"action\": \"Cloud Resource Import\",\n  \"jobUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab\",\n  \"statusUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status\",\n  \"logsUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs\",\n  \"message\": \"Import job created successfully. Poll statusUrl for progress updates.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8be30b00-0208-45b3-8b81-eba67c50cc47",
+              "name": "Bad request. Precondition not met, for example hosts are not deallocated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d556fbea-361f-42f5-84c1-bfd9506cec69",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6439e17e-f59f-4db8-837d-4b8018b33be6",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "af14a991-14d5-441b-84cf-f7bad462ad5f",
+              "name": "Forbidden. User does not have delete host pool permissions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c7817624-29d6-4ad1-ab98-0b13be2b0859",
+              "name": "Not found. Host pool does not exist or does not belong to the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "68e4bc41-ffbf-42c7-b540-fad50f296cf8",
+              "name": "Conflict. Host creation or another host-pool job is already in progress.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "49bb4e1e-0285-4a36-8ee4-ea2908a6ce08",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b392f5e5-c655-49cf-b007-9394e7201271",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "host-pools",
+                    ":hostPoolId",
+                    "deletion"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "hostPoolId",
+                      "description": "(Required) The unique identifier of the host pool to hard-delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 7940,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/daas-iq/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "092285fd-aa40-47da-bad0-31eb385fc579",
+    "name": "DaaS IQ Host pools API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)\n\n🔒 **Authentication**\n\nThis API supports two authentication methods:\n\n**1. API Key (Bearer Token)** - Recommended for programmatic access\n- Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)\n- Include in requests: `Authorization: Bearer YOUR_API_KEY`\n\n**2. Cookie Authentication** - For browser-based access\n- Login via DEX authentication service\n- The `user_dex_token` cookie will be automatically included\n\nContact Support:\n Name: ControlUp Support\n Email: support@controlup.com",
+      "type": "text/plain"
+    }
+  }
+}

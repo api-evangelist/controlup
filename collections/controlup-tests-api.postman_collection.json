@@ -1,0 +1,362 @@
+{
+  "item": [
+    {
+      "id": "bc004e3e-48e2-4950-910b-01a0bcdb269a",
+      "name": "Tests",
+      "description": {
+        "content": "The output of the scout tests",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4a7ae11a-04e9-4b8f-8d1d-d2e84bd45d5b",
+          "name": "List tests",
+          "request": {
+            "name": "List tests",
+            "description": {
+              "content": "Returns a list of test, containing the the details and results of each tests. The tests are grouped by their Scouts, with the earliest tests appearing first in each group.\n\nBy default, all tests from all Scouts in the last 24 hours are returned.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tests"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<dateTime>",
+                  "description": "Only return tests initiated after this time."
+                },
+                {
+                  "disabled": false,
+                  "key": "end",
+                  "value": "<dateTime>",
+                  "description": "Only return tests initiated before this time. You must specify a `start` time to use this parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "scoutId",
+                  "value": "<integer>,<integer>",
+                  "description": "Only return tests from the Scouts specified by these Scout IDs."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Filter the list based on the status of the tests."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "The page of tests returned. Each page contains up to 100 tests. If your request returns more than 100 tests, then the response is paginated."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "7919ced2-f001-4dbb-8cbd-77dc61834db9",
+              "name": "A list of tests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    },
+                    {
+                      "key": "scoutId",
+                      "value": "1,2"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {},\n  \"current_page\": 671,\n  \"total_pages\": 8352,\n  \"total_per_page\": 100,\n  \"success\": true,\n  \"total\": 1537\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f4ccb175-a74f-4a7b-8667-5f5a4ad41ab1",
+              "name": "Sent data has errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    },
+                    {
+                      "key": "scoutId",
+                      "value": "1,2"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"name\": [\n      \"Missing required data.\"\n    ],\n    \"period\": [\n      \"Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8622d24-dfb5-4653-b814-bd0b45a58bf8",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    },
+                    {
+                      "key": "scoutId",
+                      "value": "1,2"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "89b832e6-1adf-44e2-a947-29789ad966d4",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    },
+                    {
+                      "key": "scoutId",
+                      "value": "1,2"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/synthetic-monitoring/v2/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "5c4ce303-c1fd-4b8e-9bf1-96a838d8587d",
+    "name": "Synthetic Monitoring Tests API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The output of the scout tests",
+      "type": "text/plain"
+    }
+  }
+}

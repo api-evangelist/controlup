@@ -1,0 +1,260 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Controlup Users API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get current user information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/users/user-info",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the calling user's identity, organization context, and permissions, read from the bearer token's claims.\nAnswers \"who am I\" and \"which organization am I in\"; it takes no user ID and cannot look anyone else up."
+        },
+        {
+          "info": {
+            "name": "List all users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/organizations/:orgId/users",
+            "params": [
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page of results to return.\nThe first page is page number 1."
+              },
+              {
+                "name": "_limit",
+                "value": "10",
+                "type": "query",
+                "description": "The number of results returned per page."
+              },
+              {
+                "name": "_sortBy",
+                "value": "id",
+                "type": "query",
+                "description": "Sorts results according to the specified field."
+              },
+              {
+                "name": "_order",
+                "value": "asc",
+                "type": "query",
+                "description": "The sort order (ascending / descending) of the field specified by the `_sortBy` parameter."
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "A search filter that is applied to all fields.\nOnly results that contain the specified string are returned."
+              },
+              {
+                "name": "_include",
+                "value": "",
+                "type": "query",
+                "description": "Include additional information about related resources in the results."
+              },
+              {
+                "name": "_format",
+                "value": "json",
+                "type": "query",
+                "description": "The format of returned results."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "phone",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `phone` field."
+              },
+              {
+                "name": "fullName",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `fullName` field."
+              },
+              {
+                "name": "lastName",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `lastName` field."
+              },
+              {
+                "name": "firstName",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `firstName` field."
+              },
+              {
+                "name": "email",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `email` field."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `id` field."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of all users in your ControlUp organization, including users with a pending invitation."
+        },
+        {
+          "info": {
+            "name": "Retrieve a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/organizations/:orgId/users/:id",
+            "params": [
+              {
+                "name": "_format",
+                "value": "json",
+                "type": "query",
+                "description": "The format of returned results."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user to retrieve.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns details of a user."
+        },
+        {
+          "info": {
+            "name": "Update a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/daas-iq/v1/organizations/:orgId/users/:id",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user to update.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates a user by its ID. Any parameters not passed are not changed."
+        },
+        {
+          "info": {
+            "name": "Delete a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/organizations/:orgId/users/:id",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes a user by its ID from the organization."
+        },
+        {
+          "info": {
+            "name": "Revoke a user’s API keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/organizations/:orgId/users/:id/revoke-api-keys",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user to delete.\nYou can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Revokes all API keys created by the specified user in the organization.\nRevoked API keys can no longer be used to access any data."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,130 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Dex SAML API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "SAML",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get SAML configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/saml",
+            "params": [
+              {
+                "name": "_format",
+                "value": "json",
+                "type": "query",
+                "description": "The format of returned results."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns your currently saved SAML configuration."
+        },
+        {
+          "info": {
+            "name": "Create SAML settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/saml",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Replaces your current SAML configuration by setting the values of the parameters passed.\nAny existing SAML configuration is overwritten."
+        },
+        {
+          "info": {
+            "name": "Update SAML settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/saml",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates your current SAML configuration by setting the values of the parameters passed.\nAny parameters not passed are not changed."
+        },
+        {
+          "info": {
+            "name": "Create SAML settings from IdP integration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/saml/:idpName",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "idpName",
+                "value": "",
+                "type": "path",
+                "description": "The IdP to use for SAML SSO."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Automatically configures SAML SSO based on an existing integration with Entra ID. Any existing SAML configuration is overwritten.\nTo use this endpoint, you must have already created an integration with Entra ID with the permissions required to configure Entra ID SAML settings.\nUse this endpoint as a shortcut so that you don't have to manually set up SAML SSO. [Learn more](https://support.controlup.com/docs/automatically-configure-saml-using-an-idp-integration)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

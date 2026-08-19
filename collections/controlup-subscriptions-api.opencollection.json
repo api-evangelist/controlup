@@ -1,0 +1,1153 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Subscriptions API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Subscriptions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verify subscription credentials (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/credentials/verify",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify to verify tenant credentials instead.\n            Verifies cloud provider credentials and permissions synchronously. Check the IsSuccess field to determine if credentials are valid."
+        },
+        {
+          "info": {
+            "name": "Verify subscription credentials - transcript (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/credentials/verify/transcript",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify/transcript instead.\n            Verifies the connection and permissions with formatted output lines. Check IsSuccess field for result."
+        },
+        {
+          "info": {
+            "name": "Verify subscription credentials - streaming (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/credentials/verify/stream",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique cloud subscription identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Streams real-time cloud credentials verification progress over a WebSocket connection using structured JSON messages.\nAll messages are serialized as JSON with camelCase property names and inherit from ControlUp.Foundry.Domain.Models.Verification.Messages.VerificationMessage.\n            \n**Message Types (see Domain.Models.Verification.Messages namespace):**\n- ControlUp.Foundry.Domain.Models.Verification.Messages.VerificationStartedMessage: Verification process begins\n  - Properties: `type`, `tim"
+        },
+        {
+          "info": {
+            "name": "Verify subscription credentials - streaming (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/credentials/verify/sse",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "**DEPRECATED:** Use tenant-based credential verification endpoints instead.\nSSE replacement for the WebSocket `/verify/stream` endpoint. Same message format, simpler protocol."
+        },
+        {
+          "info": {
+            "name": "Get available regions for a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/metadata/regions",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription ID."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\ndisplayName, geography, isPhysical, name, regionalDisplayName, regionCategory"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ndisplayName, geography, isPhysical, name, regionalDisplayName, regionCategory\n\nDefault when omitted: displayName:asc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the regions the subscription can deploy into, paginated, filterable and sortable.\nRegion identity and display names only — availability zones are omitted here and available per region from the single-region lookup."
+        },
+        {
+          "info": {
+            "name": "Get region metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/metadata/regions/:region",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription ID."
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "path",
+                "description": "Region code."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one named region's metadata in the subscription's context, including the availability zones that the region list omits.\nDescribes a single region rather than enumerating which regions are available."
+        },
+        {
+          "info": {
+            "name": "Get available VM sizes for a region with filtering, sorting, and pagination support",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/metadata/vm-sizes",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription ID."
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "query",
+                "description": "Azure region/location (e.g., \"eastus\", \"westeurope\").\nRequired."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\ncores, cpuArchitectureType, displayName, family, isRestricted, localStorageBytes, maxDataDisks, maxIops, maxNetworkInterfaces, memoryBytes, name, osDiskSizeBytes, size, supportsAcceleratedNetworking, supportsDiskControllerNVMe, supportsDiskControllerSCSI, supportsEphemeralOSDisk, supportsHyperVGenerationV1, supportsHyperVGenerationV2, supportsPremiumStorage, supportsTrustedLaunch, tier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncores, cpuArchitectureType, displayName, family, isRestricted, localStorageBytes, maxDataDisks, maxIops, maxNetworkInterfaces, memoryBytes, name, osDiskSizeBytes, size, supportsAcceleratedNetworking, supportsDiskControllerNVMe, supportsDiskControllerSCSI, supportsEphemeralOSDisk, supportsHyperVGenerationV1, supportsHyperVGenerationV2, supportsPremiumStorage, supportsTrustedLaunch, tier\n\nDefault when omitted: name:asc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the VM SKUs offered in a region with full specifications: CPU count, memory, disk limits, IOPS, and capability flags.\nDescribes what each SKU is capable of, not whether the subscription has quota left to deploy one.\nSupports filtering, sorting, and pagination for large result sets."
+        },
+        {
+          "info": {
+            "name": "Get available OS disk size options for a region",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/metadata/os-disks",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription ID."
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "query",
+                "description": "Azure region/location (e.g., \"eastus\", \"westeurope\").\nRequired."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\nmaxSizeBytes, minSizeBytes, size, tier, type, typeDisplayName"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nmaxSizeBytes, minSizeBytes, size, tier, type, typeDisplayName\n\nDefault when omitted: size:asc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a flat, paged list of the OS disk size options offered for the subscription and region,\noptionally narrowed to an availability zone.\nDisk sizing choices only — not VM compute specifications, and not the subscription's remaining quota."
+        },
+        {
+          "info": {
+            "name": "Get compute quota usage for a region",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/metadata/compute-quota",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription ID."
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "query",
+                "description": "Azure region/location (e.g., \"eastus\", \"westeurope\").\nRequired."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\ncurrentUsage, displayName, limit, name"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncurrentUsage, displayName, limit, name\n\nDefault when omitted: name:asc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns current vCPU quota usage and limits for the subscription in a region, per VM family\n(for example standardDSv3Family) plus the total regional quota.\nAnswers whether there is headroom to deploy, which the VM size catalog cannot; compare against a SKU's family and core count.\nSupports filtering, sorting, and pagination, and is cached server-side for 5 minutes, so very recent deployments may not be reflected.\n            \nUseful filter examples:\n- Families with active usage: filter=gt(curren"
+        },
+        {
+          "info": {
+            "name": "Check host pool create permissions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/preflight/permissions/host-pool-create",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription ID."
+              },
+              {
+                "name": "workspaceResourceId",
+                "value": "",
+                "type": "query",
+                "description": "ARM resource ID of the workspace that will be linked to the application group.\nWorkspace permissions are evaluated at this exact scope (inherited grants included).\nMust belong to the selected subscription."
+              },
+              {
+                "name": "resourceGroupName",
+                "value": "",
+                "type": "query",
+                "description": "Existing Azure resource group the operation deploys into: the control-plane resource\ngroup for host pool creation, the VM deployment resource group for session host creation."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Advisory check that the subscription's service principal can create AVD control-plane\nresources: host pool, application group, and workspace update. Covers the control-plane\nportion of the Create Host Pool wizard (POST host-pool-deployments); when initial session\nhosts will also be created, additionally call the session host create pre-flight.\n            \nEach required permission is evaluated at exactly the scope the create flow exercises it\nagainst (inherited grants from resource group, subscr"
+        },
+        {
+          "info": {
+            "name": "Check session host create permissions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/preflight/permissions/session-host-create",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription ID."
+              },
+              {
+                "name": "hostPoolResourceGroupName",
+                "value": "",
+                "type": "query",
+                "description": "Control-plane resource group containing the host pool. Host pool permissions\n(registration-token generation) are evaluated at this scope — relevant when the host\npool lives in a different resource group than the session host VMs."
+              },
+              {
+                "name": "subnetResourceId",
+                "value": "",
+                "type": "query",
+                "description": "ARM resource ID of the subnet session host NICs will join.\nNetwork join permissions are evaluated at this exact scope (inherited grants included).\nMust belong to the selected subscription."
+              },
+              {
+                "name": "imageVersionResourceId",
+                "value": "",
+                "type": "query",
+                "description": "ARM resource ID of the gallery image version used for session host VMs.\nGallery read permissions are evaluated at the image version and its parent image\ndefinition. May belong to a different subscription (shared image galleries)."
+              },
+              {
+                "name": "resourceGroupName",
+                "value": "",
+                "type": "query",
+                "description": "Existing Azure resource group the operation deploys into: the control-plane resource\ngroup for host pool creation, the VM deployment resource group for session host creation."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Advisory check that the subscription's service principal can provision session host VMs:\nVM, NIC, and disk creation, VM extensions, run commands, subnet join, gallery image read,\nand host pool registration-token generation. Covers three flows: initial session hosts at\nhost pool creation (host count greater than zero), POST session-host-deployments, and\nautoscale scale-out.\n            \nEach required permission is evaluated at exactly the scope the provisioning flow exercises\nit against (inherite"
+        },
+        {
+          "info": {
+            "name": "Lookup virtual networks in a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/lookup/resources/virtual-networks",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Queries Azure for virtual networks in the subscription, to choose where session hosts will be placed."
+        },
+        {
+          "info": {
+            "name": "Lookup virtual machines in a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/lookup/resources/virtual-machines",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\ngeneration, id, isAlreadyManaged, location, name, osType, powerState, resourceGroup, subnetId, subscriptionId, type, vmSize, vnetId"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ngeneration, id, isAlreadyManaged, location, name, osType, powerState, resourceGroup, subnetId, subscriptionId, tags, type, vmSize, vnetId\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Queries Azure for virtual machines in the subscription, to pick an existing VM to promote to a Master Image.\nLists VMs whether or not DaaS IQ manages them."
+        },
+        {
+          "info": {
+            "name": "Lookup Azure Compute Galleries in a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/lookup/resources/galleries",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Queries Azure for Compute Galleries — the containers holding image definitions and their versions.\nTop level of the gallery hierarchy: the galleries themselves, not the images inside them."
+        },
+        {
+          "info": {
+            "name": "Lookup Azure resource groups in a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/lookup/resource-groups",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Queries Azure for resource groups in the subscription, to choose where new resources will be created.\nThe containers themselves, not the resources they hold."
+        },
+        {
+          "info": {
+            "name": "Lookup AVD workspaces in a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/lookup/resources/workspaces",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Queries Azure for AVD workspaces — the object that publishes application groups to users.\nNot host pools: a workspace holds no session hosts and reaches pools only via its application groups."
+        },
+        {
+          "info": {
+            "name": "Lookup Azure Managed Images in a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/lookup/resources/managed-images",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\ncpuArchitectureType, hyperVGeneration, id, isAlreadyManaged, location, name, osDiskSizeGiB, osState, osType, resourceGroup, subscriptionId, type"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncpuArchitectureType, hyperVGeneration, id, isAlreadyManaged, location, name, osDiskSizeGiB, osState, osType, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Queries Azure for standalone Managed Images (Microsoft.Compute/images), with HyperV generation, OS state, and disk size.\nUnversioned artifacts living outside any compute gallery, so a different resource type from gallery images.\nOnly Gen 2 generalized images are usable as a Master Image source."
+        },
+        {
+          "info": {
+            "name": "Lookup gallery images in a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/lookup/resources/gallery-images",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\ncpuArchitectureType, galleryId, galleryName, hasVersion, hyperVGeneration, id, imageSourceType, isAlreadyManaged, location, name, offer, osState, osType, publisher, recommendedCoresMax, recommendedCoresMin, recommendedMemoryMax, recommendedMemoryMin, resourceGroup, securityType, sku, subscriptionId, type, version"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncpuArchitectureType, galleryId, galleryName, hasVersion, hyperVGeneration, id, imageSourceType, isAlreadyManaged, location, name, offer, osState, osType, publisher, recommendedCoresMax, recommendedCoresMin, recommendedMemoryMax, recommendedMemoryMaxBytes, recommendedMemoryMin, recommendedMemoryMinBytes, resourceGroup, securityType, sku, subscriptionId, tags, type, version\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Queries Azure for gallery image definitions — the named images inside a compute gallery.\nMiddle level of the gallery hierarchy: a definition is not deployable, since deployment targets a version."
+        },
+        {
+          "info": {
+            "name": "Lookup gallery image versions in a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:subscriptionId/lookup/resources/gallery-image-versions",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\ngalleryId, galleryName, id, imageDefinitionId, imageDefinitionName, isAlreadyManaged, location, name, osDiskSizeInGb, resourceGroup, storageAccountType, subscriptionId, type"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ngalleryId, galleryName, id, imageDefinitionId, imageDefinitionName, isAlreadyManaged, location, name, osDiskSizeBytes, osDiskSizeInGb, resourceGroup, storageAccountType, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Queries Azure for published versions of gallery image definitions.\nLeaf level of the gallery hierarchy, and the one to pick when a deployment needs a concrete artifact."
+        },
+        {
+          "info": {
+            "name": "Discover resources in a subscription (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/resources/discover",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              },
+              {
+                "name": "types",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of resource types to discover (e.g., \"HostPool\", \"HostPool,Image\")."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncpuArchitectureType, galleryId, galleryName, generation, hasVersion, hostPoolType, hyperVGeneration, id, imageDefinitionId, imageDefinitionName, imageSourceType, isAlreadyManaged, location, name, offer, osDiskSizeBytes, osDiskSizeGiB, osDiskSizeInGb, osState, osType, powerState, publisher, recommendedCoresMax, recommendedCoresMin, recommendedMemoryMax, recommendedMemoryMaxBytes, recommendedMemoryMin, recommendedMemoryMinBytes, resourceGroup, securityType, sku, storageAccountType, subnetId, subscriptionId, tags, type, version, vmSize, vnetId\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover to discover resources via tenant instead.\n            Queries the cloud provider to retrieve resource metadata with pagination and sorting support.\n            Supports multiple resource types in a single request. Returns base CloudResourceDto without type-specific properties."
+        },
+        {
+          "info": {
+            "name": "Discover host pools in a subscription (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/resources/discover/hostpools",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\nhostPoolType, id, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nhostPoolType, id, isAlreadyManaged, location, name, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover/hostpools to discover host pools via tenant instead.\n            Queries Azure to retrieve host pool metadata with pagination, sorting, and filtering support.\n            Returns type-specific properties including host pool type, load balancer configuration, and session limits."
+        },
+        {
+          "info": {
+            "name": "Discover images in a subscription (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/resources/discover/images",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncpuArchitectureType, hyperVGeneration, id, isAlreadyManaged, location, name, osDiskSizeGiB, osState, osType, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover/images to discover images via tenant instead.\n            Queries Azure to retrieve image metadata with pagination and sorting support.\n            Returns type-specific properties including source type (Managed/SharedImageGallery), OS type, and disk information."
+        },
+        {
+          "info": {
+            "name": "Import cloud resources (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/resources/import",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants/{tenantId}/resources/import to import resources via tenant instead.\n            Creates a long-running background job to gather and import resource data from cloud providers.\n            Only one import job per subscription can be active at a time. Poll the statusUrl for progress updates."
+        },
+        {
+          "info": {
+            "name": "Get subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query",
+                "description": "Optional. The cloud provider identifier (e.g., \"azure\", \"aws\", \"gcp\")."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns every cloud subscription registered in the organization, optionally narrowed to one provider,\nwith provider identifiers, lifecycle state, and owning tenant.\nRows carry the subscription ID that per-subscription operations require, and describe registration rather than\ncontents: no host pools, no resources, and no live credential health."
+        },
+        {
+          "info": {
+            "name": "Create a subscription (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants to create a tenant with credentials, then link subscriptions.\n            Creates a new cloud subscription with the provided configuration."
+        },
+        {
+          "info": {
+            "name": "Get a subscription by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one subscription in the same shape as a row of the subscription list: provider identifiers,\nlifecycle state, and owning tenant.\nDescribes how the subscription is registered in DaaS IQ, not what it contains or whether its credentials currently work."
+        },
+        {
+          "info": {
+            "name": "Update a subscription (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use PUT /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId} to update tenant credentials.\n            Updates an existing subscription with the provided configuration. Provider changes are only allowed for subscriptions in Draft state."
+        },
+        {
+          "info": {
+            "name": "Rotate subscription credentials (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use PATCH /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId} to rotate tenant credentials.\n            Rotates the secrets/credentials for an existing subscription."
+        },
+        {
+          "info": {
+            "name": "Delete a subscription (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use DELETE /api/v1/cloud/tenants/{tenantId} to delete a tenant and its subscriptions.\n            Deletes a cloud subscription and all associated resources."
+        },
+        {
+          "info": {
+            "name": "Get subscription status (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/status",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use GET /api/v1/cloud/tenants/{tenantId}/status to get tenant status instead.\n            Returns the current status of a subscription including health and verification details."
+        },
+        {
+          "info": {
+            "name": "Refresh subscription status (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/subscriptions/:id/status/refresh",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique subscription identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants/{tenantId}/status/refresh to refresh tenant status instead.\n            Refreshes the subscription status by verifying its connection and credentials. Check the Status field for the current health."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,226 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ControlUp for Desktops Data API",
+    "version": "2.159.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Data",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all data indices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/data",
+            "params": [
+              {
+                "name": "collapse",
+                "value": "",
+                "type": "query",
+                "description": "Sets whether to collapse weekly data inidices into a single data index. By default, data indices are split into smaller weekly indices so that they are easier to manage. For example, the data index _highresourceprocs_20223400 contains data from the 34th week of 2022 (in UTC)."
+              },
+              {
+                "name": "include_devices",
+                "value": "",
+                "type": "query",
+                "description": "Sets whether to return information about the _devices data index. This is the data index with the columns in the device details grid in the UI."
+              }
+            ]
+          },
+          "docs": "Returns a list of all data indices, along with the size and number of rows in each index."
+        },
+        {
+          "info": {
+            "name": "Create a data index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/data",
+            "body": {
+              "type": "form-urlencoded",
+              "data": [
+                {
+                  "name": "index",
+                  "value": ""
+                },
+                {
+                  "name": "payload",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Creates a new data index."
+        },
+        {
+          "info": {
+            "name": "Get a data index",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/data/:index_name",
+            "params": [
+              {
+                "name": "index_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the index to retrieve."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page. The maximum is 10000 rows per page. Read the endpoint description to learn more about the 10000 row limitation."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. The number of rows per page is set with the `size` parameter."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+              },
+              {
+                "name": "export",
+                "value": "",
+                "type": "query",
+                "description": "Sets whether to return the data index without any pagination, up to 65536 rows or your license count (whichever is greater). You must also use `_source` to specify which fields (columns) to return. `size`, `page`, and `from` parameters will be ignored if true."
+              },
+              {
+                "name": "_source[0]",
+                "value": "",
+                "type": "query",
+                "description": "If `export`=true, then this parameter sets which field of the data index to return. You can return multiple fields by sending more query parameters and changing the integer in the parameter name (for example, `_source[0]=_device_name&_source[1]=username`)."
+              },
+              {
+                "name": "filters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+              },
+              {
+                "name": "filters[0][type]",
+                "value": "",
+                "type": "query",
+                "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+              },
+              {
+                "name": "filters[0][value]",
+                "value": "",
+                "type": "query",
+                "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+              },
+              {
+                "name": "sorters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+              },
+              {
+                "name": "sorters[0][dir]",
+                "value": "",
+                "type": "query",
+                "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+              }
+            ]
+          },
+          "docs": "Retrieves the contents of a data index.\n\nStandard requests can return a maximum of 10000 rows across all pages. For example, if page 1 has 7000 rows, page 2 will be cut off at 3000 rows regardless of the number of rows in the dataset. If you need more rows, set `export`=`true` and use `_source` to specify which fields to include in the export. This method returns up to 65536 rows, or your license count (whichever is greater).\n"
+        },
+        {
+          "info": {
+            "name": "Get data index mappings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/data/:index_name/mappings",
+            "params": [
+              {
+                "name": "index_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the data index."
+              }
+            ]
+          },
+          "docs": "Retrieves the fields within a data index, including the data type of each field."
+        },
+        {
+          "info": {
+            "name": "Retrieve a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/data/:index_name/:documentID",
+            "params": [
+              {
+                "name": "index_name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the data index that contains the document."
+              },
+              {
+                "name": "documentID",
+                "value": "",
+                "type": "path",
+                "description": "ID of the document to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieves a document within a data index by its ID."
+        },
+        {
+          "info": {
+            "name": "List all custom reports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/data/views"
+          },
+          "docs": "Returns a list of custom reports, including the configuration details of each report."
+        },
+        {
+          "info": {
+            "name": "Get a custom report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/data/views/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the custom report to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieves the configuration details of a custom report by it's ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

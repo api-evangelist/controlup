@@ -1,0 +1,237 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Dex Tags API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tags",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/tags",
+            "params": [
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page of results to return.\nThe first page is page number 1."
+              },
+              {
+                "name": "_limit",
+                "value": "10",
+                "type": "query",
+                "description": "The number of results returned per page."
+              },
+              {
+                "name": "_sortBy",
+                "value": "id",
+                "type": "query",
+                "description": "Sorts results according to the specified field."
+              },
+              {
+                "name": "_order",
+                "value": "asc",
+                "type": "query",
+                "description": "The sort order (ascending / descending) of the field specified by the `_sortBy` parameter."
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "A search filter that is applied to all fields.\nOnly results that contain the specified string are returned."
+              },
+              {
+                "name": "_format",
+                "value": "json",
+                "type": "query",
+                "description": "The format of returned results."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `key` field."
+              },
+              {
+                "name": "key_op",
+                "value": "",
+                "type": "query",
+                "description": "The operator to use for the `key` filter."
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `description` field."
+              },
+              {
+                "name": "description_op",
+                "value": "",
+                "type": "query",
+                "description": "The operator to use for the `description` filter."
+              },
+              {
+                "name": "value_label",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the tag value labels."
+              },
+              {
+                "name": "value_label_op",
+                "value": "",
+                "type": "query",
+                "description": "The operator to use for the `value_label` filter."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of all tags in your organization."
+        },
+        {
+          "info": {
+            "name": "Create a tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/tags",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new tag in your organization."
+        },
+        {
+          "info": {
+            "name": "Retrieve a tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/tags/:id",
+            "params": [
+              {
+                "name": "_format",
+                "value": "json",
+                "type": "query",
+                "description": "The format of returned results."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the tag to retrieve. You can use [GET /tags](orgtagspubliccontroller_getall) to see the ID of each tag."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns details of a tag."
+        },
+        {
+          "info": {
+            "name": "Update a tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/tags/:id",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the tag to update. You can use [GET /tags](orgtagspubliccontroller_getall) to see the ID of each tag."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates an existing tag by its ID. Any parameters not passed are not changed."
+        },
+        {
+          "info": {
+            "name": "Delete a tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/tags/:id",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the tag to delete. You can use [GET /tags](orgtagspubliccontroller_getall) to see the ID of each tag."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes a tag by its ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

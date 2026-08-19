@@ -1,0 +1,128 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VDI & DaaS Configuration Triggers API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Triggers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List triggers for the authenticated organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/vdi/config/v1/Triggers",
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets the page number for pagination (1-based)."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets the number of items per page."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets the field to sort results by."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets the sort direction."
+              },
+              {
+                "name": "enabled",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets a filter by enabled status. Omit to return both enabled and disabled triggers."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets a filter by trigger type."
+              },
+              {
+                "name": "entityType",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets a filter by entity type (e.g. Computers, Sessions)."
+              },
+              {
+                "name": "isCommon",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets a filter by whether the trigger is a built-in (common) trigger. Set to false to return only custom triggers."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets a filter by name. Filter triggers whose name contains the given string. Case-insensitive. Maximum 200 characters."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets optional expansions. 'scope' adds scopeSummary (included/excluded counts) to each trigger item. 'summary' adds top-level aggregate counts by type, enabled status, and common/custom. Can be combined: include=scope&include=summary or include=scope,summary."
+              },
+              {
+                "name": "machine",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets a filter by machine FQDN or hostname. Cannot be combined with 'folder'. Required when using scopeMatch, resolvedMachines, or perMachine includes. Maximum 512 characters."
+              },
+              {
+                "name": "folder",
+                "value": "",
+                "type": "query",
+                "description": "Gets or sets a filter by folder path. Cannot be combined with 'machine'. Maximum 1024 characters."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of triggers. Supports filtering, sorting, and optional scope-based lookups via the machine or folder parameters.\n            \nWhen include=perMachine is specified, the response data array changes shape: instead of trigger items it returns\nper-machine groups. The machine or folder parameter is required in that case.\n            \nError codes returned in the errorCode field: scope_params_conflict (both machine and folder specified),\nscope_params_required (include token requ"
+        },
+        {
+          "info": {
+            "name": "Get full details for a single trigger.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/vdi/config/v1/Triggers/:triggerId",
+            "params": [
+              {
+                "name": "triggerId",
+                "value": "",
+                "type": "path",
+                "description": "Trigger GUID."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of sections to include: actions, scope, filter, schedule, typeSettings. Omit or leave empty to include all."
+              }
+            ]
+          },
+          "docs": "Get full details for a single trigger."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

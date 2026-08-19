@@ -1,0 +1,155 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Dex Organizations API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Organizations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all tenants",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/v1/organizations/:tenantManagerOrgId/tenants",
+            "params": [
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page of results to return.\nThe first page is page number 1."
+              },
+              {
+                "name": "_limit",
+                "value": "10",
+                "type": "query",
+                "description": "The number of results returned per page."
+              },
+              {
+                "name": "_sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Sort by this field. Use \"id\" for organization_id."
+              },
+              {
+                "name": "_order",
+                "value": "asc",
+                "type": "query",
+                "description": "Sort order: \"asc\" or \"desc\"."
+              },
+              {
+                "name": "tenantManagerOrgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Tenant Manager organization."
+              },
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by tenant organization ID. Only the tenant with this ID is returned (exact match)."
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by account ID. Only organizations belonging to this account are returned."
+              },
+              {
+                "name": "name",
+                "value": "Acme",
+                "type": "query",
+                "description": "Filter by organization name (case-insensitive partial match)."
+              },
+              {
+                "name": "connection_type",
+                "value": "",
+                "type": "query",
+                "description": "Filter by connection type: \"direct\" (same account) or \"linked\" (from another account)."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by organization status: \"active\" (enabled) or \"inactive\" (disabled)."
+              },
+              {
+                "name": "prospect",
+                "value": "false",
+                "type": "query",
+                "description": "Filter by prospect: only prospects (true) or only non-prospects (false)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a paginated list of tenants (organizations) under the Tenant Manager.\nOnly Tenant Manager admins with \"Manage Settings\" permission can access this endpoint."
+        },
+        {
+          "info": {
+            "name": "Create a tenant organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/v1/organizations/:tenantManagerOrgId/tenants",
+            "params": [
+              {
+                "name": "tenantManagerOrgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Tenant Manager organization."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new tenant organization under the Tenant Manager organization.\nThis endpoint is relevant only if you are an MSP."
+        },
+        {
+          "info": {
+            "name": "Copy Desktops data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/v1/organizations/:tenantManagerOrgId/tenants/copy-edge-data",
+            "params": [
+              {
+                "name": "tenantManagerOrgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Tenant Manager organization."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Copies ControlUp for Desktops scripts, alerts, and dashboards from a source organization to a target organization.\nExisting scripts, alerts, or dashboards in the target organization are not deleted.\nThis endpoint is relevant only if you are an MSP and both organizations are licensed for ControlUp for Desktops.\nThe copy process runs asynchronously and sends a notification to the email address associated with the API key when complete."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

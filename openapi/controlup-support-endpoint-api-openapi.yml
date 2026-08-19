@@ -1,0 +1,181 @@
+openapi: 3.2.0
+info:
+  title: VDI & DAAS Support endpoint API
+  version: 1.0.0
+  description: Provides an additional information about customer's data
+servers:
+- url: https://api.controlup.com/historical
+security:
+- bearer-jwt:
+  - read
+  - write
+tags:
+- name: Support endpoint
+  description: Provides an additional information about customer's data
+paths:
+  /v1/uploadstartstatus:
+    get:
+      tags:
+      - Support endpoint
+      summary: Start upload date
+      description: Returns date when the first historical data upload was started
+      operationId: getStartUploadDate
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadStartDate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UploadStartDate'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+components:
+  schemas:
+    UploadStartDate:
+      type: object
+      properties:
+        startDate:
+          type: string
+        timeZone:
+          type: string
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false
+  explorer-enabled: true
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

@@ -1,0 +1,59 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Host pool user sessions API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Host pool user sessions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get user sessions for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/user-sessions",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort specification string.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nactiveDirectoryUserName, applicationType, currentStateDuration, currentStateStartTime, id, sessionDuration, sessionEndTime, sessionHostId, sessionHostName, sessionHostNameAlias, sessionName, sessionNumericAlias, sessionStartTime, sessionState, userPrincipalName\n\nDefault when omitted: sessionStartTime:desc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the people currently logged in to the pool — one row per user session, across all of its session hosts.\nIn Azure AVD this includes Active, Pending, and Disconnected sessions: any session where the user has not logged off.\nDescribes the occupants, not the machines they are running on."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

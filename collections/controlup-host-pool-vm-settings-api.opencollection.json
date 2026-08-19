@@ -1,0 +1,118 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Host pool VM settings API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Host pool VM settings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get VM settings for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/vm-settings",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "Host pool identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the template used when adding new session hosts to the pool: deployment region and resource group,\nprimary and alternative VM size, source image and version, OS disk size, and virtual network.\nPassword fields return placeholders, never plaintext.\nDescribes hosts that would be created, not hosts that exist."
+        },
+        {
+          "info": {
+            "name": "Create or replace VM settings for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/vm-settings",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "Host pool identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Stores the template future session hosts are built from: naming, domain join, image, VM size, disk, and network.\nA full replacement, not a patch — omitted fields are cleared, so send the complete settings every time.\nAdding hosts later reads these saved settings rather than taking them in the request."
+        },
+        {
+          "info": {
+            "name": "Delete VM settings for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/vm-settings",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "Host pool identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Discards the stored template, after which the pool has no settings to build new hosts from until they are saved again.\nAffects the template only: existing session hosts keep running and are not modified or deleted.\nIdempotent — deleting settings that were never configured still succeeds."
+        },
+        {
+          "info": {
+            "name": "Validate VM settings for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/vm-settings/validation",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "Host pool identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Checks a VM settings payload and echoes it back enriched with resolved lookup details, without saving anything.\nSend a body to test settings before committing them; omit the body to re-validate what is already stored.\nA dry run only — use the save operation to persist."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

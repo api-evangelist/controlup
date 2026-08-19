@@ -1,0 +1,3406 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Master images API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Master images
+paths:
+  /cloud/master-images/{id}/actions:
+    post:
+      tags:
+      - Master images
+      summary: Execute an action on a master image
+      description: Creates a background job to perform the action (start, stop). Poll the statusUrl for progress updates.
+      operationId: ExecuteMasterImageAction
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the master image.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The action request containing the action type.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MasterImageActionRequest'
+        required: true
+      responses:
+        '201':
+          description: Action job created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Invalid request parameters or action not applicable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to manage settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Master image does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{id}/rdp:
+    get:
+      tags:
+      - Master images
+      summary: Download an RDP file for a master image
+      description: 'Returns a downloadable .rdp connection descriptor for the master image''s VM, built from its resolvable connection address.
+
+        Returns a file attachment rather than JSON, and only generates the descriptor — it does not start the VM,
+
+        open a session, or supply credentials.'
+      operationId: GetMasterImageRdpFile
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the master image.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: RDP file generated successfully.
+        '400':
+          description: Bad request. Master image has no resolvable connection address.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to manage settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Master image does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/os-families:
+    get:
+      tags:
+      - Master images
+      summary: Get supported OS families for Master Images
+      description: 'Returns the fixed set of operating system families that Azure Virtual Desktop supports, as id and display name.
+
+        A static catalog containing no organization data; the values populate the OS family choice when promoting a VM.'
+      operationId: GetOsFamilies
+      responses:
+        '200':
+          description: Successfully retrieved the list of supported OS families.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OsFamilyDto'
+              example:
+              - value: windows10MultiSession
+                displayName: Windows 10 Enterprise Multi-Session
+              - value: windows10Enterprise
+                displayName: Windows 10 Enterprise
+              - value: windows11MultiSession
+                displayName: Windows 11 Enterprise Multi-Session
+              - value: windows11Enterprise
+                displayName: Windows 11 Enterprise
+              - value: windowsServer2016
+                displayName: Windows Server 2016
+              - value: windowsServer2019
+                displayName: Windows Server 2019
+              - value: windowsServer2022
+                displayName: Windows Server 2022
+              - value: windowsServer2025
+                displayName: Windows Server 2025
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/marketplace-images:
+    get:
+      tags:
+      - Master images
+      summary: Get curated Marketplace images for deployment
+      description: 'Returns the curated catalog of Azure Marketplace OS images that can be deployed as new Master Images,
+
+        all of them Gen 2, Generalized, and TrustedLaunch.
+
+        A static catalog rather than anything the organization owns, and deliberately narrower than the full Azure Marketplace.'
+      operationId: GetMarketplaceImages
+      responses:
+        '200':
+          description: Successfully retrieved the list of marketplace images.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketplaceImageDto'
+              example:
+              - id: win11-multisession-gen2
+                displayName: Windows 11 Enterprise Multi-Session, Gen 2
+                osFamily: windows11MultiSession
+                securityType: trustedLaunch
+                diskControllerTypes:
+                - SCSI
+                publisher: MicrosoftWindowsDesktop
+                offer: windows-11
+                sku: win11-24h2-avd
+                version: latest
+              - id: server-2022-gen2
+                displayName: Windows Server 2022, Gen 2
+                osFamily: windowsServer2022
+                securityType: trustedLaunch
+                diskControllerTypes:
+                - SCSI
+                publisher: MicrosoftWindowsServer
+                offer: WindowsServer
+                sku: 2022-datacenter-g2
+                version: latest
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images:
+    get:
+      tags:
+      - Master images
+      summary: List Master Images
+      description: 'Returns one row per managed Master Image in the organization, paginated and sorted, each with status, power state,
+
+        OS family and version, source type, region, gallery wiring, and latest published version.
+
+        No version history and no indication of which operations are currently running.'
+      operationId: ListMasterImages
+      parameters:
+      - name: sort
+        in: query
+        description: 'Sort expression.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          createdAt, lastUpdated, latestPublishedVersion, latestVersion, name, osFamily, osVersion, region, sourceType, status
+
+
+          Default when omitted: lastUpdated:desc.'
+        schema:
+          maxLength: 256
+          type: string
+          example: name:asc,lastUpdated:desc
+        examples:
+          default:
+            summary: default
+            value: lastUpdated:desc
+        x-foundry-sort:
+          fields:
+          - createdAt
+          - lastUpdated
+          - latestPublishedVersion
+          - latestVersion
+          - name
+          - osFamily
+          - osVersion
+          - region
+          - sourceType
+          - status
+          dynamicPaths: false
+          defaultField: lastUpdated
+          defaultAscending: false
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved Master Images.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImageDtoPagedResultDto'
+              example:
+                items:
+                - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                  name: Finance-Gold-Master
+                  description: Q1 2026 Base Image
+                  osFamily: windows11MultiSession
+                  osVersion: 23H2
+                  status: ready
+                  powerState: unknown
+                  sourceType: promotedVm
+                  region: eastus
+                  vmResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/virtualMachines/vm-finance-gold
+                  subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+                  subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                  acgDefinitionResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Compute/galleries/ControlUp_DaaS_Gallery/images/Finance-Gold-Master
+                  latestVersion: 1.0.4
+                  latestPublishedVersion: 1.0.3
+                  targetRegions:
+                  - eastus
+                  - westeurope
+                  createdBy: ''
+                  createdAt: '0001-01-01T00:00:00'
+                  lastUpdated: '2026-03-10T22:14:14Z'
+                - id: 493d4e21-85b2-41dd-b580-b1c95bf91968
+                  name: Win11-HR-Master
+                  description: HR department base image
+                  osFamily: windows11MultiSession
+                  osVersion: 23H2
+                  status: deploying
+                  powerState: unknown
+                  sourceType: deployedFromGallery
+                  region: eastus2
+                  vmResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Compute/virtualMachines/win11-hr-master
+                  subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+                  subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Network/virtualNetworks/vnet-prod/subnets/avd-hosts
+                  acgDefinitionResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/Win11-HR-Master
+                  latestVersion: 1.0.0
+                  latestPublishedVersion: 1.0.0
+                  targetRegions:
+                  - eastus2
+                  createdBy: ''
+                  createdAt: '0001-01-01T00:00:00'
+                  lastUpdated: '2026-03-10T22:11:18Z'
+                - id: c3d4e5f6-a1b2-7890-abcd-ef9876543210
+                  name: Win10-Legacy-Master
+                  osFamily: windows10MultiSession
+                  osVersion: 22H2
+                  status: error
+                  statusMessage: VM not found in Azure (deleted externally)
+                  powerState: unknown
+                  sourceType: promotedVm
+                  region: westus2
+                  vmResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/virtualMachines/vm-legacy-gold
+                  subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+                  targetRegions: []
+                  createdBy: ''
+                  createdAt: '0001-01-01T00:00:00'
+                  lastUpdated: '2026-03-12T14:30:00Z'
+                - id: d4e5f6a1-b2c3-7890-abcd-ef0123456789
+                  name: Orphaned-Gold-Master
+                  description: Image whose owning subscription was removed
+                  osFamily: windows11MultiSession
+                  osVersion: 23H2
+                  status: error
+                  statusMessage: The owning subscription was removed. Reimport the subscription to restore management of this image.
+                  powerState: unknown
+                  sourceType: promotedVm
+                  region: eastus
+                  vmResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/virtualMachines/vm-orphaned-gold
+                  subscriptionId: 4f1d9b6a-3c2e-4d8a-9f7b-2a1c0e5d4b3a
+                  targetRegions: []
+                  createdBy: admin@contoso.com
+                  createdAt: '2026-02-20T09:00:00Z'
+                  lastUpdated: '2026-03-12T14:30:00Z'
+                page: 1
+                pageSize: 25
+                count: 4
+                hasMore: false
+                totalCount: 4
+        '400':
+          description: Bad request. Invalid pagination or sort parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{id}:
+    get:
+      tags:
+      - Master images
+      summary: Get Master Image by ID
+      description: 'Returns one Master Image in the same shape as a list row: name, OS, status and power state, source type, region,
+
+        VM and gallery resource IDs, disk and security settings, and latest published version.
+
+        The image itself — not which operations run or are permitted, and not its published versions.'
+      operationId: GetMasterImage
+      parameters:
+      - name: id
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the Master Image.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImageDto'
+              example:
+                id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                name: Finance-Gold-Master
+                description: Q1 2026 Base Image
+                osFamily: windows11MultiSession
+                osVersion: 23H2
+                status: ready
+                powerState: unknown
+                sourceType: promotedVm
+                region: eastus
+                vmResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/virtualMachines/vm-finance-gold
+                subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+                subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                virtualNetworkResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/virtualNetworks/vnet-avd
+                acgDefinitionResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Compute/galleries/ControlUp_DaaS_Gallery/images/Finance-Gold-Master
+                latestVersion: 1.0.1
+                latestPublishedVersion: 1.0.0
+                targetRegions:
+                - eastus
+                - westeurope
+                resourceGroup: RG-AVD-Lab
+                vmSize: Standard_D2s_v5
+                osDiskType: Premium_LRS
+                osDiskSizeGiB: 128
+                securityType: trustedLaunch
+                secureBoot: true
+                vTpm: true
+                integrityMonitoring: false
+                hyperVGeneration: V2
+                cpuArchitectureType: x64
+                galleryName: ControlUp_DaaS_Gallery
+                publisher: ControlUp
+                offer: windows-11-multisession
+                sku: finance-gold-master
+                createdBy: admin@contoso.com
+                createdAt: '2026-03-01T10:00:00Z'
+                lastUpdated: '2026-03-10T22:14:14Z'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{id}/operation-state:
+    get:
+      tags:
+      - Master images
+      summary: Get Master Image operation state
+      description: 'Returns the image''s single in-flight operation, if any, plus server-computed flags for the actions it now permits.
+
+        Trust these flags rather than inferring availability from lifecycle and power-state fields.
+
+        Covers the image as a whole, not any individual published version.'
+      operationId: GetOperationState
+      parameters:
+      - name: id
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the Master Image operation state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImageOperationStateDto'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{id}/decommission-plan:
+    get:
+      tags:
+      - Master images
+      summary: Get decommission plan
+      description: 'Previews what retiring the whole Master Image would delete or retain — VM, disks, gallery definition,
+
+        related Azure resources — with any warnings.
+
+        A read-only dry run covering the whole image, not the leftovers of a single publish.'
+      operationId: GetDecommissionPlan
+      parameters:
+      - name: id
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully built the decommission plan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImageDecommissionPlanDto'
+              example:
+                masterImageId: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                masterImageName: Finance-Gold-Master
+                sourceType: deployedFromGallery
+                resources:
+                - resourceType: galleryImageVersion
+                  resourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Compute/galleries/ControlUp_DaaS_Gallery/images/Finance-Gold-Master/versions/1.0.0
+                  name: 1.0.0
+                  ownership: foundryCreated
+                  decommissionAction: delete
+                  reason: Image version was created by Foundry and can be deleted during decommission.
+                  existenceStatus: exists
+                  portalUrl: https://portal.azure.com/#@contoso.onmicrosoft.com/resource/subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Compute/galleries/ControlUp_DaaS_Gallery/images/Finance-Gold-Master/versions/1.0.0
+                - resourceType: subnet
+                  resourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                  name: default
+                  ownership: customerOrShared
+                  decommissionAction: retain
+                  reason: Subnet may be shared by other resources and is retained.
+                  existenceStatus: notChecked
+                  portalUrl: https://portal.azure.com/#@contoso.onmicrosoft.com/resource/subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                warnings: []
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/promote:
+    post:
+      tags:
+      - Master images
+      summary: Promote existing VM as Master Image
+      description: 'Creates a new Master Image by registering an existing Azure VM.
+
+        Creates a corresponding Image Definition in the specified Azure Compute Gallery.
+
+        The VM must be Gen 2 (Trusted Launch) and not already imported.'
+      operationId: PromoteVmToMasterImage
+      requestBody:
+        description: The promote request containing VM resource ID and metadata
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromoteMasterImageRequest'
+            example:
+              subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+              vmResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/virtualMachines/vm-finance-gold
+              name: Finance-Gold-Master
+              description: Q1 2026 Base Image
+              osFamily: windows11MultiSession
+              osVersion: 23H2
+              publisher: ControlUp
+              offer: windows-11-multisession
+              sku: win11-hr-master
+        required: true
+      responses:
+        '201':
+          description: Successfully created the Master Image.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImageDto'
+              example:
+                id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                name: Finance-Gold-Master
+                description: Q1 2026 Base Image
+                osFamily: windows11MultiSession
+                osVersion: 23H2
+                status: ready
+                powerState: unknown
+                sourceType: promotedVm
+                region: eastus
+                vmResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/virtualMachines/vm-finance-gold
+                subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+                subnetResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/virtualNetworks/vnet-avd/subnets/default
+                virtualNetworkResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/virtualNetworks/vnet-avd
+                acgDefinitionResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Compute/galleries/ControlUp_DaaS_Gallery/images/Finance-Gold-Master
+                latestVersion: 1.0.1
+                latestPublishedVersion: 1.0.0
+                targetRegions:
+                - eastus
+                - westeurope
+                resourceGroup: RG-AVD-Lab
+                vmSize: Standard_D2s_v5
+                osDiskType: Premium_LRS
+                osDiskSizeGiB: 128
+                securityType: trustedLaunch
+                secureBoot: true
+                vTpm: true
+                integrityMonitoring: false
+                hyperVGeneration: V2
+                cpuArchitectureType: x64
+                galleryName: ControlUp_DaaS_Gallery
+                publisher: ControlUp
+                offer: windows-11-multisession
+                sku: finance-gold-master
+                createdBy: admin@contoso.com
+                createdAt: '2026-03-01T10:00:00Z'
+                lastUpdated: '2026-03-10T22:14:14Z'
+        '400':
+          description: Bad request. Invalid request parameters, VM is Gen 1, or VM already imported.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified subscription does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/deploy-from-gallery:
+    post:
+      tags:
+      - Master images
+      summary: Deploy Master Image from Gallery image version
+      description: 'Creates a new Master Image by deploying a fresh VM from a gallery image version.
+
+        This is a long-running operation: the endpoint returns immediately with a Job tracking object.
+
+        Poll the Job StatusUrl for progress updates. The Master Image starts in Deploying status
+
+        and transitions to Ready when the VM is provisioned.'
+      requestBody:
+        description: The deploy configuration including gallery source, infrastructure, and credentials
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployFromGalleryRequest'
+            example:
+              subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+              galleryImageVersionId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery/images/Win11-Foundry-Test/versions/1.0.0
+              region: eastus
+              subnetId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Network/providers/Microsoft.Network/virtualNetworks/VNet-AVD/subnets/Subnet-AVD-Hosts
+              vmSize: Standard_D2s_v3
+              osDiskType: StandardSSD_LRS
+              galleryResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery
+              resourceGroupName: rg-controlup-daas
+              masterName: Win11-HR-Master
+              osFamily: windows11MultiSession
+              osVersion: 23H2
+              adminUsername: foundryAdmin
+              adminPassword: P@ssword12345!
+              description: HR department base image
+              publisher: ControlUp
+              offer: windows-11-multisession
+              sku: win11-hr-master
+        required: true
+      responses:
+        '201':
+          description: Successfully initiated the deployment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeployFromGalleryResponse'
+              example:
+                masterImage:
+                  id: 493d4e21-85b2-41dd-b580-b1c95bf91968
+                  name: Win11-HR-Master
+                  description: HR department base image
+                  osFamily: windows11MultiSession
+                  osVersion: 23H2
+                  status: deploying
+                  powerState: unknown
+                  sourceType: deployedFromGallery
+                  region: ''
+                  subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+                  targetRegions: []
+                  createdBy: ''
+                  createdAt: '0001-01-01T00:00:00'
+                  lastUpdated: '2026-03-10T22:11:18Z'
+                job:
+                  id: 1bee33ab-d943-48f6-9860-84e6d27890d4
+                  jobType: masterImageDeploy
+                  action: Master Image Deploy
+                  jobUrl: https://localhost:7163/api/v1/jobs/1bee33ab-d943-48f6-9860-84e6d27890d4
+                  statusUrl: https://localhost:7163/api/v1/jobs/1bee33ab-d943-48f6-9860-84e6d27890d4/status
+                  logsUrl: https://localhost:7163/api/v1/jobs/1bee33ab-d943-48f6-9860-84e6d27890d4/logs
+                  message: Deploy from Gallery initiated for 'Win11-HR-Master'. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Invalid parameters or subscription is not Azure.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified subscription does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/deploy-from-marketplace:
+    post:
+      tags:
+      - Master images
+      summary: Deploy Master Image from curated Marketplace
+      description: 'Deploys a new Azure VM from a curated Marketplace OS image and registers it as a Master Image.
+
+        This is a long-running operation: the endpoint returns immediately with a Job tracking object.
+
+        Poll the Job StatusUrl for progress updates. The background job deploys the VM, creates the ACG
+
+        Image Definition, and transitions the Master Image from Deploying to Ready.
+
+        Accepts only images drawn from the curated Marketplace catalog, not arbitrary Marketplace offers.'
+      requestBody:
+        description: Marketplace deployment parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployFromMarketplaceRequest'
+            example:
+              subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+              marketplaceImageId: win11-multisession-gen2
+              region: eastus
+              subnetId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Network/providers/Microsoft.Network/virtualNetworks/VNet-AVD/subnets/Subnet-AVD-Hosts
+              vmSize: Standard_D2s_v5
+              osDiskType: Premium_LRS
+              osDiskSizeGiB: 128
+              galleryResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/galleries/AVDGoldenImageGallery
+              resourceGroupName: rg-controlup-daas
+              masterName: Win11-HR-Master
+              osVersion: 24H2
+              adminUsername: foundryAdmin
+              adminPassword: P@ssword12345!
+              description: HR department base image from marketplace
+              publisher: ControlUp
+              offer: windows-11-multisession
+              sku: win11-hr-master
+        required: true
+      responses:
+        '201':
+          description: Deployment initiated. Master Image created in Deploying status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeployFromMarketplaceResponse'
+              example:
+                masterImage:
+                  id: d583eb04-ecb0-40c9-b1a8-05ce01b341da
+                  name: Win11-HR-Master
+                  description: HR department base image from marketplace
+                  osFamily: windows11MultiSession
+                  osVersion: 24H2
+                  status: deploying
+                  powerState: unknown
+                  sourceType: deployedFromMarketplace
+                  region: eastus
+                  subscriptionId: 9be25f1b-d323-477a-984a-935f6346e47a
+                  targetRegions: []
+                  createdBy: ''
+                  createdAt: '0001-01-01T00:00:00'
+                  lastUpdated: '2026-04-10T22:11:18Z'
+                job:
+                  id: 3a7f9bc2-e154-47a8-b621-d9f2c84e6d10
+                  jobType: masterImageDeploy
+                  action: Master Image Deploy
+                  jobUrl: https://localhost:7163/api/v1/jobs/3a7f9bc2-e154-47a8-b621-d9f2c84e6d10
+                  statusUrl: https://localhost:7163/api/v1/jobs/3a7f9bc2-e154-47a8-b621-d9f2c84e6d10/status
+                  logsUrl: https://localhost:7163/api/v1/jobs/3a7f9bc2-e154-47a8-b621-d9f2c84e6d10/logs
+                  message: Deploy from Marketplace initiated for 'Win11-HR-Master'. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Invalid parameters or non-Azure subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified subscription does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/deploy-from-managed-image:
+    post:
+      tags:
+      - Master images
+      summary: Deploy Master Image from Managed Image
+      description: 'Deploys a new Azure VM from an existing Azure Managed Image and registers it as a Master Image.
+
+        This is a long-running operation: the endpoint returns immediately with a Job tracking object.
+
+        Poll the Job StatusUrl for progress updates. The region is derived server-side from the managed
+
+        image''s location. The Master Image starts in Deploying status and transitions to Ready when the
+
+        VM is provisioned.'
+      requestBody:
+        description: Managed image deployment parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployFromManagedImageRequest'
+        required: true
+      responses:
+        '201':
+          description: Deployment initiated. Master Image created in Deploying status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeployFromManagedImageResponse'
+        '400':
+          description: Bad request. Invalid parameters or non-Azure subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified subscription does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{masterImageId}:
+    delete:
+      tags:
+      - Master images
+      summary: Delete Master Image
+      description: 'Soft deletes the Master Image record by default.
+
+        When deprovision=true, dispatches a background cleanup job that removes managed Azure resources,
+
+        then soft deletes the Master Image record.'
+      operationId: DeleteMasterImage
+      parameters:
+      - name: masterImageId
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: deprovision
+        in: query
+        description: Whether to deprovision managed Azure resources in a background job before deleting the record.
+        schema:
+          type: boolean
+      responses:
+        '202':
+          description: Cleanup job accepted. Poll status URL for progress updates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '204':
+          description: Successfully deleted the Master Image.
+        '400':
+          description: Bad request. Master Image cannot be deleted in its current state or with the provided parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{masterImageId}/publish:
+    post:
+      tags:
+      - Master images
+      summary: Publish Master Image version
+      description: 'Dispatches a background job that clones the Master VM into a temporary publish VM,
+
+        runs AVD Agent Update and optional SXS Stack Update, runs sysprep, captures an ACG Image Version,
+
+        then cleans up the temporary publish VM. The Master VM must be in Ready status and stopped (deallocated).'
+      operationId: PublishMasterImageVersion
+      parameters:
+      - name: masterImageId
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Publish parameters (version, target regions, SXS toggle)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublishMasterImageRequest'
+        required: true
+      responses:
+        '202':
+          description: Publish job dispatched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishMasterImageResponse'
+              example:
+                version:
+                  id: 2d00c44d-a37d-42be-ac9a-0f073fce8eac
+                  name: 1.0.0
+                  publishedAt: '2026-03-24T12:34:56Z'
+                  publishedByDisplayName: Jane Doe
+                  publishedBy: user@example.com
+                  status: replicating
+                  targetRegions:
+                  - eastus
+                  - westus2
+                  hasPublishArtifactsToClean: true
+                  canRetryPublish: false
+                  lastUpdated: '2026-03-24T12:34:56Z'
+                job:
+                  id: d4ca9ac8-2bc7-43d3-b59c-f669822c75b1
+                  jobType: masterImagePublish
+                  action: Master Image Publish
+                  jobUrl: https://localhost:7163/api/v1/jobs/d4ca9ac8-2bc7-43d3-b59c-f669822c75b1
+                  statusUrl: https://localhost:7163/api/v1/jobs/d4ca9ac8-2bc7-43d3-b59c-f669822c75b1/status
+                  logsUrl: https://localhost:7163/api/v1/jobs/d4ca9ac8-2bc7-43d3-b59c-f669822c75b1/logs
+                  message: Publish initiated for version '1.0.0'. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Master Image is not in Ready status, not stopped, missing ACG definition, insufficient vCPU quota for the publish builder VM, or invalid target regions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{masterImageId}/versions:
+    get:
+      tags:
+      - Master images
+      summary: List Master Image versions
+      description: 'Returns the publish history of one Master Image, newest first: version name, publish time and author, status, target
+
+        regions, and whether temporary artifacts remain.
+
+        The immutable gallery versions publishing produced — not the Master Image, nor the VM it was captured from.'
+      operationId: ListMasterImageVersions
+      parameters:
+      - name: masterImageId
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: sort
+        in: query
+        description: 'Sort expression for ordering results.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          createdAt, lastUpdated, name, publishedAt, publishedBy, publishedByDisplayName, status
+
+
+          Default when omitted: publishedAt:desc.'
+        schema:
+          type: string
+        examples:
+          default:
+            summary: default
+            value: publishedAt:desc
+        x-foundry-sort:
+          fields:
+          - createdAt
+          - lastUpdated
+          - name
+          - publishedAt
+          - publishedBy
+          - publishedByDisplayName
+          - status
+          dynamicPaths: false
+          defaultField: publishedAt
+          defaultAscending: false
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved version records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImageVersionDtoPagedResultDto'
+              example:
+                items:
+                - id: 2d00c44d-a37d-42be-ac9a-0f073fce8eac
+                  name: 1.0.0
+                  acgVersionResourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/rg-controlup-daas/providers/Microsoft.Compute/galleries/ControlUp_DaaS_Gallery/images/Finance-Gold-Master/versions/1.0.0
+                  publishedAt: '2026-03-24T12:34:56Z'
+                  publishedByDisplayName: Jane Doe
+                  publishedBy: jane.doe@contoso.com
+                  status: available
+                  targetRegions:
+                  - eastus
+                  - westus2
+                  hasPublishArtifactsToClean: false
+                  canRetryPublish: false
+                  lastUpdated: '2026-03-24T13:20:10Z'
+                - id: 6f4e0d47-b97b-459c-a577-36fdf2cc55f4
+                  name: 1.0.1
+                  publishedAt: '2026-03-25T09:15:00Z'
+                  publishedByDisplayName: Jane Doe
+                  publishedBy: jane.doe@contoso.com
+                  status: failed
+                  targetRegions:
+                  - eastus
+                  hasPublishArtifactsToClean: true
+                  canRetryPublish: true
+                  lastUpdated: '2026-03-25T09:42:18Z'
+                page: 1
+                pageSize: 50
+                count: 2
+                hasMore: false
+                totalCount: 2
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{masterImageId}/versions/{versionId}/operation-state:
+    get:
+      tags:
+      - Master images
+      summary: Get Master Image version operation state
+      description: 'Returns in-flight operations on one published version, plus flags for the actions it permits, such as retrying a
+
+        failed publish or cleaning up leftovers.
+
+        Scoped to a single version and may report several concurrent operations, unlike the image-level equivalent.'
+      operationId: GetVersionOperationState
+      parameters:
+      - name: masterImageId
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        description: The Master Image version identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved operation state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImageVersionOperationStateDto'
+              example:
+                activeOperations:
+                - jobId: 817fa8b1-06e9-49b1-b0f2-8046e89a1b1f
+                  jobType: masterImagePublish
+                  action: Master Image Publish
+                  status: inProgress
+                  currentStep: Publishing image version
+                  createdAt: '2026-05-23T05:42:00Z'
+                  startedAt: '2026-05-23T05:42:15Z'
+                actionAvailability:
+                  retryPublish:
+                    isAllowed: false
+                    reason: A publish operation is already queued or in progress for this version.
+                  cleanupPublishArtifacts:
+                    isAllowed: true
+                  deleteVersion:
+                    isAllowed: false
+                    reason: Cannot delete a version while publish is queued or in progress.
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image or version does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{masterImageId}/versions/{versionId}/publish-artifacts/cleanup-plan:
+    get:
+      tags:
+      - Master images
+      summary: Get publish artifact cleanup plan
+      description: 'Previews the temporary resources one publish left behind and that DaaS IQ can remove.
+
+        A read-only dry run scoped to those leftovers: never the published version, which stays in the gallery,
+
+        nor the Master Image''s own VM and gallery resources.'
+      operationId: GetPublishCleanupPlan
+      parameters:
+      - name: masterImageId
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        description: The Master Image version identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully built the publish artifact cleanup plan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterImagePublishCleanupPlanDto'
+              example:
+                masterImageId: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                masterImageVersionId: 2d00c44d-a37d-42be-ac9a-0f073fce8eac
+                masterImageName: Finance-Gold-Master
+                versionName: 1.0.0
+                resources:
+                - resourceType: virtualMachine
+                  resourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/virtualMachines/builder-a1b2c3d4e5f67890abcdef1234567890
+                  name: builder-a1b2c3d4e5f67890abcdef1234567890
+                  ownership: foundryCreated
+                  decommissionAction: delete
+                  reason: Temporary publish VM can be removed after publish.
+                  existenceStatus: exists
+                  portalUrl: https://portal.azure.com/#@contoso.onmicrosoft.com/resource/subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Compute/virtualMachines/builder-a1b2c3d4e5f67890abcdef1234567890
+                - resourceType: networkInterface
+                  resourceId: /subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/networkInterfaces/builder-a1b2c3d4e5f67890abcdef1234567890-nic
+                  name: builder-a1b2c3d4e5f67890abcdef1234567890-nic
+                  ownership: foundryCreated
+                  decommissionAction: alreadyMissing
+                  reason: Publish artifact is already missing in Azure.
+                  existenceStatus: missing
+                  portalUrl: https://portal.azure.com/#@contoso.onmicrosoft.com/resource/subscriptions/25ae2df7-d61d-4cb0-a746-4b67e1cf8535/resourceGroups/RG-AVD-Lab/providers/Microsoft.Network/networkInterfaces/builder-a1b2c3d4e5f67890abcdef1234567890-nic
+                warnings: []
+        '400':
+          description: Bad request. Version is not cleanup-eligible.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image or version does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{masterImageId}/versions/{versionId}:
+    delete:
+      tags:
+      - Master images
+      summary: Delete Master Image version
+      description: 'Dispatches a background job that removes one published gallery version, the deployable artifact itself.
+
+        Destroys the version permanently, unlike artifact cleanup, which removes only the temporary resources a
+
+        publish left behind and leaves the version in place. The Master Image and its other versions survive.'
+      operationId: DeleteMasterImageVersion
+      parameters:
+      - name: masterImageId
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        description: The Master Image version DB identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '202':
+          description: Master Image version deletion job accepted. Poll status URL for progress updates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Version cannot be deleted in its current state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image or version does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{masterImageId}/versions/{versionId}/publish-artifacts:
+    delete:
+      tags:
+      - Master images
+      summary: Delete publish artifacts
+      description: 'Dispatches a background job that removes the temporary resources one publish left behind, such as the
+
+        builder VM and its disks.
+
+        The execution counterpart of the cleanup plan, which previews the same set without deleting.
+
+        The published version stays in the gallery and remains deployable.'
+      operationId: DeletePublishArtifacts
+      parameters:
+      - name: masterImageId
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        description: The Master Image version DB identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '202':
+          description: Publish artifact cleanup job accepted. Poll status URL for progress updates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Version cannot be cleaned in its current state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image or version does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/master-images/{masterImageId}/versions/{versionId}/retry-publish:
+    post:
+      tags:
+      - Master images
+      summary: Retry failed Master Image version publish
+      description: 'Retries the latest failed publish job for the specified version by creating a new background job
+
+        with the same parameters. Use this instead of POST publish when recovering a failed version row.'
+      operationId: RetryPublish
+      parameters:
+      - name: masterImageId
+        in: path
+        description: The Master Image identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        description: The Master Image version identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '201':
+          description: Publish retry job created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Version is not eligible for publish retry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage settings permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified Master Image or version does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict. An active retry is already in progress for this version.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    MasterImageVersionStatus:
+      enum:
+      - replicating
+      - deleting
+      - available
+      - failed
+      type: string
+      description: Lifecycle status for a published Master Image version
+    MasterImagePublishCleanupPlanDto:
+      required:
+      - masterImageId
+      - masterImageName
+      - masterImageVersionId
+      - resources
+      - versionName
+      - warnings
+      type: object
+      properties:
+        masterImageId:
+          type: string
+          description: Master Image identifier.
+          format: uuid
+        masterImageVersionId:
+          type: string
+          description: Master Image version identifier.
+          format: uuid
+        masterImageName:
+          type: string
+          description: Master Image display name.
+        versionName:
+          type: string
+          description: Version name.
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageDecommissionResourceDto'
+          description: Temporary publish artifacts Foundry can clean up.
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Non-fatal warnings encountered while building the plan.
+      additionalProperties: false
+      description: Master Image publish artifact cleanup plan response.
+    MasterImageVersionDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageVersionDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    MasterImageVersionOperationStateDto:
+      required:
+      - actionAvailability
+      - activeOperations
+      type: object
+      properties:
+        activeOperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageOperationDto'
+          description: Active operations currently associated with this version.
+        actionAvailability:
+          $ref: '#/components/schemas/MasterImageVersionActionAvailabilityDto'
+      additionalProperties: false
+      description: Operation state and action availability for a Master Image version.
+    MarketplaceImageDto:
+      required:
+      - diskControllerTypes
+      - displayName
+      - id
+      - offer
+      - osFamily
+      - publisher
+      - securityType
+      - sku
+      - version
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable slug identifier used in deploy-from-marketplace requests.
+        displayName:
+          type: string
+          description: Human-readable display name.
+        osFamily:
+          $ref: '#/components/schemas/OsFamily'
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        diskControllerTypes:
+          type: array
+          items:
+            type: string
+          description: Disk controller types supported by this marketplace image.
+        publisher:
+          type: string
+          description: Azure Marketplace publisher.
+        offer:
+          type: string
+          description: Azure Marketplace offer.
+        sku:
+          type: string
+          description: Azure Marketplace SKU.
+        version:
+          type: string
+          description: Azure Marketplace version.
+      additionalProperties: false
+      description: Describes a curated Azure Marketplace OS image available for Master Image deployment.
+    VmSecurityType:
+      enum:
+      - trustedLaunch
+      - standard
+      - confidentialVM
+      type: string
+      description: Security profile for Azure VMs.
+    DeployFromGalleryResponse:
+      required:
+      - job
+      - masterImage
+      type: object
+      properties:
+        masterImage:
+          $ref: '#/components/schemas/MasterImageDto'
+        job:
+          $ref: '#/components/schemas/JobCreatedDto'
+      additionalProperties: false
+      description: 'Response returned when a Deploy from Gallery operation is initiated.
+
+        Contains the created Master Image record and the background job tracking info.'
+    MasterImageDto:
+      required:
+      - createdAt
+      - createdBy
+      - id
+      - lastUpdated
+      - name
+      - osFamily
+      - osVersion
+      - powerState
+      - region
+      - sourceType
+      - status
+      - subscriptionId
+      - targetRegions
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the Master Image.
+          format: uuid
+        name:
+          type: string
+          description: User-provided display name.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Optional description of the Master Image.
+        osFamily:
+          $ref: '#/components/schemas/OsFamily'
+        osVersion:
+          type: string
+          description: OS version or build string (e.g., "23H2", "22H2", "LTSC").
+        status:
+          $ref: '#/components/schemas/MasterImageStatus'
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the current status.
+
+            Populated when Status is Error (e.g., "VM not found in Azure", "Deployment failed: quota exceeded").
+
+            Null when Status is not Error.'
+        powerState:
+          $ref: '#/components/schemas/MasterImagePowerState'
+        sourceType:
+          $ref: '#/components/schemas/MasterImageSourceType'
+        region:
+          type: string
+          description: Azure region where the Master VM is deployed (e.g., "eastus", "westeurope").
+        vmResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the underlying Azure VM. Null while deploying.
+        subscriptionId:
+          type: string
+          description: Subscription ID that owns this Master Image.
+          format: uuid
+        subnetResourceId:
+          type:
+          - string
+          - 'null'
+          description: ARM resource ID of the subnet used for Builder VM deployment during publish.
+        virtualNetworkResourceId:
+          type:
+          - string
+          - 'null'
+          description: ARM resource ID of the virtual network that contains ControlUp.Foundry.Api.Dtos.Cloud.MasterImage.MasterImageDto.SubnetResourceId.
+        acgDefinitionResourceId:
+          type:
+          - string
+          - 'null'
+          description: ARM resource ID of the Azure Compute Gallery Image Definition linked to this Master Image.
+        galleryResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the Azure Compute Gallery.
+        latestVersion:
+          type:
+          - string
+          - 'null'
+          description: Highest active image version by numeric major.minor.patch ordering. Includes in-progress or failed versions.
+        latestPublishedVersion:
+          type:
+          - string
+          - 'null'
+          description: Highest active published image version by numeric major.minor.patch ordering. Null if never published.
+        targetRegions:
+          type: array
+          items:
+            type: string
+          description: 'Azure regions targeted by ControlUp.Foundry.Api.Dtos.Cloud.MasterImage.MasterImageDto.LatestPublishedVersion.
+
+            Empty when the image has no published version.'
+        resourceGroup:
+          type:
+          - string
+          - 'null'
+          description: Azure resource group where the VM is deployed.
+        vmSize:
+          type:
+          - string
+          - 'null'
+          description: Azure VM size (e.g., "Standard_D2s_v5").
+        osDiskType:
+          type:
+          - string
+          - 'null'
+          description: OS disk storage account type (e.g., "Premium_LRS", "StandardSSD_LRS").
+        osDiskSizeGiB:
+          type:
+          - integer
+          - 'null'
+          description: OS disk size in GiB.
+          format: int32
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        secureBoot:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether Secure Boot is enabled on the VM.
+        vTpm:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether virtual TPM is enabled on the VM.
+        integrityMonitoring:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether the Guest Attestation extension is installed on the VM.
+        hyperVGeneration:
+          type:
+          - string
+          - 'null'
+          description: Hyper-V generation of the VM (for example, V1 or V2).
+        cpuArchitectureType:
+          type:
+          - string
+          - 'null'
+          description: CPU architecture type from the Azure Compute Gallery image definition (for example, x64 or Arm64).
+        galleryName:
+          type:
+          - string
+          - 'null'
+          description: Azure Compute Gallery name where the Image Definition lives.
+        publisher:
+          type:
+          - string
+          - 'null'
+          description: 'ACG Image Definition identifier: Publisher field (e.g., "ControlUp").'
+        offer:
+          type:
+          - string
+          - 'null'
+          description: 'ACG Image Definition identifier: Offer field (e.g., "windows-11-multisession").'
+        sku:
+          type:
+          - string
+          - 'null'
+          description: 'ACG Image Definition identifier: SKU field.'
+        createdBy:
+          type: string
+          description: Email of the user who created this Master Image.
+        createdAt:
+          type: string
+          description: When the Master Image was created (UTC).
+          format: date-time
+        lastUpdated:
+          type: string
+          description: Timestamp of the last status or version update (UTC).
+          format: date-time
+      additionalProperties: false
+      description: Response DTO for a managed Master Image shown in the Image Library.
+    MasterImageDecommissionPlanDto:
+      required:
+      - masterImageId
+      - masterImageName
+      - resources
+      - sourceType
+      - warnings
+      type: object
+      properties:
+        masterImageId:
+          type: string
+          description: Master Image identifier.
+          format: uuid
+        masterImageName:
+          type: string
+          description: Master Image display name.
+        sourceType:
+          $ref: '#/components/schemas/MasterImageSourceType'
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageDecommissionResourceDto'
+          description: Resources Foundry will delete, retain, or show as context.
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Non-fatal warnings encountered while building the plan.
+      additionalProperties: false
+      description: Master Image decommission plan response.
+    MasterImageVersionActionAvailabilityDto:
+      required:
+      - cleanupPublishArtifacts
+      - deleteVersion
+      - retryPublish
+      type: object
+      properties:
+        retryPublish:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        cleanupPublishArtifacts:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        deleteVersion:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+      additionalProperties: false
+      description: Server-computed availability of Master Image version actions.
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    OsFamilyDto:
+      required:
+      - displayName
+      - value
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/OsFamily'
+        displayName:
+          type: string
+          description: Human-readable display name for the OS family.
+      additionalProperties: false
+      description: Describes a supported OS family for Master Images.
+    MasterImageOperationDto:
+      required:
+      - action
+      - createdAt
+      - jobId
+      - jobType
+      - status
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Background job identifier for the active operation.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: User-facing action name associated with the job.
+        status:
+          $ref: '#/components/schemas/JobStatus'
+        currentStep:
+          type:
+          - string
+          - 'null'
+          description: Current job step, when reported by the processor.
+        createdAt:
+          type: string
+          description: Timestamp when the job was created (UTC).
+          format: date-time
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the job started processing (UTC), when available.
+          format: date-time
+      additionalProperties: false
+      description: Active operation associated with a Master Image.
+    MasterImagePowerState:
+      enum:
+      - unknown
+      - deallocated
+      - stopped
+      - starting
+      - running
+      - stopping
+      - deallocating
+      type: string
+      description: 'Power state of the underlying Azure VM for a Master Image.
+
+        Tracked separately from ControlUp.Foundry.Domain.Enums.Cloud.MasterImageStatus because a Master Image
+
+        can be Status=Ready while PowerState=Running (user is editing via RDP).'
+    DeployFromMarketplaceRequest:
+      required:
+      - adminPassword
+      - adminUsername
+      - marketplaceImageId
+      - masterName
+      - osDiskType
+      - osVersion
+      - region
+      - subnetId
+      - subscriptionId
+      - vmSize
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          description: Internal subscription ID that owns the target resources.
+          format: uuid
+        marketplaceImageId:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Source marketplace image slug from the curated catalog.
+        region:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target Azure region where the new Master VM will be created.
+        subnetId:
+          minLength: 1
+          type: string
+          description: Target subnet for the new VM (full ARM resource ID, identifies both the VNet and subnet).
+        vmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target VM size.
+        osDiskType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target OS disk storage account type.
+        osDiskSizeGiB:
+          maximum: 4095
+          minimum: 128
+          type:
+          - integer
+          - 'null'
+          description: OS disk size in GiB. Defaults to 128 GiB for marketplace images. Cannot decrease below 128 GiB.
+          format: int32
+        galleryResourceId:
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Compute Gallery for the new Image Definition (full ARM resource ID).
+        resourceGroupName:
+          maxLength: 90
+          minLength: 0
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Resource Group for the new VM.
+        masterName:
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
+          type: string
+          description: Name for the new Master VM, display name, and ACG Image Definition name.
+        osVersion:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: OS version/build string.
+        adminUsername:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Local administrator username for the new VM.
+        adminPassword:
+          maxLength: 123
+          minLength: 12
+          type: string
+          description: Local administrator password for the new VM.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the Master Image.
+        publisher:
+          maxLength: 128
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition publisher override.
+        offer:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition offer override.
+        sku:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition SKU override.
+      additionalProperties: false
+      description: Request to deploy a new Master Image VM from a curated Azure Marketplace OS image.
+    MasterImageDecommissionAction:
+      enum:
+      - delete
+      - retain
+      - unknown
+      - alreadyMissing
+      type: string
+      description: Action Foundry will take for a resource in a Master Image decommission plan.
+    PromoteMasterImageRequest:
+      required:
+      - name
+      - osFamily
+      - osVersion
+      - subscriptionId
+      - vmResourceId
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          description: Internal subscription ID that contains the VM.
+          format: uuid
+        vmResourceId:
+          minLength: 1
+          type: string
+          description: Full Azure ARM resource ID of the VM to import.
+        galleryResourceId:
+          type:
+          - string
+          - 'null'
+          description: Optional ARM resource ID of an existing Azure Compute Gallery.
+        name:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: User-provided name for the Image Library.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description.
+        osFamily:
+          $ref: '#/components/schemas/OsFamily'
+        osVersion:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: OS version/build string (e.g., "23H2", "22H2", "LTSC").
+        publisher:
+          maxLength: 128
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition publisher override. Defaults to "ControlUp".
+        offer:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition offer override. Defaults to slugified OsFamily (e.g., "windows-11-multisession").
+        sku:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition SKU override. Defaults to slugified Name.
+      additionalProperties: false
+      description: 'Request to promote (import) an existing Azure VM as a managed Master Image.
+
+        Azure-derived fields (region, generation) are resolved server-side from the VM resource ID.'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    DeployFromManagedImageResponse:
+      required:
+      - job
+      - masterImage
+      type: object
+      properties:
+        masterImage:
+          $ref: '#/components/schemas/MasterImageDto'
+        job:
+          $ref: '#/components/schemas/JobCreatedDto'
+      additionalProperties: false
+      description: 'Response returned when a Deploy from Managed Image operation is initiated.
+
+        Contains the created Master Image record and the background job tracking info.'
+    PublishMasterImageRequest:
+      required:
+      - targetRegions
+      - version
+      type: object
+      properties:
+        version:
+          minLength: 1
+          pattern: ^\d+\.\d+\.\d+$
+          type: string
+          description: 'Semantic version for the new image version (e.g., "1.0.0").
+
+            Must follow major.minor.patch format.'
+        updateAvdAgent:
+          type: boolean
+          description: 'Whether to run the AVD Agent Update script before sysprep.
+
+            When true, stops AVD services, clears registry keys, and removes blocking AppX packages.
+
+            Defaults to true when omitted.'
+          default: true
+        runSxsStackUpdate:
+          type: boolean
+          description: 'Whether to run the SXS Stack Update script before sysprep.
+
+            Defaults to false when omitted.'
+          default: false
+        targetRegions:
+          minItems: 1
+          type: array
+          items:
+            type: string
+          description: 'Target Azure regions for image version replication.
+
+            At least one region must be specified.'
+      additionalProperties: false
+      description: Request DTO for publishing a Master Image (sysprep + capture to ACG).
+    MasterImageDecommissionResourceType:
+      enum:
+      - virtualMachine
+      - networkInterface
+      - managedDisk
+      - galleryImageDefinition
+      - galleryImageVersion
+      - managedImage
+      - marketplaceImage
+      - subnet
+      - virtualNetwork
+      - resourceGroup
+      - gallery
+      - snapshot
+      type: string
+      description: Azure resource category shown in a Master Image decommission plan.
+    DeployFromManagedImageRequest:
+      required:
+      - adminPassword
+      - adminUsername
+      - managedImageId
+      - masterName
+      - osDiskType
+      - osFamily
+      - osVersion
+      - subnetId
+      - subscriptionId
+      - vmSize
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          description: Internal subscription ID that owns the source managed image and target resources.
+          format: uuid
+        managedImageId:
+          minLength: 1
+          type: string
+          description: Source Azure Managed Image to deploy from (full ARM resource ID).
+        subnetId:
+          minLength: 1
+          type: string
+          description: Target subnet for the new VM (full ARM resource ID, identifies both the VNet and subnet).
+        vmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target VM size.
+        osDiskType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target OS disk storage account type.
+        osDiskSizeGiB:
+          maximum: 4095
+          minimum: 128
+          type:
+          - integer
+          - 'null'
+          description: 'Optional OS disk size in GiB.
+
+            The effective minimum is max(128, source image disk size) and is enforced server-side.
+
+            Defaults to max(128, source image disk size) when omitted.'
+          format: int32
+        galleryResourceId:
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Compute Gallery for the new Image Definition (full ARM resource ID).
+        resourceGroupName:
+          maxLength: 90
+          minLength: 0
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Resource Group for the new VM.
+        masterName:
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
+          type: string
+          description: Name for the new Master VM, display name, and ACG Image Definition name.
+        osFamily:
+          $ref: '#/components/schemas/OsFamily'
+        osVersion:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: OS version/build string.
+        adminUsername:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Local administrator username for the new VM.
+        adminPassword:
+          maxLength: 123
+          minLength: 12
+          type: string
+          description: Local administrator password for the new VM.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the Master Image.
+        publisher:
+          maxLength: 128
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition publisher override.
+        offer:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition offer override.
+        sku:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition SKU override.
+      additionalProperties: false
+      description: Request to deploy a new Master Image VM from an Azure Managed Image.
+    PublishMasterImageResponse:
+      required:
+      - job
+      - version
+      type: object
+      properties:
+        version:
+          $ref: '#/components/schemas/MasterImageVersionDto'
+        job:
+          $ref: '#/components/schemas/JobCreatedDto'
+      additionalProperties: false
+      description: 'Response returned when a Publish operation is initiated.
+
+        Contains the created Master Image version record and the background job tracking info.'
+    MasterImageDecommissionResourceDto:
+      required:
+      - decommissionAction
+      - existenceStatus
+      - ownership
+      - reason
+      - resourceType
+      type: object
+      properties:
+        resourceType:
+          $ref: '#/components/schemas/MasterImageDecommissionResourceType'
+        resourceId:
+          type:
+          - string
+          - 'null'
+          description: ARM resource ID when available.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Display name derived from the resource ID or source metadata.
+        ownership:
+          $ref: '#/components/schemas/MasterImageResourceOwnership'
+        decommissionAction:
+          $ref: '#/components/schemas/MasterImageDecommissionAction'
+        reason:
+          type: string
+          description: Human-readable reason for the action.
+        existenceStatus:
+          $ref: '#/components/schemas/MasterImageResourceExistenceStatus'
+        portalUrl:
+          type:
+          - string
+          - 'null'
+          description: Portal deep link when available.
+      additionalProperties: false
+      description: Resource entry in a Master Image decommission plan.
+    MasterImageDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    MasterImageVersionDto:
+      required:
+      - canRetryPublish
+      - hasPublishArtifactsToClean
+      - id
+      - lastUpdated
+      - name
+      - publishedAt
+      - publishedBy
+      - publishedByDisplayName
+      - status
+      - targetRegions
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this version record.
+          format: uuid
+        name:
+          type: string
+          description: Azure Compute Gallery image version name.
+        acgVersionResourceId:
+          type:
+          - string
+          - 'null'
+          description: Resource id of this ACG image version.
+        publishedAt:
+          type: string
+          description: Timestamp when the version was published.
+          format: date-time
+        publishedByDisplayName:
+          type: string
+          description: Display name of the user who published this version.
+        publishedBy:
+          type: string
+          description: Email of the user who published this version.
+        status:
+          $ref: '#/components/schemas/MasterImageVersionStatus'
+        targetRegions:
+          type: array
+          items:
+            type: string
+          description: Target Azure regions this version was published to.
+        hasPublishArtifactsToClean:
+          type: boolean
+          description: Whether this version has persisted publish artifacts that may still require cleanup.
+        canRetryPublish:
+          type: boolean
+          description: Whether this version's failed publish can be retried via the version-scoped retry endpoint.
+        lastUpdated:
+          type: string
+          description: Timestamp of the last update to this version record (UTC).
+          format: date-time
+      additionalProperties: false
+      description: Response DTO for a Master Image published version record.
+    JobStatus:
+      enum:
+      - queued
+      - inProgress
+      - completed
+      - failed
+      - cancelled
+      type: string
+      description: 'Generic status enum for all background jobs.
+
+        Represents the lifecycle states common to all job types.'
+    MasterImageResourceExistenceStatus:
+      enum:
+      - unknown
+      - exists
+      - missing
+      - notChecked
+      type: string
+      description: Azure existence state for a resource shown in a Master Image cleanup or decommission plan.
+    MasterImageActionType:
+      enum:
+      - start
+      - stop
+      type: string
+      description: Types of actions that can be performed on a master image.
+    MasterImageActionAvailabilityDto:
+      required:
+      - delete
+      - downloadRdp
+      - publish
+      - start
+      - stop
+      type: object
+      properties:
+        start:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        stop:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        publish:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        delete:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        downloadRdp:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+      additionalProperties: false
+      description: Server-computed availability of Master Image actions.
+    DeployFromGalleryRequest:
+      required:
+      - adminPassword
+      - adminUsername
+      - galleryImageVersionId
+      - masterName
+      - osDiskType
+      - osFamily
+      - osVersion
+      - subnetId
+      - subscriptionId
+      - vmSize
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          description: Internal subscription ID that owns the source gallery and target resources.
+          format: uuid
+        galleryImageVersionId:
+          minLength: 1
+          type: string
+          description: Source gallery image version to deploy from (full ARM resource ID).
+        region:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure region for the new Master VM deployment.
+        subnetId:
+          minLength: 1
+          type: string
+          description: Target subnet for the new VM (full ARM resource ID, identifies both the VNet and subnet).
+        vmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target VM size.
+        osDiskType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target OS disk storage account type.
+        osDiskSizeGiB:
+          maximum: 4095
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Optional OS disk size in GiB. Defaults to the source image version''s disk size when omitted.
+
+            Cannot be less than the source image disk size.'
+          format: int32
+        galleryResourceId:
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Compute Gallery for the new Image Definition (full ARM resource ID).
+        resourceGroupName:
+          maxLength: 90
+          minLength: 0
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Resource Group for the new VM.
+        masterName:
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
+          type: string
+          description: Name for the new Master VM, display name, and ACG Image Definition name.
+        osFamily:
+          $ref: '#/components/schemas/OsFamily'
+        osVersion:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: OS version/build string.
+        adminUsername:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Local administrator username for the new VM.
+        adminPassword:
+          maxLength: 123
+          minLength: 12
+          type: string
+          description: Local administrator password for the new VM.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the Master Image.
+        publisher:
+          maxLength: 128
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition publisher override.
+        offer:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition offer override.
+        sku:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition SKU override.
+      additionalProperties: false
+      description: Request to deploy a new Master Image VM from an Azure Compute Gallery image version.
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+    MasterImageStatus:
+      enum:
+      - importing
+      - ready
+      - publishing
+      - deploying
+      - deprovisioning
+      - error
+      type: string
+      description: 'Lifecycle status of a Foundry-managed Master Image.
+
+        Tracks the image''s current operational state in the management workflow.'
+    MasterImageOperationStateDto:
+      required:
+      - actionAvailability
+      type: object
+      properties:
+        activeOperation:
+          $ref: '#/components/schemas/MasterImageOperationDto'
+        actionAvailability:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityDto'
+      additionalProperties: false
+      description: Operation state and action availability for a Master Image.
+    OsFamily:
+      enum:
+      - windows10MultiSession
+      - windows10Enterprise
+      - windows11MultiSession
+      - windows11Enterprise
+      - windowsServer2016
+      - windowsServer2019
+      - windowsServer2022
+      - windowsServer2025
+      type: string
+      description: 'Operating system family for AVD-supported Master Images.
+
+        Used for AVD Agent logic and image classification.
+
+        Only OS families supported by Azure Virtual Desktop are included.
+
+        Reference: https://learn.microsoft.com/en-us/azure/virtual-desktop/prerequisites#operating-systems-and-licenses'
+    MasterImageActionRequest:
+      required:
+      - actionType
+      type: object
+      properties:
+        actionType:
+          $ref: '#/components/schemas/MasterImageActionType'
+      additionalProperties: false
+      description: Request to execute an action on a master image.
+    MasterImageResourceOwnership:
+      enum:
+      - foundryCreated
+      - customerOrShared
+      - sourceInput
+      - unknown
+      type: string
+      description: Ownership classification for a resource referenced by a Master Image.
+    DeployFromMarketplaceResponse:
+      required:
+      - job
+      - masterImage
+      type: object
+      properties:
+        masterImage:
+          $ref: '#/components/schemas/MasterImageDto'
+        job:
+          $ref: '#/components/schemas/JobCreatedDto'
+      additionalProperties: false
+      description: 'Response returned when a Deploy from Marketplace operation is initiated.
+
+        Contains the created Master Image record and the background job tracking info.'
+    MasterImageActionAvailabilityItemDto:
+      required:
+      - isAllowed
+      type: object
+      properties:
+        isAllowed:
+          type: boolean
+          description: Whether the action is currently allowed.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: Human-readable reason when the action is not currently allowed.
+      additionalProperties: false
+      description: Availability of a single Master Image action.
+    MasterImageSourceType:
+      enum:
+      - promotedVm
+      - deployedFromGallery
+      - deployedFromMarketplace
+      - deployedFromManagedImage
+      type: string
+      description: 'How a Master Image was onboarded into Foundry.
+
+        Determines the original import path used to create this managed image.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

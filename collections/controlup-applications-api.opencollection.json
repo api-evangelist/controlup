@@ -1,0 +1,153 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VDI & DAAS Applications API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Applications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get usage details for an application",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/applications/usage/single",
+            "params": [
+              {
+                "name": "appName",
+                "value": "chrome.exe",
+                "type": "query",
+                "description": "The name of the application"
+              },
+              {
+                "name": "appVersion",
+                "value": "1.0.0",
+                "type": "query",
+                "description": "Only return usage details for the specified application version number."
+              },
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01T00:00:00.000Z",
+                "type": "query",
+                "description": "Start date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02T00:00:00.000Z",
+                "type": "query",
+                "description": "End date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns usage details for the specified application including usage per machine, per user account, and the peak number of concurrent instances throughout the search period. The granularity of the peak concurrent instances depends on the length of the search period, and how far back in the past the search period is."
+        },
+        {
+          "info": {
+            "name": "Get usage details for all applications",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/applications/usage/all",
+            "params": [
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01",
+                "type": "query",
+                "description": "Start date of the search period in the format: YYYY-MM-DD"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02",
+                "type": "query",
+                "description": "End date of the search period in the format: YYYY-MM-DD"
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns usage details for all applications (number of unique users and peak number of concurrent users) throughout the search period. The granularity of the returned data depends on the length of the search period, and how far back in the past the search period is. Only applications with at least 1 user are returned. Usage details are returned per application version."
+        },
+        {
+          "info": {
+            "name": "Get application statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/applications/statistics",
+            "params": [
+              {
+                "name": "timeFrame",
+                "value": "",
+                "type": "query",
+                "description": "Aggregate statistics either weekly (Monday-Sunday) or monthly."
+              },
+              {
+                "name": "datetime",
+                "value": "2025-02-01T00:00:00.000Z",
+                "type": "query",
+                "description": "Return statistics around the specified date and time. If timeFrame is set to 1W (1 week), then the endpoint returns statistics for the week (Monday-Sunday) that the date is within. If timeFrame is set to 1M (1 month), then the endpoint returns statistics for the month that the date is within. For example, if the specified date and time is on Saturday the 6th and timeFrame = 1W, then the endpoint returns aggregated statistics from Monday the 1st to Sunday the 7th."
+              },
+              {
+                "name": "folderPath",
+                "value": "",
+                "type": "query",
+                "description": "Limits the scope of the returned application statistics to machines located under the specified full folder path within the ControlUp VDI organizational tree. Path must start with the root organization name (e.g., controlup\\hq\\financevdi)"
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns usage details and resource consumption statistics for all applications (per version number). Statistics are aggregated either weekly (Monday-Sunday) or monthly, depending on the timeFrame parameter. Visit the <a href='https://support.controlup.com/docs/application-statistics-report' target='_blank'>App Statistics Report</a> documentation for column descriptions and more details."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

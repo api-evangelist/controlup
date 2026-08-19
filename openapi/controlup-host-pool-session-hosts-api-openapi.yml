@@ -1,0 +1,521 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Host pool session hosts API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Host pool session hosts
+paths:
+  /cloud/host-pools/{hostPoolId}/session-hosts:
+    get:
+      tags:
+      - Host pool session hosts
+      summary: Get session hosts for a host pool
+      description: 'Returns the VMs that make up the pool — one row per session host with power state, agent status, drain state,
+
+        VM SKU, OS, per-host CPU and memory, and session counts.
+
+        Stored inventory rather than a live Azure read, so power and agent state are current as of each row''s SyncedAt.
+
+        Describes the machines, not the users occupying them, and carries no cost data.'
+      operationId: GetSessionHosts
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: filter
+        in: query
+        description: 'Optional filter expression.
+
+
+          Supports JSON and RQL formats:
+
+
+          - JSON: {"and":[{"field":"status","op":"eq","value":"Active"},{"field":"name","op":"ct","value":"Smith, John"}]}
+
+          - RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters
+
+
+          Operators:
+
+          and, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)
+
+
+          Fields (names are matched case-insensitively):
+
+          activeSessions, allowNewSession, cpuPercent, hostNameAlias, hostPool, hostPoolId, id, memoryPercent, name, osType, powerState, provider, region, regionId, resourceGroup, resourceGroupId, scalingLifecycleState, sessionHostResourceId, status, subscription, subscriptionId, syncedAt, totalSessions, vmResourceId, vmSku'
+        schema:
+          type: string
+        examples:
+          json:
+            summary: json
+            value: '{"field":"name","op":"eq","value":"value"}'
+          rql:
+            summary: rql
+            value: eq(name,value)
+        x-foundry-filter:
+          fields:
+          - activeSessions
+          - allowNewSession
+          - cpuPercent
+          - hostNameAlias
+          - hostPool
+          - hostPoolId
+          - id
+          - memoryPercent
+          - name
+          - osType
+          - powerState
+          - provider
+          - region
+          - regionId
+          - resourceGroup
+          - resourceGroupId
+          - scalingLifecycleState
+          - sessionHostResourceId
+          - status
+          - subscription
+          - subscriptionId
+          - syncedAt
+          - totalSessions
+          - vmResourceId
+          - vmSku
+          operators:
+            logical:
+            - and
+            - or
+            - not
+            predicate:
+            - eq
+            - neq
+            - ct
+            - nct
+            - sw
+            - nsw
+            - ew
+            - new
+            - gt
+            - gte
+            - lt
+            - lte
+          dynamicPaths: false
+      - name: sort
+        in: query
+        description: 'Sort expression for ordering results.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          activeSessions, allowNewSession, cpuPercent, hostNameAlias, hostPool, hostPoolId, id, memoryPercent, name, osType, powerState, provider, region, regionId, resourceGroup, resourceGroupId, scalingLifecycleState, sessionHostResourceId, status, subscription, subscriptionId, syncedAt, totalSessions, vmResourceId, vmSku
+
+
+          Default when omitted: name:asc.'
+        schema:
+          type: string
+        examples:
+          default:
+            summary: default
+            value: name:asc
+        x-foundry-sort:
+          fields:
+          - activeSessions
+          - allowNewSession
+          - cpuPercent
+          - hostNameAlias
+          - hostPool
+          - hostPoolId
+          - id
+          - memoryPercent
+          - name
+          - osType
+          - powerState
+          - provider
+          - region
+          - regionId
+          - resourceGroup
+          - resourceGroupId
+          - scalingLifecycleState
+          - sessionHostResourceId
+          - status
+          - subscription
+          - subscriptionId
+          - syncedAt
+          - totalSessions
+          - vmResourceId
+          - vmSku
+          dynamicPaths: false
+          defaultField: name
+          defaultAscending: true
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved session hosts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionHostDtoPagedResultDto'
+        '400':
+          description: Bad request. Invalid pagination, sort, or filter parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    SessionHostDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionHostDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    SessionHostDto:
+      required:
+      - activeSessions
+      - cpuPercent
+      - hostNameAlias
+      - hostPool
+      - hostPoolId
+      - id
+      - memoryPercent
+      - name
+      - osType
+      - powerState
+      - provider
+      - region
+      - regionId
+      - resourceGroup
+      - resourceGroupId
+      - scalingLifecycleState
+      - status
+      - subscription
+      - subscriptionId
+      - syncedAt
+      - totalSessions
+      - vmSku
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the session host.
+          format: uuid
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        hostPool:
+          type: string
+          description: Host pool name.
+        hostPoolId:
+          type: string
+          description: Host pool identifier that this session host belongs to.
+          format: uuid
+        subscription:
+          type: string
+          description: Subscription display name.
+        subscriptionId:
+          type: string
+          description: Subscription identifier.
+          format: uuid
+        resourceGroup:
+          type: string
+          description: Resource group name.
+        resourceGroupId:
+          type: string
+          description: Resource group identifier.
+          format: uuid
+        region:
+          type: string
+          description: Region display name.
+        regionId:
+          type: string
+          description: Region identifier (code).
+        name:
+          type: string
+          description: Session host name.
+        hostNameAlias:
+          type: string
+          description: Short display name extracted from the host portion of the session host name
+          example: HP1-0
+        allowNewSession:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the session host is accepting new user sessions.
+        osType:
+          type: string
+          description: Operating system type of the underlying virtual machine.
+          example: Windows, Linux
+        vmSku:
+          type: string
+          description: Azure VM SKU (size) of the underlying virtual machine.
+          example: Standard_D2s_v3, Standard_D4s_v5, Standard_E8s_v5
+        powerState:
+          type: string
+          description: 'Power state of the session host (latest metric value): ''running'', ''deallocated'', ''stopped'',
+
+            ''starting'', or ''stopping''.'
+          example: running, deallocated
+        activeSessions:
+          type: integer
+          description: Number of active user sessions on this session host (latest metric value).
+          format: int32
+        totalSessions:
+          type: integer
+          description: Number of user sessions (active/disconnected/pending) on this session host (latest metric value).
+          format: int32
+        cpuPercent:
+          type: number
+          description: CPU utilization percentage (latest metric value).
+          format: double
+        memoryPercent:
+          type: number
+          description: Memory utilization percentage (latest metric value).
+          format: double
+        status:
+          type: string
+          description: Session host status (latest metric value).
+          example: Available, Unavailable
+        scalingLifecycleState:
+          type: string
+          description: 'Current scaling lifecycle state for this host as readable text.
+
+            Useful for troubleshooting in API responses without reviewing logs.'
+          example: None, GracePeriodDispatchPending, GracePeriod, StopDispatched, StartDispatched
+        syncedAt:
+          type: string
+          description: Timestamp when this session host was last synced from the provider.
+          format: date-time
+      additionalProperties: false
+      description: 'Session host list item returned by the API.
+
+        Excludes internal ARM resource IDs that are only used for scaling operations.'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

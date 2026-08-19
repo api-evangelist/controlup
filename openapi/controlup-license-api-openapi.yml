@@ -1,0 +1,260 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ License API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: License
+paths:
+  /license:
+    get:
+      tags:
+      - License
+      summary: Get license information
+      description: 'Returns the caller''s organization license: status, type, expiration, entitled features, current usage,
+
+        and whether capacity is exhausted.
+
+        Commercial entitlement and consumption — what the organization is permitted and how much of it has been
+
+        used — as distinct from feature flags, which switch functionality on independently of licensing.'
+      responses:
+        '200':
+          description: Successfully retrieved license information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseDto'
+              example:
+                status: active
+                type: commercial
+                startDate: '2024-01-01T00:00:00Z'
+                expirationDate: '2024-12-31T23:59:59Z'
+                features:
+                - advancedAnalytics
+                - multiCloudSupport
+                - edgeDeployment
+                licensedAmount: 0
+                capacityState: 0
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    LicenseType:
+      enum:
+      - unknown
+      - commercial
+      - trial
+      type: string
+      description: Represents the type of license an organization holds.
+    LicenseStatus:
+      enum:
+      - unknown
+      - active
+      type: string
+      description: Represents the status of a license.
+    LicenseDto:
+      required:
+      - capacityState
+      - expirationDate
+      - features
+      - licensedAmount
+      - startDate
+      - status
+      - type
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/LicenseStatus'
+        type:
+          $ref: '#/components/schemas/LicenseType'
+        startDate:
+          type: string
+          description: The license start date.
+          format: date-time
+        expirationDate:
+          type: string
+          description: The license expiration date.
+          format: date-time
+        features:
+          type: array
+          items:
+            type: string
+          description: Available features included in this license.
+        licensedAmount:
+          type: integer
+          description: Maximum number of concurrent users allowed by this license.
+          format: int32
+        currentUsage:
+          type:
+          - integer
+          - 'null'
+          description: 'Current usage: the rolling maximum of daily peak concurrent sessions.'
+          format: int32
+        capacityState:
+          $ref: '#/components/schemas/CapacityState'
+      additionalProperties: false
+      description: Data Transfer Object for license information.
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    CapacityState:
+      enum:
+      - normal
+      - warning
+      - gracePeriod
+      - overCapacity
+      type: string
+      description: 'Represents the capacity utilization state of an organization
+
+        relative to its licensed concurrent user amount.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

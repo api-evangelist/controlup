@@ -1,0 +1,223 @@
+openapi: 3.2.0
+info:
+  title: Synthetic Monitoring Hives API
+  version: 2.0.0
+  x-logo:
+    url: https://app.scoutbees.io/static/media/scoutbees_new.ef578490.png
+  termsOfService: https://www.controlup.com/privacy-policy/controlup-eula/
+  description: 'Hives are the locations from which Scouts (tests) are initiated.
+
+
+    Custom Hives allow you to test internal resources from within your network. They must be installed on a computer with access to your network.
+
+
+    Cloud hives allow you to test publicly available resources from locations throughout the world. They are hosted and managed by Scoutbees, and require no configuration.
+
+    '
+servers:
+- url: https://api.controlup.com/synthetic-monitoring/v2/
+tags:
+- name: Hives
+  description: 'Hives are the locations from which Scouts (tests) are initiated.
+
+
+    Custom Hives allow you to test internal resources from within your network. They must be installed on a computer with access to your network.
+
+
+    Cloud hives allow you to test publicly available resources from locations throughout the world. They are hosted and managed by Scoutbees, and require no configuration.
+
+    '
+paths:
+  /hives:
+    get:
+      summary: List all Custom Hives
+      description: Returns a list of the Custom Hives in your organization.
+      operationId: honeycomb.api.custom_hives
+      security:
+      - ApiKeyAuth:
+        - read
+      tags:
+      - Hives
+      responses:
+        '200':
+          $ref: '#/components/responses/HivesList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+      x-codeSamples:
+      - lang: cURL
+        source: 'curl -X GET ''https://api.scoutbees.io/honeycomb/v2/hives'' \
+
+          -H ''x-scoutbees-key: API-key-here''
+
+          '
+  /cloud_hives:
+    get:
+      summary: List all Cloud Hives
+      description: Returns a list of Cloud Hives.
+      operationId: honeycomb.api.cloud_hives
+      security:
+      - ApiKeyAuth:
+        - read
+      tags:
+      - Hives
+      responses:
+        '200':
+          $ref: '#/components/responses/CloudHivesList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+      x-codeSamples:
+      - lang: cURL
+        source: 'curl -X GET ''https://api.scoutbees.io/honeycomb/v2/cloud_hives'' \
+
+          -H ''x-scoutbees-key: API-key-here''
+
+          '
+components:
+  schemas:
+    CloudHiveResponse:
+      type: object
+      description: Cloud hive properties
+      properties:
+        id:
+          type: integer
+          description: ID of the hive.
+          example: 1
+        slug:
+          type: string
+          description: The hive's slug. This is the region in which the hive is hosted.
+          example: eu-central-1
+        name:
+          type: string
+          description: The hive's name.
+          example: EU (Frankfurt)
+        version:
+          type: integer
+          description: The hive version.
+          example: 1161
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
+    HiveResponse:
+      type: object
+      description: Hive's properties
+      properties:
+        computerName:
+          type: string
+          description: The name of the computer where the Custom Hive is installed.
+          example: test-station
+        connected:
+          type: boolean
+          description: Whether the Custom Hive is connected to Scoutbees' backend servers. If connected, the Custom Hive is ready to use.
+          example: true
+        coordinates:
+          type: object
+          description: The geographic location of the Custom Hive, if a location has been set.
+          properties:
+            latitude:
+              description: The latitude
+              type: number
+              example: 49.258695
+            longitude:
+              description: The longitude
+              type: number
+              example: -55.176569
+        disabled:
+          type: boolean
+          description: Whether the Custom Hive is disabled.
+          example: false
+        id:
+          type: integer
+          description: ID of the Custom Hive.
+          example: 1
+        name:
+          type: string
+          description: The Custom Hive's name.
+          example: test-hive-name
+        version:
+          type: integer
+          description: The Custom Hive version.
+          example: 1124
+  responses:
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
+    CloudHivesList:
+      description: A list of Cloud Hives
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: Information about each Cloud Hive.
+                items:
+                  $ref: '#/components/schemas/CloudHiveResponse'
+              success:
+                type: boolean
+                description: Whether the request was successful.
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
+    HivesList:
+      description: A list of Custom Hives
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: Information about each Custom Hive.
+                items:
+                  $ref: '#/components/schemas/HiveResponse'
+              success:
+                type: boolean
+                description: Whether the request was successful.
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

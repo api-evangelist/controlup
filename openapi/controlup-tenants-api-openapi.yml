@@ -1,0 +1,4243 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Tenants API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Tenants
+paths:
+  /cloud/tenants/{tenantId}/credentials:
+    get:
+      tags:
+      - Tenants
+      summary: Get tenant credentials
+      description: 'Returns every credential in the tenant''s pool — the default one plus any additional service principals added for
+
+        load balancing — with sensitive values masked.
+
+        Describes how credentials are configured, not whether they currently work: health, cooldown, and usage metrics are absent.'
+      operationId: GetTenantCredentials
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the credentials.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CloudCredentialDto'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    post:
+      tags:
+      - Tenants
+      summary: Add a credential
+      description: 'Adds a new credential to a tenant''s credential pool.
+
+        This is useful for adding additional service principals for load balancing API calls.
+
+        Automatically triggers credential verification in the background to update health status.'
+      operationId: AddTenantCredential
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The credential creation request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCloudCredentialRequest'
+        required: true
+      responses:
+        '201':
+          description: Successfully created the credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudCredentialDto'
+        '400':
+          description: Bad request. Invalid request data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have edit tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/{credentialId}:
+    get:
+      tags:
+      - Tenants
+      summary: Get a credential by ID
+      description: 'Returns one credential''s configuration: auth type, masked secret fields, and whether it is enabled.
+
+        Configuration only — it reports nothing about that credential''s live health, cooldown, or usage.'
+      operationId: GetTenantCredential
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudCredentialDto'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    put:
+      tags:
+      - Tenants
+      summary: Update a credential
+      description: 'Updates an existing credential with new authentication details.
+
+        Automatically clears any stale operational state (cooldown, health metrics) after update.
+
+        Automatically triggers credential verification in the background to update health status.'
+      operationId: UpdateTenantCredential
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The credential update request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCloudCredentialRequest'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudCredentialDto'
+        '400':
+          description: Bad request. Invalid request data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have edit tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    patch:
+      tags:
+      - Tenants
+      summary: Patch a credential
+      description: 'Partially updates a credential. Only provided fields will be updated.
+
+        Automatically clears any stale operational state (cooldown, health metrics) after update.
+
+        Automatically triggers credential verification in the background to update health status.'
+      operationId: PatchTenantCredential
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The credential patch request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchCloudCredentialRequest'
+        required: true
+      responses:
+        '200':
+          description: Successfully patched the credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudCredentialDto'
+        '400':
+          description: Bad request. Invalid request data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have edit tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    delete:
+      tags:
+      - Tenants
+      summary: Delete a credential
+      description: 'Soft deletes a credential from a tenant.
+
+        If deleting the default credential, another credential will be automatically promoted to default (prioritizes enabled credentials, then oldest by creation date).
+
+        Validation rules:
+
+        - Cannot delete the only credential for a tenant
+
+        - Cannot delete if it would leave no enabled credentials'
+      operationId: DeleteTenantCredential
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Successfully deleted the credential.
+        '400':
+          description: Bad request. Validation rule violated, for example deleting the only credential or the last enabled credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have delete tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/{credentialId}/enable:
+    post:
+      tags:
+      - Tenants
+      summary: Enable a credential
+      description: 'Enables a credential for use in the credential pool.
+
+        Enabled credentials will be selected for API operations via round-robin (LRU) selection.
+
+        Automatically clears any stale operational state (cooldown, health metrics) to provide a fresh start.'
+      operationId: EnableTenantCredential
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully enabled the credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudCredentialDto'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have edit tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/{credentialId}/disable:
+    post:
+      tags:
+      - Tenants
+      summary: Disable a credential
+      description: 'Disables a credential from being used in the credential pool.
+
+        Disabled credentials will not be selected for API operations but remain in the system.
+
+        Cannot disable the last enabled credential for a tenant.'
+      operationId: DisableTenantCredential
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully disabled the credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudCredentialDto'
+        '400':
+          description: Bad request. Cannot disable the last enabled credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have edit tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/status:
+    get:
+      tags:
+      - Tenants
+      summary: Get credentials status
+      description: 'Returns live operational status for every credential in the tenant: health, rate-limit cooldown, and usage metrics.
+
+        Reports whether credentials are currently working rather than how they are configured, and covers the whole pool in one call.'
+      operationId: GetTenantCredentialsPoolStatus
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the detailed credential statuses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CredentialStatusDto'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/{credentialId}/status:
+    get:
+      tags:
+      - Tenants
+      summary: Get credential status
+      description: 'Returns live operational status for one credential: health, rate-limit cooldown, and usage metrics.
+
+        Reports whether that credential is currently working rather than how it is configured, and covers a single credential rather than the pool.'
+      operationId: GetTenantCredentialStatus
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the detailed credential status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialStatusDto'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/verify:
+    post:
+      tags:
+      - Tenants
+      summary: Verify default credentials
+      description: 'Tests one credential live against Azure AD — the tenant''s default specifically, not round-robin selection —
+
+        and returns step-by-step results. Success clears stale operational state such as cooldown and health metrics.
+
+        Scoped to authentication by that single credential; refreshing the tenant status is the broader check that
+
+        walks every subscription and updates overall tenant health.'
+      operationId: VerifyTenantDefaultCredentials
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Verification completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+              example:
+                isSuccess: true
+                steps:
+                - stepName: Authenticating with Azure AD
+                  status: success
+                  isSuccess: true
+                  durationMs: 450
+                - stepName: Listing subscriptions
+                  status: success
+                  isSuccess: true
+                  durationMs: 320
+                - stepName: Checking subscription access
+                  status: success
+                  isSuccess: true
+                  durationMs: 180
+                - stepName: Verifying Reader role
+                  status: warning
+                  detail: Role verification not fully implemented
+                  isSuccess: false
+                  durationMs: 220
+                completedAt: '2025-10-09T14:30:00Z'
+                durationMs: 1170
+        '400':
+          description: Bad request. Invalid tenant ID or tenant has no default credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/{credentialId}/verify:
+    post:
+      tags:
+      - Tenants
+      summary: Verify a credential by ID
+      description: 'Verifies a specific credential for a tenant. Tests authentication with Azure AD and tenant access.
+
+        This verifies the exact credential specified - NOT round-robin selection.
+
+        On successful verification, automatically clears any stale operational state (cooldown, health metrics).'
+      operationId: VerifyTenantCredential
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier to verify.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Verification completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+              example:
+                isSuccess: true
+                steps:
+                - stepName: Authenticating with Azure AD
+                  status: success
+                  isSuccess: true
+                  durationMs: 450
+                - stepName: Listing subscriptions
+                  status: success
+                  isSuccess: true
+                  durationMs: 320
+                - stepName: Checking subscription access
+                  status: success
+                  isSuccess: true
+                  durationMs: 180
+                - stepName: Verifying Reader role
+                  status: warning
+                  detail: Role verification not fully implemented
+                  isSuccess: false
+                  durationMs: 220
+                completedAt: '2025-10-09T14:30:00Z'
+                durationMs: 1170
+        '400':
+          description: Bad request. Invalid tenant or credential ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/verify/transcript:
+    post:
+      tags:
+      - Tenants
+      summary: Verify default credentials (transcript)
+      description: 'Verifies the default credential for a tenant with formatted output lines. Check IsSuccess field for result.
+
+        This verifies the specific default credential - NOT round-robin selection.
+
+        On successful verification, automatically clears any stale operational state (cooldown, health metrics).'
+      operationId: VerifyTenantDefaultCredentialsTranscript
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Verification completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationTranscriptResponse'
+              example:
+                isSuccess: true
+                output:
+                - -- Running validations --
+                - '  Authenticating with Azure AD ...... Success ✓'
+                - '  Listing subscriptions ............. Success ✓'
+                - '  Checking subscription access ...... Success ✓'
+                - '  Verifying Reader role ............. Success ✓'
+                - -- Validation success --
+        '400':
+          description: Bad request. Invalid tenant ID or tenant has no default credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/{credentialId}/verify/transcript:
+    post:
+      tags:
+      - Tenants
+      summary: Verify a credential by ID (transcript)
+      description: 'Verifies a specific credential for a tenant with formatted output lines. Check IsSuccess field for result.
+
+        This verifies the exact credential specified - NOT round-robin selection.
+
+        On successful verification, automatically clears any stale operational state (cooldown, health metrics).'
+      operationId: VerifyTenantCredentialTranscript
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier to verify.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Verification completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationTranscriptResponse'
+              example:
+                isSuccess: true
+                output:
+                - -- Running validations --
+                - '  Authenticating with Azure AD ...... Success ✓'
+                - '  Listing subscriptions ............. Success ✓'
+                - '  Checking subscription access ...... Success ✓'
+                - '  Verifying Reader role ............. Success ✓'
+                - -- Validation success --
+        '400':
+          description: Bad request. Invalid tenant or credential ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/verify/stream:
+    get:
+      tags:
+      - Tenants
+      summary: Verify default credentials - streaming (Deprecated)
+      description: 'Streams real-time verification progress for the tenant''s default credential over a WebSocket, as structured JSON messages.
+
+        Verifies that one default credential rather than exercising round-robin selection, and clears stale cooldown and health metrics on success.
+
+        **DEPRECATED:** use `POST /api/v1/cloud/tenants/{tenantId}/credentials/verify/sse` instead — same message format over a
+
+        simpler protocol. This WebSocket endpoint is kept only for backward compatibility with existing UI clients.'
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '101':
+          description: Switching Protocols - WebSocket connection established.
+        '200':
+          description: OK
+        '400':
+          description: Bad request. Invalid tenant ID or not a WebSocket request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist or has no default credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error occurred during verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: true
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/{credentialId}/verify/stream:
+    get:
+      tags:
+      - Tenants
+      summary: Verify a credential by ID - streaming (Deprecated)
+      description: 'Streams real-time verification progress for one named credential over a WebSocket, as structured JSON messages.
+
+        Verifies the exact credential given rather than exercising round-robin selection, and clears stale cooldown and health metrics on success.
+
+        **DEPRECATED:** use `POST /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify/sse` instead — same message
+
+        format over a simpler protocol. This WebSocket endpoint is kept only for backward compatibility with existing UI clients.'
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier to verify.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '101':
+          description: Switching Protocols - WebSocket connection established.
+        '200':
+          description: OK
+        '400':
+          description: Bad request. Invalid tenant or credential ID, or not a WebSocket request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error occurred during verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: true
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/verify/sse:
+    post:
+      tags:
+      - Tenants
+      summary: Verify default credentials - streaming
+      description: 'Streams real-time tenant credential verification progress via Server-Sent Events (SSE).
+
+        Each event is a JSON message: `data: {"type":"step_started","stepName":"...","stepNumber":1}\n\n`
+
+        Replaces the WebSocket-based `/verify/stream` endpoint. Same message format, simpler protocol.'
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: SSE stream started successfully.
+        '400':
+          description: Bad request. Invalid tenant ID or tenant has no default credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error occurred during verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/credentials/{credentialId}/verify/sse:
+    post:
+      tags:
+      - Tenants
+      summary: Verify a credential by ID - streaming
+      description: 'Streams real-time tenant credential verification progress via Server-Sent Events (SSE).
+
+        Each event is a JSON message: `data: {"type":"step_started","stepName":"...","stepNumber":1}\n\n`
+
+        Replaces the WebSocket-based `/verify/stream` endpoint. Same message format, simpler protocol.'
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: credentialId
+        in: path
+        description: The credential identifier to verify.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: SSE stream started successfully.
+        '400':
+          description: Bad request. Invalid tenant or credential ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant or credential does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error occurred during verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/discover/subscriptions:
+    get:
+      tags:
+      - Tenants
+      summary: Discover subscriptions accessible by tenant's default credentials
+      description: 'Discovers the subscriptions the tenant''s default credential can reach — for Azure, those the service principal was granted.
+
+        Each row is flagged with isAlreadyManaged, so this distinguishes what could still be onboarded from what
+
+        already has been. Exercises only the default credential.'
+      operationId: DiscoverTenantSubscriptions
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: sort
+        in: query
+        description: 'Sort expression for ordering results.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          id, isAlreadyManaged, name, state, tenantId
+
+
+          Default when omitted: name:asc.'
+        schema:
+          type: string
+        examples:
+          default:
+            summary: default
+            value: name:asc
+        x-foundry-sort:
+          fields:
+          - id
+          - isAlreadyManaged
+          - name
+          - state
+          - tenantId
+          dynamicPaths: false
+          defaultField: name
+          defaultAscending: true
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully discovered subscriptions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveredSubscriptionDtoPagedResultDto'
+        '400':
+          description: Bad request. Tenant has no default credential configured or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view subscriptions permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable entity. Cloud provider authentication failed because the stored credentials are invalid or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/discover/resources:
+    get:
+      tags:
+      - Tenants
+      summary: Discover resources across subscriptions in a tenant
+      description: "Discovers resource metadata for several types at once by querying the cloud provider live, each row flagged with\nisAlreadyManaged so resources already imported into DaaS IQ can be told apart from candidates.\n            \nIf subscriptionIds is provided, only those subscriptions are queried (faster — skips subscription discovery).\nIf subscriptionIds is not provided, all accessible subscriptions are discovered and queried."
+      operationId: DiscoverTenantResources
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: types
+        in: query
+        description: Comma-separated list of resource types to discover (e.g., "HostPool", "HostPool,Image").
+        required: true
+        schema:
+          type: string
+      - name: subscriptionIds
+        in: query
+        description: 'Optional comma-separated list of Azure subscription IDs (GUIDs) to query.
+
+          If provided, only these subscriptions will be queried (skips subscription discovery).
+
+          If not provided, all subscriptions accessible by the tenant''s credentials will be discovered and queried.'
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: 'Optional filter expression.
+
+
+          Supports JSON and RQL formats:
+
+
+          - JSON: {"and":[{"field":"status","op":"eq","value":"Active"},{"field":"name","op":"ct","value":"Smith, John"}]}
+
+          - RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters
+
+
+          Operators:
+
+          and, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)
+
+
+          Fields (names are matched case-insensitively):
+
+          id, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type
+
+
+          Dynamic properties.* field paths are also allowed (for example properties.hostPoolType).'
+        schema:
+          type: string
+        examples:
+          json:
+            summary: json
+            value: '{"field":"name","op":"eq","value":"value"}'
+          rql:
+            summary: rql
+            value: eq(name,value)
+        x-foundry-filter:
+          fields:
+          - id
+          - isAlreadyManaged
+          - location
+          - name
+          - resourceGroup
+          - subscriptionId
+          - type
+          operators:
+            logical:
+            - and
+            - or
+            - not
+            predicate:
+            - eq
+            - neq
+            - ct
+            - nct
+            - sw
+            - nsw
+            - ew
+            - new
+          dynamicPaths: true
+      - name: sort
+        in: query
+        description: 'Sort expression for ordering results.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          cpuArchitectureType, galleryId, galleryName, generation, hasVersion, hostPoolType, hyperVGeneration, id, imageDefinitionId, imageDefinitionName, imageSourceType, isAlreadyManaged, location, name, offer, osDiskSizeBytes, osDiskSizeGiB, osDiskSizeInGb, osState, osType, powerState, publisher, recommendedCoresMax, recommendedCoresMin, recommendedMemoryMax, recommendedMemoryMaxBytes, recommendedMemoryMin, recommendedMemoryMinBytes, resourceGroup, securityType, sku, storageAccountType, subnetId, subscriptionId, tags, type, version, vmSize, vnetId
+
+
+          Default when omitted: name:asc.
+
+
+          Dynamic properties.* field paths are also allowed (for example properties.hostPoolType).'
+        schema:
+          type: string
+        examples:
+          default:
+            summary: default
+            value: name:asc
+        x-foundry-sort:
+          fields:
+          - cpuArchitectureType
+          - galleryId
+          - galleryName
+          - generation
+          - hasVersion
+          - hostPoolType
+          - hyperVGeneration
+          - id
+          - imageDefinitionId
+          - imageDefinitionName
+          - imageSourceType
+          - isAlreadyManaged
+          - location
+          - name
+          - offer
+          - osDiskSizeBytes
+          - osDiskSizeGiB
+          - osDiskSizeInGb
+          - osState
+          - osType
+          - powerState
+          - publisher
+          - recommendedCoresMax
+          - recommendedCoresMin
+          - recommendedMemoryMax
+          - recommendedMemoryMaxBytes
+          - recommendedMemoryMin
+          - recommendedMemoryMinBytes
+          - resourceGroup
+          - securityType
+          - sku
+          - storageAccountType
+          - subnetId
+          - subscriptionId
+          - tags
+          - type
+          - version
+          - vmSize
+          - vnetId
+          dynamicPaths: true
+          defaultField: name
+          defaultAscending: true
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully discovered resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveredManagedCloudResourceDtoPagedResultDto'
+        '400':
+          description: Bad request. Invalid tenant ID, resource types, subscription IDs, or parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view subscriptions permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable entity. Cloud provider authentication failed because the stored credentials are invalid or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/discover/resources/hostpools:
+    get:
+      tags:
+      - Tenants
+      summary: Discover host pools across all subscriptions in a tenant
+      description: 'Discovers host pools as they exist in Azure, with pool type, load balancer configuration, and session limits.
+
+        Includes pools never imported, so it answers "what is out there" rather than "what do we manage".'
+      operationId: DiscoverTenantHostPools
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: filter
+        in: query
+        description: 'Optional filter expression.
+
+
+          Supports JSON and RQL formats:
+
+
+          - JSON: {"and":[{"field":"status","op":"eq","value":"Active"},{"field":"name","op":"ct","value":"Smith, John"}]}
+
+          - RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters
+
+
+          Operators:
+
+          and, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)
+
+
+          Fields (names are matched case-insensitively):
+
+          hostPoolType, id, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type'
+        schema:
+          type: string
+        examples:
+          json:
+            summary: json
+            value: '{"field":"name","op":"eq","value":"value"}'
+          rql:
+            summary: rql
+            value: eq(name,value)
+        x-foundry-filter:
+          fields:
+          - hostPoolType
+          - id
+          - isAlreadyManaged
+          - location
+          - name
+          - resourceGroup
+          - subscriptionId
+          - type
+          operators:
+            logical:
+            - and
+            - or
+            - not
+            predicate:
+            - eq
+            - neq
+            - ct
+            - nct
+            - sw
+            - nsw
+            - ew
+            - new
+          dynamicPaths: false
+      - name: sort
+        in: query
+        description: 'Sort expression for ordering results.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          hostPoolType, id, isAlreadyManaged, location, name, resourceGroup, subscriptionId, tags, type
+
+
+          Default when omitted: name:asc.
+
+
+          Dynamic properties.* field paths are also allowed (for example properties.hostPoolType).'
+        schema:
+          type: string
+        examples:
+          default:
+            summary: default
+            value: name:asc
+        x-foundry-sort:
+          fields:
+          - hostPoolType
+          - id
+          - isAlreadyManaged
+          - location
+          - name
+          - resourceGroup
+          - subscriptionId
+          - tags
+          - type
+          dynamicPaths: true
+          defaultField: name
+          defaultAscending: true
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully discovered host pools.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveredHostPoolDtoPagedResultDto'
+        '400':
+          description: Bad request. Invalid tenant ID or parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view subscriptions permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable entity. Cloud provider authentication failed because the stored credentials are invalid or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/discover/resources/images:
+    get:
+      tags:
+      - Tenants
+      summary: Discover images across all subscriptions in a tenant (Deprecated)
+      description: "\n<b>DEPRECATED:</b> Image discovery is replaced by Image Management. Use /discover/resources/virtualmachines for the import wizard.\n            Image metadata with source type (Managed or SharedImageGallery), OS type, and disk information."
+      operationId: DiscoverTenantImages
+      parameters:
+      - name: tenantId
+        in: path
+        description: The tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: sort
+        in: query
+        description: 'Sort expression for ordering results.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          cpuArchitectureType, hyperVGeneration, id, isAlreadyManaged, location, name, osDiskSizeGiB, osState, osType, resourceGroup, subscriptionId, tags, type
+
+
+          Default when omitted: name:asc.
+
+
+          Dynamic properties.* field paths are also allowed (for example properties.hostPoolType).'
+        schema:
+          type: string
+        examples:
+          default:
+            summary: default
+            value: name:asc
+        x-foundry-sort:
+          fields:
+          - cpuArchitectureType
+          - hyperVGeneration
+          - id
+          - isAlreadyManaged
+          - location
+          - name
+          - osDiskSizeGiB
+          - osState
+          - osType
+          - resourceGroup
+          - subscriptionId
+          - tags
+          - type
+          dynamicPaths: true
+          defaultField: name
+          defaultAscending: true
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully discovered images.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveredImageDtoPagedResultDto'
+        '400':
+          description: Bad request. Invalid tenant ID or parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view subscriptions permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable entity. Cloud provider authentication failed because the stored credentials are invalid or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: true
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{tenantId}/resources/import:
+    post:
+      tags:
+      - Tenants
+      summary: Import cloud resources for a tenant
+      description: "Creates a single long-running parent job that orchestrates subscription-level import jobs.\nThe parent job discovers subscriptions, dispatches child import jobs (one per subscription),\naggregates progress, and determines overall success/failure.\n            \nTwo modes are supported:\n1. **Import All**: Set `importAll: true` to discover all subscriptions and import all resources\n2. **Selective Import**: Provide specific subscriptions and resource IDs to import\n            \nSelective imports default to reconcile behavior: subscriptions and resources omitted from the request\nare soft-deleted. Set `importMode` to `Additive` for host-pool-only imports that must preserve\nall existing managed resources.\n            \nWhen importing, CloudSubscription records are automatically created for Azure subscriptions\nthat don't exist yet in the system. These subscriptions are linked to the tenant and use\nthe tenant's default credentials."
+      operationId: ImportTenantResources
+      parameters:
+      - name: tenantId
+        in: path
+        description: The unique tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The import request specifying what to import.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportTenantResourcesRequest'
+        required: true
+      responses:
+        '201':
+          description: Import job created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have manage subscriptions permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants:
+    get:
+      tags:
+      - Tenants
+      summary: Get tenants
+      description: 'Returns the cloud provider tenants in the organization — Azure AD, AWS Organizations, GCP Organizations —
+
+        optionally narrowed to one provider, each with its default credential masked.
+
+        Configuration only: no health, verification results, or the subscriptions beneath each tenant.'
+      operationId: GetTenants
+      parameters:
+      - name: provider
+        in: query
+        description: Optional. The cloud provider identifier (e.g., "azure", "aws", "gcp").
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      responses:
+        '200':
+          description: Successfully retrieved the list of tenants.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CloudTenantDto'
+              example:
+              - id: 12345678-1234-1234-1234-123456789abc
+                provider: azure
+                providerTenantId: 87654321-4321-4321-4321-210987654321
+                name: Production Azure Tenant
+                defaultCredential:
+                  authType: azureServicePrincipal
+                  credentials:
+                    clientId: 11111111-2222-3333-4444-555555555555
+                    clientSecret: def*************
+                lifecycleState: active
+                healthStatus: healthy
+                healthStatusMessage: All checks passed. Tenant is healthy.
+                subscriptionCount: 0
+                lastDiscoveryAt: '2026-08-02T02:37:45.1907301Z'
+                createdAt: '2026-07-03T03:37:45.1907554Z'
+                lastUpdated: '2026-08-01T03:37:45.1907672Z'
+              - id: 22222222-2222-2222-2222-222222222222
+                provider: azure
+                providerTenantId: 99999999-8888-7777-6666-555555555555
+                name: Development Azure Tenant
+                defaultCredential:
+                  authType: azureServicePrincipal
+                  credentials:
+                    clientId: 22222222-3333-4444-5555-666666666666
+                    clientSecret: abc*************
+                lifecycleState: active
+                healthStatus: warning
+                healthStatusMessage: Secret expires in 5 days.
+                subscriptionCount: 0
+                lastDiscoveryAt: '2026-08-02T01:37:45.1907791Z'
+                createdAt: '2026-07-19T03:37:45.1907792Z'
+                lastUpdated: '2026-07-30T03:37:45.1907793Z'
+        '400':
+          description: Bad request. Invalid provider identifier.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    post:
+      tags:
+      - Tenants
+      summary: Create a new tenant with default credential
+      description: 'Creates a new tenant with the specified configuration and default credential in a single operation.
+
+        The provided credentials will become the tenant''s default credential used for API authentication.
+
+        Note: For Azure providers, the TenantId field in credentials is automatically populated from the ProviderTenantId.'
+      operationId: CreateTenant
+      requestBody:
+        description: The tenant creation request including credential data.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCloudTenantRequest'
+            example:
+              provider: azure
+              providerTenantId: 87654321-4321-4321-4321-210987654321
+              name: My Azure Tenant
+              defaultCredential:
+                authType: azureServicePrincipal
+                credentials:
+                  clientId: 11111111-2222-3333-4444-555555555555
+                  clientSecret: your-client-secret
+        required: true
+      responses:
+        '201':
+          description: Successfully created the tenant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudTenantDto'
+              example:
+                id: 12345678-1234-1234-1234-123456789abc
+                provider: azure
+                providerTenantId: 87654321-4321-4321-4321-210987654321
+                name: My Azure Tenant
+                defaultCredential:
+                  authType: azureServicePrincipal
+                  credentials:
+                    clientId: 11111111-2222-3333-4444-555555555555
+                    clientSecret: def*************
+                lifecycleState: active
+                healthStatus: healthy
+                healthStatusMessage: All checks passed. Tenant is healthy.
+                subscriptionCount: 0
+                lastDiscoveryAt: '2026-08-02T02:37:45.2003937Z'
+                createdAt: '2026-07-26T03:37:45.2003956Z'
+                lastUpdated: '2026-08-02T03:37:45.2003961Z'
+        '400':
+          description: Bad request. Invalid request data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have create tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict. A tenant with the same identifier already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{id}:
+    get:
+      tags:
+      - Tenants
+      summary: Get a tenant by ID
+      description: 'Returns one tenant in the same shape as a list row: provider, identifiers, and masked default credential.
+
+        Configuration only: no health, no verification results, and no credentials beyond the default.'
+      operationId: GetTenant
+      parameters:
+      - name: id
+        in: path
+        description: The unique tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the tenant details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudTenantDto'
+              example:
+                id: 12345678-1234-1234-1234-123456789abc
+                provider: azure
+                providerTenantId: 87654321-4321-4321-4321-210987654321
+                name: My Azure Tenant
+                defaultCredential:
+                  authType: azureServicePrincipal
+                  credentials:
+                    clientId: 11111111-2222-3333-4444-555555555555
+                    clientSecret: def*************
+                lifecycleState: active
+                healthStatus: healthy
+                healthStatusMessage: All checks passed. Tenant is healthy.
+                subscriptionCount: 0
+                lastDiscoveryAt: '2026-08-02T02:37:45.2023654Z'
+                createdAt: '2026-07-26T03:37:45.2023671Z'
+                lastUpdated: '2026-08-02T03:37:45.2023675Z'
+        '400':
+          description: Bad request. Invalid tenant ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have view tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    put:
+      tags:
+      - Tenants
+      summary: Update an existing tenant
+      description: 'Updates an existing tenant with the specified configuration. Provider changes are only allowed for tenants in Draft state.
+
+        If AuthType and Credentials are provided, also updates the default credential.'
+      operationId: UpdateTenant
+      parameters:
+      - name: id
+        in: path
+        description: The unique tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The tenant update request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCloudTenantRequest'
+            example:
+              name: My Updated Azure Tenant
+              defaultCredential:
+                authType: azureServicePrincipal
+                credentials:
+                  clientId: 11111111-2222-3333-4444-555555555555
+                  clientSecret: new-client-secret
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the tenant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudTenantDto'
+              example:
+                id: 12345678-1234-1234-1234-123456789abc
+                provider: azure
+                providerTenantId: 87654321-4321-4321-4321-210987654321
+                name: My Azure Tenant
+                defaultCredential:
+                  authType: azureServicePrincipal
+                  credentials:
+                    clientId: 11111111-2222-3333-4444-555555555555
+                    clientSecret: def*************
+                lifecycleState: active
+                healthStatus: healthy
+                healthStatusMessage: All checks passed. Tenant is healthy.
+                subscriptionCount: 0
+                lastDiscoveryAt: '2026-08-02T02:37:45.2058035Z'
+                createdAt: '2026-07-26T03:37:45.2058041Z'
+                lastUpdated: '2026-08-02T03:37:45.2058044Z'
+        '400':
+          description: Bad request. Invalid request data or attempting to change provider on non-Draft tenant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have edit tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    patch:
+      tags:
+      - Tenants
+      summary: Partially update a tenant
+      description: 'Partially updates a tenant. All fields are optional - only provided fields will be updated.
+
+        For credential updates, you can provide partial credentials (e.g., just clientSecret) to update specific fields.'
+      operationId: PatchTenant
+      parameters:
+      - name: id
+        in: path
+        description: The unique tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The partial update request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchCloudTenantRequest'
+            example:
+              defaultCredential:
+                credentials:
+                  clientId: 11111111-2222-3333-4444-555555555555
+                  clientSecret: rotated-client-secret
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the tenant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudTenantDto'
+              example:
+                id: 12345678-1234-1234-1234-123456789abc
+                provider: azure
+                providerTenantId: 87654321-4321-4321-4321-210987654321
+                name: My Azure Tenant
+                defaultCredential:
+                  authType: azureServicePrincipal
+                  credentials:
+                    clientId: 11111111-2222-3333-4444-555555555555
+                    clientSecret: def*************
+                lifecycleState: active
+                healthStatus: healthy
+                healthStatusMessage: All checks passed. Tenant is healthy.
+                subscriptionCount: 0
+                lastDiscoveryAt: '2026-08-02T02:37:45.2110729Z'
+                createdAt: '2026-07-26T03:37:45.2110735Z'
+                lastUpdated: '2026-08-02T03:37:45.2110738Z'
+        '400':
+          description: Bad request. Invalid request data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have edit tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    delete:
+      tags:
+      - Tenants
+      summary: Delete a tenant
+      description: Soft deletes a tenant and its associated credentials.
+      operationId: DeleteTenant
+      parameters:
+      - name: id
+        in: path
+        description: The unique tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Successfully deleted the tenant.
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have delete tenants permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{id}/status:
+    get:
+      tags:
+      - Tenants
+      summary: Get tenant status
+      description: "Returns the tenant's aggregated health and verification details, computed from every credential and subscription beneath it.\nReads the last stored result without contacting the cloud provider, so it is fast and safe to call repeatedly,\nbut reflects the previous evaluation rather than this moment; a never-evaluated tenant reports Unknown.\nUse this to display known health. To re-test connectivity right now, refresh the status instead.\n            \nUse the `include` parameter to request additional details:\n- `subscriptions` - Include status for each subscription under the tenant\n- `credentials` - Include detailed status (health, cooldown, usage metrics) for each credential\n            \nMultiple values can be combined with commas: `include=subscriptions,credentials`"
+      operationId: GetTenantStatus
+      parameters:
+      - name: id
+        in: path
+        description: The unique tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: include
+        in: query
+        description: Comma-separated list of additional data to include (subscriptions, credentials).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved the tenant status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudTenantStatusDto'
+        '400':
+          description: Bad request. Invalid tenant ID format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to view tenants.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/tenants/{id}/status/refresh:
+    post:
+      tags:
+      - Tenants
+      summary: Refresh tenant status
+      description: "Re-tests the tenant against the cloud provider now, verifying every subscription beneath it and re-aggregating\nthe result, then stores it so later reads of the tenant status return this outcome.\nThe authoritative answer to \"is this tenant working right now\", at the cost of live provider calls across\nevery subscription. Covers the whole tenant, whereas verifying a credential tests one credential in isolation.\n            \nUse the `include` parameter to request additional details:\n- `subscriptions` - Include status for each subscription under the tenant\n- `credentials` - Include detailed status (health, cooldown, usage metrics) for each credential\n            \nMultiple values can be combined with commas: `include=subscriptions,credentials`"
+      operationId: RefreshTenantStatus
+      parameters:
+      - name: id
+        in: path
+        description: The unique tenant identifier.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: include
+        in: query
+        description: Comma-separated list of additional data to include (subscriptions, credentials).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully refreshed the tenant status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudTenantStatusDto'
+        '400':
+          description: Bad request. Invalid tenant ID format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to view tenants.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. The specified tenant does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    PatchCloudTenantRequest:
+      type: object
+      properties:
+        name:
+          maxLength: 64
+          minLength: 3
+          type:
+          - string
+          - 'null'
+          description: User-friendly name for the tenant.
+        defaultCredential:
+          $ref: '#/components/schemas/PatchCloudCredentialRequest'
+      additionalProperties: false
+      description: 'Request model for patching (partial update) a cloud tenant.
+
+        All fields are optional - only provided fields will be updated.'
+    TenantLifecycleState:
+      enum:
+      - draft
+      - active
+      - deleting
+      - deleted
+      type: string
+      description: 'Lifecycle state of a cloud tenant.
+
+        Represents the tenant''s position in the management workflow.'
+    UpdateCloudTenantRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: User-friendly name for the tenant.
+        defaultCredential:
+          $ref: '#/components/schemas/UpdateCloudCredentialRequest'
+      additionalProperties: false
+      description: 'Request model for updating a cloud tenant.
+
+        Allows updating tenant name and optionally replacing the default credential.'
+    VerificationTranscriptResponse:
+      required:
+      - isSuccess
+      - output
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          description: Whether the operation was successful.
+          example: true
+        output:
+          type: array
+          items:
+            type: string
+          description: Formatted output lines from the operation.
+      additionalProperties: false
+      description: 'Generic response for operations that produce formatted line-by-line output.
+
+        Can be used for validations, diagnostics, migrations, deployments, or any operation
+
+        that provides step-by-step progress or results as text output.'
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+    VmSecurityType:
+      enum:
+      - trustedLaunch
+      - standard
+      - confidentialVM
+      type: string
+      description: Security profile for Azure VMs.
+    VerificationResponse:
+      required:
+      - completedAt
+      - durationMs
+      - isSuccess
+      - steps
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          description: 'Whether the overall verification was successful.
+
+            All steps must succeed for this to be true.'
+          example: true
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/VerificationStepResponse'
+          description: 'List of verification steps and their individual results.
+
+            Each step represents a specific check performed against the cloud provider API.'
+        errorMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Overall error message if the verification failed.
+
+            Typically contains the error from the first failed step.'
+          example: 'Authentication failed: Invalid client secret'
+        completedAt:
+          type: string
+          description: Timestamp when the verification completed (UTC).
+          format: date-time
+          example: '2025-10-09T14:30:00Z'
+        durationMs:
+          type: integer
+          description: Total duration of the verification process in milliseconds.
+          format: int64
+          example: 950
+      additionalProperties: false
+      description: 'Response containing detailed results of a credential verification operation.
+
+        Includes overall success status, individual step results, and timing information.'
+    CloudProviderAuthType:
+      enum:
+      - azureServicePrincipal
+      - azureServicePrincipalCertificate
+      type: string
+      description: Specifies the supported authentication types for connecting to various cloud providers and services.
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    VerificationStatus:
+      enum:
+      - notChecked
+      - inProgress
+      - success
+      - warning
+      - failed
+      type: string
+      description: Represents the status of a verification check (credentials, inventory sync, etc.).
+    DiscoveredHostPoolDto:
+      required:
+      - hostPoolType
+      - id
+      - isAlreadyManaged
+      - location
+      - name
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
+        hostPoolType:
+          $ref: '#/components/schemas/HostPoolType'
+      additionalProperties: false
+      description: 'Represents a discovered Azure Virtual Desktop host pool.
+
+        Extends the base CloudResourceDto with host pool-specific properties.'
+    ImportTenantResourcesRequest:
+      type: object
+      properties:
+        importAll:
+          type: boolean
+          description: 'Whether to import ALL resources from ALL subscriptions under the tenant.
+
+            When true, the system will:
+
+            1. Discover all Azure subscriptions accessible with tenant credentials
+
+            2. Create CloudSubscription records for any that don''t exist
+
+            3. Import all resources (HostPools, Images, etc.) from each subscription
+
+            When false, only resources specified in the Subscriptions collection will be imported.'
+          default: false
+        importMode:
+          $ref: '#/components/schemas/ResourceImportMode'
+        subscriptions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TenantSubscriptionImportDto'
+          description: 'Subscriptions and their resources to import (used when ImportAll is false).
+
+            Each item specifies an Azure subscription and the resources to import from it.'
+      additionalProperties: false
+      description: 'Request model for importing cloud resources at the tenant level.
+
+        Supports two modes:
+
+        1. Import ALL resources from ALL subscriptions under the tenant (importAll = true)
+
+        2. Import specific resources grouped by subscription (subscriptions collection)'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    TenantSubscriptionStatusDto:
+      required:
+      - credentialsVerificationStatus
+      - id
+      - inventorySyncStatus
+      - name
+      - status
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the subscription.
+          format: uuid
+        name:
+          type: string
+          description: Display name of the subscription.
+        providerSubscriptionId:
+          type:
+          - string
+          - 'null'
+          description: External subscription ID from the cloud provider.
+        status:
+          $ref: '#/components/schemas/SubscriptionHealthStatus'
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: Human-readable message describing the current status.
+        credentialsVerificationStatus:
+          $ref: '#/components/schemas/VerificationStatus'
+        lastCredentialsVerificationAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last credentials verification attempt.
+          format: date-time
+        lastSuccessfulCredentialsVerificationAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last successful credentials verification.
+          format: date-time
+        credentialsVerificationStatusMessage:
+          type:
+          - string
+          - 'null'
+          description: Status message from the last credentials verification.
+        inventorySyncStatus:
+          $ref: '#/components/schemas/VerificationStatus'
+        lastInventorySyncAttemptAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last inventory sync attempt.
+          format: date-time
+        lastSuccessfulInventorySyncAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last successful inventory sync.
+          format: date-time
+        inventorySyncStatusMessage:
+          type:
+          - string
+          - 'null'
+          description: Status message from the last inventory sync.
+      additionalProperties: false
+      description: 'Subscription status details within a tenant status response.
+
+        Includes subscription identity and full status information.'
+    DiscoverableResourceType:
+      enum:
+      - subscription
+      - resourceGroup
+      - workspace
+      - image
+      - gallery
+      - galleryImage
+      - galleryImageVersion
+      - hostPool
+      - virtualMachine
+      - virtualNetwork
+      type: string
+      description: 'Public API enum for resource types that users can discover/import.
+
+        Only includes high-level resource types exposed to end users.'
+    DiscoveredImageDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredImageDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    DiscoveredSubscriptionDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredSubscriptionDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    UpdateCloudCredentialRequest:
+      required:
+      - authType
+      - credentials
+      type: object
+      properties:
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Credentials dictionary with required fields for the authentication type.
+
+            Sensitive fields will be encrypted and stored securely.
+
+
+            For Azure credentials (AzureServicePrincipal, AzureServicePrincipalCertificate):
+
+            - tenantId is automatically populated from the parent tenant''s ProviderTenantId and should not be provided
+
+            - Required fields: clientId, clientSecret (or clientCertificate for certificate auth)'
+      additionalProperties: false
+      description: Request model for updating a cloud credential.
+    ResourceImportMode:
+      enum:
+      - reconcile
+      - additive
+      type: string
+      description: Defines how a resource import treats managed resources omitted from the import request.
+    VerificationStepResponse:
+      required:
+      - durationMs
+      - isSuccess
+      - status
+      - stepName
+      type: object
+      properties:
+        stepName:
+          type: string
+          description: Name or description of the verification step.
+          example: Authenticating with Azure AD
+        status:
+          $ref: '#/components/schemas/VerificationStepStatus'
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional warning or error detail (null for most successes).
+        isSuccess:
+          type: boolean
+          description: Whether this verification step succeeded.
+          readOnly: true
+          example: true
+        durationMs:
+          type: integer
+          description: Duration of this step in milliseconds.
+          format: int64
+          example: 450
+      additionalProperties: false
+      description: 'Response DTO representing a single verification step result.
+
+        Each step contains information about a specific check performed during credential verification.'
+    DiscoveredHostPoolDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredHostPoolDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    TenantHealthStatus:
+      enum:
+      - unknown
+      - healthy
+      - warning
+      - error
+      type: string
+      description: 'Aggregated health status for a cloud tenant.
+
+        Computed from subscription health statuses and credential verification results.'
+    TenantDefaultCredentialDto:
+      required:
+      - authType
+      - credentials
+      type: object
+      properties:
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Credentials dictionary with sensitive values masked.
+
+            Only non-sensitive metadata fields (e.g., ClientId) are shown in clear text.
+
+            Sensitive fields (e.g., ClientSecret) show first 3 characters followed by asterisks.'
+      additionalProperties: false
+      description: 'Simplified response DTO for a tenant''s default credential (nested within CloudTenantDto).
+
+        Contains only authentication type and masked credentials.
+
+        For full credential details (Id, IsEnabled, timestamps), use GET /tenants/{id}/credentials.'
+    DiscoveredManagedCloudResourceDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredManagedCloudResourceDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    SubscriptionHealthStatus:
+      enum:
+      - unknown
+      - healthy
+      - warning
+      - error
+      - inProgress
+      type: string
+      description: 'Operational health status of an active cloud subscription.
+
+        Only meaningful when SubscriptionLifecycleState = Active.
+
+        Derived from last verification and inventory sync results.'
+    ImageSourceType:
+      enum:
+      - managed
+      - sharedImageGallery
+      type: string
+      description: Represents the source type of a virtual machine image.
+    CloudTenantStatusDto:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/TenantHealthStatus'
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the current status.
+
+            Examples: "All checks passed", "2 subscriptions have credential errors", "Secret expires in 5 days".'
+        lastVerifiedAt:
+          type:
+          - string
+          - 'null'
+          description: 'Timestamp when the tenant''s credentials were last verified.
+
+            Updated by the credentials verification background job.'
+          format: date-time
+        subscriptions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TenantSubscriptionStatusDto'
+          description: Detailed status information for each subscription under this tenant.
+        credentials:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CredentialStatusDto'
+          description: Pool status (health, cooldown, usage) for each credential under this tenant.
+      additionalProperties: false
+      description: 'Status information for a cloud tenant.
+
+        Used when querying tenant status directly (e.g., GET /tenants/{id}/status).
+
+        Provides aggregated health status computed from credentials and subscription statuses.'
+    DiscoveredSubscriptionDto:
+      required:
+      - id
+      - isAlreadyManaged
+      - name
+      - properties
+      - state
+      - tags
+      - tenantId
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: The cloud provider's subscription ID (e.g., Azure subscription GUID).
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        name:
+          type: string
+          description: The display name of the subscription.
+          example: Production Subscription
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        state:
+          type: string
+          description: The subscription state (e.g., Enabled, Disabled, Warned).
+          example: Enabled
+        tenantId:
+          type: string
+          description: The cloud provider's tenant ID (e.g., Azure AD tenant GUID).
+          example: 11111111-2222-3333-4444-555555555555
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Tags associated with the subscription.
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: Additional subscription properties (quotaId, spendingLimit, authorizationSource, etc.).
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this subscription is already imported into the application
+          example: false
+      additionalProperties: false
+      description: Represents a subscription discovered from a cloud tenant.
+    PatchCloudCredentialRequest:
+      type: object
+      properties:
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: 'Credentials dictionary. Can provide partial credentials (e.g., just clientSecret)
+
+            to update specific fields. Sensitive fields will be encrypted and stored securely.
+
+
+            For Azure credentials: tenantId is automatically derived from the parent tenant
+
+            and should not be provided.'
+      additionalProperties: false
+      description: 'Request model for patching (partial update) a cloud credential.
+
+        All fields are optional - only provided fields will be updated.'
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+    DiscoveredImageDto:
+      required:
+      - id
+      - imageSourceType
+      - isAlreadyManaged
+      - location
+      - name
+      - osType
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
+        galleryId:
+          type:
+          - string
+          - 'null'
+          description: Parent gallery ARM resource ID. Null for managed images.
+        galleryName:
+          type:
+          - string
+          - 'null'
+          description: Parent gallery name. Null for managed images.
+        imageSourceType:
+          $ref: '#/components/schemas/ImageSourceType'
+        hyperVGeneration:
+          type:
+          - string
+          - 'null'
+          description: Hyper-V generation of the image (V1 or V2). Null for managed images.
+        diskControllerTypes:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Disk controller types supported by the image definition, when available.
+        cpuArchitectureType:
+          type:
+          - string
+          - 'null'
+          description: CPU architecture type of the image (e.g., "x64", "Arm64"). Null when Azure omits the architecture property.
+        osType:
+          type: string
+          description: Operating system type (Windows or Linux).
+        osState:
+          type:
+          - string
+          - 'null'
+          description: OS state of the image (Generalized or Specialized).
+        sku:
+          type:
+          - string
+          - 'null'
+          description: Image SKU if from Shared Image Gallery.
+        offer:
+          type:
+          - string
+          - 'null'
+          description: Image offer if from Shared Image Gallery.
+        publisher:
+          type:
+          - string
+          - 'null'
+          description: Image publisher if from Shared Image Gallery.
+        version:
+          type:
+          - string
+          - 'null'
+          description: Image version if from Shared Image Gallery.
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        recommendedMemoryMinBytes:
+          type:
+          - integer
+          - 'null'
+          description: Recommended minimum memory size in bytes for the image.
+          format: int64
+        recommendedMemoryMaxBytes:
+          type:
+          - integer
+          - 'null'
+          description: Recommended maximum memory size in bytes for the image.
+          format: int64
+        recommendedCoresMin:
+          type:
+          - integer
+          - 'null'
+          description: Recommended minimum core count for the image.
+          format: int32
+        recommendedCoresMax:
+          type:
+          - integer
+          - 'null'
+          description: Recommended maximum core count for the image.
+          format: int32
+      additionalProperties: false
+      description: 'Represents a discovered virtual machine image.
+
+        Extends the base CloudResourceDto with image-specific properties.'
+    CreateCloudCredentialRequest:
+      required:
+      - authType
+      - credentials
+      type: object
+      properties:
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Credentials dictionary with required fields for the authentication type.
+
+            Sensitive fields will be encrypted and stored securely.
+
+
+            For Azure credentials (AzureServicePrincipal, AzureServicePrincipalCertificate):
+
+            - tenantId is automatically populated from the parent tenant''s ProviderTenantId and should not be provided
+
+            - Required fields: clientId, clientSecret (or clientCertificate for certificate auth)'
+      additionalProperties: false
+      description: Request model for creating a new cloud credential.
+    HostPoolType:
+      enum:
+      - pooled
+      - personal
+      type: string
+      description: Represents the type of Azure Virtual Desktop host pool.
+    CredentialStatusDto:
+      required:
+      - authFailureCount
+      - failedUsages
+      - failureRatePercent
+      - id
+      - rateLimitCount
+      - status
+      - successfulUsages
+      - successRatePercent
+      - totalUsages
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the credential.
+          format: uuid
+        status:
+          $ref: '#/components/schemas/CredentialStatus'
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: Human-readable message describing the current status.
+        cooldownRemainingSeconds:
+          type:
+          - number
+          - 'null'
+          description: 'Remaining cooldown time in seconds, if the credential is rate limited.
+
+            Null if not in cooldown.'
+          format: double
+        lastUsedAt:
+          type:
+          - string
+          - 'null'
+          description: 'When the credential was last used for an operation.
+
+            Null if never used or data has expired.'
+          format: date-time
+        totalUsages:
+          type: integer
+          description: Total number of usages (business operations) with this credential in the tracking window.
+          format: int32
+        successfulUsages:
+          type: integer
+          description: Number of successful usages.
+          format: int32
+        failedUsages:
+          type: integer
+          description: Number of failed usages.
+          format: int32
+        successRatePercent:
+          type: number
+          description: Success rate as a percentage (0-100).
+          format: double
+        failureRatePercent:
+          type: number
+          description: Failure rate as a percentage (0-100).
+          format: double
+        rateLimitCount:
+          type: integer
+          description: Number of times this credential received a 429 (Too Many Requests) response.
+          format: int32
+        authFailureCount:
+          type: integer
+          description: Number of times this credential received 401/403 auth errors.
+          format: int32
+        lastErrorCode:
+          type:
+          - string
+          - 'null'
+          description: Last error code received (e.g., "429", "401", "500").
+      additionalProperties: false
+      description: 'Response DTO representing the pool status of a credential.
+
+        Includes health status, cooldown state, and usage metrics from Redis.'
+    CloudTenantDto:
+      required:
+      - createdAt
+      - defaultCredential
+      - healthStatus
+      - id
+      - lastUpdated
+      - lifecycleState
+      - name
+      - provider
+      - providerTenantId
+      - subscriptionCount
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the tenant.
+          format: uuid
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        providerTenantId:
+          type: string
+          description: 'Provider''s tenant identifier.
+
+            Azure: Tenant ID (Directory ID), AWS: Organization ID, GCP: Organization ID.'
+        name:
+          type: string
+          description: User-friendly name for the tenant.
+        defaultCredential:
+          $ref: '#/components/schemas/TenantDefaultCredentialDto'
+        lifecycleState:
+          $ref: '#/components/schemas/TenantLifecycleState'
+        healthStatus:
+          $ref: '#/components/schemas/TenantHealthStatus'
+        healthStatusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the current tenant health status.
+
+            Examples: "All checks passed", "2 subscriptions have credential errors", "Secret expires in 5 days".'
+        subscriptionCount:
+          type: integer
+          description: 'Number of active subscriptions under this tenant.
+
+            Excludes deleted subscriptions.'
+          format: int32
+        lastDiscoveryAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last subscription discovery.
+          format: date-time
+        createdAt:
+          type: string
+          description: Timestamp when the tenant was created.
+          format: date-time
+        lastUpdated:
+          type: string
+          description: Timestamp of the last update.
+          format: date-time
+      additionalProperties: false
+      description: Response DTO representing a cloud tenant (Azure AD Tenant, AWS Organization, GCP Organization).
+    DiscoveredManagedCloudResourceDto:
+      required:
+      - id
+      - isAlreadyManaged
+      - location
+      - name
+      - properties
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of additional entity properties.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
+      additionalProperties: false
+      description: 'Represents a discovered cloud resource with managed status.
+
+        Used by the generic multi-type discover endpoint where resources may be already imported.'
+    TenantSubscriptionImportDto:
+      required:
+      - providerSubscriptionId
+      - resources
+      type: object
+      properties:
+        providerSubscriptionId:
+          minLength: 1
+          type: string
+          description: 'The cloud provider''s subscription identifier (e.g., Azure Subscription GUID).
+
+            If a CloudSubscription with this ID doesn''t exist, one will be created and linked to the tenant.'
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudResourceIdsByTypeDto'
+          description: 'Resources to import from this subscription, organized by type.
+
+            Each item specifies a resource type and the Azure resource IDs to import.'
+      additionalProperties: false
+      description: Represents a subscription and its resources to import.
+    CreateCloudTenantRequest:
+      required:
+      - defaultCredential
+      - name
+      - provider
+      - providerTenantId
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        providerTenantId:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: 'Provider''s tenant identifier.
+
+            Azure: Tenant ID (Directory ID), AWS: Organization ID, GCP: Organization ID.'
+        name:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: User-friendly name for the tenant.
+        defaultCredential:
+          $ref: '#/components/schemas/CreateCloudCredentialRequest'
+      additionalProperties: false
+      description: 'Request model for creating a new cloud tenant with its default credential.
+
+        The default credential is created as a separate entity linked to the tenant.'
+    CloudCredentialDto:
+      required:
+      - authType
+      - createdAt
+      - credentials
+      - id
+      - isDefault
+      - lastUpdated
+      - status
+      - tenantId
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the credential.
+          format: uuid
+        tenantId:
+          type: string
+          description: ID of the parent tenant.
+          format: uuid
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Credentials dictionary with sensitive values masked.
+
+            Only non-sensitive metadata fields (e.g., ClientId) are shown in clear text.'
+        isDefault:
+          type: boolean
+          description: 'Whether this credential is the default credential for the tenant.
+
+            The default credential is used when no specific credential is specified.'
+        status:
+          $ref: '#/components/schemas/CredentialStatus'
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the credential status.
+
+            Provides context for non-healthy statuses (e.g., "Failed subscription access verification").'
+        lastUsedAt:
+          type:
+          - string
+          - 'null'
+          description: 'Timestamp when this credential was last used for API calls.
+
+            Used for round-robin (LRU) selection.'
+          format: date-time
+        createdAt:
+          type: string
+          description: Timestamp when the credential was created.
+          format: date-time
+        lastUpdated:
+          type: string
+          description: Timestamp of the last update.
+          format: date-time
+      additionalProperties: false
+      description: Response DTO representing a cloud credential (Service Principal, IAM User/Role, etc.).
+    VerificationStepStatus:
+      enum:
+      - success
+      - warning
+      - failure
+      type: string
+      description: Discrete states a verification step can finish in.
+    CloudResourceIdsByTypeDto:
+      required:
+      - ids
+      - type
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        ids:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Set of specific resource IDs to import for this resource type.
+      additionalProperties: false
+      description: Represents a collection of resource IDs for a specific resource type.
+    CredentialStatus:
+      enum:
+      - unknown
+      - healthy
+      - rateLimited
+      - unhealthy
+      - disabled
+      type: string
+      description: 'Status of an individual credential.
+
+        Used for rate limiting, health tracking, and administrative state.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

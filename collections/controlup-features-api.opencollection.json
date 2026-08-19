@@ -1,0 +1,56 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Features API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Features",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all features",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/features",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns every feature flag with its enabled state for the caller's organization, as a map of name to boolean.\nRollout toggles, not entitlements: a flag being on says the functionality is switched on for the organization,\nnot that its license permits or has capacity for it."
+        },
+        {
+          "info": {
+            "name": "Get a feature status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/features/:feature",
+            "params": [
+              {
+                "name": "feature",
+                "value": "",
+                "type": "path",
+                "description": "The name of the feature to check (case-sensitive)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the enabled state of one named feature flag, for callers that already know which flag they care\nabout and want a single answer rather than the whole map. Names are case-sensitive."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,3114 @@
+{
+  "item": [
+    {
+      "id": "a3e63d1e-0405-40a1-8aca-28a34e27a258",
+      "name": "Scaling profiles",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ae12fe8f-e1c2-4146-81ca-decc5546525e",
+          "name": "Get scaling profiles",
+          "request": {
+            "name": "Get scaling profiles",
+            "description": {
+              "content": "Returns every scaling profile in the organization — reusable autoscale configurations that a host pool's weekly schedule assigns to time blocks.\nProfiles are organization-wide and not bound to any pool, so this does not say where a profile is used.\nFilterable and sortable on Id, Name, Description, Color.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "scaling-profiles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "sort",
+                  "value": "<string>",
+                  "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncolor, description, elasticScalingMode, id, name, provisioningMode\n\nDefault when omitted: name:asc."
+                },
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>",
+                  "description": "Filter expression for filtering results.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\ncolor, description, elasticScalingMode, id, name, provisioningMode"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b2c184b9-23bd-4939-9ac5-96e3c3f007ab",
+              "name": "Successfully retrieved the list of scaling profiles.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"color\": \"string\",\n    \"description\": \"string\",\n    \"id\": \"138d1e0f-b225-aa37-9fcb-812ac8efe758\",\n    \"name\": \"string\",\n    \"provisioningMode\": \"elastic\",\n    \"usedByHostPools\": [\n      {\n        \"id\": \"af6df81e-b8f1-325e-efa3-a075c78f8967\",\n        \"name\": \"string\"\n      },\n      {\n        \"id\": \"74a4d8e2-9beb-b0bf-a198-a05ebed117c3\",\n        \"name\": \"string\"\n      }\n    ],\n    \"elasticScalingMode\": \"dynamicHosts\"\n  },\n  {\n    \"color\": \"string\",\n    \"description\": \"string\",\n    \"id\": \"e6a9224f-7a1b-1267-c424-08b1cf185307\",\n    \"name\": \"string\",\n    \"provisioningMode\": \"elastic\",\n    \"usedByHostPools\": [\n      {\n        \"id\": \"03a13e34-0884-bfc8-0306-0a2f1b3a846a\",\n        \"name\": \"string\"\n      },\n      {\n        \"id\": \"6aa74a8e-7a3e-679e-d01b-18f582fbaa63\",\n        \"name\": \"string\"\n      }\n    ],\n    \"elasticScalingMode\": \"powerManagementOnly\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "120e602e-0c1e-4e2f-b4e2-14febfeabf7d",
+              "name": "Bad request. Invalid filter or sort expression.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "590080dc-7547-45bc-80ff-f5031a9e5f72",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8340c7ed-f002-4137-bed1-0daa7a2eb277",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d7bce824-7d64-400d-8fcb-26bea3392732",
+              "name": "Forbidden. User does not have permission to view scaling profiles.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cae95e66-4466-4261-9881-c5fb59c37423",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "83014fd9-3925-4f93-bbf5-d598301f027d",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "name:asc"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "{\"field\":\"name\",\"op\":\"eq\",\"value\":\"value\"}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d19eaa61-f555-4fe7-8490-493bdac24a0d",
+          "name": "Create a scaling profile",
+          "request": {
+            "name": "Create a scaling profile",
+            "description": {
+              "content": "Creates a new scaling profile with the specified configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "scaling-profiles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8a19946f-8905-4910-bbef-5a4344bd09a9",
+              "name": "Successfully created the scaling profile.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"color\": \"string\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"id\": \"2cb5fb2b-3bfc-ba2c-a80a-1aee86c1d48a\",\n  \"name\": \"string\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "30c64a21-e1c4-4b47-a5d3-6ce3cd9f4fa8",
+              "name": "Bad request. Invalid scaling profile data.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "62a8cbc2-39ba-407f-bcd5-4169fe50a024",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2419d615-8cc7-4f1c-bbbd-dad635f53fb4",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d8bd958d-625c-4162-ba9b-e57e2ceb5fa6",
+              "name": "Forbidden. User does not have manage scaling permissions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d3c32b9c-1251-4abb-bdfb-d7095cae58b2",
+              "name": "Conflict. A scaling profile with the same name already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "65a89e78-fd44-4aaf-ad9a-cb1942752764",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2047180e-d4d6-42c8-a18c-f1a70e80b581",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6c5d9c6f-fc40-483b-a2b2-05a7843711d2",
+          "name": "Get a scaling profile by ID",
+          "request": {
+            "name": "Get a scaling profile by ID",
+            "description": {
+              "content": "Returns one scaling profile with its complete nested configuration, including thresholds and host count rules.\nReturns the definition only — it does not say which host pools use the profile or whether it is currently active.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "scaling-profiles",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) The unique scaling profile identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "d6e59445-df22-4b5b-9fd3-2b3c3ec960e3",
+              "name": "Successfully retrieved the scaling profile details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"color\": \"string\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"id\": \"2cb5fb2b-3bfc-ba2c-a80a-1aee86c1d48a\",\n  \"name\": \"string\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e7abc51c-61b6-4a6f-a402-18cc3e51c06e",
+              "name": "Bad request. Invalid scaling profile ID.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1fd50b6f-e937-47ca-80a0-59919f488e56",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "028d5c04-b498-4553-81bd-58cecfb79a8a",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0049695b-f2f6-401e-9a71-0670b3ed0817",
+              "name": "Forbidden. User does not have manage scaling permissions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f89bab26-c638-4bea-b2ce-3052a7a15fe6",
+              "name": "Not found. The specified scaling profile does not exist.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f7c1e862-d506-48a6-93f3-2e90dfcbfd58",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "03c9f9dc-91fe-4ede-bb7d-3841c346e5c2",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "336d4996-82a7-4826-9f8d-0b922046cd7f",
+          "name": "Update a scaling profile",
+          "request": {
+            "name": "Update a scaling profile",
+            "description": {
+              "content": "Updates an existing scaling profile with the specified configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "scaling-profiles",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) The unique scaling profile identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "733fe148-49ed-40b6-9bb3-da3f627fe82f",
+              "name": "Successfully updated the scaling profile.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"color\": \"string\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"id\": \"2cb5fb2b-3bfc-ba2c-a80a-1aee86c1d48a\",\n  \"name\": \"string\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0bffdb1c-fef7-4ac9-9096-6b056ba50d69",
+              "name": "Bad request. Invalid scaling profile data.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "162d044e-52aa-42f6-80a7-24cc2801489a",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b542d81-1ccf-4898-bb79-20d190ce56d8",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc771773-9b6f-4a97-a78a-bc6075680cb6",
+              "name": "Forbidden. User does not have manage scaling permissions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8d7a101c-03ba-4587-9c59-e414297b8c34",
+              "name": "Not found. The specified scaling profile does not exist.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5733b9a9-4db1-4f4d-a0f1-0197355a343f",
+              "name": "Conflict. A scaling profile with the same name already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "58e0e273-2cd7-4d02-ad18-b45e7b57a2f6",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eb1ba447-baca-433c-a3db-3c39365ee96b",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\",\n  \"experience\": {\n    \"notifications\": {\n      \"allowSnooze\": \"<boolean>\",\n      \"gracePeriodMinutes\": \"<integer>\",\n      \"maximumSnoozes\": \"<integer>\",\n      \"notificationMessage\": \"<string>\",\n      \"notificationTitle\": \"<string>\"\n    }\n  },\n  \"name\": \"<string>\",\n  \"strategy\": {\n    \"provisioningMode\": \"<string>\",\n    \"smartMinimums\": {\n      \"enabled\": \"<boolean>\",\n      \"utilizationThresholdPercent\": \"<integer,null-int32>\",\n      \"timeWindowMinutes\": \"<integer,null-int32>\",\n      \"scaleDownToHostCount\": \"<integer,null-int32>\"\n    },\n    \"staticConfig\": {\n      \"createAdditionalHostsIfNeeded\": \"<boolean>\",\n      \"hostsToPowerOn\": \"<integer>\"\n    },\n    \"elasticConfig\": {\n      \"burstBatchSize\": \"<integer>\",\n      \"elasticScalingMode\": \"<string>\",\n      \"maxHosts\": \"<integer>\",\n      \"minHosts\": \"<integer>\",\n      \"performance\": {\n        \"aggressiveness\": \"<string>\",\n        \"scaleInTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"scaleOutTriggers\": {\n          \"freeSessionsThreshold\": \"<integer>\",\n          \"cpuThresholdPercent\": \"<integer,null-int32>\",\n          \"memoryThresholdPercent\": \"<integer,null-int32>\"\n        },\n        \"stabilizationWindowMinutes\": \"<integer>\"\n      }\n    }\n  },\n  \"description\": \"<string,null>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7de943a7-92a9-4e34-9357-dce526ae2347",
+          "name": "Delete a scaling profile",
+          "request": {
+            "name": "Delete a scaling profile",
+            "description": {
+              "content": "Deletes a scaling profile. Cannot delete profiles that are currently in use by schedules.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "scaling-profiles",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) The unique scaling profile identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ef1311ce-4080-42e3-8847-7d68bd6511fe",
+              "name": "Successfully deleted the scaling profile.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2d6be8cf-8d31-46fb-8f5e-5dbdd7b7f8bb",
+              "name": "Bad request. Invalid scaling profile ID.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0a9bafc7-021a-4080-887e-0cc4b5494252",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f30a6539-904f-4031-8686-ccf9be1a688d",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "29db07e2-2020-44ed-9c2c-14a34d702eb7",
+              "name": "Forbidden. User does not have manage scaling permissions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c28dae11-4802-4d46-9700-2574a5bf72e0",
+              "name": "Not found. The specified scaling profile does not exist.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4c0a5340-deca-46ae-8ae6-2f320fcc6f23",
+              "name": "Conflict. Cannot delete scaling profile that is currently in use by schedules.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "60409be9-841f-4da7-928e-6bf4520678ef",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "046aba92-e628-4d5d-bbdf-e95fb6fea082",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7fafffde-97ca-474c-a7ff-0aa7b91040a0",
+          "name": "Update scaling profile color",
+          "request": {
+            "name": "Update scaling profile color",
+            "description": {
+              "content": "Updates the display color of a scaling profile.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "scaling-profiles",
+                ":id",
+                "color"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) The unique scaling profile identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"color\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "72a8e17f-472b-4eeb-b821-addef2a7225f",
+              "name": "Successfully updated the scaling profile color.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id",
+                    "color"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"color\": \"string\",\n  \"description\": \"string\",\n  \"id\": \"40f67be1-9adb-19d8-e325-8cb4711742ea\",\n  \"name\": \"string\",\n  \"provisioningMode\": \"<string>\",\n  \"usedByHostPools\": [\n    {\n      \"id\": \"c4473b36-602f-2a36-c648-c38cd4212e4f\",\n      \"name\": \"string\"\n    },\n    {\n      \"id\": \"2304d732-c34f-fc1d-83b2-dab869e28bcb\",\n      \"name\": \"string\"\n    }\n  ],\n  \"elasticScalingMode\": \"<string>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ab04cc43-9dd7-4e22-90c8-77b6ea03bb35",
+              "name": "Bad request. Invalid color identifier.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id",
+                    "color"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "90ca1178-03c7-41e0-9c17-ef09f63cdfc6",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id",
+                    "color"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba7ebeb1-d3c3-4a3d-9742-df2c7e0f8028",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id",
+                    "color"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "13868a80-9b3e-431e-8cf0-e58847c54f98",
+              "name": "Forbidden. User does not have manage scaling permissions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id",
+                    "color"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0b9d153f-cdb4-4d4e-bf31-101d9ff982a0",
+              "name": "Not found. The specified scaling profile does not exist.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id",
+                    "color"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "290d1b38-9683-4954-b389-cbfd742a878d",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id",
+                    "color"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "473b2ce9-d7d9-4712-b3ac-69339c19ca42",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "scaling-profiles",
+                    ":id",
+                    "color"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The unique scaling profile identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"color\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9518,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": \"string\",\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/daas-iq/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "276ab117-b516-4df5-86fb-e678eff82377",
+    "name": "DaaS IQ Scaling profiles API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)\n\n🔒 **Authentication**\n\nThis API supports two authentication methods:\n\n**1. API Key (Bearer Token)** - Recommended for programmatic access\n- Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)\n- Include in requests: `Authorization: Bearer YOUR_API_KEY`\n\n**2. Cookie Authentication** - For browser-based access\n- Login via DEX authentication service\n- The `user_dex_token` cookie will be automatically included\n\nContact Support:\n Name: ControlUp Support\n Email: support@controlup.com",
+      "type": "text/plain"
+    }
+  }
+}

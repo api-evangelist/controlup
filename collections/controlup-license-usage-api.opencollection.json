@@ -1,0 +1,59 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Dex License Usage API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "License Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve license usage in time range",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/license/usage",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "timeFrom",
+                "value": "",
+                "type": "query",
+                "description": "Start date and time for the usage data range in ISO string format (UTC)."
+              },
+              {
+                "name": "timeTo",
+                "value": "",
+                "type": "query",
+                "description": "End date and time for the usage data range in ISO string format (UTC)."
+              },
+              {
+                "name": "childOrgsIds",
+                "value": "123e4567-e89b-12d3-a456-426614174000,987fcdeb-1234-5678-9abc-111111111111",
+                "type": "query",
+                "description": "Array of organization IDs to filter the usage data by."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns license usage data for your organization over a specified time range.\nFor managed organizations, returns usage for that organization.\nFor MSP organizations, returns aggregated usage across all managed organizations."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

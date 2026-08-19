@@ -1,0 +1,89 @@
+openapi: 3.2.0
+info:
+  title: VDI & DaaS Configuration Trigger Schedules API
+  version: '1.0'
+servers:
+- url: https://api.controlup.com/vdi/config
+tags:
+- name: TriggerSchedules
+paths:
+  /v1/trigger-schedules:
+    get:
+      tags:
+      - TriggerSchedules
+      summary: List trigger schedules
+      parameters:
+      - name: page
+        in: query
+        description: Page number (1-based).
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: limit
+        in: query
+        description: Maximum number of results per page.
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      - name: sort
+        in: query
+        description: Sort field.
+        schema:
+          type: string
+          default: name
+      - name: order
+        in: query
+        description: Sort direction (asc or desc).
+        schema:
+          type: string
+          default: asc
+      - name: name
+        in: query
+        description: Filter by name.
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Filter by source.
+        schema:
+          type: string
+      - name: include
+        in: query
+        description: Optional sections to include (e.g. summary).
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /v1/trigger-schedules/{scheduleId}:
+    get:
+      tags:
+      - TriggerSchedules
+      summary: Get trigger schedule by ID
+      parameters:
+      - name: scheduleId
+        in: path
+        description: Schedule ID or built-in name.
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        description: Optional sections to include (e.g. usage).
+        schema:
+          type: string
+      - name: usageLimit
+        in: query
+        description: Maximum number of usage entries to return.
+        schema:
+          type: integer
+          format: int32
+          default: 200
+      responses:
+        '200':
+          description: OK
+x-readme: {}

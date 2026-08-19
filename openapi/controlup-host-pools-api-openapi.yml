@@ -1,0 +1,1423 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Host pools API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Host pools
+paths:
+  /cloud/host-pools:
+    get:
+      tags:
+      - Host pools
+      summary: Get host pools
+      description: 'Returns one row per host pool across all subscriptions, with identity (name, subscription, resource group, region, type)
+
+        and latest-value counts for hosts, sessions, and average CPU.
+
+        Does not include cost, memory, or AVD configuration.'
+      operationId: GetHostPools
+      parameters:
+      - name: provider
+        in: query
+        description: Optional cloud provider filter. Null means all providers.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: sort
+        in: query
+        description: 'Sort specification string.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          activeSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type
+
+
+          Default when omitted: name:asc.'
+        schema:
+          maxLength: 256
+          type: string
+          example: name:asc,totalHosts:desc
+        examples:
+          default:
+            summary: default
+            value: name:asc
+        x-foundry-sort:
+          fields:
+          - activeSessions
+          - assignmentType
+          - avgCpuPercent
+          - hasNativeScalingPlan
+          - hasSessionHostConfig
+          - id
+          - name
+          - provider
+          - region
+          - regionId
+          - resourceGroup
+          - resourceGroupId
+          - runningHosts
+          - stoppedHosts
+          - subscription
+          - subscriptionId
+          - syncedAt
+          - totalHosts
+          - totalSessions
+          - type
+          dynamicPaths: false
+          defaultField: name
+          defaultAscending: true
+      - name: filter
+        in: query
+        description: 'Filter expression for filtering results.
+
+
+          Supports JSON and RQL formats:
+
+
+          - JSON: {"and":[{"field":"status","op":"eq","value":"Active"},{"field":"name","op":"ct","value":"Smith, John"}]}
+
+          - RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters
+
+
+          Operators:
+
+          and, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)
+
+
+          Fields (names are matched case-insensitively):
+
+          activeSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type'
+        schema:
+          maxLength: 512
+          type: string
+          example: and(eq(type,Pooled),gte(totalHosts,10))
+        examples:
+          json:
+            summary: json
+            value: '{"field":"name","op":"eq","value":"value"}'
+          rql:
+            summary: rql
+            value: eq(name,value)
+        x-foundry-filter:
+          fields:
+          - activeSessions
+          - assignmentType
+          - avgCpuPercent
+          - hasNativeScalingPlan
+          - hasSessionHostConfig
+          - id
+          - name
+          - provider
+          - region
+          - regionId
+          - resourceGroup
+          - resourceGroupId
+          - runningHosts
+          - stoppedHosts
+          - subscription
+          - subscriptionId
+          - syncedAt
+          - totalHosts
+          - totalSessions
+          - type
+          operators:
+            logical:
+            - and
+            - or
+            - not
+            predicate:
+            - eq
+            - neq
+            - ct
+            - nct
+            - sw
+            - nsw
+            - ew
+            - new
+            - gt
+            - gte
+            - lt
+            - lte
+          dynamicPaths: false
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved host pools.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolQueryResultPagedResult'
+        '400':
+          description: Bad request. Invalid pagination or sort parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/statistics:
+    get:
+      tags:
+      - Host pools
+      summary: Get host pool statistics
+      description: 'Returns six organization-wide totals: pooled and personal pool counts, available and draining session host counts,
+
+        and active and total session counts, across all pools matching the optional provider and filter criteria.
+
+        No per-pool rows, so a total cannot be traced back to the pools behind it, but far cheaper than paging the list.'
+      operationId: GetHostPoolsStatistics
+      parameters:
+      - name: provider
+        in: query
+        description: Optional cloud provider filter. Null means all providers.
+        schema:
+          $ref: '#/components/schemas/CloudProvider'
+      - name: filter
+        in: query
+        description: 'Filter expression for filtering results.
+
+
+          Supports JSON and RQL formats:
+
+
+          - JSON: {"and":[{"field":"status","op":"eq","value":"Active"},{"field":"name","op":"ct","value":"Smith, John"}]}
+
+          - RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters
+
+
+          Operators:
+
+          and, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)
+
+
+          Fields (names are matched case-insensitively):
+
+          activeSessions, assignmentType, avgCpuPercent, hasNativeScalingPlan, hasSessionHostConfig, id, name, provider, region, regionId, resourceGroup, resourceGroupId, runningHosts, stoppedHosts, subscription, subscriptionId, syncedAt, totalHosts, totalSessions, type'
+        schema:
+          maxLength: 512
+          type: string
+          example: and(eq(type,Pooled),gte(totalHosts,10))
+        examples:
+          json:
+            summary: json
+            value: '{"field":"name","op":"eq","value":"value"}'
+          rql:
+            summary: rql
+            value: eq(name,value)
+        x-foundry-filter:
+          fields:
+          - activeSessions
+          - assignmentType
+          - avgCpuPercent
+          - hasNativeScalingPlan
+          - hasSessionHostConfig
+          - id
+          - name
+          - provider
+          - region
+          - regionId
+          - resourceGroup
+          - resourceGroupId
+          - runningHosts
+          - stoppedHosts
+          - subscription
+          - subscriptionId
+          - syncedAt
+          - totalHosts
+          - totalSessions
+          - type
+          operators:
+            logical:
+            - and
+            - or
+            - not
+            predicate:
+            - eq
+            - neq
+            - ct
+            - nct
+            - sw
+            - nsw
+            - ew
+            - new
+            - gt
+            - gte
+            - lt
+            - lte
+          dynamicPaths: false
+      responses:
+        '200':
+          description: Successfully retrieved host pool statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolsStatistics'
+        '400':
+          description: Bad request. Invalid filter parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/{hostPoolId}:
+    get:
+      tags:
+      - Host pools
+      summary: Get a host pool by ID
+      description: 'Returns a single host pool in the same shape as one row of the host pool list: identity, resource metadata,
+
+        and latest-value host, session, and CPU counts.
+
+        Does not include AVD configuration, cost, memory, or 7-day rollups.'
+      operationId: GetHostPool
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool to retrieve.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the host pool.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolQueryResult'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    delete:
+      tags:
+      - Host pools
+      summary: Delete host pool
+      description: 'Soft-deletes the host pool from DaaS IQ management without modifying the Azure resource.
+
+        Historical data is retained and becomes visible again if the host pool is re-imported.
+
+        Autoscale configuration and VM settings are not retained.'
+      operationId: DeleteHostPool
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool to delete.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Successfully deleted the host pool from DaaS IQ.
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have delete host pool permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/{hostPoolId}/details:
+    get:
+      tags:
+      - Host pools
+      summary: Get host pool extended details
+      description: 'Returns the full host pool record: identity and resource metadata, AVD configuration (load balancing, max sessions per host,
+
+        drain mode, OS, VNet), 7-day session rollups, session capacity percentage, latest CPU and memory, and month-to-date cost.
+
+        Cost is one total with no breakdown or date range, and metrics are current or rolled-up values, never series.
+
+        Aggregates several sources, so use it per pool rather than iterating a list.'
+      operationId: GetHostPoolDetails
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool to retrieve details for.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved host pool details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolDetailsResult'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/{hostPoolId}/metrics:
+    get:
+      tags:
+      - Host pools
+      summary: Get host pool metrics
+      description: 'Returns timestamped series over a date range for active and total sessions, running and stopped hosts,
+
+        average CPU and memory, and connection errors — intended for charting.
+
+        Every value is a series rather than a current reading, and connection errors are available nowhere else.'
+      operationId: GetHostPoolMetrics
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: pointCount
+        in: query
+        description: 'Number of data points to return (defaults to 60 if not specified).
+
+          Must be between 10 and 500.'
+        schema:
+          maximum: 500
+          minimum: 10
+          type: integer
+          format: int32
+          default: 60
+      - name: startDate
+        in: query
+        description: 'Start date for the range (inclusive).
+
+          Accepts ISO 8601 format with optional timezone (e.g., "2026-01-20T00:00:00Z" or "2026-01-20T00:00:00+03:00").'
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: 'End date for the range (inclusive).
+
+          Accepts ISO 8601 format with optional timezone (e.g., "2026-01-20T23:59:59Z" or "2026-01-20T23:59:59+03:00").'
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Successfully retrieved metrics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostPoolMetricsResult'
+        '400':
+          description: Bad request. Invalid date range parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /cloud/host-pools/{hostPoolId}/deletion:
+    post:
+      tags:
+      - Host pools
+      summary: Delete host pool from Azure
+      description: 'Dispatches an Azure teardown job for associated resources
+
+        (application groups, session host VMs, and the host pool ARM resource), then soft-deletes the host pool from DaaS IQ.
+
+        VNet, subnet, resource group, workspace, and storage accounts are not deleted.
+
+        All session hosts must be deallocated before this operation is accepted.'
+      operationId: HardDeleteHostPool
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool to hard-delete.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '201':
+          description: Hard-delete job accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCreatedDto'
+              example:
+                id: a1b2c3d4-5678-90ab-cdef-1234567890ab
+                jobType: cloudResourceImport
+                action: Cloud Resource Import
+                jobUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab
+                statusUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status
+                logsUrl: https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs
+                message: Import job created successfully. Poll statusUrl for progress updates.
+        '400':
+          description: Bad request. Precondition not met, for example hosts are not deallocated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have delete host pool permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict. Host creation or another host-pool job is already in progress.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    HostPoolDetailsResult:
+      required:
+      - activeSessions
+      - autoscaleEnabled
+      - avgCpu24h
+      - avgCpuPercent
+      - avgMemoryPercent
+      - costMonthToDate
+      - disconnectedSessions
+      - drainMode
+      - hasDynamicScaling
+      - hasNativeScalingPlan
+      - hasSessionHostConfig
+      - healthyAgentHosts
+      - id
+      - name
+      - provider
+      - region
+      - regionId
+      - resourceGroup
+      - resourceGroupId
+      - runningHosts
+      - sessionCapacityPercent
+      - startVmOnConnect
+      - stoppedHosts
+      - subscription
+      - subscriptionId
+      - syncedAt
+      - totalHosts
+      - totalSessions
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the host pool.
+          format: uuid
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        name:
+          type: string
+          description: Host pool friendly name.
+        subscription:
+          type: string
+          description: Subscription display name.
+        subscriptionId:
+          type: string
+          description: Subscription ID.
+          format: uuid
+        resourceGroup:
+          type: string
+          description: Resource group name.
+        resourceGroupId:
+          type: string
+          description: Resource group ID.
+          format: uuid
+        region:
+          type: string
+          description: Human-friendly display name for the region.
+        regionId:
+          type: string
+          description: Region code.
+        type:
+          type: string
+          description: 'Host pool type: ''Pooled'' or ''Personal''.'
+        assignmentType:
+          type:
+          - string
+          - 'null'
+          description: 'Assignment type for personal desktops: ''Automatic'' or ''Direct''. NULL for pooled pools.'
+        loadBalancingAlgorithm:
+          type:
+          - string
+          - 'null'
+          description: 'Load balancing algorithm: ''BreadthFirst'' or ''DepthFirst''.'
+        maxSessionsPerHost:
+          type:
+          - integer
+          - 'null'
+          description: Maximum sessions allowed per host.
+          format: int32
+        startVmOnConnect:
+          type: boolean
+          description: Whether start VM on connect is enabled.
+        ring:
+          type:
+          - string
+          - 'null'
+          description: 'Ring/environment designation. Not implemented yet: always null.'
+        totalHosts:
+          type: integer
+          description: Total number of session hosts.
+          format: int32
+        runningHosts:
+          type: integer
+          description: Number of running hosts.
+          format: int32
+        stoppedHosts:
+          type: integer
+          description: Number of stopped hosts.
+          format: int32
+        healthyAgentHosts:
+          type: integer
+          description: 'Number of hosts that are currently able to accept new sessions
+
+            (AVD agent status = "Available" AND not in drain mode).
+
+            This is the pool''s true current session capacity denominator.'
+          format: int32
+        activeSessions:
+          type: integer
+          description: Number of active user sessions.
+          format: int32
+        disconnectedSessions:
+          type: integer
+          description: Number of disconnected user sessions.
+          format: int32
+        totalSessions:
+          type: integer
+          description: Total number of user sessions.
+          format: int32
+        sessionCapacityPercent:
+          type: number
+          description: 'Session capacity percentage: total sessions vs. theoretical maximum on
+
+            the hosts that can currently accept sessions
+
+            (`TotalSessions / (HealthyAgentHosts * MaxSessionsPerHost) * 100`).'
+          format: double
+        weeklyMaxConcurrentActiveSessions:
+          type:
+          - integer
+          - 'null'
+          description: Peak number of concurrent active sessions over the last 7 days.
+          format: int32
+        weeklyAvgConcurrentActiveSessions:
+          type:
+          - number
+          - 'null'
+          description: Average number of concurrent active sessions over the last 7 days.
+          format: double
+        weeklyMedianSessionDuration:
+          type:
+          - string
+          - 'null'
+          description: 'Median session duration (P50) over the last 7 days.
+
+            Measures the full session lifecycle from creation to logoff.'
+          format: date-span
+        weeklyAvgActiveSessionDuration:
+          type:
+          - string
+          - 'null'
+          description: Average time sessions spent in Active state over the last 7 days.
+          format: date-span
+        weeklyAvgDisconnectedSessionDuration:
+          type:
+          - string
+          - 'null'
+          description: Average time sessions spent in Disconnected state over the last 7 days.
+          format: date-span
+        avgCpuPercent:
+          type: number
+          description: Average CPU percentage across all hosts (latest value).
+          format: double
+        avgMemoryPercent:
+          type: number
+          description: Average memory percentage across all hosts (latest value).
+          format: double
+        avgCpu24h:
+          type: number
+          description: Average CPU percentage over 24 hours.
+          format: double
+        osType:
+          type:
+          - string
+          - 'null'
+          description: Operating system type (e.g., 'Windows 11 Enterprise').
+        costMonthToDate:
+          type: number
+          description: Month-to-date cost in USD.
+          format: double
+        autoscaleEnabled:
+          type: boolean
+          description: Whether autoscale is enabled.
+        monitoringStatus:
+          type:
+          - string
+          - 'null'
+          description: 'Monitoring status. Not implemented yet: always ''Disabled''.'
+        drainMode:
+          type: boolean
+          description: Whether the pool is in drain mode.
+        hasSessionHostConfig:
+          type: boolean
+          description: Whether session host VM settings are configured for this host pool.
+        hasDynamicScaling:
+          type: boolean
+          description: 'Whether any scaling profile assigned to this host pool uses dynamic hosts mode
+
+            (elasticScalingMode = "DynamicHosts").'
+        hasNativeScalingPlan:
+          type: boolean
+          description: 'Whether an Azure-native Scaling Plan is assigned to this host pool.
+
+            When true, the native plan may conflict with DaaS IQ autoscale.'
+        vnetId:
+          type:
+          - string
+          - 'null'
+          description: Virtual network ID.
+        subnetId:
+          type:
+          - string
+          - 'null'
+          description: Subnet ID.
+        syncedAt:
+          type: string
+          description: Timestamp when this host pool was last synced from the provider.
+          format: date-time
+      additionalProperties: false
+      description: 'Extended host pool details for the host pool details page.
+
+        Includes summary widgets data, overview tab details, and configuration info.'
+    HostPoolQueryResultPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostPoolQueryResult'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+    MetricDataPoint:
+      required:
+      - timestamp
+      - value
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Timestamp of the measurement.
+          format: date-time
+        value:
+          type: number
+          description: Metric value at this timestamp.
+          format: double
+      additionalProperties: false
+      description: Single data point in a time-series metric.
+    HostPoolMetricsResult:
+      required:
+      - activeSessions
+      - avgCpu
+      - avgMemory
+      - connectionErrors
+      - runningHosts
+      - stoppedHosts
+      - totalSessions
+      type: object
+      properties:
+        activeSessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDataPoint'
+          description: Active user sessions over time.
+        totalSessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDataPoint'
+          description: Total user sessions over time.
+        runningHosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDataPoint'
+          description: Number of running session hosts over time.
+        stoppedHosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDataPoint'
+          description: Number of stopped/deallocated session hosts over time.
+        avgCpu:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDataPoint'
+          description: Average CPU percentage over time.
+        avgMemory:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDataPoint'
+          description: Average memory percentage over time.
+        connectionErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDataPoint'
+          description: Connection errors over time.
+      additionalProperties: false
+      description: 'Time-series metrics result for host pool charts.
+
+        Contains multiple metric series for different chart types.'
+    HostPoolQueryResult:
+      required:
+      - activeSessions
+      - avgCpuPercent
+      - hasNativeScalingPlan
+      - hasSessionHostConfig
+      - id
+      - name
+      - provider
+      - region
+      - regionId
+      - resourceGroup
+      - resourceGroupId
+      - runningHosts
+      - stoppedHosts
+      - subscription
+      - subscriptionId
+      - syncedAt
+      - totalHosts
+      - totalSessions
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the host pool.
+          format: uuid
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        name:
+          type: string
+          description: Host pool friendly name.
+        subscription:
+          type: string
+          description: Subscription display name the host pool belongs to.
+        subscriptionId:
+          type: string
+          description: Subscription ID the host pool belongs to.
+          format: uuid
+        resourceGroup:
+          type: string
+          description: Resource group (provider-agnostic grouping; for AWS this might become organizational unit).
+        resourceGroupId:
+          type: string
+          description: Resource group ID.
+          format: uuid
+        region:
+          type: string
+          description: Human-friendly display name for the region (e.g., 'East US', 'West Europe').
+        regionId:
+          type: string
+          description: Region or location code.
+        type:
+          type: string
+          description: 'Host pool type: ''Pooled'' or ''Personal''.'
+        assignmentType:
+          type:
+          - string
+          - 'null'
+          description: 'Assignment type for personal desktops: ''Automatic'' or ''Direct''. NULL for pooled pools.'
+        totalHosts:
+          type: integer
+          description: Total number of session hosts in this pool.
+          format: int32
+        runningHosts:
+          type: integer
+          description: 'Number of running hosts in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: int32
+        stoppedHosts:
+          type: integer
+          description: 'Number of stopped hosts in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: int32
+        activeSessions:
+          type: integer
+          description: 'Number of active user sessions in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: int32
+        totalSessions:
+          type: integer
+          description: 'Total number of user sessions in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: int32
+        avgCpuPercent:
+          type: number
+          description: 'Average CPU percentage across all session hosts in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: double
+        hasSessionHostConfig:
+          type: boolean
+          description: Whether session host VM settings are configured for this host pool.
+        hasNativeScalingPlan:
+          type: boolean
+          description: 'Whether an Azure-native Scaling Plan is assigned to this host pool.
+
+            When true, the native plan may conflict with DaaS IQ autoscale.'
+        syncedAt:
+          type: string
+          description: Timestamp when this host pool was last synced from the provider.
+          format: date-time
+      additionalProperties: false
+      description: 'Provider-agnostic host pool list item (currently Azure only; future providers may reuse).
+
+        Contains only fields that are presently persisted or directly calculable.'
+    HostPoolsStatistics:
+      required:
+      - activeSessions
+      - availableSessionHosts
+      - drainingSessionHosts
+      - totalPersonal
+      - totalPooled
+      - totalSessions
+      type: object
+      properties:
+        totalPooled:
+          type: integer
+          description: 'Total number of pooled host pools.
+
+            Pooled host pools allow multiple users to share session hosts.'
+          format: int32
+        totalPersonal:
+          type: integer
+          description: 'Total number of personal host pools.
+
+            Personal host pools assign dedicated session hosts to individual users.'
+          format: int32
+        availableSessionHosts:
+          type: integer
+          description: 'Total number of session hosts that are available (accepting new sessions).
+
+            Corresponds to AllowNewSession = true. Excludes null values.'
+          format: int32
+        drainingSessionHosts:
+          type: integer
+          description: 'Total number of session hosts that are draining (not accepting new sessions).
+
+            Corresponds to AllowNewSession = false. Excludes null values.'
+          format: int32
+        activeSessions:
+          type: integer
+          description: 'Total number of active user sessions across all host pools.
+
+            Sum of latest ActiveSessions metric values from all host pools.'
+          format: int32
+        totalSessions:
+          type: integer
+          description: 'Total number of user sessions across all host pools.
+
+            Sum of latest TotalSessions metric values from all host pools.'
+          format: int32
+      additionalProperties: false
+      description: 'Aggregate statistics for host pools across an organization.
+
+        Provides summary counts by host pool type.'
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

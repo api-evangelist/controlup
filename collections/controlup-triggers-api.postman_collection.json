@@ -1,0 +1,663 @@
+{
+  "item": [
+    {
+      "id": "f1f210cb-a528-41eb-8cb2-79555416c55e",
+      "name": "Triggers",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "46f6678d-0b5a-4440-a290-ec83b39b909b",
+          "name": "List triggers for the authenticated organization.",
+          "request": {
+            "name": "List triggers for the authenticated organization.",
+            "description": {
+              "content": "Returns a paginated list of triggers. Supports filtering, sorting, and optional scope-based lookups via the machine or folder parameters.\n            \nWhen include=perMachine is specified, the response data array changes shape: instead of trigger items it returns\nper-machine groups. The machine or folder parameter is required in that case.\n            \nError codes returned in the errorCode field: scope_params_conflict (both machine and folder specified),\nscope_params_required (include token requires scope), machine_not_found (404), folder_not_found (404),\nscope_resolution_too_broad (folder resolved too many machines, also includes resolvedCount and limit),\nscope_params_invalid (malformed scope input).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "Triggers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "Gets or sets the page number for pagination (1-based)."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Gets or sets the number of items per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "sort",
+                  "value": "<string>",
+                  "description": "Gets or sets the field to sort results by."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>",
+                  "description": "Gets or sets the sort direction."
+                },
+                {
+                  "disabled": false,
+                  "key": "enabled",
+                  "value": "<boolean>",
+                  "description": "Gets or sets a filter by enabled status. Omit to return both enabled and disabled triggers."
+                },
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "Gets or sets a filter by trigger type."
+                },
+                {
+                  "disabled": false,
+                  "key": "entityType",
+                  "value": "<string>",
+                  "description": "Gets or sets a filter by entity type (e.g. Computers, Sessions)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isCommon",
+                  "value": "<boolean>",
+                  "description": "Gets or sets a filter by whether the trigger is a built-in (common) trigger. Set to false to return only custom triggers."
+                },
+                {
+                  "disabled": false,
+                  "key": "search",
+                  "value": "<string>",
+                  "description": "Gets or sets a filter by name. Filter triggers whose name contains the given string. Case-insensitive. Maximum 200 characters."
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Gets or sets optional expansions. 'scope' adds scopeSummary (included/excluded counts) to each trigger item. 'summary' adds top-level aggregate counts by type, enabled status, and common/custom. Can be combined: include=scope&include=summary or include=scope,summary."
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Gets or sets optional expansions. 'scope' adds scopeSummary (included/excluded counts) to each trigger item. 'summary' adds top-level aggregate counts by type, enabled status, and common/custom. Can be combined: include=scope&include=summary or include=scope,summary."
+                },
+                {
+                  "disabled": false,
+                  "key": "machine",
+                  "value": "<string>",
+                  "description": "Gets or sets a filter by machine FQDN or hostname. Cannot be combined with 'folder'. Required when using scopeMatch, resolvedMachines, or perMachine includes. Maximum 512 characters."
+                },
+                {
+                  "disabled": false,
+                  "key": "folder",
+                  "value": "<string>",
+                  "description": "Gets or sets a filter by folder path. Cannot be combined with 'machine'. Maximum 1024 characters."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fa38b972-6f17-4650-b63f-61ca5bcd3880",
+              "name": "Triggers retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "Triggers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "enabled",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "entityType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "isCommon",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "machine",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "folder",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"metadata\": {\n    \"orgId\": \"string\",\n    \"region\": \"string\",\n    \"total\": 5218,\n    \"limitPerPage\": 1964,\n    \"currentPageNumber\": 6388,\n    \"currentPageSize\": 2614,\n    \"remaining\": 3744,\n    \"scope\": {\n      \"kind\": null,\n      \"input\": \"string\",\n      \"resolvedMachines\": null,\n      \"resolvedFolders\": [\n        \"\",\n        \"\"\n      ]\n    }\n  },\n  \"summary\": {\n    \"enabled\": 4218,\n    \"disabled\": 9155,\n    \"common\": 3886,\n    \"custom\": 950,\n    \"byType\": {\n      \"key_0\": 3548,\n      \"key_1\": 9045,\n      \"key_2\": 3082\n    }\n  },\n  \"data\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4075f68a-829e-493e-9faa-6b071ead6ddc",
+              "name": "Invalid parameters or scope conflict.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "Triggers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "enabled",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "entityType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "isCommon",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "machine",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "folder",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errorCode\": \"string\",\n  \"message\": null,\n  \"resolvedCount\": null,\n  \"limit\": 2110\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "edba9e54-c40b-42ad-8831-5e9bca4ee67f",
+              "name": "Machine or folder not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "Triggers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "enabled",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "entityType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "isCommon",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "machine",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "folder",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errorCode\": \"string\",\n  \"message\": null,\n  \"resolvedCount\": null,\n  \"limit\": 2110\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7e5d08a8-1541-4d17-90f0-5a1988113ae8",
+          "name": "Get full details for a single trigger.",
+          "request": {
+            "name": "Get full details for a single trigger.",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "Triggers",
+                ":triggerId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Comma-separated list of sections to include: actions, scope, filter, schedule, typeSettings. Omit or leave empty to include all."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "triggerId",
+                  "description": "(Required) Trigger GUID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ef94f4bf-70d1-4613-8f3f-977d2cde40fd",
+              "name": "Trigger found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "Triggers",
+                    ":triggerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "triggerId",
+                      "description": "(Required) Trigger GUID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"metadata\": {\n    \"orgId\": \"string\",\n    \"region\": null,\n    \"userId\": null\n  },\n  \"data\": {\n    \"triggerId\": null,\n    \"triggerName\": \"string\",\n    \"description\": null,\n    \"type\": \"string\",\n    \"typeId\": 2787,\n    \"internalType\": null,\n    \"entityType\": null,\n    \"enabled\": false,\n    \"isCommon\": false,\n    \"source\": null,\n    \"createdAt\": null,\n    \"updatedAt\": null,\n    \"scheduleId\": null,\n    \"minTimeBetweenIncidents\": null,\n    \"scope\": {\n      \"includedFolders\": null,\n      \"excludedFolders\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    \"filter\": {\n      \"logicalOperator\": \"string\",\n      \"isNegation\": true,\n      \"nodes\": null,\n      \"expression\": {\n        \"column\": \"string\",\n        \"comparisonOperator\": \"string\",\n        \"value\": \"string\",\n        \"isRegex\": false\n      }\n    },\n    \"actions\": null,\n    \"typeSettings\": {\n      \"kind\": \"string\",\n      \"stressRecord\": \"\",\n      \"machineDown\": \"\",\n      \"sessionStateChanged\": \"\",\n      \"scheduled\": \"\",\n      \"advanced\": \"\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "edf9cf10-1e06-4d52-ba99-5381d492b8bd",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "Triggers",
+                    ":triggerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "triggerId",
+                      "description": "(Required) Trigger GUID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errorCode\": \"string\",\n  \"message\": null,\n  \"resolvedCount\": null,\n  \"limit\": 2110\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d01bea0d-0a75-4380-aeb2-005ce2c756b0",
+              "name": "Trigger not found in the caller's organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "Triggers",
+                    ":triggerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "triggerId",
+                      "description": "(Required) Trigger GUID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errorCode\": \"string\",\n  \"message\": null,\n  \"resolvedCount\": null,\n  \"limit\": 2110\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9bb0da91-c038-4729-a332-d6f661f457e7",
+              "name": "One or more unknown include keys.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "Triggers",
+                    ":triggerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "triggerId",
+                      "description": "(Required) Trigger GUID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errorCode\": \"string\",\n  \"message\": null,\n  \"resolvedCount\": null,\n  \"limit\": 2110\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/vdi/config",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "6e3b0aad-a97a-45dd-9062-477578c75bee",
+    "name": "VDI & DaaS Configuration Triggers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "",
+      "type": "text/plain"
+    }
+  }
+}

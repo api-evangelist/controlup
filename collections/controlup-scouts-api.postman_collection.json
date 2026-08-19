@@ -1,0 +1,1695 @@
+{
+  "item": [
+    {
+      "id": "cef0986b-3c93-4690-a247-d38d729527b0",
+      "name": "Scouts",
+      "description": {
+        "content": "Scouts are the proactive tests that you configure to monitor the availability and health of various resources. There are different types of Scouts, depending on the type of resource you want to test. Within each type, there are sub-types which determine which test is performed and the available test configuration options.\n\nScouts are initiated from Hives, which are either hosted in the cloud (Cloud Hives), or installed on-premises (Custom Hives).\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ad29096d-f728-47e9-943e-a13a36bd2cf0",
+          "name": "List all Scouts",
+          "request": {
+            "name": "List all Scouts",
+            "description": {
+              "content": "Returns a list of your Scouts.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "hiveId",
+                  "value": "<integer>,<integer>",
+                  "description": "Only return Scouts running from the Custom Hives specified by these hive IDs."
+                },
+                {
+                  "disabled": false,
+                  "key": "cloudHive",
+                  "value": "<integer>,<integer>",
+                  "description": "Only return Scouts running from the Cloud Hives specified by these hive IDs."
+                },
+                {
+                  "disabled": false,
+                  "key": "scoutName",
+                  "value": "<string>",
+                  "description": "Filter by Scout name (partial match)."
+                },
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "Filter the list based on the Scout type."
+                },
+                {
+                  "disabled": false,
+                  "key": "subType",
+                  "value": "<string>",
+                  "description": "Filter the list based on the Scout sub-type."
+                },
+                {
+                  "disabled": false,
+                  "key": "interval",
+                  "value": "<integer>",
+                  "description": "Filter the list based on the interval (in minutes) of how often a Scout runs."
+                },
+                {
+                  "disabled": false,
+                  "key": "disabled",
+                  "value": "0",
+                  "description": "Use this parameter to only return disabled Scouts. By default, only enabled Scouts are returned."
+                },
+                {
+                  "disabled": false,
+                  "key": "username",
+                  "value": "<string>",
+                  "description": "Only return Scouts that use this username to access the resource. This only applies to EUC Scouts."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "The page of Scouts to be returned. Each page contains up to 100 Scouts. If your request returns more than 100 Scouts, then the response is paginated."
+                },
+                {
+                  "disabled": false,
+                  "key": "tags",
+                  "value": "<uuid>,<uuid>",
+                  "description": "Only return Scouts with the specified tag IDs. You can use [GET /v1/organizations/{orgId}/tags](orgtagspubliccontroller_getall) to get the IDs of each tag."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "01cffdd5-8a08-4296-a996-817c213461a6",
+              "name": "A list of Scouts",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "hiveId",
+                      "value": "<integer>,<integer>"
+                    },
+                    {
+                      "key": "cloudHive",
+                      "value": "<integer>,<integer>"
+                    },
+                    {
+                      "key": "scoutName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "subType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "disabled",
+                      "value": "0"
+                    },
+                    {
+                      "key": "username",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "tags",
+                      "value": "<uuid>,<uuid>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"current_page\": 1,\n  \"total_pages\": 1,\n  \"success\": true,\n  \"total\": 2,\n  \"data\": [\n    {\n      \"address\": \"https://ns.example.com\",\n      \"hives\": {\n        \"cloud\": [\n          1\n        ]\n      },\n      \"createdAt\": \"2020-11-12 14:13:13\",\n      \"disabled\": false,\n      \"domain\": \"\",\n      \"interval\": 30,\n      \"lastRun\": 1607320138011,\n      \"options\": {\n        \"connection_timeout\": 120,\n        \"session_timeout\": 120\n      },\n      \"otp\": {\n        \"code\": \"hedgehog\",\n        \"type\": \"TOTP\"\n      },\n      \"resource\": \"qa-chrome\",\n      \"scoutId\": 2382,\n      \"scoutName\": \"example-citrix-ns\",\n      \"subType\": \"citrix\",\n      \"type\": \"euc\",\n      \"username\": \"loginbot20\",\n      \"tags\": [\n        {\n          \"key\": \"Application\",\n          \"value\": \"SaaS\"\n        }\n      ]\n    },\n    {\n      \"address\": \"ns.example.com\",\n      \"hives\": {\n        \"cloud\": [\n          1\n        ],\n        \"custom\": [\n          1111\n        ]\n      },\n      \"createdAt\": \"2020-11-12 15:13:13\",\n      \"disabled\": false,\n      \"interval\": 30,\n      \"lastRun\": 1607320138011,\n      \"options\": {\n        \"count\": 4,\n        \"maxttl\": 64,\n        \"payload\": 32,\n        \"protocol\": \"ICMP\",\n        \"successful_percentage\": 100,\n        \"timeout\": 1\n      },\n      \"scoutId\": 2399,\n      \"scoutName\": \"example-ping-ns\",\n      \"subType\": \"net_ping\",\n      \"type\": \"network\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "49e1259d-c91b-4688-a6be-f7d476cc40cd",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "hiveId",
+                      "value": "<integer>,<integer>"
+                    },
+                    {
+                      "key": "cloudHive",
+                      "value": "<integer>,<integer>"
+                    },
+                    {
+                      "key": "scoutName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "subType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "disabled",
+                      "value": "0"
+                    },
+                    {
+                      "key": "username",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "tags",
+                      "value": "<uuid>,<uuid>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a3eca1d9-8881-440b-979b-80b87797f521",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "hiveId",
+                      "value": "<integer>,<integer>"
+                    },
+                    {
+                      "key": "cloudHive",
+                      "value": "<integer>,<integer>"
+                    },
+                    {
+                      "key": "scoutName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "subType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "disabled",
+                      "value": "0"
+                    },
+                    {
+                      "key": "username",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "tags",
+                      "value": "<uuid>,<uuid>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "91ad6db7-10b6-42cf-a252-c0f162105673",
+          "name": "Create a Scout",
+          "request": {
+            "name": "Create a Scout",
+            "description": {
+              "content": "Create a Scout to test EUC or network resources. Creating a Scout uses credits on your account. If you disable or delete the Scout, then the credits are returned to your account. See [License Information](https://support.controlup.com/docs/license-information) for more details.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cloudHive\": \"<integer>\",\n  \"subType\": \"<string>\",\n  \"otp\": {\n    \"type\": \"<string>\",\n    \"code\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "21bd1e45-9f1e-42a8-b0cb-b0ab3561ae8d",
+              "name": "Scout created successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Scout has been created.\",\n  \"scoutDetails\": 1000,\n  \"availableCredits\": 30000,\n  \"totalCredits\": 75000,\n  \"scoutId\": 1000\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3cbc5653-95c9-4eee-9ac0-df838aa8b154",
+              "name": "Sent data has errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"name\": [\n      \"Missing required data.\"\n    ],\n    \"period\": [\n      \"Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b6ea8cd-92b5-4e31-9b2f-f0d9597e5849",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "efd5eabd-7d99-4ea2-9e5f-1e24ca74f327",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a9333bad-57e7-486c-ae1b-461bc3dc503c",
+          "name": "Get Scout info",
+          "request": {
+            "name": "Get Scout info",
+            "description": {
+              "content": "Returns the details of a specific Scout, and a summary of it's test results. By default, the summary uses test results from the last 24 hours.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<dateTime>",
+                  "description": "Start date and time of test results used for the summary."
+                },
+                {
+                  "disabled": false,
+                  "key": "end",
+                  "value": "<dateTime>",
+                  "description": "End date and time of the test results used for the summary."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "16653e7d-8900-44cd-8ef3-eafca8e1c70e",
+              "name": "Scout information.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"address\": \"https://ns.example.com\",\n    \"cloudHive'\": \"eu-central-1\",\n    \"createdAt\": \"2020-11-12 14:13:13\",\n    \"disabled\": false,\n    \"domain\": \"\",\n    \"hiveId\": null,\n    \"interval\": 30,\n    \"lastRun\": 1607320138011,\n    \"options\": {\n      \"connection_timeout\": 120,\n      \"session_timeout\": 120\n    },\n    \"otp\": {\n      \"code\": \"hedgehog\",\n      \"type\": \"TOTP\"\n    },\n    \"resource\": \"qa-chrome\",\n    \"scoutId\": 2382,\n    \"scoutName\": \"example-citrix-ns\",\n    \"subType\": \"citrix\",\n    \"type\": \"euc\",\n    \"username\": \"loginbot20\",\n    \"tags\": [\n      {\n        \"key\": \"Application\",\n        \"value\": \"Application\"\n      }\n    ]\n  },\n  \"summary\": {\n    \"authPhaseAvg\": 4.56,\n    \"connPhaseAvg\": 4.09,\n    \"endTime\": \"2021-06-26 00:00:00\",\n    \"enumTimeAvg\": 0.36,\n    \"icaTimeAvg\": 0.6,\n    \"initAvg\": 3,\n    \"sessionReady95Percentile\": 23.38,\n    \"sessionReadyAvg\": 15.56,\n    \"sessionReadyMax\": 49.15,\n    \"sessionReadyMedian\": 13.91,\n    \"startTime\": \"2021-06-25 00:00:00\",\n    \"successfulTests\": 287,\n    \"totalSuccess\": 99.65,\n    \"totalTests\": 288\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d086a051-c997-4457-8dee-e7a26d2beae0",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9e3b3a56-dcf2-4a54-88c6-2147bf46785b",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6e4b0cfd-4aeb-4cac-af1b-fbdb9992e8ba",
+          "name": "Edit Scout",
+          "request": {
+            "name": "Edit Scout",
+            "description": {
+              "content": "Edits an existing Scout. Any parameters passed in this call will be updated to the new values. Unused parameters will not be changed.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"<url>\",\n  \"scoutName\": \"<string>\",\n  \"interval\": \"<integer>\",\n  \"resource\": \"<string>\",\n  \"username\": \"<string>\",\n  \"password\": \"<string>\",\n  \"options\": {\n    \"sessionTimeout\": \"<integer>\",\n    \"connectionTimeout\": \"<integer>\",\n    \"loginAttempts\": \"<integer>\"\n  },\n  \"cloudHive\": \"<integer>\",\n  \"domain\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "93f4e950-f308-4bb8-9c36-b5634f3d1188",
+              "name": "Scout was edited successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cffe67bd-99d4-47bf-8264-035301e05b19",
+              "name": "Sent data has errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"name\": [\n      \"Missing required data.\"\n    ],\n    \"period\": [\n      \"Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "babc7c27-58c6-4145-8a61-230d8cac7357",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "452e02d5-6f6b-4b37-a6c9-b883af08f204",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "34fceab8-de65-4f08-b060-8c870fb4a7ff",
+          "name": "Delete Scout",
+          "request": {
+            "name": "Delete Scout",
+            "description": {
+              "content": "Deletes a Scout. This cannot be undone. Historical test result data for the Scout will still be available.\n\nThe credits used to create the Scout will be returned to your account.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "58e9c32f-70a0-4d98-90a7-b7307624dbe8",
+              "name": "Scout deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d1a0efd5-f9aa-43f3-8356-23a79946aca2",
+              "name": "Sent data has errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"name\": [\n      \"Missing required data.\"\n    ],\n    \"period\": [\n      \"Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2561ef9b-7b6c-45ca-97d2-fe0ee3f9a718",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "56e08879-25e7-4923-869e-6cee6eaf3d87",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e0262f3f-10e9-42da-80d1-6032d63517b5",
+          "name": "Enable/disable Scout",
+          "request": {
+            "name": "Enable/disable Scout",
+            "description": {
+              "content": "Enables or disables an existing Scout. A Scout only performs tests while it is enabled. \n\nEnabling a Scout uses credits on your account. Disabling a Scout returns the credits.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId",
+                "disabled"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disabled\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "09fea226-0dcc-4641-be83-e0980d217420",
+              "name": "Scout enabled/disabled",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "disabled"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disabled\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e0fe3e5d-fde8-498e-9eb6-0fe29ef3d9b8",
+              "name": "Sent data has errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "disabled"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disabled\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"name\": [\n      \"Missing required data.\"\n    ],\n    \"period\": [\n      \"Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e7d3cbf3-5f29-4913-9100-51f8bac5d661",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "disabled"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disabled\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "10619eb4-2dc1-4669-a359-93c5e8971ec1",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "disabled"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disabled\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/synthetic-monitoring/v2/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "46eea767-8a0b-44c1-8a9f-889f63f2360e",
+    "name": "Synthetic Monitoring Scouts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Scouts are the proactive tests that you configure to monitor the availability and health of various resources. There are different types of Scouts, depending on the type of resource you want to test. Within each type, there are sub-types which determine which test is performed and the available test configuration options.\n\nScouts are initiated from Hives, which are either hosted in the cloud (Cloud Hives), or installed on-premises (Custom Hives).\n",
+      "type": "text/plain"
+    }
+  }
+}

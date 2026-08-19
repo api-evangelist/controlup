@@ -1,0 +1,268 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VDI & DAAS Session API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Session",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get session statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/sessions",
+            "params": [
+              {
+                "name": "presetType",
+                "value": "",
+                "type": "query",
+                "description": "Set the type of statistics to return for each user session."
+              },
+              {
+                "name": "userAccount",
+                "value": "",
+                "type": "query",
+                "description": "Filter sessions by user account, provided in the Domain\\username format."
+              },
+              {
+                "name": "userName",
+                "value": "John Doe",
+                "type": "query",
+                "description": "Filter sessions by user display name (partial match, e.g. 'John Doe'). If both userName and userAccount are provided, userAccount takes precedence."
+              },
+              {
+                "name": "serverName",
+                "value": "",
+                "type": "query",
+                "description": "Filter sessions by server name. This parameter is only applicable when the preset is set to LIST."
+              },
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01T00:00:00.000Z",
+                "type": "query",
+                "description": "Start date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02T00:00:00.000Z",
+                "type": "query",
+                "description": "End date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "logonDurationgt",
+                "value": "",
+                "type": "query",
+                "description": "Minimum logon duration in seconds"
+              },
+              {
+                "name": "logonDurationlt",
+                "value": "",
+                "type": "query",
+                "description": "Maximum logon duration in seconds"
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns statistics for all user sessions. Visit the <a href='https://support.controlup.com/docs/user-sessions-activity-report' target='_blank'>Session Activity Report</a> documentation for column descriptions and more details."
+        },
+        {
+          "info": {
+            "name": "Get session timeline",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/sessions/timeline/:sessionUid",
+            "params": [
+              {
+                "name": "sessionUid",
+                "value": "",
+                "type": "path",
+                "description": "Session UID to get timeline for"
+              }
+            ]
+          },
+          "docs": "Returns the timeline of session state changes for a specific session."
+        },
+        {
+          "info": {
+            "name": "Get individual session details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/sessions/details",
+            "params": [
+              {
+                "name": "machineName",
+                "value": "",
+                "type": "query",
+                "description": "The name of virtual machine."
+              },
+              {
+                "name": "computerId",
+                "value": "",
+                "type": "query",
+                "description": "The name of virtual machine."
+              },
+              {
+                "name": "sessionUid",
+                "value": "",
+                "type": "query",
+                "description": "Session uid used to identify a session. This value is returned in the session statistics."
+              },
+              {
+                "name": "isNormalLogoff",
+                "value": "",
+                "type": "query",
+                "description": "Was logoff explicit."
+              },
+              {
+                "name": "sessionStartDateTime",
+                "value": "",
+                "type": "query",
+                "description": "Start datetime of requested session details."
+              },
+              {
+                "name": "sessionEndDateTime",
+                "value": "",
+                "type": "query",
+                "description": "End datetime of requested session details."
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns activity details of individual session. Visit the <a href='https://support.controlup.com/docs/user-sessions-activity-report' target='_blank'>Session Activity Report</a> documentation for column descriptions and more details."
+        },
+        {
+          "info": {
+            "name": "Get aggregated session activity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/sessions/aggregated",
+            "params": [
+              {
+                "name": "groupBy",
+                "value": "",
+                "type": "query",
+                "description": "Single session dimension to group rows by."
+              },
+              {
+                "name": "metrics",
+                "value": "",
+                "type": "query",
+                "description": "One or more session metrics to aggregate. Repeat the parameter for multiple values."
+              },
+              {
+                "name": "aggregations",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation functions to apply to each metric. Repeat for multiple. Default: avg."
+              },
+              {
+                "name": "_sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Response field to sort by (must equal a returned <metric>_<aggregation>, session_count, or the groupBy field). Default: <first metric>_<first aggregation>."
+              },
+              {
+                "name": "_sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort order. Default: desc."
+              },
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01T00:00:00.000Z",
+                "type": "query",
+                "description": "Start date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02T00:00:00.000Z",
+                "type": "query",
+                "description": "End date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "userAccount",
+                "value": "",
+                "type": "query",
+                "description": "Filter sessions by user account, provided in the Domain\\username format."
+              },
+              {
+                "name": "serverName",
+                "value": "",
+                "type": "query",
+                "description": "Filter sessions by server name."
+              },
+              {
+                "name": "logonDurationgt",
+                "value": "",
+                "type": "query",
+                "description": "Minimum logon duration in seconds (pre-aggregation filter)."
+              },
+              {
+                "name": "logonDurationlt",
+                "value": "",
+                "type": "query",
+                "description": "Maximum logon duration in seconds (pre-aggregation filter)."
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns aggregated session activity metrics (avg/min/max/count) grouped by a single session dimension such as folder, delivery group, site, user, protocol, or initial program. Visit the <a href='https://support.controlup.com/docs/user-sessions-activity-report' target='_blank'>Session Activity Report</a> documentation for column descriptions and more details."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

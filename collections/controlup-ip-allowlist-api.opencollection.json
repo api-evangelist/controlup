@@ -1,0 +1,184 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Dex IP Allowlist API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "IP Allowlist",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all IP allowlist entries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/ip-allowlist",
+            "params": [
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page of results to return.\nThe first page is page number 1."
+              },
+              {
+                "name": "_limit",
+                "value": "10",
+                "type": "query",
+                "description": "The number of results returned per page."
+              },
+              {
+                "name": "_sortBy",
+                "value": "id",
+                "type": "query",
+                "description": "Sorts results according to the specified field."
+              },
+              {
+                "name": "_order",
+                "value": "asc",
+                "type": "query",
+                "description": "The sort order (ascending / descending) of the field specified by the `_sortBy` parameter."
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "A search filter that is applied to all fields.\nOnly results that contain the specified string are returned."
+              },
+              {
+                "name": "_format",
+                "value": "json",
+                "type": "query",
+                "description": "The format of returned results."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "allowlist",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `allowlist` field."
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `description` field."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A search filter on the `id` field."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of all IP allowlist entries.\nEach entry can contain multiple allowed IP addresses or ranges of IP addresses.\nIf the IP allowlist is enabled in your organization settings, then only users with IP addresses on the allowlist can access your organization."
+        },
+        {
+          "info": {
+            "name": "Create an IP allowlist entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/ip-allowlist",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new entry in the IP allowlist.\nEach entry can contain multiple allowed IP addresses or ranges of IP addresses.\nIf the IP allowlist is enabled in your organization settings, then only users with IP addresses on the allowlist can access your organization."
+        },
+        {
+          "info": {
+            "name": "Update an IP allowlist entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/ip-allowlist/:id",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the allowlist entry to update.\nYou can use [GET /ip-allowlist](orgipallowlistpubliccontroller_getall) to see the ID of each allowlist entry."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates an existing IP allowlist entry by its ID.\nAll allowed IP addresses and ranges in the entry are overwritten by the ones you provide in the allowlist parameter.\nAny parameters not passed are not changed."
+        },
+        {
+          "info": {
+            "name": "Delete an IP allowlist entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/v1/organizations/:orgId/ip-allowlist/:id",
+            "params": [
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the allowlist entry to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes an IP allowlist entry by its ID.\nNote that you can’t delete the first IP allowlist entry that is automatically added when a user first enables the IP allowlist.\nThis ensures that the user who enabled the allowlist is not locked out of the organization."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

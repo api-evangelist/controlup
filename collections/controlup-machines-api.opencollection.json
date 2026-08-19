@@ -1,0 +1,174 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VDI & DaaS Configuration Machines API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Machines",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List machines",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/vdi/config/v1/machines",
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for pagination (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of items per page"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field name to sort by. Valid fields: objectGuid, name, fqdn, netBiosName, siteId. Defaults to 'name' if invalid field provided."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order direction"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "A case-insensitive search filter on the `fqdn` and `description` fields. If you enter multiple terms, such as `production server`, the endpoint returns all machines that contain 'production' in either of the searched fields AND 'server' in either of the searched fields. You can use double quotes to search for exact phrases (for example, `\"production server\"`)."
+              },
+              {
+                "name": "folderPath",
+                "value": "",
+                "type": "query",
+                "description": "Filter machines by exact folder path match"
+              },
+              {
+                "name": "site",
+                "value": "",
+                "type": "query",
+                "description": "Filter machines by monitor site name"
+              },
+              {
+                "name": "outboundReady",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the endpoint only returns machines that are capable of establishing outbound connections from the machine to ControlUp's services."
+              },
+              {
+                "name": "includeDeleted",
+                "value": "",
+                "type": "query",
+                "description": "Include deleted machines in the results"
+              },
+              {
+                "name": "includeDetails",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the endpoint returns the following additional details:\n* Agent: Port number and install mode\n* LoadBalancing: Weight and preferred weight settings\n* Management: Information about which extension added the machine via sync\n* VdiStatus: Last outbound connection date and when the machine was missed in EUC\n"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to include in the response. When specified, only these fields will be returned for each machine."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieves a paginated list of machines with optional filtering, sorting, and search capabilities"
+        },
+        {
+          "info": {
+            "name": "Create or update machines",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/vdi/config/v1/machines",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates or updates machines in bulk. Identity is determined by FQDN computed as `computerName` or `computerName.domainName`.\nWhen a machine already exists, only provided fields that differ from current values are applied; unspecified fields are left unchanged.\n\nNote: If the ControlUp environment has the agent setting 'Deploy agents automatically (from monitor only)' enabled in the configuration console, adding a new machine (with isOutboundReady = false) via this endpoint will cause the ControlU"
+        },
+        {
+          "info": {
+            "name": "Delete machines",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/vdi/config/v1/machines",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes machines in bulk by FQDN."
+        },
+        {
+          "info": {
+            "name": "Get machine details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/vdi/config/v1/machines/:objectGuid",
+            "params": [
+              {
+                "name": "objectGuid",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the machine"
+              },
+              {
+                "name": "includeDetails",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the endpoint returns the following additional details:\n* Agent: Port number and install mode\n* LoadBalancing: Weight and preferred weight settings\n* Management: Information about which extension added the machine via sync\n* VdiStatus: Last outbound connection date and when the machine was missed in EUC\n"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to include in the response. When specified, only these fields will be returned."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieves detailed information for a specific machine by its unique identifier."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

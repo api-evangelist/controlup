@@ -1,0 +1,415 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Host pool user sessions API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Host pool user sessions
+paths:
+  /cloud/host-pools/{hostPoolId}/user-sessions:
+    get:
+      tags:
+      - Host pool user sessions
+      summary: Get user sessions for a host pool
+      description: 'Returns the people currently logged in to the pool — one row per user session, across all of its session hosts.
+
+        In Azure AVD this includes Active, Pending, and Disconnected sessions: any session where the user has not logged off.
+
+        Describes the occupants, not the machines they are running on.'
+      operationId: GetHostPoolSessions
+      parameters:
+      - name: hostPoolId
+        in: path
+        description: The unique identifier of the host pool.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: sort
+        in: query
+        description: 'Sort specification string.
+
+
+          Format:
+
+          field:direction,otherField:direction
+
+
+          Directions: asc, desc, ascending, descending — defaults to ascending when omitted
+
+
+          Fields (names are matched case-insensitively):
+
+          activeDirectoryUserName, applicationType, currentStateDuration, currentStateStartTime, id, sessionDuration, sessionEndTime, sessionHostId, sessionHostName, sessionHostNameAlias, sessionName, sessionNumericAlias, sessionStartTime, sessionState, userPrincipalName
+
+
+          Default when omitted: sessionStartTime:desc.'
+        schema:
+          maxLength: 256
+          type: string
+          example: userPrincipalName:asc,sessionStartTime:desc
+        examples:
+          default:
+            summary: default
+            value: sessionStartTime:desc
+        x-foundry-sort:
+          fields:
+          - activeDirectoryUserName
+          - applicationType
+          - currentStateDuration
+          - currentStateStartTime
+          - id
+          - sessionDuration
+          - sessionEndTime
+          - sessionHostId
+          - sessionHostName
+          - sessionHostNameAlias
+          - sessionName
+          - sessionNumericAlias
+          - sessionStartTime
+          - sessionState
+          - userPrincipalName
+          dynamicPaths: false
+          defaultField: sessionStartTime
+          defaultAscending: false
+      - name: page
+        in: query
+        description: 'The page number to retrieve (1-based). Default: 1.'
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: 'The number of items per page (1-100). Default: 50.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully retrieved user sessions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSessionQueryResultPagedResult'
+        '400':
+          description: Bad request. Invalid pagination parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have access to this organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found. Host pool does not exist or does not belong to the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    UserSessionQueryResult:
+      required:
+      - currentStateDuration
+      - currentStateStartTime
+      - id
+      - sessionHostId
+      - sessionHostName
+      - sessionHostNameAlias
+      - sessionName
+      - sessionNumericAlias
+      - sessionStartTime
+      - sessionState
+      - userPrincipalName
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this session snapshot.
+          format: uuid
+        sessionHostId:
+          type: string
+          description: Session host identifier.
+          format: uuid
+        sessionHostName:
+          type: string
+          description: 'Session host name (denormalized for display).
+
+            Example: "HP-Contoso1/HP1-0" or "host-pool/vm-name"'
+        sessionHostNameAlias:
+          type: string
+          description: Short display name extracted from the host portion of the session host name
+          example: HP1-0
+        sessionName:
+          type: string
+          description: 'Azure session resource name (hierarchical path format).
+
+            Example: "HP-Contoso1/HP1-1/2" (normal) or "HP-Contoso1/HP1-1/-1" (pending)
+
+            Format: "{HostPoolName}/{SessionHostName}/{NumericId}"'
+        sessionNumericAlias:
+          type: string
+          description: 'Short alias extracted from the last segment of SessionName.
+
+            Example: "HP-Contoso1/HP1-1/2" yields "2"'
+        userPrincipalName:
+          type: string
+          description: 'User Principal Name (email).
+
+            Example: "john.smith@contoso.com"'
+        activeDirectoryUserName:
+          type:
+          - string
+          - 'null'
+          description: 'Active Directory username (domain\user format).
+
+            Example: "CONTOSO\\john.smith"'
+        sessionState:
+          type: string
+          description: 'Session state: Active, Disconnected, Pending, SignOut, etc.'
+        currentStateStartTime:
+          type: string
+          description: 'When the session entered its current state.
+
+            Defaults to SessionStartTime if no state changes have occurred.'
+          format: date-time
+        currentStateDuration:
+          type: string
+          description: 'Duration of the current state.
+
+            Computed from CurrentStateStartTime to UtcNow.'
+          format: date-span
+          readOnly: true
+        sessionStartTime:
+          type: string
+          description: When the session was created (user logged in).
+          format: date-time
+        sessionEndTime:
+          type:
+          - string
+          - 'null'
+          description: 'When the session ended (user logged off or session terminated).
+
+            Null for active/disconnected sessions.'
+          format: date-time
+        sessionDuration:
+          type:
+          - string
+          - 'null'
+          description: 'Duration of the session (computed from SessionStartTime to SessionEndTime).
+
+            Null if session is still active (SessionEndTime is null).'
+          format: date-span
+          readOnly: true
+        applicationType:
+          type:
+          - string
+          - 'null'
+          description: 'Application type: Desktop, RemoteApp, etc.'
+      additionalProperties: false
+      description: 'Query result model for user session list items.
+
+        Read-only model optimized for list/grid display with joined data.
+
+        Contains user session state information with denormalized session host name for display.'
+    UserSessionQueryResultPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSessionQueryResult'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

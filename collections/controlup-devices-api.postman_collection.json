@@ -1,0 +1,2694 @@
+{
+  "item": [
+    {
+      "id": "e2b2f06e-04fd-400f-8e33-b08e6de82db6",
+      "name": "Devices",
+      "description": {
+        "content": "Get information about devices.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "051007cd-6ca5-47f4-acb9-6138613da2ad",
+          "name": "List all devices",
+          "request": {
+            "name": "List all devices",
+            "description": {
+              "content": "Returns a list of all devices managed by ControlUp for Compliance.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices"
+              ],
+              "host": [
+                "{{devices-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_page",
+                  "value": "<integer>",
+                  "description": "The page returned. Pages are 1-based."
+                },
+                {
+                  "disabled": false,
+                  "key": "_limit",
+                  "value": "10",
+                  "description": "The number of rows returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "_filters",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_filterby",
+                  "value": "<string>",
+                  "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_sort",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_orderby",
+                  "value": "<string>",
+                  "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "device_id",
+                  "value": "<string>",
+                  "description": "Filter by the devive ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "device_name",
+                  "value": "<string>",
+                  "description": "Filter by the device name."
+                },
+                {
+                  "disabled": false,
+                  "key": "agent_status",
+                  "value": "<string>",
+                  "description": "Filter by agent connection status."
+                },
+                {
+                  "disabled": false,
+                  "key": "os_name",
+                  "value": "<string>",
+                  "description": "Filter by operating system name."
+                },
+                {
+                  "disabled": false,
+                  "key": "mac_address",
+                  "value": "<string>",
+                  "description": "A search filter on the `mac_address` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "score",
+                  "value": "<float>",
+                  "description": "A search filter on the `score` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "score_severity",
+                  "value": "<string>",
+                  "description": "A search filter on the `score_severity` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "issues_count",
+                  "value": "<integer>",
+                  "description": "A search filter on the `issues_count` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "device_group",
+                  "value": "<string>",
+                  "description": "A search filter on the `device_group` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "location",
+                  "value": "<string>",
+                  "description": "A search filter on the `location` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "client_version",
+                  "value": "<string>",
+                  "description": "A search filter on the `client_version` field."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "866c3ef4-5664-44ee-851b-cc1eb80474e4",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices"
+                  ],
+                  "host": [
+                    "{{devices-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_filters",
+                      "value": "{\"field\":\"score\",\"op\":\"gte\",\"value\":90}"
+                    },
+                    {
+                      "key": "_filterby",
+                      "value": "device_name contains server"
+                    },
+                    {
+                      "key": "_sort",
+                      "value": "{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}"
+                    },
+                    {
+                      "key": "_orderby",
+                      "value": "issues_count desc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "server"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "windows"
+                    },
+                    {
+                      "key": "device_id",
+                      "value": "IHAfqJoB-3oP8zTHt8c"
+                    },
+                    {
+                      "key": "device_name",
+                      "value": "my-device-001"
+                    },
+                    {
+                      "key": "agent_status",
+                      "value": "online"
+                    },
+                    {
+                      "key": "os_name",
+                      "value": "Microsoft Windows 11 Pro"
+                    },
+                    {
+                      "key": "mac_address",
+                      "value": "00:1A:2B:3C:4D:5E"
+                    },
+                    {
+                      "key": "score",
+                      "value": "7"
+                    },
+                    {
+                      "key": "score_severity",
+                      "value": "LOW"
+                    },
+                    {
+                      "key": "issues_count",
+                      "value": "0"
+                    },
+                    {
+                      "key": "device_group",
+                      "value": "SampleGroup"
+                    },
+                    {
+                      "key": "location",
+                      "value": "United States - Chicago"
+                    },
+                    {
+                      "key": "client_version",
+                      "value": "1.5.2510.08"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"metadata\": {\n    \"cuRequestId\": \"7b8a89c7-172b-4a9f-9e58-24636866266d\",\n    \"orgId\": \"0d5157ef-eb88-4f87-905c-6823fef32f2e\",\n    \"userId\": \"d97b8cde-8c2e-4bba-9f20-2097f9f26de4\",\n    \"total\": 51,\n    \"limitPerPage\": 10,\n    \"currentPageNumber\": 1,\n    \"currentPageSize\": 10,\n    \"remaining\": 41\n  },\n  \"data\": [\n    {\n      \"device_id\": \"QYkHyYoBQ5QdJu1tiAg1\",\n      \"device_name\": \"Oliver’S MAC MINI\",\n      \"agent_status\": \"offline\",\n      \"os_name\": \"macOS\",\n      \"mac_address\": null,\n      \"local_ip\": null,\n      \"public_ip\": \"59.52.12.248\",\n      \"security_controls\": null,\n      \"last_scan\": \"2025-09-11T16:44:12.613Z\",\n      \"score\": 10,\n      \"score_severity\": \"LOW\",\n      \"issues_count\": 0,\n      \"device_group\": \"Ungrouped Devices\",\n      \"device_tags\": [],\n      \"location\": \"United States - New York City\",\n      \"client_version\": \"1.5.001\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a6c3d96e-1e7f-4b02-9643-a958d86cd83a",
+          "name": "Get device details",
+          "request": {
+            "name": "Get device details",
+            "description": {
+              "content": "Returns details for a specific device, including a summary of the number of issues detected on the device.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                ":device_id"
+              ],
+              "host": [
+                "{{devices-device_id-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_page",
+                  "value": "<integer>",
+                  "description": "The page returned. Pages are 1-based."
+                },
+                {
+                  "disabled": false,
+                  "key": "_limit",
+                  "value": "10",
+                  "description": "The number of rows returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "_filters",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_filterby",
+                  "value": "<string>",
+                  "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_sort",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_orderby",
+                  "value": "<string>",
+                  "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "device_id",
+                  "description": "(Required) ID of the device to get."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "57a15a6f-bfe2-4a6e-98db-8549a7660b70",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    ":device_id"
+                  ],
+                  "host": [
+                    "{{devices-device_id-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_filters",
+                      "value": "{\"field\":\"score\",\"op\":\"gte\",\"value\":90}"
+                    },
+                    {
+                      "key": "_filterby",
+                      "value": "device_name contains server"
+                    },
+                    {
+                      "key": "_sort",
+                      "value": "{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}"
+                    },
+                    {
+                      "key": "_orderby",
+                      "value": "issues_count desc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "server"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "windows"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) ID of the device to get."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"metadata\": {\n    \"cuRequestId\": \"0113c424-aaf9-e63e-1592-da7cdd384513\",\n    \"orgId\": \"b6dae87b-cec2-a610-dc29-123e29c4c58e\",\n    \"userId\": \"04672212-d021-ee85-5b52-d62004205728\"\n  },\n  \"data\": {\n    \"device_id\": \"IHAfqJoB-3oP8zTHt8c\",\n    \"device_name\": \"my-device-001\",\n    \"agent_status\": \"online\",\n    \"os_name\": \"Microsoft Windows 11 Pro\",\n    \"mac_address\": \"00:1A:2B:3C:4D:5E\",\n    \"local_ip\": \"192.168.1.10\",\n    \"public_ip\": \"203.0.113.42\",\n    \"security_controls\": null,\n    \"last_scan\": \"2025-11-28T12:31:54.296Z\",\n    \"score\": 5,\n    \"score_severity\": \"HIGH\",\n    \"issues_count\": 8,\n    \"device_group\": \"ExampleGroup\",\n    \"device_tags\": [\n      \"DeviceTag1\",\n      \"DeviceTag2\"\n    ],\n    \"location\": \"United States - Chicago\",\n    \"agent_version\": \"1.5.2510.08\",\n    \"vulns_count\": \"string\",\n    \"available_patches_count\": \"string\",\n    \"compliance_count\": \"string\",\n    \"misconfig_count\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "473d9296-fc70-4fc7-8acf-872bf036fbc9",
+          "name": "List device vulnerabilities",
+          "request": {
+            "name": "List device vulnerabilities",
+            "description": {
+              "content": "Returns a list of vulnerabilities (CVEs) detected on a specific device.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                ":device_id",
+                "vulnerabilities"
+              ],
+              "host": [
+                "{{devices-device_id-vulnerabilities-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_page",
+                  "value": "<integer>",
+                  "description": "The page returned. Pages are 1-based."
+                },
+                {
+                  "disabled": false,
+                  "key": "_limit",
+                  "value": "10",
+                  "description": "The number of rows returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "_filters",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_filterby",
+                  "value": "<string>",
+                  "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_sort",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_orderby",
+                  "value": "<string>",
+                  "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "device_id",
+                  "description": "(Required) ID of the device."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "99f3f0fb-e2ab-4a8f-978e-e4842947d99e",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    ":device_id",
+                    "vulnerabilities"
+                  ],
+                  "host": [
+                    "{{devices-device_id-vulnerabilities-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_filters",
+                      "value": "{\"field\":\"score\",\"op\":\"gte\",\"value\":90}"
+                    },
+                    {
+                      "key": "_filterby",
+                      "value": "device_name contains server"
+                    },
+                    {
+                      "key": "_sort",
+                      "value": "{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}"
+                    },
+                    {
+                      "key": "_orderby",
+                      "value": "issues_count desc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "server"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "windows"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) ID of the device."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"metadata\": {\n    \"cuRequestId\": \"d84fc056-8ed2-8010-5f99-77db8f5b0d24\",\n    \"orgId\": \"4b754676-7a1c-7674-01de-beda56fcb1c8\",\n    \"userId\": \"fd583d8a-1825-e876-9fc0-bc10ceba30b8\",\n    \"total\": 5045,\n    \"limitPerPage\": 4483,\n    \"currentPageNumber\": 2975,\n    \"currentPageSize\": 6804,\n    \"remaining\": 2544\n  },\n  \"data\": {\n    \"id\": \"CVE-2025-0144\",\n    \"spm_id\": \"559a7df4-0be9-a32e-487b-e62b3fa8471d\",\n    \"type\": \"vulnerability\",\n    \"title\": \"CVE-2025-0144\",\n    \"description\": \"string\",\n    \"severity\": \"LOW\",\n    \"status\": \"vulnerable\",\n    \"origin\": \"builtin\",\n    \"remediation_status\": \"Available\",\n    \"min_report\": \"2025-02-06T15:49:15.010Z\",\n    \"max_report\": \"2025-08-27T15:52:44.388Z\",\n    \"cve_2_0\": 3.1,\n    \"cve_3_0\": 3.1,\n    \"epss\": 1.6,\n    \"published_epoch\": \"2025-01-15T06:53:11.000Z\",\n    \"app_name\": \"Zoom\",\n    \"is_os\": false,\n    \"last_remediation_status\": null,\n    \"device_action_id\": null,\n    \"remediation_availability\": \"Available\",\n    \"remediation_state\": null,\n    \"last_event_action\": null,\n    \"last_event_status\": null,\n    \"last_event_metadata\": null,\n    \"last_event_created_at\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2d9357aa-9f1c-4b29-a5e1-a7483eae6b46",
+          "name": "List device patches",
+          "request": {
+            "name": "List device patches",
+            "description": {
+              "content": "Returns a list of missing OS and application patches detected on a specific device.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                ":device_id",
+                "patches"
+              ],
+              "host": [
+                "{{devices-device_id-patches-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_page",
+                  "value": "<integer>",
+                  "description": "The page returned. Pages are 1-based."
+                },
+                {
+                  "disabled": false,
+                  "key": "_limit",
+                  "value": "10",
+                  "description": "The number of rows returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "_filters",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_filterby",
+                  "value": "<string>",
+                  "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_sort",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_orderby",
+                  "value": "<string>",
+                  "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "title",
+                  "value": "<string>",
+                  "description": "Filter by application name or OS patch KB number."
+                },
+                {
+                  "disabled": false,
+                  "key": "severity",
+                  "value": "<string>",
+                  "description": "Filter by issue severity."
+                },
+                {
+                  "disabled": false,
+                  "key": "remediation_status",
+                  "value": "<string>",
+                  "description": "Filter by remediation availability."
+                },
+                {
+                  "disabled": false,
+                  "key": "release_date",
+                  "value": "<string>",
+                  "description": "Filter by patch release date."
+                },
+                {
+                  "disabled": false,
+                  "key": "patch_type",
+                  "value": "<string>",
+                  "description": "Filter by patch type detection type. `patch` means that a Template detected the patch by scanning for a specific application or OS patch. `vulnerability` means that a Template detected the patch by scanning for one of the relevant CVEs."
+                },
+                {
+                  "disabled": false,
+                  "key": "is_os",
+                  "value": "<boolean>",
+                  "description": "Set to `true` to return OS patches and `false` to return application patches."
+                },
+                {
+                  "disabled": false,
+                  "key": "current_version",
+                  "value": "<string>",
+                  "description": "Filter by currently installed version."
+                },
+                {
+                  "disabled": false,
+                  "key": "vendor_name",
+                  "value": "<string>",
+                  "description": "Filter by application vendor name."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_remediation_status",
+                  "value": "<string,null>",
+                  "description": "A search filter on the `last_remediation_status` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "device_action_id",
+                  "value": "<string,null-uuid>",
+                  "description": "A search filter on the `device_action_id` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "remediation_availability",
+                  "value": "<string>",
+                  "description": "Filter by whether a remediation for the issue is available."
+                },
+                {
+                  "disabled": false,
+                  "key": "remediation_state",
+                  "value": "<string,null>",
+                  "description": "A search filter on the `remediation_state` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_action",
+                  "value": "<string,null>",
+                  "description": "A search filter on the `last_event_action` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_status",
+                  "value": "<string,null>",
+                  "description": "A search filter on the `last_event_status` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_metadata",
+                  "value": "<string>",
+                  "description": "A search filter on the `last_event_metadata` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_created_at",
+                  "value": "<string,null-date-time>",
+                  "description": "A search filter on the `last_event_created_at` field."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "device_id",
+                  "description": "(Required) ID of the device."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5428d6b6-62c6-48a4-b5c1-734357d1c11b",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    ":device_id",
+                    "patches"
+                  ],
+                  "host": [
+                    "{{devices-device_id-patches-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_filters",
+                      "value": "{\"field\":\"score\",\"op\":\"gte\",\"value\":90}"
+                    },
+                    {
+                      "key": "_filterby",
+                      "value": "device_name contains server"
+                    },
+                    {
+                      "key": "_sort",
+                      "value": "{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}"
+                    },
+                    {
+                      "key": "_orderby",
+                      "value": "issues_count desc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "server"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "windows"
+                    },
+                    {
+                      "key": "title",
+                      "value": "KB890830"
+                    },
+                    {
+                      "key": "severity",
+                      "value": "LOW"
+                    },
+                    {
+                      "key": "remediation_status",
+                      "value": "Available"
+                    },
+                    {
+                      "key": "release_date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "patch_type",
+                      "value": "patch"
+                    },
+                    {
+                      "key": "is_os",
+                      "value": "true"
+                    },
+                    {
+                      "key": "current_version",
+                      "value": "10.0.22000"
+                    },
+                    {
+                      "key": "vendor_name",
+                      "value": "Microsoft Corporation"
+                    },
+                    {
+                      "key": "last_remediation_status",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "device_action_id",
+                      "value": "<string,null-uuid>"
+                    },
+                    {
+                      "key": "remediation_availability",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "remediation_state",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_action",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_status",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_metadata",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "last_event_created_at",
+                      "value": "<string,null-date-time>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) ID of the device."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"metadata\": {\n    \"cuRequestId\": \"49cd5a8f-2aea-e156-7616-dec3d135a3dc\",\n    \"orgId\": \"a7952e6d-96e2-c73e-35b7-928621b61a0b\",\n    \"userId\": \"bd09ea89-4445-bb06-1bba-fcffa8b8d43a\",\n    \"total\": 1874,\n    \"limitPerPage\": 2033,\n    \"currentPageNumber\": 7348,\n    \"currentPageSize\": 8050,\n    \"remaining\": 5661\n  },\n  \"data\": {\n    \"id\": \"uc84e604-f036-fc88-95a3-3c15423f06af\",\n    \"type\": \"patch\",\n    \"title\": \"WinRAR x64\",\n    \"description\": \"string\",\n    \"severity\": \"LOW\",\n    \"status\": \"vulnerable\",\n    \"origin\": \"builtin\",\n    \"remediation_status\": \"Available\",\n    \"min_report\": \"2025-02-06T15:49:15.010Z\",\n    \"max_report\": \"2025-08-27T15:52:44.388Z\",\n    \"cves\": [\n      \"CVE-2025-31334\",\n      \"CVE-2025-31334\"\n    ],\n    \"release_date\": \"2025-01-15T06:53:11.000Z\",\n    \"install_type\": \"Auto\",\n    \"patch_type\": \"patch\",\n    \"group_key\": \"string\",\n    \"security_update_id\": \"string\",\n    \"eol\": false,\n    \"is_os\": false,\n    \"kb_category\": \".NET Framework\",\n    \"current_version\": \"10.0.22000\",\n    \"vendor_name\": \"Microsoft Corporation\",\n    \"last_remediation_status\": null,\n    \"device_action_id\": null,\n    \"remediation_availability\": \"Available\",\n    \"remediation_state\": null,\n    \"last_event_action\": null,\n    \"last_event_status\": null,\n    \"last_event_metadata\": null,\n    \"last_event_created_at\": null,\n    \"components\": {\n      \"paths\": \"C:\\\\Program Files\\\\WinRAR\\\\WinRAR.exe\",\n      \"version\": \"6.22.0.0\",\n      \"description\": \"WinRAR archiver\"\n    },\n    \"install_data\": {\n      \"install_directories\": [\n        \"C:\\\\Program Files\\\\WinRAR\\\\\",\n        \"C:\\\\Program Files\\\\WinRAR\\\\\"\n      ]\n    },\n    \"uninstall_data\": {\n      \"uninstall_hive\": {\n        \"KeyName\": \"winrar archiver\",\n        \"Publisher\": \"win.rar GmbH\",\n        \"ModifyPath\": \"\",\n        \"DisplayName\": \"WinRAR 6.22 (64-bit)\",\n        \"InstallDate\": \"20230115\",\n        \"DisplayVersion\": \"6.22.0\",\n        \"InstallLocation\": \"C:\\\\Program Files\\\\WinRAR\\\\\",\n        \"UninstallString\": \"C:\\\\Program Files\\\\WinRAR\\\\uninstall.exe\"\n      }\n    },\n    \"services\": {}\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9025161f-8c69-4d5d-baf6-03b27f1ce118",
+          "name": "List device compliance issues",
+          "request": {
+            "name": "List device compliance issues",
+            "description": {
+              "content": "Returns a list of issues from the compliance category detected on a specific device.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                ":device_id",
+                "compliance"
+              ],
+              "host": [
+                "{{devices-device_id-compliance-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_page",
+                  "value": "<integer>",
+                  "description": "The page returned. Pages are 1-based."
+                },
+                {
+                  "disabled": false,
+                  "key": "_limit",
+                  "value": "10",
+                  "description": "The number of rows returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "_filters",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_filterby",
+                  "value": "<string>",
+                  "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_sort",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_orderby",
+                  "value": "<string>",
+                  "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "title",
+                  "value": "<string>",
+                  "description": "Filter by the issue title."
+                },
+                {
+                  "disabled": false,
+                  "key": "severity",
+                  "value": "<string>",
+                  "description": "Filter by the severity level of the issue."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_remediation_status",
+                  "value": "<string,null>",
+                  "description": "Filter by the status of the last remediation attempt."
+                },
+                {
+                  "disabled": false,
+                  "key": "remediation_availability",
+                  "value": "<string>",
+                  "description": "Filter by whether a remediation for the issue is available."
+                },
+                {
+                  "disabled": false,
+                  "key": "remediation_state",
+                  "value": "<string,null>",
+                  "description": "Filter by the current remediation state."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_action",
+                  "value": "<string,null>",
+                  "description": "Filter by the last recorded action."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_status",
+                  "value": "<string,null>",
+                  "description": "Filter by the status of the last recorded event."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_metadata",
+                  "value": "<string,null>",
+                  "description": "Filter by metadata associated with the last event (assumes string filter for complexity)."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_created_at",
+                  "value": "<string,null-date-time>",
+                  "description": "Filter by the creation time of the last recorded event."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "device_id",
+                  "description": "(Required) ID of the device."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "01333f99-4bf4-4d01-b7a2-0192bb142f8a",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    ":device_id",
+                    "compliance"
+                  ],
+                  "host": [
+                    "{{devices-device_id-compliance-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_filters",
+                      "value": "{\"field\":\"score\",\"op\":\"gte\",\"value\":90}"
+                    },
+                    {
+                      "key": "_filterby",
+                      "value": "device_name contains server"
+                    },
+                    {
+                      "key": "_sort",
+                      "value": "{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}"
+                    },
+                    {
+                      "key": "_orderby",
+                      "value": "issues_count desc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "server"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "windows"
+                    },
+                    {
+                      "key": "title",
+                      "value": "Disable Solicited Remote Assistance"
+                    },
+                    {
+                      "key": "severity",
+                      "value": "LOW"
+                    },
+                    {
+                      "key": "last_remediation_status",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "remediation_availability",
+                      "value": "Unavailable"
+                    },
+                    {
+                      "key": "remediation_state",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_action",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_status",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_metadata",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_created_at",
+                      "value": "<string,null-date-time>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) ID of the device."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"metadata\": {\n    \"cuRequestId\": \"9b87e51e-44bd-dac9-b97f-209fe32821b7\",\n    \"orgId\": \"d95d9b8c-6262-33ed-9073-8a9692719078\",\n    \"userId\": \"faee7a1c-3ee9-7d6b-fd93-858e768f499b\"\n  },\n  \"data\": {\n    \"id\": \"24238694-01f3-447a-b634-5674612a5d44\",\n    \"type\": \"compliance\",\n    \"title\": \"Microsoft Intune service disabled\",\n    \"description\": \"string\",\n    \"severity\": \"CRITICAL\",\n    \"status\": \"vulnerable\",\n    \"origin\": \"builtin\",\n    \"remediation_status\": \"Unavailable\",\n    \"min_report\": \"2025-08-26T10:53:51.908Z\",\n    \"max_report\": \"2025-08-27T10:42:34.727Z\",\n    \"potential_risk\": \"string\",\n    \"score\": 4,\n    \"last_remediation_status\": null,\n    \"device_action_id\": null,\n    \"remediation_availability\": \"Unavailable\",\n    \"remediation_state\": null,\n    \"last_event_action\": null,\n    \"last_event_status\": null,\n    \"last_event_metadata\": null,\n    \"last_event_created_at\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c5b4557f-7ea9-4025-bb34-eaf0375253dd",
+          "name": "List device misconfigurations",
+          "request": {
+            "name": "List device misconfigurations",
+            "description": {
+              "content": "Returns a list of misconfiguration issues detected on a specific device.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                ":device_id",
+                "misconfig"
+              ],
+              "host": [
+                "{{devices-device_id-misconfig-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_page",
+                  "value": "<integer>",
+                  "description": "The page returned. Pages are 1-based."
+                },
+                {
+                  "disabled": false,
+                  "key": "_limit",
+                  "value": "10",
+                  "description": "The number of rows returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "_filters",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.\n\n#### Filter object structure:\n* **`field`** (string): The data field to apply the filter on.\n* **`op`** (string): The comparison operator (see below for allowed operators).\n* **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).\n\n#### Supported operators (`op`) and values (`value`)\n\n**Exact comparison**\n* **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.\n\n**Range & ordering**\n* **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.\n\n**List membership**\n* **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.\n\n**String/text matching**\n* **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.\n\n**Presence checks**\n* **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.\n\n#### Examples\nNote that examples must be url-encoded when sent.\n* Single filter: `{\"field\":\"score\",\"op\":\"gte\",\"value\":90}`\n* Multiple filters: `[{\"field\":\"device_name\",\"op\":\"contains\",\"value\":\"vm\"},{\"field\":\"tags\",\"op\":\"in\",\"value\":[\"prod\",\"qa\"]}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_filterby",
+                  "value": "<string>",
+                  "description": "A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.\n\n#### Filter expression structure\n`field operator value` (e.g., `score gte 90`)\n* field: The data field to apply the filter on.\n* operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).\n* value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.\n\nYou don't need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.\n\n#### Examples:\nNote that the examples must be URL-encoded when sent.\n* Simple: `device_name contains server`\n* Multi-criteria: `device_name contains server,score gte 90`\n* List/IN operator: `tags in prod,qa`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_sort",
+                  "value": "<string>",
+                  "description": "URL-encoded **JSON string** containing a sort object or an array of sort objects.\n\n#### Sort object structure\n* **`field`** (string): The data field to sort on.\n* **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).\n* **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.\n\n#### Examples\n* Single field: `{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}`\n* Multi-field: `[{\"field\":\"score\",\"dir\":\"desc\"},{\"field\":\"device_name\",\"dir\":\"asc\"}]`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_orderby",
+                  "value": "<string>",
+                  "description": "**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.\n\n#### Sort expression structure\n`<field> <direction>`\n* field: The data field to sort by.\n* direction: The sort direction, either `asc`, or `desc`.\n\n\n#### Examples\n* Simple: `device_name` (sorts by device_name ascending)\n* Complex: `device_name desc,score asc`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:\n* **Comma-separated string**. For example, `?_search=server,windows`.\n* **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "id",
+                  "value": "<uuid>",
+                  "description": "Filter by Issue ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "title",
+                  "value": "<string>",
+                  "description": "Filter by the issue title."
+                },
+                {
+                  "disabled": false,
+                  "key": "severity",
+                  "value": "<string>",
+                  "description": "Filter by the severity level of the issue."
+                },
+                {
+                  "disabled": false,
+                  "key": "severity",
+                  "value": "<string>",
+                  "description": "Filter by the severity level of the issue."
+                },
+                {
+                  "disabled": false,
+                  "key": "remediation_status",
+                  "value": "<string>",
+                  "description": "Filter by whether ControlUp can remediate the issue."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_remediation_status",
+                  "value": "<string,null>",
+                  "description": "Filter by the status of the last remediation attempt."
+                },
+                {
+                  "disabled": false,
+                  "key": "device_action_id",
+                  "value": "<uuid>",
+                  "description": "Filter by ID related to the device action."
+                },
+                {
+                  "disabled": false,
+                  "key": "remediation_availability",
+                  "value": "<string>",
+                  "description": "Filter by whether a remediation for the issue is available."
+                },
+                {
+                  "disabled": false,
+                  "key": "remediation_state",
+                  "value": "<string,null>",
+                  "description": "Filter by the current remediation state."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_action",
+                  "value": "<string,null>",
+                  "description": "Filter by the last recorded action."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_status",
+                  "value": "<string,null>",
+                  "description": "Filter by the status of the last recorded event."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_metadata",
+                  "value": "<string,null>",
+                  "description": "Filter by event metadata."
+                },
+                {
+                  "disabled": false,
+                  "key": "last_event_created_at",
+                  "value": "<string,null-date-time>",
+                  "description": "Filter by the creation time of the last recorded event."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "device_id",
+                  "description": "(Required) ID of the device."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "12cc2ba8-c487-4458-8d51-2c04def9fa92",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    ":device_id",
+                    "misconfig"
+                  ],
+                  "host": [
+                    "{{devices-device_id-misconfig-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_filters",
+                      "value": "{\"field\":\"score\",\"op\":\"gte\",\"value\":90}"
+                    },
+                    {
+                      "key": "_filterby",
+                      "value": "device_name contains server"
+                    },
+                    {
+                      "key": "_sort",
+                      "value": "{\"field\":\"score\",\"dir\":\"desc\",\"nullsLast\":true}"
+                    },
+                    {
+                      "key": "_orderby",
+                      "value": "issues_count desc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "server"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "windows"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "SSH Server Service detect and remediate"
+                    },
+                    {
+                      "key": "severity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "severity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "remediation_status",
+                      "value": "Unavailable"
+                    },
+                    {
+                      "key": "last_remediation_status",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "device_action_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "remediation_availability",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "remediation_state",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_action",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_status",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_metadata",
+                      "value": "<string,null>"
+                    },
+                    {
+                      "key": "last_event_created_at",
+                      "value": "<string,null-date-time>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) ID of the device."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"metadata\": {\n    \"cuRequestId\": \"817b089c-99d3-bf1b-d46f-a893d8ccd2f7\",\n    \"orgId\": \"0929fe78-35af-48bf-6904-65ad44c5dd3c\",\n    \"userId\": \"eac2ee93-acd5-b827-6561-326d96977899\",\n    \"total\": 4801,\n    \"limitPerPage\": 24,\n    \"currentPageNumber\": 7849,\n    \"currentPageSize\": 9768,\n    \"remaining\": 3890\n  },\n  \"data\": {\n    \"id\": \"5hea82cd-8144-445d-9778-bb4d6f52f03e\",\n    \"type\": \"misconfig\",\n    \"title\": \"Disable Solicited Remote Assistance\",\n    \"description\": \"Remote assistance allows another user to view or take control of the local session of a user.\\nSolicited assistance is help that is specifically requested by the local user.\\n\",\n    \"severity\": \"LOW\",\n    \"status\": \"vulnerable\",\n    \"origin\": \"builtin\",\n    \"remediation_status\": \"Available\",\n    \"min_report\": \"2025-02-06T15:49:15.010Z\",\n    \"max_report\": \"2025-08-27T15:52:44.388Z\",\n    \"potential_risk\": \"string\",\n    \"score\": \"string\",\n    \"last_remediation_status\": null,\n    \"device_action_id\": null,\n    \"remediation_availability\": \"Available\",\n    \"remediation_state\": null,\n    \"last_event_action\": null,\n    \"last_event_status\": null,\n    \"last_event_metadata\": null,\n    \"last_event_created_at\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "01c9b852-7951-479a-92f0-7cb7dd198ace",
+          "name": "Delete devices",
+          "request": {
+            "name": "Delete devices",
+            "description": {
+              "content": "Delete devices by their device ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                "delete"
+              ],
+              "host": [
+                "{{devices-delete-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cbb9babd-03b7-450c-8afc-ef5d85f91e45",
+              "name": "Devices successfully deleted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "delete"
+                  ],
+                  "host": [
+                    "{{devices-delete-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device_ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e53a7cea-c335-4868-81f0-0cd400090973",
+              "name": "Invalid request payload.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "delete"
+                  ],
+                  "host": [
+                    "{{devices-delete-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device_ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "78d56543-fe7d-4843-938b-f7f65fb354dc",
+              "name": "Something went wrong at the API service.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "delete"
+                  ],
+                  "host": [
+                    "{{devices-delete-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device_ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8d285f4b-ebf0-406e-b76f-88a28c25f25f",
+          "name": "List all device tags",
+          "request": {
+            "name": "List all device tags",
+            "description": {
+              "content": "Returns a list of all device tags, including how many devices are using each tag.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                "tags"
+              ],
+              "host": [
+                "{{devices-tags-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b15e5c50-ab3e-4f91-b1b6-55db24422fac",
+              "name": "List of device tags.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "tags"
+                  ],
+                  "host": [
+                    "{{devices-tags-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"string\",\n    \"device_count\": 9188\n  },\n  {\n    \"name\": \"string\",\n    \"device_count\": 5079\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "456a6fc8-5a8b-4e33-b244-ae118e9497e1",
+          "name": "Update device tags",
+          "request": {
+            "name": "Update device tags",
+            "description": {
+              "content": "Adds or removes device tags.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                "tags"
+              ],
+              "host": [
+                "{{devices-tags-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"action\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3da76672-d848-465e-ad5b-07f2f6aabfd0",
+              "name": "Device tags successfully updated. Returns the updated device details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "tags"
+                  ],
+                  "host": [
+                    "{{devices-tags-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ],\n  \"action\": \"create\",\n  \"tags\": [\n    \"testtag1\",\n    \"testtag2\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "41340b69-26b1-43bb-9460-574c660a074e",
+              "name": "Invalid request payload.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "tags"
+                  ],
+                  "host": [
+                    "{{devices-tags-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ],\n  \"action\": \"create\",\n  \"tags\": [\n    \"testtag1\",\n    \"testtag2\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7ffa1249-02c7-456e-bf8f-8a39966f21c6",
+              "name": "Something went wrong at the API service.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "tags"
+                  ],
+                  "host": [
+                    "{{devices-tags-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ],\n  \"action\": \"create\",\n  \"tags\": [\n    \"testtag1\",\n    \"testtag2\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9169af8d-8bc8-4485-ba0c-29766b57dcd8",
+          "name": "List all device groups",
+          "request": {
+            "name": "List all device groups",
+            "description": {
+              "content": "Returns a list of all device groups, including how many devices are in each group.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                "groups"
+              ],
+              "host": [
+                "{{devices-groups-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1c177f83-ef76-43ee-8022-8b571966a1f1",
+              "name": "List of device groups.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "groups"
+                  ],
+                  "host": [
+                    "{{devices-groups-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"string\",\n    \"device_count\": 185\n  },\n  {\n    \"name\": \"string\",\n    \"device_count\": 6405\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "922e4578-5f6c-4c60-9ffc-72bdef405fa2",
+          "name": "Set device group",
+          "request": {
+            "name": "Set device group",
+            "description": {
+              "content": "Sets the device group for the specified devices. A device can belong to only one group at a time.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                "set-group"
+              ],
+              "host": [
+                "{{devices-set-group-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"group\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f79e906c-0386-4a84-85f3-a5ca6e1bf86e",
+              "name": "Device added to group successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "set-group"
+                  ],
+                  "host": [
+                    "{{devices-set-group-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device_ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ],\n  \"group\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "40bae2b3-2d15-4ab0-9592-e40ed577378d",
+          "name": "Perform action on a single device",
+          "request": {
+            "name": "Perform action on a single device",
+            "description": {
+              "content": "Performs an action on the specified device.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                ":deviceID",
+                "actions"
+              ],
+              "host": [
+                "{{devices-deviceID-actions-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deviceID",
+                  "description": "(Required) ID of the device on which to perform the action. You can use [GET /devices](list-devices) to see the ID for each device."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"data\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "49c2d9ca-54a8-4906-a711-9855f6846e4c",
+              "name": "Action request successfully sent.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    ":deviceID",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{devices-deviceID-actions-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deviceID",
+                      "description": "(Required) ID of the device on which to perform the action. You can use [GET /devices](list-devices) to see the ID for each device."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"data\": \"whoami\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a305f0a3-e126-40dc-9b30-a000b1601a6b",
+              "name": "Invalid request payload.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    ":deviceID",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{devices-deviceID-actions-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deviceID",
+                      "description": "(Required) ID of the device on which to perform the action. You can use [GET /devices](list-devices) to see the ID for each device."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"data\": \"whoami\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2d6e0e9c-e988-4c48-bc2e-2a66c2d4bbbf",
+              "name": "Something went wrong at the API service.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    ":deviceID",
+                    "actions"
+                  ],
+                  "host": [
+                    "{{devices-deviceID-actions-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deviceID",
+                      "description": "(Required) ID of the device on which to perform the action. You can use [GET /devices](list-devices) to see the ID for each device."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"data\": \"whoami\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b3ced217-481a-4036-b0ba-03ea75f8ef1e",
+          "name": "Perform action on multiple devices",
+          "request": {
+            "name": "Perform action on multiple devices",
+            "description": {
+              "content": "Performs an action on the specified devices. If you want to perform an action on only a single device, we recommend that you use [POST /devices/{deviceID}/action](run-an-action-single) for more options.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "devices",
+                "action"
+              ],
+              "host": [
+                "{{devices-action-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action_data\": {\n    \"type\": \"<string>\",\n    \"data\": \"<string>\"\n  },\n  \"device_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cbad8025-46af-4c24-88e3-5310289f6725",
+              "name": "Action request successfully sent.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "action"
+                  ],
+                  "host": [
+                    "{{devices-action-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action_data\": {\n    \"type\": \"<string>\",\n    \"data\": \"whoami\"\n  },\n  \"device_ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a66ae64a-6530-4918-9cd2-5d793c5c2cf0",
+              "name": "Invalid request payload.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "action"
+                  ],
+                  "host": [
+                    "{{devices-action-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action_data\": {\n    \"type\": \"<string>\",\n    \"data\": \"whoami\"\n  },\n  \"device_ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "993be154-3bcf-4176-b6b9-24fbfccdcf0c",
+              "name": "Something went wrong at the API service.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "devices",
+                    "action"
+                  ],
+                  "host": [
+                    "{{devices-action-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action_data\": {\n    \"type\": \"<string>\",\n    \"data\": \"whoami\"\n  },\n  \"device_ids\": [\n    \"rTIBRoIBOFdS29Oi1ATq\",\n    \"b47LRkQIB8BdS21Oi1TYh\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/compliance",
+      "key": "baseUrl"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/compliance",
+      "key": "devices-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/compliance",
+      "key": "devices-device_id-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/compliance",
+      "key": "devices-device_id-vulnerabilities-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/compliance",
+      "key": "devices-device_id-patches-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/compliance",
+      "key": "devices-device_id-compliance-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/compliance",
+      "key": "devices-device_id-misconfig-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "devices-delete-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "devices-tags-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "devices-groups-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "devices-set-group-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "devices-deviceID-actions-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "devices-action-Url"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3a8e0ead-ec90-41d7-acbe-ea13439be66c",
+    "name": "Controlup Devices API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Operations tagged Devices across 2 of this provider's published API definitions: controlup-compliance-openapi.yml, controlup-desktops-openapi.yml. Each path carries the servers of the definition it was published in.",
+      "type": "text/plain"
+    }
+  }
+}

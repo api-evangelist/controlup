@@ -1,0 +1,1125 @@
+openapi: 3.2.0
+info:
+  title: VDI & DAAS Net Scaler API
+  version: 1.0.0
+  description: Netscaler usage reports
+servers:
+- url: https://api.controlup.com/historical
+security:
+- bearer-jwt:
+  - read
+  - write
+tags:
+- name: NetScaler
+  description: Netscaler usage reports
+paths:
+  /v2/netscaler/usage/system:
+    get:
+      tags:
+      - NetScaler
+      summary: Get NetScaler metrics with time series
+      description: Returns performance metrics for each NetScaler appliance. Visit the <a href='https://support.controlup.com/docs/citrix-netscaler-adc-report' target='_blank'>NetScaler Report</a> documentation for column descriptions and more details.
+      operationId: getNetscalerUsageWithTimeSeries
+      parameters:
+      - name: name
+        in: query
+        description: Only return metrics for the specified NetScaler name.
+        required: false
+        schema:
+          type: string
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetscalerTimeSeriesResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NetscalerTimeSeriesResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v2/netscaler/usage/loadbalancer:
+    get:
+      tags:
+      - NetScaler
+      summary: Get Load Balancer metrics with time series
+      description: Returns performance metrics for each load balancer. Visit the <a href='https://support.controlup.com/docs/citrix-netscaler-load-balancing-report' target='_blank'>NetScaler Load Balancing Report</a> documentation for column descriptions and more details.
+      operationId: getLoadbalancerUsageWithTimeSeries
+      parameters:
+      - name: name
+        in: query
+        description: Only return metrics for the specified load balancer name. To use this parameter, you must also use the 'netscalerName' parameter to specify a NetScaler.
+        required: false
+        schema:
+          type: string
+      - name: netscalerName
+        in: query
+        description: Only return metrics for the specified NetScaler name.
+        required: false
+        schema:
+          type: string
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoadbalancerResponseTimeSeries'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LoadbalancerResponseTimeSeries'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v2/netscaler/usage/gateway:
+    get:
+      tags:
+      - NetScaler
+      summary: Get Gateway metrics with time series
+      description: Returns performance metrics for each NetScaler Gateway. Visit the <a href='https://support.controlup.com/docs/citrix-netscaler-gateway-report' target='_blank'>NetScaler Gateway Report</a> documentation for column descriptions and more details.
+      operationId: getGatewayUsageTimeSeries
+      parameters:
+      - name: name
+        in: query
+        description: Only return metrics for the specified gateway name.
+        required: false
+        schema:
+          type: string
+      - name: netscalerName
+        in: query
+        description: Only return metrics for the specified NetScaler name.
+        required: false
+        schema:
+          type: string
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayTimeSeriesResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/GatewayTimeSeriesResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/netscaler/usage/system:
+    get:
+      tags:
+      - NetScaler
+      summary: Get NetScaler metrics
+      description: Returns performance metrics for each NetScaler appliance. Visit the <a href='https://support.controlup.com/docs/citrix-netscaler-adc-report' target='_blank'>NetScaler Report</a> documentation for column descriptions and more details.
+      operationId: getNetscalerUsage
+      parameters:
+      - name: name
+        in: query
+        description: Only return metrics for the specified NetScaler name.
+        required: false
+        schema:
+          type: string
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetscalerResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NetscalerResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/netscaler/usage/loadbalancer:
+    get:
+      tags:
+      - NetScaler
+      summary: Get Load Balancer metrics
+      description: Returns performance metrics for each load balancer. Visit the <a href='https://support.controlup.com/docs/citrix-netscaler-load-balancing-report' target='_blank'>NetScaler Load Balancing Report</a> documentation for column descriptions and more details.
+      operationId: getLoadbalancerUsage
+      parameters:
+      - name: name
+        in: query
+        description: Only return metrics for the specified load balancer name. To use this parameter, you must also use the 'netscalerName' parameter to specify a NetScaler.
+        required: false
+        schema:
+          type: string
+      - name: netscalerName
+        in: query
+        description: Only return metrics for the specified NetScaler name.
+        required: false
+        schema:
+          type: string
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoadbalancerResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LoadbalancerResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/netscaler/usage/gateway:
+    get:
+      tags:
+      - NetScaler
+      summary: Get Gateway metrics
+      description: Returns performance metrics for each NetScaler Gateway. Visit the <a href='https://support.controlup.com/docs/citrix-netscaler-gateway-report' target='_blank'>NetScaler Gateway Report</a> documentation for column descriptions and more details.
+      operationId: getGatewayUsage
+      parameters:
+      - name: name
+        in: query
+        description: Only return metrics for the specified gateway name.
+        required: false
+        schema:
+          type: string
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/GatewayResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    GatewayWithTimeSeriesResult:
+      type: object
+      properties:
+        name_gw:
+          type: string
+        ns_name:
+          type: string
+        ip_address_binary:
+          type: string
+        primary_port:
+          type: integer
+          format: int64
+        certificate_name:
+          type: string
+        certificate_expiration_date:
+          type: string
+        update_time:
+          type: string
+        timeseries:
+          type: array
+          items:
+            $ref: '#/components/schemas/GatewayTimeSeries'
+    NetscalerWithTimeSeriesResult:
+      type: object
+      properties:
+        ns_name:
+          type: string
+        management_ip_bin:
+          type: string
+        lb_up_pct_avg:
+          type: integer
+          format: int64
+        gw_up_pct_avg:
+          type: integer
+          format: int64
+        ns_version:
+          type: string
+        ns_build:
+          type: string
+        lb_total_avg:
+          type: integer
+          format: int64
+        gw_total_avg:
+          type: integer
+          format: int64
+        ha_heartbeats_receive_rate_avg:
+          type: integer
+          format: int64
+        ha_heartbeats_send_rate_avg:
+          type: integer
+          format: int64
+        update_time:
+          type: string
+        timeseries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetscalerTimeSeries'
+    LoadbalancerResult:
+      type: object
+      properties:
+        lb_name:
+          type: string
+        lb_name_id:
+          type: integer
+          format: int64
+        ns_name:
+          type: string
+        primary_ip_address_binary:
+          type: string
+        primary_port:
+          type: integer
+          format: int64
+        protocol:
+          type: string
+        traffic_in_mbps_avg:
+          type: integer
+          format: int64
+        traffic_out_mbps_avg:
+          type: integer
+          format: int64
+        vserver_health_pct_avg:
+          type: integer
+          format: int64
+        active_services_avg:
+          type: integer
+          format: int64
+        inactive_services_avg:
+          type: integer
+          format: int64
+        hit_rate_avg:
+          type: integer
+          format: int64
+        spill_over_avg:
+          type: integer
+          format: int64
+        surge_count_avg:
+          type: integer
+          format: int64
+        lb_method:
+          type: string
+    LoadbalancerWithTimeSeriesResult:
+      type: object
+      properties:
+        lb_name:
+          type: string
+        ns_name:
+          type: string
+        primary_ip_address_binary:
+          type: string
+        primary_port:
+          type: integer
+          format: int64
+        protocol:
+          type: string
+        active_services_avg:
+          type: integer
+          format: int64
+        inactive_services_avg:
+          type: integer
+          format: int64
+        hit_rate_avg:
+          type: integer
+          format: int64
+        spill_over_avg:
+          type: integer
+          format: int64
+        surge_count_avg:
+          type: integer
+          format: int64
+        lb_method:
+          type: string
+        update_time:
+          type: string
+        timeseries:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoadBalancerTimeSeries'
+    LoadbalancerResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoadbalancerResult'
+    LoadbalancerResponseTimeSeries:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoadbalancerWithTimeSeriesResult'
+    GatewayTimeSeries:
+      type: object
+      properties:
+        traffic_in_mbps_avg:
+          type: integer
+          format: int64
+        traffic_out_mbps_avg:
+          type: integer
+          format: int64
+        current_users_avg:
+          type: integer
+          format: int64
+        requests_per_sec_avg:
+          type: integer
+          format: int64
+        responses_per_sec_avg:
+          type: integer
+          format: int64
+        sampletime:
+          type: string
+    GatewayResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GatewayResult'
+    GatewayResult:
+      type: object
+      properties:
+        name_gw:
+          type: string
+        name_gw_id:
+          type: integer
+          format: int64
+        ns_name_id:
+          type: integer
+          format: int64
+        ns_name:
+          type: string
+        ip_address_binary:
+          type: string
+        primary_port:
+          type: integer
+          format: int64
+        traffic_in_mbps_avg:
+          type: integer
+          format: int64
+        traffic_out_mbps_avg:
+          type: integer
+          format: int64
+        current_users_avg:
+          type: integer
+          format: int64
+        requests_per_sec_avg:
+          type: integer
+          format: int64
+        responses_per_sec_avg:
+          type: integer
+          format: int64
+        certificate_name:
+          type: string
+        certificate_expiration_date:
+          type: string
+    LoadBalancerTimeSeries:
+      type: object
+      properties:
+        connections_avg:
+          type: integer
+          format: int64
+        traffic_in_mbps_avg:
+          type: integer
+          format: int64
+        traffic_out_mbps_avg:
+          type: integer
+          format: int64
+        vserver_health_pct_avg:
+          type: integer
+          format: int64
+        sampletime:
+          type: string
+    GatewayTimeSeriesResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GatewayWithTimeSeriesResult'
+    NetscalerTimeSeries:
+      type: object
+      properties:
+        packet_cpu_pct_avg:
+          type: integer
+          format: int64
+        memory_used_pct_avg:
+          type: integer
+          format: int64
+        traffic_in_mbps_avg:
+          type: integer
+          format: int64
+        traffic_out_mbps_avg:
+          type: integer
+          format: int64
+        hdx_sessions_avg:
+          type: integer
+          format: int64
+        management_cpu_pct_avg:
+          type: integer
+          format: int64
+        sampletime:
+          type: string
+    NetscalerResult:
+      type: object
+      properties:
+        ns_name:
+          type: string
+        ns_name_id:
+          type: integer
+          format: int64
+        management_ip_bin:
+          type: string
+        packet_cpu_pct_avg:
+          type: integer
+          format: int64
+        memory_used_pct_avg:
+          type: integer
+          format: int64
+        lb_up_pct_avg:
+          type: integer
+          format: int64
+        gw_up_pct_avg:
+          type: integer
+          format: int64
+        traffic_in_mbps_avg:
+          type: integer
+          format: int64
+        traffic_out_mbps_avg:
+          type: integer
+          format: int64
+        hdx_sessions_avg:
+          type: integer
+          format: int64
+        ns_version:
+          type: string
+        ns_build:
+          type: string
+        management_cpu_pct_avg:
+          type: integer
+          format: int64
+        lb_total_avg:
+          type: integer
+          format: int64
+        gw_total_avg:
+          type: integer
+          format: int64
+        ha_heartbeats_receive_rate_avg:
+          type: integer
+          format: int64
+        ha_heartbeats_send_rate_avg:
+          type: integer
+          format: int64
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    NetscalerResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetscalerResult'
+    NetscalerTimeSeriesResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetscalerWithTimeSeriesResult'
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false
+  explorer-enabled: true
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

@@ -1,0 +1,182 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Host pool cost API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Host pool cost",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get host pool cost breakdown and trend",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/cost",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool."
+              },
+              {
+                "name": "granularity",
+                "value": "",
+                "type": "query",
+                "description": "Cost data point granularity. Defaults to Daily."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Start date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T00:00:00Z\" or \"2026-01-20T00:00:00+03:00\")."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T23:59:59Z\" or \"2026-01-20T23:59:59+03:00\")."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns what the pool spent over a date range (default last 30 days), broken down by Compute, Disk, and Network,\nwith a day-by-day trend series carrying the same split, cost per active user, and comparison against the\nprevious equivalent period.\nTotals cover the pool as a whole and are not attributed to individual session hosts."
+        },
+        {
+          "info": {
+            "name": "Get host pool autoscale savings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/cost/savings",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Start date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T00:00:00Z\" or \"2026-01-20T00:00:00+03:00\")."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T23:59:59Z\" or \"2026-01-20T23:59:59+03:00\")."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns what autoscale saved: projected always-on cost versus actual spend, the savings delta and percentage,\nmonthly and cumulative totals, and a daily trend.\nAnswers whether autoscale is paying off rather than what the pool actually cost;\nreturns autoscaleEnabled=false with zero savings when autoscale is not configured."
+        },
+        {
+          "info": {
+            "name": "Get per-host cost breakdown",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/session-hosts/cost",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Start date for the cost range (inclusive). Defaults to 30 days ago."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End date for the range (inclusive). Defaults to today."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncomputeCost, consecutiveDaysDeallocated, costRowOsDiskType, diskCost, diskTier, hostName, isDeleted, networkCost, otherCost, powerState, premiumSsdFlag, resourceId, savingEstimate, sessionHostId, totalCost, vmSku\n\nDefault when omitted: totalCost:desc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns paginated cost attributed to each session host, with Compute/Disk/Network split, disk tier,\npower state, and Premium SSD optimization flags, including hosts that have since been deleted.\nAnswers which host in the pool is expensive; it gives no pool-level total or trend."
+        },
+        {
+          "info": {
+            "name": "Export host pool cost data as CSV",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/cost/export",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Start date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T00:00:00Z\" or \"2026-01-20T00:00:00+03:00\")."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End date for the range (inclusive).\nAccepts ISO 8601 format with optional timezone (e.g., \"2026-01-20T23:59:59Z\" or \"2026-01-20T23:59:59+03:00\")."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Streams a CSV file attachment of per-host daily cost records with savings data, one row per session host per day,\nincluding deleted hosts. The response is flushed progressively, one day at a time.\nReturns a file rather than queryable JSON — intended for bulk export and offline analysis, not for answering questions about a pool."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,73 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VDI & DAAS User API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "User",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get user activity status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/users/activity",
+            "params": [
+              {
+                "name": "userAccount",
+                "value": "",
+                "type": "query",
+                "description": "Only return activity data for the specified user account (user_account)."
+              },
+              {
+                "name": "granularity",
+                "value": "",
+                "type": "query",
+                "description": "Sets the length of the time windows in which a user activity statuses are returned. For example, if you set this to 5m then you can see a user's activity status for each 5 minute interval throughout the search period."
+              },
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01T00:00:00.000Z",
+                "type": "query",
+                "description": "Start date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02T00:00:00.000Z",
+                "type": "query",
+                "description": "End date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns a list of users and their activity status throughout the search period. The search period is divided into smaller time windows according to the granularity parameter. The endpoint returns a user's activity status for each time window."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

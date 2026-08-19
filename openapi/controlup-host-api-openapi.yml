@@ -1,0 +1,403 @@
+openapi: 3.2.0
+info:
+  title: VDI & DAAS Host API
+  version: 1.0.0
+  description: Host usage reports
+servers:
+- url: https://api.controlup.com/historical
+security:
+- bearer-jwt:
+  - read
+  - write
+tags:
+- name: Host
+  description: Host usage reports
+paths:
+  /v1/hosts/metrics:
+    get:
+      tags:
+      - Host
+      summary: Get host metrics per folder
+      description: Returns average host resource consumption per folder throughout the search period. The granularity depends on the search period.
+      operationId: getHostMetrics
+      parameters:
+      - name: metrics
+        in: query
+        description: The metric to return.
+        required: true
+        schema:
+          type: string
+          enum:
+          - cpu
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalListResponseHostCpuUtilizationResult'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalListResponseHostCpuUtilizationResult'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/hosts/counts:
+    get:
+      tags:
+      - Host
+      summary: Get host counts
+      description: Returns usage statistics per host.
+      operationId: getHostCounts
+      parameters:
+      - name: entity
+        in: query
+        description: The type of host statistics to return.
+        required: true
+        schema:
+          type: string
+          enum:
+          - users
+          - sessions
+          - machines
+      - name: hostName
+        in: query
+        description: Only return statistics for the specified host name.
+        required: false
+        schema:
+          type: string
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                oneOf:
+                - $ref: '#/components/schemas/HostNumbersResult'
+                - $ref: '#/components/schemas/SessionCountResult'
+            application/xml:
+              schema:
+                type: string
+                oneOf:
+                - $ref: '#/components/schemas/HostNumbersResult'
+                - $ref: '#/components/schemas/SessionCountResult'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+components:
+  schemas:
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    HostCpuUtilizationResult:
+      type: object
+      description: Host Cpu Utilization
+      properties:
+        folder_path:
+          type: string
+        hyper_visor_platform:
+          type: string
+        cpu_usage_avg:
+          type: integer
+          format: int64
+        hosts_count:
+          type: integer
+          format: int32
+        running_vm_count_sum:
+          type: integer
+          format: int64
+        machines_count:
+          type: integer
+          format: int32
+        update_time:
+          type: string
+          format: date-time
+    SessionCountResult:
+      type: object
+      description: Session Count
+      properties:
+        host_id:
+          type: string
+        host_name:
+          type: string
+        max:
+          type: integer
+          format: int64
+        min:
+          type: integer
+          format: int64
+        avg:
+          type: integer
+          format: int64
+    HistoricalListResponseHostCpuUtilizationResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostCpuUtilizationResult'
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    HostNumbersResult:
+      type: object
+      description: Host Numbers
+      properties:
+        host_id:
+          type: string
+        host_name:
+          type: string
+        count:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false
+  explorer-enabled: true
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

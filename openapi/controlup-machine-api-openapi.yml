@@ -1,0 +1,2112 @@
+openapi: 3.2.0
+info:
+  title: VDI & DAAS Machine API
+  version: 1.0.0
+  description: Machine usage reports
+servers:
+- url: https://api.controlup.com/historical
+security:
+- bearer-jwt:
+  - read
+  - write
+tags:
+- name: Machine
+  description: Machine usage reports
+paths:
+  /v1/machines/statistics/{grouping}:
+    get:
+      tags:
+      - Machine
+      summary: Get machine statistics
+      description: Returns historical information about machine resource consumption. Visit the <a href='https://support.controlup.com/docs/computer-statistics-report' target='_blank'>Machine Statistics Report</a> documentation for column descriptions and more details.
+      operationId: getMachineStatsByMachine
+      parameters:
+      - name: grouping
+        in: path
+        description: Returns machine resource consumption statistics grouped by the specified entity
+        required: true
+        schema:
+          type: string
+          enum:
+          - machine
+          - host
+          - folder
+      - name: aggregationType
+        in: query
+        description: Set how machine statistics are aggregated during the selected time range. Avg returns the average of each metric. Max returns the maximum of each metric. Min returns the minimum of each metric. Worst returns either the maximum or minimum of each metric according to each metric type.
+        required: true
+        schema:
+          type: string
+          enum:
+          - Avg
+          - Max
+          - Min
+          - Worst
+      - name: metricsType
+        in: query
+        description: The type of information to return. Default returns all available information.
+        required: true
+        schema:
+          type: string
+          enum:
+          - Default
+          - PVS
+          - GPU
+          - UserSessions
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                oneOf:
+                - $ref: '#/components/schemas/MachineStatisticsByMachineResponse'
+                - $ref: '#/components/schemas/MachineStatisticsByFolderResponse'
+                - $ref: '#/components/schemas/MachineStatisticsByHostResponse'
+            application/xml:
+              schema:
+                type: string
+                oneOf:
+                - $ref: '#/components/schemas/MachineStatisticsByMachineResponse'
+                - $ref: '#/components/schemas/MachineStatisticsByFolderResponse'
+                - $ref: '#/components/schemas/MachineStatisticsByHostResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/machines/sizing_recommendation/virtualization:
+    get:
+      tags:
+      - Machine
+      summary: Get sizing recommendations for virtual environments
+      description: Returns sizing recommendations to optimize resource allocation for machines based on historical information. Visit the <a href='https://support.controlup.com/docs/sizing-recommendations-report' target='_blank'>Sizing Recommendations Report</a> documentation for more details.
+      operationId: getRecommendationVirtualization
+      parameters:
+      - name: activeSessionSizing
+        in: query
+        description: 'Specifies which calculation method to use for sizing recommendations.
+
+
+          false: Calculates utilization averages across a continuous 24/7 period, regardless of whether a session is active. This includes nights and weekends when machines might be idle. If your machines have significantly different resource utilization depending on whether a session is active, then this method can under-estimate a machine''s hardware requirements.
+
+
+          true: Only calculates utilization averages when an active user session is detected. This can provide a more realistic view of hardware requirements by excluding idle time.'
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: false
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SizingRecommendationVirtualizationResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SizingRecommendationVirtualizationResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/machines/sizing_recommendation/azure:
+    get:
+      tags:
+      - Machine
+      summary: Get sizing recommendation for machine for Azure environment
+      description: Returns sizing recommendations to optimize resource allocation for machines based on historical information. Visit the <a href='https://support.controlup.com/docs/sizing-recommendations-report' target='_blank'>Sizing Recommendations Report</a> documentation for more details.
+      operationId: getRecommendationAzure
+      parameters:
+      - name: license
+        in: query
+        description: Your license type for Microsoft Windows Virtual Machines. If you have Azure Hybrid Benefit, enter ‘Azure Hybrid Benefit’. If you purchase a new license for each machine, enter ‘OS (Windows)’.
+        required: true
+        schema:
+          type: string
+          enum:
+          - Azure Hybrid Benefit
+          - OS (Windows)
+        example: Azure Hybrid Benefit
+      - name: azureRegion
+        in: query
+        description: The Azure region where you want to see representative costs. You must provide the name of the region as it appears in the report creation UI.
+        required: true
+        schema:
+          type: string
+      - name: currency
+        in: query
+        description: The currency used for all cost information in the report.
+        required: false
+        schema:
+          type: string
+          default: USD
+          enum:
+          - USD
+          - EUR
+          - GBP
+        example: USD
+      - name: msEaDiscountRatePct
+        in: query
+        description: The discount rate percentage due to a Microsoft Enterprise Agreement. If you don’t have a discount rate, enter `0`.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          maximum: 100
+          minimum: 0
+        example: 0
+      - name: acceleratedNetworking
+        in: query
+        description: Select whether you require VMs with or without Accelerated Networking. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - 'True'
+          - 'False'
+        example: Any
+      - name: memoryPreservingMaintenance
+        in: query
+        description: Select whether you require VMs with or without Memory Preserving Maintenance. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - 'True'
+          - 'False'
+        example: Any
+      - name: hyperVGeneration
+        in: query
+        description: Select the required Hyper-V generation for VMs. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - V1
+          - V2
+          - ALL
+        example: Any
+      - name: cpuArchitectureType
+        in: query
+        description: Select the required CPU architecture for VMs. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - X64
+          - ARM64
+        example: Any
+      - name: vCPUsPerCore
+        in: query
+        description: Select the required vCPUs per core for VMs. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          enum:
+          - Any
+          - '1'
+          - '2'
+        example: Any
+      - name: rdmaEnabled
+        in: query
+        description: Select whether you require RDMA-capable VMs. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - 'True'
+          - 'False'
+        example: Any
+      - name: premiumIO
+        in: query
+        description: Select whether you require VMs with premium IO. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - 'True'
+          - 'False'
+        example: Any
+      - name: encryptionAtHostSupport
+        in: query
+        description: Select whether you require VMs with encryption at host. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - 'True'
+          - 'False'
+        example: Any
+      - name: diskTier
+        in: query
+        description: Select your required disk tier. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - Standard
+          - Premium
+          - Ultra
+        example: Any
+      - name: redundancy
+        in: query
+        description: Select your required disk redundancy option. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          default: Any
+          enum:
+          - Any
+          - LRS
+          - ZRS
+        example: Any
+      - name: minimumDiskSize
+        in: query
+        description: Select your required minimum disk size in GB. Enter `any` if you have no preference.
+        required: false
+        schema:
+          type: string
+          enum:
+          - Any
+          - '1'
+          - '2'
+          - '4'
+          - '8'
+          - '16'
+          - '32'
+          - '64'
+          - '128'
+          - '256'
+          - '512'
+          - '1024'
+          - '2048'
+          - '4096'
+          - '8192'
+          - '16384'
+          - '32767'
+        example: Any
+      - name: costOption
+        in: query
+        description: Your Azure cost option. Select from pay as you go (`PAYG`), spot machines (`Spot`), reserved instance for one a one-year term (`RESERVED_ONE_YEAR`), or reserved instance for a three-year term (`RESERVED_THREE_YEAR).
+        required: false
+        schema:
+          type: string
+          default: PAYG
+          enum:
+          - PAYG
+          - SPOT
+          - RESERVED_ONE_YEAR
+          - RESERVED_THREE_YEAR
+        example: Any
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SizingRecommendationAzureResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SizingRecommendationAzureResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/machines/aggregated:
+    get:
+      tags:
+      - Machine
+      summary: Get aggregated machine statistics
+      description: Returns aggregated machine metrics (avg/min/max/count) grouped by a single machine dimension such as folder, operating system, hypervisor platform, Azure region/VM size, or GPU architecture/model. Always returns machine_count (COUNT(DISTINCT computer_id)) plus one column per <metric>_<aggregation> combination. Visit the <a href='https://support.controlup.com/docs/computer-statistics-report' target='_blank'>Machine Statistics Report</a> documentation for column descriptions and more details.
+      operationId: getMachinesAggregated
+      parameters:
+      - name: groupBy
+        in: query
+        description: Single machine dimension to group rows by.
+        required: true
+        schema:
+          type: string
+          enum:
+          - folderPath
+          - folderId
+          - operatingSystem
+          - hypervisorPlatform
+          - azRegion
+          - azVmSize
+          - gpuArchitecture
+          - gpuModel
+      - name: metrics
+        in: query
+        description: One or more machine metrics to aggregate. Repeat the parameter for multiple values.
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - cpu_avg
+            - cpu_95_avg
+            - cpu_ready_avg
+            - memory_in_use_avg
+            - system_drive_free_space_avg
+            - logon_duration_avg
+            - app_load_time_avg
+            - processes_count_avg
+            - avg_processor_queue_length_avg
+            - page_faults_per_sec_avg
+            - disk_read_kbyte_per_sec_avg
+            - disk_write_kbyte_per_sec_avg
+            - disk_total_kbyte_per_sec_avg
+            - disk_reads_per_sec_avg
+            - disk_writes_per_sec_avg
+            - disk_transfers_per_sec_avg
+            - avg_disk_queue_avg
+            - network_received_mbit_per_sec_avg
+            - network_sent_mbit_per_sec_avg
+            - network_total_mbit_per_sec_avg
+            - non_zero_avg_user_input_delay_avg
+            - non_zero_max_user_input_delay_avg
+            - gpu_utilization_avg
+            - gpu_available_memory_avg
+            - gpu_frame_buffer_size_avg
+            - gpu_frame_buffer_memory_utilization_avg
+            - gpu_memory_usage_avg
+            - gpu_decoder_usage_avg
+            - gpu_encoder_usage_avg
+            - pvs_device_free_space_on_write_cache_drive_avg
+            - pvs_ram_cache_usage_avg
+            - pvs_target_device_health
+            - pvs_device_write_cache_volume_size
+            - total_sessions_avg
+            - active_sessions_avg
+            - user_sessions_count_avg
+            - idle_sessions_count_avg
+            - disconnected_sessions_avg
+            - other_sessions_count_avg
+            - ica_sessions_count_avg
+            - session_disconnect_rate_avg
+      - name: aggregations
+        in: query
+        description: 'Aggregation functions to apply to each metric. Repeat for multiple. Default: avg.'
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - avg
+            - min
+            - max
+            - count
+      - name: presetType
+        in: query
+        description: 'Metric compatibility scope. Restricts which metrics are valid. Default: Default (all metrics).'
+        required: false
+        schema:
+          type: string
+          default: Default
+          enum:
+          - Default
+          - PVS
+          - GPU
+          - UserSessions
+      - name: _sortBy
+        in: query
+        description: 'Response field to sort by (must equal a returned <metric>_<aggregation>, machine_count, or the groupBy field). Default: <first metric>_<first aggregation>.'
+        required: false
+        schema:
+          type: string
+      - name: _sortOrder
+        in: query
+        description: 'Sort order. Default: desc.'
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: operatingSystem
+        in: query
+        description: Filter machines whose operating system contains this value (pre-aggregation filter).
+        required: false
+        schema:
+          type: string
+      - name: hypervisorPlatform
+        in: query
+        description: Filter machines whose hypervisor platform contains this value (pre-aggregation filter).
+        required: false
+        schema:
+          type: string
+      - name: azRegion
+        in: query
+        description: Filter machines whose Azure region contains this value (pre-aggregation filter).
+        required: false
+        schema:
+          type: string
+      - name: azVmSize
+        in: query
+        description: Filter machines whose Azure VM size contains this value (pre-aggregation filter).
+        required: false
+        schema:
+          type: string
+      - name: vmName
+        in: query
+        description: Filter machines whose VM name contains this value (pre-aggregation filter).
+        required: false
+        schema:
+          type: string
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: 'Grouped rows per page. Default: 100, maximum: 10000.'
+        schema:
+          type: integer
+          format: int32
+          maximum: 10000
+          minimum: 1
+        example: 100
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MachineAggregatedResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/MachineAggregatedResponse'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+components:
+  schemas:
+    SizingRecommendationAzure:
+      type: object
+      properties:
+        computerId:
+          type: string
+        computerName:
+          type: string
+        cpuAssigned:
+          type: integer
+          format: int64
+        cpuSuggested:
+          type: integer
+          format: int64
+        cpuRecommendation:
+          type: integer
+          format: int64
+        memoryAssigned:
+          type: integer
+          format: int64
+        memorySuggested:
+          type: integer
+          format: int64
+        memoryRecommendation:
+          type: integer
+          format: int64
+        azVmSizeAssigned:
+          type: string
+        azVmSizeSuggested:
+          type: string
+        azOsDiskSizeAssigned:
+          type: string
+        azOsDiskSizeSuggested:
+          type: string
+        totalCost:
+          type: string
+        totalSavingPercentage:
+          type: integer
+          format: int64
+        totalPaygCost:
+          type: string
+        totalPaygSaving:
+          type: integer
+          format: int64
+        totalSpotCost:
+          type: string
+        totalSpotSaving:
+          type: integer
+          format: int64
+        total1yCost:
+          type: string
+        total1ySaving:
+          type: integer
+          format: int64
+        total3yCost:
+          type: string
+        total3ySaving:
+          type: integer
+          format: int64
+        currency:
+          type: string
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    SizingRecommendationVirtualizationResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SizingRecommendationVirtualization'
+    MachineAggregatedResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineAggregatedResult'
+    MachineStatisticsByFolderResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineStatisticsByFolderResult'
+    MachineStatisticsByFolderResult:
+      type: object
+      description: Machine statistics with grouping by folder
+      properties:
+        total_rows:
+          type: integer
+          format: int64
+        organization_id:
+          type: integer
+          format: int64
+        entity_id:
+          type: string
+        folder_path:
+          type: string
+        update_time:
+          type: string
+        cpu_count:
+          type: integer
+          format: int64
+        cpu_cores:
+          type: integer
+          format: int64
+        cpu_speed:
+          type: integer
+          format: int64
+        total_ram:
+          type: integer
+          format: int64
+        az_region:
+          type: string
+        az_subscription_id:
+          type: string
+        az_os_disk_sku_size:
+          type: string
+        az_disks_count:
+          type: integer
+          format: int64
+        az_total_disks_size_gb:
+          type: integer
+          format: int64
+        az_os_disk_size_gb:
+          type: integer
+          format: int64
+        uptime_in_sec:
+          type: integer
+          format: int64
+        cpu_avg:
+          type: integer
+          format: int64
+        memory_in_use_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_total_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        system_drive_free_space_avg:
+          type: integer
+          format: int64
+        disk_reads_per_sec_avg:
+          type: integer
+          format: int64
+        disk_writes_per_sec_avg:
+          type: integer
+          format: int64
+        disk_transfers_per_sec_avg:
+          type: integer
+          format: int64
+        network_received_mbit_per_sec_avg:
+          type: integer
+          format: int64
+        network_sent_mbit_per_sec_avg:
+          type: integer
+          format: int64
+        app_load_time_avg:
+          type: integer
+          format: int64
+        non_zero_avg_user_input_delay_avg:
+          type: integer
+          format: int64
+        non_zero_max_user_input_delay_avg:
+          type: integer
+          format: int64
+        avg_disk_queue_avg:
+          type: integer
+          format: int64
+        logon_duration_avg:
+          type: integer
+          format: int64
+        page_faults_per_sec_avg:
+          type: integer
+          format: int64
+        processes_count_avg:
+          type: integer
+          format: int64
+        avg_processor_queue_length_avg:
+          type: integer
+          format: int64
+        gpu_number_of_cores:
+          type: integer
+          format: int64
+        gpu_utilization_avg:
+          type: integer
+          format: int64
+        gpu_available_memory_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_size_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_memory_utilization_avg:
+          type: integer
+          format: int64
+        gpu_memory_usage_avg:
+          type: integer
+          format: int64
+        gpu_decoder_usage_avg:
+          type: integer
+          format: int64
+        gpu_encoder_usage_avg:
+          type: integer
+          format: int64
+        pvs_device_free_space_on_write_cache_drive_avg:
+          type: integer
+          format: int64
+        pvs_ram_cache_usage_avg:
+          type: integer
+          format: int64
+        pvs_target_device_health:
+          type: integer
+          format: int64
+        pvs_device_write_cache_volume_size:
+          type: integer
+          format: int64
+        pvs_device_boot_retry_count_last:
+          type: integer
+          format: int64
+        pvs_device_boot_time_sec_last:
+          type: integer
+          format: int64
+        pvs_device_disk_type:
+          type: string
+        pvs_device_server_reconnect_count_last:
+          type: integer
+          format: int64
+        pvs_device_udp_retry_count_last:
+          type: integer
+          format: int64
+        total_sessions_avg:
+          type: integer
+          format: int64
+        active_sessions_avg:
+          type: integer
+          format: int64
+        user_sessions_count_avg:
+          type: integer
+          format: int64
+        idle_sessions_count_avg:
+          type: integer
+          format: int64
+        disconnected_sessions_avg:
+          type: integer
+          format: int64
+        other_sessions_count_avg:
+          type: integer
+          format: int64
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    SizingRecommendationAzureResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SizingRecommendationAzure'
+    SizingRecommendationVirtualization:
+      type: object
+      properties:
+        computer_id:
+          type: string
+        computer_name:
+          type: string
+        cpu_assigned:
+          type: integer
+          format: int64
+        cpu_suggested:
+          type: integer
+          format: int64
+        cpu_recommendation:
+          type: integer
+          format: int64
+        cpu_recommendation_status:
+          type: integer
+          format: int64
+        memory_assigned:
+          type: integer
+          format: int64
+        memory_suggested:
+          type: integer
+          format: int64
+        memory_recommendation:
+          type: integer
+          format: int64
+        memory_recommendation_status:
+          type: integer
+          format: int64
+        start_time:
+          type: string
+    MachineStatisticsByHostResult:
+      type: object
+      description: Machine statistics with grouping by host
+      properties:
+        organization_id:
+          type: integer
+          format: int64
+        entity_id:
+          type: string
+        host_name:
+          type: string
+        update_time:
+          type: string
+        cpu_count:
+          type: integer
+          format: int64
+        cpu_cores:
+          type: integer
+          format: int64
+        cpu_speed:
+          type: integer
+          format: int64
+        total_ram:
+          type: integer
+          format: int64
+        hypervisor_platform:
+          type: string
+        az_region:
+          type: string
+        az_subscription_id:
+          type: string
+        az_os_disk_sku_size:
+          type: string
+        az_disks_count:
+          type: integer
+          format: int64
+        az_total_disks_size_gb:
+          type: integer
+          format: int64
+        az_os_disk_size_gb:
+          type: string
+        uptime_in_sec:
+          type: integer
+          format: int64
+        cpu_avg:
+          type: integer
+          format: int64
+        memory_in_use_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_total_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        system_drive_free_space_avg:
+          type: integer
+          format: int64
+        disk_reads_per_sec_avg:
+          type: integer
+          format: int64
+        disk_writes_per_sec_avg:
+          type: integer
+          format: int64
+        disk_transfers_per_sec_avg:
+          type: integer
+          format: int64
+        network_received_mbit_per_sec_avg:
+          type: integer
+          format: int64
+        network_sent_mbit_per_sec_avg:
+          type: integer
+          format: int64
+        app_load_time_avg:
+          type: integer
+          format: int64
+        non_zero_avg_user_input_delay_avg:
+          type: integer
+          format: int64
+        non_zero_max_user_input_delay_avg:
+          type: integer
+          format: int64
+        avg_disk_queue_avg:
+          type: integer
+          format: int64
+        logon_duration_avg:
+          type: integer
+          format: int64
+        page_faults_per_sec_avg:
+          type: integer
+          format: int64
+        processes_count_avg:
+          type: integer
+          format: int64
+        avg_processor_queue_length_avg:
+          type: integer
+          format: int64
+        gpu_number_of_cores:
+          type: integer
+          format: int64
+        gpu_utilization_avg:
+          type: integer
+          format: int64
+        gpu_available_memory_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_size_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_memory_utilization_avg:
+          type: integer
+          format: int64
+        gpu_memory_usage_avg:
+          type: integer
+          format: int64
+        gpu_decoder_usage_avg:
+          type: integer
+          format: int64
+        gpu_encoder_usage_avg:
+          type: integer
+          format: int64
+        pvs_device_free_space_on_write_cache_drive_avg:
+          type: integer
+          format: int64
+        pvs_ram_cache_usage_avg:
+          type: integer
+          format: int64
+        pvs_target_device_health:
+          type: integer
+          format: int64
+        pvs_device_write_cache_volume_size:
+          type: integer
+          format: int64
+        pvs_device_boot_retry_count_last:
+          type: integer
+          format: int64
+        pvs_device_boot_time_sec_last:
+          type: integer
+          format: int64
+        pvs_device_disk_type:
+          type: string
+        pvs_device_server_reconnect_count_last:
+          type: integer
+          format: int64
+        pvs_device_udp_retry_count_last:
+          type: integer
+          format: int64
+        total_sessions_avg:
+          type: integer
+          format: int64
+        active_sessions_avg:
+          type: integer
+          format: int64
+        user_sessions_count_avg:
+          type: integer
+          format: int64
+        idle_sessions_count_avg:
+          type: integer
+          format: int64
+        disconnected_sessions_avg:
+          type: integer
+          format: int64
+        other_sessions_count_avg:
+          type: integer
+          format: int64
+        ica_sessions_count_avg:
+          type: integer
+          format: int64
+        session_disconnect_rate_avg:
+          type: integer
+          format: int64
+    MachineStatisticsByMachineResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineStatisticsByMachineResult'
+    MachineStatisticsByHostResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineStatisticsByHostResult'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    MachineStatisticsByMachineResult:
+      type: object
+      description: Machine statistics with grouping by machine
+      properties:
+        organization_id:
+          type: integer
+          format: int64
+        computer_id:
+          type: string
+        computer_name:
+          type: string
+        update_time:
+          type: string
+        operating_system:
+          type: string
+        cpu_count:
+          type: integer
+          format: int64
+        cpu_model:
+          type: string
+        cpu_cores:
+          type: integer
+          format: int64
+        cpu_sockets:
+          type: integer
+          format: int64
+        cpu_speed:
+          type: integer
+          format: int64
+        total_ram:
+          type: integer
+          format: int64
+        dns_addresses:
+          type: string
+        host_name:
+          type: string
+        hypervisor_platform:
+          type: string
+        machine_logon_server:
+          type: string
+        machine_boot_time:
+          type: string
+        az_vm_size:
+          type: string
+        az_region:
+          type: string
+        az_resource_group:
+          type: string
+        az_subscription_id:
+          type: string
+        az_os_disk_sku_size:
+          type: string
+        az_disks_count:
+          type: integer
+          format: int64
+        az_total_disks_size_gb:
+          type: integer
+          format: int64
+        az_os_disk_size_gb:
+          type: integer
+          format: int64
+        uptime_in_sec:
+          type: integer
+          format: int64
+        cpu_avg:
+          type: integer
+          format: int64
+        memory_in_use_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_total_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        system_drive_free_space_avg:
+          type: integer
+          format: int64
+        disk_reads_per_sec_avg:
+          type: integer
+          format: int64
+        disk_writes_per_sec_avg:
+          type: integer
+          format: int64
+        disk_transfers_per_sec_avg:
+          type: integer
+          format: int64
+        network_received_mbit_per_sec_avg:
+          type: integer
+          format: int64
+        network_sent_mbit_per_sec_avg:
+          type: integer
+          format: int64
+        app_load_time_avg:
+          type: integer
+          format: int64
+        non_zero_avg_user_input_delay_avg:
+          type: integer
+          format: int64
+        non_zero_max_user_input_delay_avg:
+          type: integer
+          format: int64
+        avg_disk_queue_avg:
+          type: integer
+          format: int64
+        logon_duration_avg:
+          type: integer
+          format: int64
+        page_faults_per_sec_avg:
+          type: integer
+          format: int64
+        processes_count_avg:
+          type: integer
+          format: int64
+        avg_processor_queue_length_avg:
+          type: integer
+          format: int64
+        vm_name:
+          type: string
+        gpu_architecture:
+          type: string
+        gpu_model:
+          type: string
+        gpu_number_of_cores:
+          type: integer
+          format: int64
+        gpu_nvidia_driver_version:
+          type: string
+        gpu_nvidia_license_port:
+          type: string
+        gpu_nvidia_license_server:
+          type: string
+        gpu_utilization_avg:
+          type: integer
+          format: int64
+        gpu_available_memory_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_size_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_memory_utilization_avg:
+          type: integer
+          format: int64
+        gpu_memory_usage_avg:
+          type: integer
+          format: int64
+        gpu_decoder_usage_avg:
+          type: integer
+          format: int64
+        gpu_encoder_usage_avg:
+          type: integer
+          format: int64
+        pvs_device_boot_retry_count_last:
+          type: integer
+          format: int64
+        pvs_device_boot_time_sec_last:
+          type: integer
+          format: int64
+        pvs_device_disk_type:
+          type: string
+        pvs_device_server_reconnect_count_last:
+          type: integer
+          format: int64
+        pvs_device_udp_retry_count_last:
+          type: integer
+          format: int64
+        pvs_device_version:
+          type: string
+        pvs_device_write_cache_type:
+          type: string
+        pvs_device_write_cache_volume_size:
+          type: integer
+          format: int64
+        pvs_target_device_health:
+          type: integer
+          format: int64
+        pvs_vdisk_file_name:
+          type: string
+        pvs_vdisk_mode:
+          type: string
+        pvs_device_free_space_on_write_cache_drive_avg:
+          type: integer
+          format: int64
+        pvs_ram_cache_usage_avg:
+          type: integer
+          format: int64
+        total_sessions_avg:
+          type: integer
+          format: int64
+        active_sessions_avg:
+          type: integer
+          format: int64
+        user_sessions_count_avg:
+          type: integer
+          format: int64
+        idle_sessions_count_avg:
+          type: integer
+          format: int64
+        disconnected_sessions_avg:
+          type: integer
+          format: int64
+        other_sessions_count_avg:
+          type: integer
+          format: int64
+        ica_sessions_count_avg:
+          type: integer
+          format: int64
+        session_disconnect_rate_avg:
+          type: integer
+          format: int64
+    MachineAggregatedResult:
+      type: object
+      description: Aggregated machine statistics row. The exact set of fields returned depends on the requested groupBy, metrics and aggregations. Each request returns the group field, machine_count, and one column per <metric>_<aggregation> combination.
+      properties:
+        machine_count:
+          type: integer
+          format: int64
+          description: Number of distinct machines in the group (COUNT(DISTINCT computer_id)). Always returned.
+        folder_path:
+          type: string
+          description: Folder path the machine belonged to. Present when groupBy=folderPath.
+        folder_id:
+          type: integer
+          format: int64
+          description: 'Folder identifier. Present when groupBy=folderId. Numeric: folder ids fit within the safe integer range, so they are not affected by the large-id precision issue (bug #310813).'
+        operating_system:
+          type: string
+          description: Operating system name. Present when groupBy=operatingSystem.
+        hypervisor_platform:
+          type: string
+          description: Hypervisor platform (VMware, Hyper-V, Nutanix, ...). Present when groupBy=hypervisorPlatform.
+        az_region:
+          type: string
+          description: Azure region. Present when groupBy=azRegion.
+        az_vm_size:
+          type: string
+          description: Azure VM size/SKU. Present when groupBy=azVmSize.
+        gpu_architecture:
+          type: string
+          description: GPU architecture. Present when groupBy=gpuArchitecture.
+        gpu_model:
+          type: string
+          description: GPU model. Present when groupBy=gpuModel.
+        cpu_avg_avg:
+          type: integer
+          format: int64
+          description: Aggregated metric column. Suffix matches the requested aggregation (e.g. cpu_avg_avg, cpu_avg_max).
+        cpu_avg_min:
+          type: integer
+          format: int64
+        cpu_avg_max:
+          type: integer
+          format: int64
+        cpu_avg_count:
+          type: integer
+          format: int64
+        cpu_95_avg_avg:
+          type: integer
+          format: int64
+        cpu_95_avg_min:
+          type: integer
+          format: int64
+        cpu_95_avg_max:
+          type: integer
+          format: int64
+        cpu_95_avg_count:
+          type: integer
+          format: int64
+        cpu_ready_avg_avg:
+          type: integer
+          format: int64
+        cpu_ready_avg_min:
+          type: integer
+          format: int64
+        cpu_ready_avg_max:
+          type: integer
+          format: int64
+        cpu_ready_avg_count:
+          type: integer
+          format: int64
+        memory_in_use_avg_avg:
+          type: integer
+          format: int64
+        memory_in_use_avg_min:
+          type: integer
+          format: int64
+        memory_in_use_avg_max:
+          type: integer
+          format: int64
+        memory_in_use_avg_count:
+          type: integer
+          format: int64
+        system_drive_free_space_avg_avg:
+          type: integer
+          format: int64
+        system_drive_free_space_avg_min:
+          type: integer
+          format: int64
+        system_drive_free_space_avg_max:
+          type: integer
+          format: int64
+        system_drive_free_space_avg_count:
+          type: integer
+          format: int64
+        logon_duration_avg_avg:
+          type: integer
+          format: int64
+        logon_duration_avg_min:
+          type: integer
+          format: int64
+        logon_duration_avg_max:
+          type: integer
+          format: int64
+        logon_duration_avg_count:
+          type: integer
+          format: int64
+        app_load_time_avg_avg:
+          type: integer
+          format: int64
+        app_load_time_avg_min:
+          type: integer
+          format: int64
+        app_load_time_avg_max:
+          type: integer
+          format: int64
+        app_load_time_avg_count:
+          type: integer
+          format: int64
+        processes_count_avg_avg:
+          type: integer
+          format: int64
+        processes_count_avg_min:
+          type: integer
+          format: int64
+        processes_count_avg_max:
+          type: integer
+          format: int64
+        processes_count_avg_count:
+          type: integer
+          format: int64
+        avg_processor_queue_length_avg_avg:
+          type: integer
+          format: int64
+        avg_processor_queue_length_avg_min:
+          type: integer
+          format: int64
+        avg_processor_queue_length_avg_max:
+          type: integer
+          format: int64
+        avg_processor_queue_length_avg_count:
+          type: integer
+          format: int64
+        page_faults_per_sec_avg_avg:
+          type: integer
+          format: int64
+        page_faults_per_sec_avg_min:
+          type: integer
+          format: int64
+        page_faults_per_sec_avg_max:
+          type: integer
+          format: int64
+        page_faults_per_sec_avg_count:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg_min:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg_max:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg_count:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg_min:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg_max:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg_count:
+          type: integer
+          format: int64
+        disk_total_kbyte_per_sec_avg_avg:
+          type: integer
+          format: int64
+        disk_total_kbyte_per_sec_avg_min:
+          type: integer
+          format: int64
+        disk_total_kbyte_per_sec_avg_max:
+          type: integer
+          format: int64
+        disk_total_kbyte_per_sec_avg_count:
+          type: integer
+          format: int64
+        disk_reads_per_sec_avg_avg:
+          type: integer
+          format: int64
+        disk_reads_per_sec_avg_min:
+          type: integer
+          format: int64
+        disk_reads_per_sec_avg_max:
+          type: integer
+          format: int64
+        disk_reads_per_sec_avg_count:
+          type: integer
+          format: int64
+        disk_writes_per_sec_avg_avg:
+          type: integer
+          format: int64
+        disk_writes_per_sec_avg_min:
+          type: integer
+          format: int64
+        disk_writes_per_sec_avg_max:
+          type: integer
+          format: int64
+        disk_writes_per_sec_avg_count:
+          type: integer
+          format: int64
+        disk_transfers_per_sec_avg_avg:
+          type: integer
+          format: int64
+        disk_transfers_per_sec_avg_min:
+          type: integer
+          format: int64
+        disk_transfers_per_sec_avg_max:
+          type: integer
+          format: int64
+        disk_transfers_per_sec_avg_count:
+          type: integer
+          format: int64
+        avg_disk_queue_avg_avg:
+          type: integer
+          format: int64
+        avg_disk_queue_avg_min:
+          type: integer
+          format: int64
+        avg_disk_queue_avg_max:
+          type: integer
+          format: int64
+        avg_disk_queue_avg_count:
+          type: integer
+          format: int64
+        network_received_mbit_per_sec_avg_avg:
+          type: integer
+          format: int64
+        network_received_mbit_per_sec_avg_min:
+          type: integer
+          format: int64
+        network_received_mbit_per_sec_avg_max:
+          type: integer
+          format: int64
+        network_received_mbit_per_sec_avg_count:
+          type: integer
+          format: int64
+        network_sent_mbit_per_sec_avg_avg:
+          type: integer
+          format: int64
+        network_sent_mbit_per_sec_avg_min:
+          type: integer
+          format: int64
+        network_sent_mbit_per_sec_avg_max:
+          type: integer
+          format: int64
+        network_sent_mbit_per_sec_avg_count:
+          type: integer
+          format: int64
+        network_total_mbit_per_sec_avg_avg:
+          type: integer
+          format: int64
+        network_total_mbit_per_sec_avg_min:
+          type: integer
+          format: int64
+        network_total_mbit_per_sec_avg_max:
+          type: integer
+          format: int64
+        network_total_mbit_per_sec_avg_count:
+          type: integer
+          format: int64
+        non_zero_avg_user_input_delay_avg_avg:
+          type: integer
+          format: int64
+        non_zero_avg_user_input_delay_avg_min:
+          type: integer
+          format: int64
+        non_zero_avg_user_input_delay_avg_max:
+          type: integer
+          format: int64
+        non_zero_avg_user_input_delay_avg_count:
+          type: integer
+          format: int64
+        non_zero_max_user_input_delay_avg_avg:
+          type: integer
+          format: int64
+        non_zero_max_user_input_delay_avg_min:
+          type: integer
+          format: int64
+        non_zero_max_user_input_delay_avg_max:
+          type: integer
+          format: int64
+        non_zero_max_user_input_delay_avg_count:
+          type: integer
+          format: int64
+        gpu_utilization_avg_avg:
+          type: integer
+          format: int64
+        gpu_utilization_avg_min:
+          type: integer
+          format: int64
+        gpu_utilization_avg_max:
+          type: integer
+          format: int64
+        gpu_utilization_avg_count:
+          type: integer
+          format: int64
+        gpu_available_memory_avg_avg:
+          type: integer
+          format: int64
+        gpu_available_memory_avg_min:
+          type: integer
+          format: int64
+        gpu_available_memory_avg_max:
+          type: integer
+          format: int64
+        gpu_available_memory_avg_count:
+          type: integer
+          format: int64
+        gpu_frame_buffer_size_avg_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_size_avg_min:
+          type: integer
+          format: int64
+        gpu_frame_buffer_size_avg_max:
+          type: integer
+          format: int64
+        gpu_frame_buffer_size_avg_count:
+          type: integer
+          format: int64
+        gpu_frame_buffer_memory_utilization_avg_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_memory_utilization_avg_min:
+          type: integer
+          format: int64
+        gpu_frame_buffer_memory_utilization_avg_max:
+          type: integer
+          format: int64
+        gpu_frame_buffer_memory_utilization_avg_count:
+          type: integer
+          format: int64
+        gpu_memory_usage_avg_avg:
+          type: integer
+          format: int64
+        gpu_memory_usage_avg_min:
+          type: integer
+          format: int64
+        gpu_memory_usage_avg_max:
+          type: integer
+          format: int64
+        gpu_memory_usage_avg_count:
+          type: integer
+          format: int64
+        gpu_decoder_usage_avg_avg:
+          type: integer
+          format: int64
+        gpu_decoder_usage_avg_min:
+          type: integer
+          format: int64
+        gpu_decoder_usage_avg_max:
+          type: integer
+          format: int64
+        gpu_decoder_usage_avg_count:
+          type: integer
+          format: int64
+        gpu_encoder_usage_avg_avg:
+          type: integer
+          format: int64
+        gpu_encoder_usage_avg_min:
+          type: integer
+          format: int64
+        gpu_encoder_usage_avg_max:
+          type: integer
+          format: int64
+        gpu_encoder_usage_avg_count:
+          type: integer
+          format: int64
+        pvs_device_free_space_on_write_cache_drive_avg_avg:
+          type: integer
+          format: int64
+        pvs_device_free_space_on_write_cache_drive_avg_min:
+          type: integer
+          format: int64
+        pvs_device_free_space_on_write_cache_drive_avg_max:
+          type: integer
+          format: int64
+        pvs_device_free_space_on_write_cache_drive_avg_count:
+          type: integer
+          format: int64
+        pvs_ram_cache_usage_avg_avg:
+          type: integer
+          format: int64
+        pvs_ram_cache_usage_avg_min:
+          type: integer
+          format: int64
+        pvs_ram_cache_usage_avg_max:
+          type: integer
+          format: int64
+        pvs_ram_cache_usage_avg_count:
+          type: integer
+          format: int64
+        pvs_target_device_health_avg:
+          type: integer
+          format: int64
+        pvs_target_device_health_min:
+          type: integer
+          format: int64
+        pvs_target_device_health_max:
+          type: integer
+          format: int64
+        pvs_target_device_health_count:
+          type: integer
+          format: int64
+        pvs_device_write_cache_volume_size_avg:
+          type: integer
+          format: int64
+        pvs_device_write_cache_volume_size_min:
+          type: integer
+          format: int64
+        pvs_device_write_cache_volume_size_max:
+          type: integer
+          format: int64
+        pvs_device_write_cache_volume_size_count:
+          type: integer
+          format: int64
+        total_sessions_avg_avg:
+          type: integer
+          format: int64
+        total_sessions_avg_min:
+          type: integer
+          format: int64
+        total_sessions_avg_max:
+          type: integer
+          format: int64
+        total_sessions_avg_count:
+          type: integer
+          format: int64
+        active_sessions_avg_avg:
+          type: integer
+          format: int64
+        active_sessions_avg_min:
+          type: integer
+          format: int64
+        active_sessions_avg_max:
+          type: integer
+          format: int64
+        active_sessions_avg_count:
+          type: integer
+          format: int64
+        user_sessions_count_avg_avg:
+          type: integer
+          format: int64
+        user_sessions_count_avg_min:
+          type: integer
+          format: int64
+        user_sessions_count_avg_max:
+          type: integer
+          format: int64
+        user_sessions_count_avg_count:
+          type: integer
+          format: int64
+        idle_sessions_count_avg_avg:
+          type: integer
+          format: int64
+        idle_sessions_count_avg_min:
+          type: integer
+          format: int64
+        idle_sessions_count_avg_max:
+          type: integer
+          format: int64
+        idle_sessions_count_avg_count:
+          type: integer
+          format: int64
+        disconnected_sessions_avg_avg:
+          type: integer
+          format: int64
+        disconnected_sessions_avg_min:
+          type: integer
+          format: int64
+        disconnected_sessions_avg_max:
+          type: integer
+          format: int64
+        disconnected_sessions_avg_count:
+          type: integer
+          format: int64
+        other_sessions_count_avg_avg:
+          type: integer
+          format: int64
+        other_sessions_count_avg_min:
+          type: integer
+          format: int64
+        other_sessions_count_avg_max:
+          type: integer
+          format: int64
+        other_sessions_count_avg_count:
+          type: integer
+          format: int64
+        ica_sessions_count_avg_avg:
+          type: integer
+          format: int64
+        ica_sessions_count_avg_min:
+          type: integer
+          format: int64
+        ica_sessions_count_avg_max:
+          type: integer
+          format: int64
+        ica_sessions_count_avg_count:
+          type: integer
+          format: int64
+        session_disconnect_rate_avg_avg:
+          type: integer
+          format: int64
+        session_disconnect_rate_avg_min:
+          type: integer
+          format: int64
+        session_disconnect_rate_avg_max:
+          type: integer
+          format: int64
+        session_disconnect_rate_avg_count:
+          type: integer
+          format: int64
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false
+  explorer-enabled: true
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

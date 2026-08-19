@@ -1,0 +1,366 @@
+openapi: 3.2.0
+info:
+  title: ControlUp for Desktops Scripts API
+  description: "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves."
+  version: 2.159.0
+servers:
+- url: https://api.controlup.com/edge/api
+security:
+- bearerAuth: []
+tags:
+- name: Scripts
+paths:
+  /scripts:
+    get:
+      summary: List all scripts
+      tags:
+      - Scripts
+      description: "Returns a list of all scripts.\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query scripts.\n"
+      operationId: list-all-scripts
+      parameters:
+      - in: query
+        name: query
+        description: An OpenSearch query.
+        schema:
+          type: object
+          default: false
+      - in: query
+        name: size
+        description: The number of rows returned per page.
+        schema:
+          type: integer
+          default: 10000
+          maximum: 10000
+      - in: query
+        name: page
+        description: The page returned. The number of rows per page is set with the `size` parameter.
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: from
+        description: The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded.
+        schema:
+          type: integer
+          example: 2
+      - $ref: '#/components/parameters/FilterField'
+      - $ref: '#/components/parameters/FilterType'
+      - $ref: '#/components/parameters/FilterValue'
+      - $ref: '#/components/parameters/SorterField'
+      - $ref: '#/components/parameters/SorterDir'
+      responses:
+        '200':
+          description: List of configured scripts.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/script'
+        '400':
+          description: The provided query is invalid.
+components:
+  parameters:
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    FilterType:
+      name: filters[0][type]
+      in: query
+      description: 'The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>
+
+        `<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>
+
+        `boolean` is used to filter boolean fields.<br>
+
+        `like` is used to filter text fields.
+
+        '
+      schema:
+        type: string
+        example: '>='
+        enum:
+        - <
+        - <=
+        - '='
+        - '!='
+        - '>='
+        - '>'
+        - like
+        - boolean
+  schemas:
+    script:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the script.
+          example: EDqnXpcBOClmoe-Y2C1S
+        _created:
+          type: string
+          format: date-time
+          description: Timestamp when the script was created.
+          example: '2025-06-11T11:02:27.665Z'
+        _updated:
+          type: string
+          format: date-time
+          description: Timestamp when the script was last updated.
+          example: '2025-06-11T11:26:24.384Z'
+        version:
+          type: integer
+          description: Version number of the script. The version increases by 1 each time the script is updated.
+          example: 38
+        hash:
+          type: string
+          example: 38e682fc611d693eac6160d20a4a10cc390c7599
+        hash_256:
+          type: string
+          example: 63908c842a5191edc12d15631fcffa00e32f9864594db929728c78088693622d
+        enabled:
+          type: boolean
+          description: Indicates if the script is enabled.
+          example: false
+        name:
+          type: string
+          description: Name of the script.
+          example: tim script
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the script.
+          example: null
+        level:
+          type: string
+          description: The permission group required to run the script. `pr_run_level_0_script` is for 'Ungrouped' scripts.
+          enum:
+          - pr_run_level_0_script
+          - pr_run_level_1_script
+          - pr_run_level_2_script
+          - pr_run_level_3_script
+          - pr_run_level_4_script
+          - pr_run_level_5_script
+          example: pr_run_level_1_script
+        cu_product:
+          type: integer
+          description: 'The ControlUp product that uses the script:
+
+            * ControlUp for Desktops = 1
+
+            * Secure DX = 2
+
+            '
+          example: 1
+        language:
+          type: integer
+          description: '* PowerShell = 1
+
+            * VBScript (WSH) = 2
+
+            * JScript (WSH) = 3
+
+            * Python = 4
+
+            * Bash = 5
+
+            * Swift = 6
+
+            * Command Script (cmd) = 7
+
+            * Shell Script (sh) = 8
+
+            * Python 3 = 9
+
+            * Z Shell = 10
+
+            '
+          example: 10
+        platform:
+          type: integer
+          description: 'The OS platform for the script.
+
+            * Microsoft Windows = 1
+
+            * Apple macOS = 2
+
+            * Linux = 3
+
+            '
+          example: 2
+        trigger:
+          type: integer
+          description: '* Custom Action - System = 9999
+
+            * Custom Action - User = 9998
+
+            * Disabled = 0
+
+
+            System Triggers:
+
+            * Short interval timer = 1
+
+            * Long interval timer = 2
+
+            * Once per day = 101
+
+            * SIP service start = 201
+
+            * SIP service stop = 202
+
+            * Network change = 301
+
+            * Process started = 401 (the name of the process is in the `trigger_meta` field)
+
+            * Logon complete = 501
+
+            * Logon - explorer started = 502
+
+            * Logon - new session (pre-shell) = 503
+
+            * Logoff = 601
+
+            * Session lock = 701
+
+            * Session unlock = 702
+
+            * Session disconnect = 801
+
+            * Session reconnect = 802
+
+
+            User Triggers:
+
+            * Process started = 1401 (the name of the process is in the `trigger_meta` field)
+
+            * Logon complete = 1501
+
+            * Logon - explorer started = 1502
+
+            * Logon - new session (pre-shell) = 1503
+
+            * Logoff = 1601
+
+            * Session lock = 1701
+
+            * Session unlock = 1702
+
+            * Session disconnect = 1801
+
+            * Session reconnect = 1802
+
+            '
+          example: 0
+        trigger_meta:
+          type:
+          - object
+          - 'null'
+          description: Metadata related to the script trigger.
+          example: null
+        timeout:
+          type: integer
+          description: Timeout for the script execution in milliseconds.
+          example: 60000
+        run_online_only:
+          type: boolean
+          description: Indicates if the script runs only when online.
+          example: false
+        run_idle_only:
+          type: boolean
+          description: Indicates if the script runs only when idle.
+          example: false
+        sends_data:
+          type: boolean
+          description: Indicates if the script sends data.
+          example: false
+        data_index:
+          type:
+          - string
+          - 'null'
+          description: If `sends_data` is enabled, this is the name of the data index to write to. This can't be a built-in data index.
+          example: null
+        overwrite_existing_data:
+          type: boolean
+          description: If `sends_data` is enabled, this determines whether data for a device is overwritten.
+          example: false
+        builtin_script:
+          type: boolean
+          description: Indicates if the script is a built-in script.
+          example: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

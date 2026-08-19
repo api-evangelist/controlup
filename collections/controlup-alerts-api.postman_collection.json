@@ -1,0 +1,4177 @@
+{
+  "item": [
+    {
+      "id": "b2f13b4c-13b9-4984-b327-184db5c75914",
+      "name": "Alerts",
+      "description": {
+        "content": "Alerts let you receive notifications or automatically run an action when certain conditions occur on a device.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "904218c3-4efd-41b7-b9e9-2be4aa4a1862",
+          "name": "List all Alerts",
+          "request": {
+            "name": "List all Alerts",
+            "description": {
+              "content": "Returns a list of configured alerts.\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query alerts.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "alerts"
+              ],
+              "host": [
+                "{{alerts-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "size",
+                  "value": "10000",
+                  "description": "The number of rows returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page returned. The number of rows per page is set with the `size` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][field]",
+                  "value": "<string>",
+                  "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][type]",
+                  "value": "<string>",
+                  "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][value]",
+                  "value": "<string>",
+                  "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][field]",
+                  "value": "<string>",
+                  "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][dir]",
+                  "value": "<string>",
+                  "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f7e9e360-3d2f-4639-a662-a5dd21536e98",
+              "name": "List of configured alerts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{alerts-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rows\": [\n    {\n      \"_id\": \"izWJPJcBOClmoe-Yecr0\",\n      \"enabled\": true,\n      \"platform\": 1,\n      \"servicenow_raise_incident\": \"true\",\n      \"servicenow_ticket_type\": 1,\n      \"servicenow_impact\": 2,\n      \"servicenow_urgency\": 2,\n      \"servicenow_autoclose_interval\": 300,\n      \"name\": \"My first alert\",\n      \"description\": \"Description of my first alert goes here\",\n      \"index\": \"device_status\",\n      \"filters\": [\n        {\n          \"field\": \"cpuload\",\n          \"type\": \">\",\n          \"value\": \"1\"\n        },\n        {\n          \"field\": \"cpuload\",\n          \"type\": \">\",\n          \"value\": \"1\"\n        }\n      ],\n      \"results_threshold\": 5,\n      \"results_threshold_seconds\": 600,\n      \"retrigger_interval\": 3600,\n      \"severity\": 4,\n      \"evaluation_mode\": 1,\n      \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n      \"script_id\": \"fpwG-4oB1426LInH16YF\",\n      \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n      \"script_arguments\": null,\n      \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n      \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\"\n    },\n    {\n      \"_id\": \"izWJPJcBOClmoe-Yecr0\",\n      \"enabled\": true,\n      \"platform\": 1,\n      \"servicenow_raise_incident\": \"true\",\n      \"servicenow_ticket_type\": 1,\n      \"servicenow_impact\": 2,\n      \"servicenow_urgency\": 2,\n      \"servicenow_autoclose_interval\": 300,\n      \"name\": \"My first alert\",\n      \"description\": \"Description of my first alert goes here\",\n      \"index\": \"device_status\",\n      \"filters\": [\n        {\n          \"field\": \"cpuload\",\n          \"type\": \">\",\n          \"value\": \"1\"\n        },\n        {\n          \"field\": \"cpuload\",\n          \"type\": \">\",\n          \"value\": \"1\"\n        }\n      ],\n      \"results_threshold\": 5,\n      \"results_threshold_seconds\": 600,\n      \"retrigger_interval\": 3600,\n      \"severity\": 4,\n      \"evaluation_mode\": 1,\n      \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n      \"script_id\": \"fpwG-4oB1426LInH16YF\",\n      \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n      \"script_arguments\": null,\n      \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n      \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "832a679b-bfc8-4738-87fd-dbc4dd48adc3",
+              "name": "The provided query is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{alerts-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "55097160-ccb1-49d6-9957-31ecdc75909d",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{alerts-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "13165663-bfae-4387-91d2-c0ebe9ac366a",
+              "name": "API key is expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{alerts-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "759899fc-b82d-4d6b-80b8-981b4116eb3b",
+          "name": "Create an Alert",
+          "request": {
+            "name": "Create an Alert",
+            "description": {
+              "content": "Creates a new Alert.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "alerts"
+              ],
+              "host": [
+                "{{alerts-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"platform\": \"<integer>\",\n  \"index\": \"<string>\",\n  \"filters\": [\n    {\n      \"field\": \"<string>\",\n      \"type\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"field\": \"<string>\",\n      \"type\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ],\n  \"results_threshold\": \"<integer>\",\n  \"results_threshold_seconds\": \"<integer>\",\n  \"retrigger_interval\": \"<integer>\",\n  \"severity\": \"<integer>\",\n  \"description\": \"<string>\",\n  \"enabled\": \"<boolean>\",\n  \"webhook_url\": \"<string,null-uri>\",\n  \"script_id\": \"<string,null>\",\n  \"user_script_id\": \"<string,null>\",\n  \"survey_id\": \"<string,null>\",\n  \"email_addresses\": \"<string>\",\n  \"servicenow_raise_incident\": \"<string>\",\n  \"servicenow_ticket_type\": \"<integer>\",\n  \"servicenow_impact\": \"<integer>\",\n  \"servicenow_urgency\": \"<integer>\",\n  \"servicenow_autoclose_interval\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "73415007-cd30-4dc3-8025-fd16bd7347ff",
+              "name": "Alert created.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My first alert\",\n  \"platform\": 1,\n  \"index\": \"device_status\",\n  \"filters\": [\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    },\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    }\n  ],\n  \"results_threshold\": 5,\n  \"results_threshold_seconds\": 600,\n  \"retrigger_interval\": 3600,\n  \"severity\": 4,\n  \"description\": \"Description of my first alert goes here\",\n  \"enabled\": true,\n  \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n  \"script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n  \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\",\n  \"servicenow_raise_incident\": \"true\",\n  \"servicenow_ticket_type\": 1,\n  \"servicenow_impact\": 2,\n  \"servicenow_urgency\": 2,\n  \"servicenow_autoclose_interval\": 300\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1b2413f5-c2e7-4bb4-9928-b863779eb225",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My first alert\",\n  \"platform\": 1,\n  \"index\": \"device_status\",\n  \"filters\": [\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    },\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    }\n  ],\n  \"results_threshold\": 5,\n  \"results_threshold_seconds\": 600,\n  \"retrigger_interval\": 3600,\n  \"severity\": 4,\n  \"description\": \"Description of my first alert goes here\",\n  \"enabled\": true,\n  \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n  \"script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n  \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\",\n  \"servicenow_raise_incident\": \"true\",\n  \"servicenow_ticket_type\": 1,\n  \"servicenow_impact\": 2,\n  \"servicenow_urgency\": 2,\n  \"servicenow_autoclose_interval\": 300\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bafd1573-959f-483c-9c2a-a9ae0b742ffd",
+              "name": "API key is expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My first alert\",\n  \"platform\": 1,\n  \"index\": \"device_status\",\n  \"filters\": [\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    },\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    }\n  ],\n  \"results_threshold\": 5,\n  \"results_threshold_seconds\": 600,\n  \"retrigger_interval\": 3600,\n  \"severity\": 4,\n  \"description\": \"Description of my first alert goes here\",\n  \"enabled\": true,\n  \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n  \"script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n  \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\",\n  \"servicenow_raise_incident\": \"true\",\n  \"servicenow_ticket_type\": 1,\n  \"servicenow_impact\": 2,\n  \"servicenow_urgency\": 2,\n  \"servicenow_autoclose_interval\": 300\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1e69001b-78ce-455f-b593-13538c0a39b9",
+          "name": "Retrieve Alert",
+          "request": {
+            "name": "Retrieve Alert",
+            "description": {
+              "content": "Returns an alert by its ID.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "alerts",
+                ":id"
+              ],
+              "host": [
+                "{{alerts-id-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) ID of the alert to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9cce0b15-0dbc-4e09-a635-88207b3ae9f0",
+              "name": "Alert details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"izWJPJcBOClmoe-Yecr0\",\n  \"enabled\": true,\n  \"platform\": 1,\n  \"servicenow_raise_incident\": \"true\",\n  \"servicenow_ticket_type\": 1,\n  \"servicenow_impact\": 2,\n  \"servicenow_urgency\": 2,\n  \"servicenow_autoclose_interval\": 300,\n  \"name\": \"My first alert\",\n  \"description\": \"Description of my first alert goes here\",\n  \"index\": \"device_status\",\n  \"filters\": [\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    },\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    }\n  ],\n  \"results_threshold\": 5,\n  \"results_threshold_seconds\": 600,\n  \"retrigger_interval\": 3600,\n  \"severity\": 4,\n  \"evaluation_mode\": 1,\n  \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n  \"script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"script_arguments\": null,\n  \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n  \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9df6691b-5df9-43c3-b2b2-d1436821a624",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "30d2fc30-476d-4171-ba39-b59b294fd4c6",
+              "name": "API key is expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bb37c127-ff68-4b37-86ef-1b76dd980033",
+          "name": "Edit alert",
+          "request": {
+            "name": "Edit alert",
+            "description": {
+              "content": "Edits an existing alert by its ID. Any parameters not passed are unchanged.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "alerts",
+                ":id"
+              ],
+              "host": [
+                "{{alerts-id-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) ID of the alert to edit."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enabled\": \"<boolean>\",\n  \"platform\": \"<integer>\",\n  \"servicenow_raise_incident\": \"<string>\",\n  \"servicenow_ticket_type\": \"<integer>\",\n  \"servicenow_impact\": \"<integer>\",\n  \"servicenow_urgency\": \"<integer>\",\n  \"servicenow_autoclose_interval\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"index\": \"<string>\",\n  \"filters\": [\n    {\n      \"field\": \"<string>\",\n      \"type\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"field\": \"<string>\",\n      \"type\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ],\n  \"results_threshold\": \"<integer>\",\n  \"results_threshold_seconds\": \"<integer>\",\n  \"retrigger_interval\": \"<integer>\",\n  \"severity\": \"<integer>\",\n  \"evaluation_mode\": \"<integer>\",\n  \"webhook_url\": \"<string,null-uri>\",\n  \"script_id\": \"<string,null>\",\n  \"user_script_id\": \"<string,null>\",\n  \"script_arguments\": \"<string,null>\",\n  \"survey_id\": \"<string,null>\",\n  \"email_addresses\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b246898c-8630-4007-ab6c-baa722265440",
+              "name": "Alert edited",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to edit."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": true,\n  \"platform\": 1,\n  \"servicenow_raise_incident\": \"true\",\n  \"servicenow_ticket_type\": 1,\n  \"servicenow_impact\": 2,\n  \"servicenow_urgency\": 2,\n  \"servicenow_autoclose_interval\": 300,\n  \"name\": \"My first alert\",\n  \"description\": \"Description of my first alert goes here\",\n  \"index\": \"device_status\",\n  \"filters\": [\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    },\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    }\n  ],\n  \"results_threshold\": 5,\n  \"results_threshold_seconds\": 600,\n  \"retrigger_interval\": 3600,\n  \"severity\": 4,\n  \"evaluation_mode\": 1,\n  \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n  \"script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"script_arguments\": \"<string,null>\",\n  \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n  \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "673f3fa7-c127-4ae6-bb41-5766979615f5",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to edit."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": true,\n  \"platform\": 1,\n  \"servicenow_raise_incident\": \"true\",\n  \"servicenow_ticket_type\": 1,\n  \"servicenow_impact\": 2,\n  \"servicenow_urgency\": 2,\n  \"servicenow_autoclose_interval\": 300,\n  \"name\": \"My first alert\",\n  \"description\": \"Description of my first alert goes here\",\n  \"index\": \"device_status\",\n  \"filters\": [\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    },\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    }\n  ],\n  \"results_threshold\": 5,\n  \"results_threshold_seconds\": 600,\n  \"retrigger_interval\": 3600,\n  \"severity\": 4,\n  \"evaluation_mode\": 1,\n  \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n  \"script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"script_arguments\": \"<string,null>\",\n  \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n  \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cb32ca4c-c7a9-4362-8922-e64ee35e1da7",
+              "name": "API key is expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to edit."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": true,\n  \"platform\": 1,\n  \"servicenow_raise_incident\": \"true\",\n  \"servicenow_ticket_type\": 1,\n  \"servicenow_impact\": 2,\n  \"servicenow_urgency\": 2,\n  \"servicenow_autoclose_interval\": 300,\n  \"name\": \"My first alert\",\n  \"description\": \"Description of my first alert goes here\",\n  \"index\": \"device_status\",\n  \"filters\": [\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    },\n    {\n      \"field\": \"cpuload\",\n      \"type\": \">\",\n      \"value\": \"1\"\n    }\n  ],\n  \"results_threshold\": 5,\n  \"results_threshold_seconds\": 600,\n  \"retrigger_interval\": 3600,\n  \"severity\": 4,\n  \"evaluation_mode\": 1,\n  \"webhook_url\": \"https://your-domain.com/webhook-endpoint\",\n  \"script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"user_script_id\": \"fpwG-4oB1426LInH16YF\",\n  \"script_arguments\": \"<string,null>\",\n  \"survey_id\": \"fpwG-4oB1426LInH16YF\",\n  \"email_addresses\": \"firstemail@gmail.com;secondemail@gmail.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "24bf70a2-3add-4a89-bc0f-8ef4f635f3d0",
+          "name": "Delete alert",
+          "request": {
+            "name": "Delete alert",
+            "description": {
+              "content": "Deletes an existing alert by its ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "alerts",
+                ":id"
+              ],
+              "host": [
+                "{{alerts-id-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) ID of the alert to delete."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ed0a9b60-fd48-4c17-98c3-2529fd2449dd",
+              "name": "Alert deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6ece03ff-6cfa-4c35-a68e-e69bad2fa1da",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4724748f-052d-40b4-aaa5-ebc5cb134073",
+              "name": "API key is expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{alerts-id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the alert to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b3b1249b-868d-491d-a62d-ef567d567a6e",
+          "name": "List all Alerts",
+          "request": {
+            "name": "List all Alerts",
+            "description": {
+              "content": "Returns a list of configured alerts.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organizations",
+                ":orgId",
+                "alert-configs"
+              ],
+              "host": [
+                "{{organizations-orgId-alert-configs-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "_page",
+                  "value": "1",
+                  "description": "The page of results to return.\nThe first page is page number 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "_limit",
+                  "value": "10",
+                  "description": "The number of results returned per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "_sortBy",
+                  "value": "id",
+                  "description": "Sorts results according to the specified field."
+                },
+                {
+                  "disabled": false,
+                  "key": "_order",
+                  "value": "asc",
+                  "description": "The sort order (ascending / descending) of the field specified by the `_sortBy` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "_search",
+                  "value": "<string>",
+                  "description": "A search filter that is applied to all fields.\nOnly results that contain the specified string are returned."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters",
+                  "value": "<string>",
+                  "description": "JSON filter for narrowing results. Send this value as a URL-encoded JSON string.\n\nExample:\n```\n%7B%22and%22%3A%20%5B%7B%22filter%22%3A%20%7B%22key%22%3A%20%22type%22%2C%20%22op%22%3A%20%22equals%22%2C%20%22value%22%3A%20%22anomaly%22%7D%7D%2C%7B%22filter%22%3A%20%7B%22key%22%3A%20%22severity%22%2C%20%22op%22%3A%20%22equals%22%2C%20%22value%22%3A%20%22low%22%7D%7D%5D%7D\n```\n\nDecoded value:\n```\n{\n  \"and\": [\n    {\n      \"filter\": {\n        \"key\": \"type\",\n        \"op\": \"equals\",\n        \"value\": \"anomaly\"\n      }\n    },\n    {\n      \"filter\": {\n        \"key\": \"severity\",\n        \"op\": \"equals\",\n        \"value\": \"low\"\n      }\n    }\n  ]\n}\n```"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "orgId",
+                  "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2c7b9d68-beae-4b79-96d0-2459e2f86761",
+              "name": "Ok",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "alert-configs"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-alert-configs-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    \"\",\n    \"\"\n  ],\n  \"metadata\": {\n    \"total\": 18,\n    \"limitPerPage\": 10,\n    \"currentPageNumber\": 1,\n    \"currentPageSize\": 10,\n    \"remaining\": 8\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80fdb367-17bc-4696-b1b4-c193c1f29f19",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "alert-configs"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-alert-configs-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 400,\n    \"code\": 50,\n    \"message\": \"Bad Request\",\n    \"data\": {\n      \"key_0\": \"string\"\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c44b8d66-e75a-4453-b1ef-d6e69303c97b",
+              "name": "Unauthorized: Access is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "alert-configs"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-alert-configs-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 401,\n    \"code\": 3,\n    \"message\": \"Unauthorized\",\n    \"data\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": false\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "43d3a33b-b30c-49f8-88b4-9ce0e6eac8b4",
+              "name": "Forbidden: Access to this resource is denied",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "alert-configs"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-alert-configs-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 403,\n    \"code\": 4,\n    \"message\": \"Forbidden\",\n    \"data\": {\n      \"key_0\": 2746\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "74b212cc-6470-44f5-bf35-de8b1cf9e6bc",
+              "name": "Not Found: The requested resource could not be found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "alert-configs"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-alert-configs-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 404,\n    \"code\": 5,\n    \"message\": \"Not Found\",\n    \"data\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "df71ce87-d674-4c42-9339-51ad168cacc9",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":orgId",
+                    "alert-configs"
+                  ],
+                  "host": [
+                    "{{organizations-orgId-alert-configs-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "_limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "_sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "_order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"status\": 500,\n    \"code\": 6,\n    \"message\": \"Internal Server Error\",\n    \"data\": {\n      \"key_0\": 1077,\n      \"key_1\": 8368\n    }\n  },\n  \"metadata\": {\n    \"userIp\": \"string\",\n    \"userId\": \"string\",\n    \"orgId\": \"string\",\n    \"cuRequestId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "de021d40-5a44-463c-94d4-34c17c016ac4",
+          "name": "List Scout IDs with alerts",
+          "request": {
+            "name": "List Scout IDs with alerts",
+            "description": {
+              "content": "Returns a list of Scout IDs that have triggered an alert within the specified time frame. The default time frame is the last 24 hours.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "alerts",
+                "scouts"
+              ],
+              "host": [
+                "{{alerts-scouts-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<dateTime>",
+                  "description": "Start date and time of the search."
+                },
+                {
+                  "disabled": false,
+                  "key": "end",
+                  "value": "<dateTime>",
+                  "description": "End date and time of the search."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "816cdbdc-2aa8-4937-b5e2-86f6aa1275d1",
+              "name": "A list of Scout IDs",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{alerts-scouts-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"scoutId\": [\n    44,\n    1,\n    100\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cf4f8d2f-b24f-490d-ada1-4f7080a0c680",
+              "name": "Sent data has errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{alerts-scouts-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"name\": [\n      \"Missing required data.\"\n    ],\n    \"period\": [\n      \"Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0510e2a0-3e2f-492f-9013-aee1fa914f0f",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{alerts-scouts-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7b0c939-30e4-40fc-8bcf-e9cf6c9c3465",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    "scouts"
+                  ],
+                  "host": [
+                    "{{alerts-scouts-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2021-01-01 13:21:55"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2021-02-01 10:24:55"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6e96a618-7f7b-4a14-82ed-b7914c5b5b78",
+          "name": "List alerts for a Scout",
+          "request": {
+            "name": "List alerts for a Scout",
+            "description": {
+              "content": "Returns alerts generated within the specified time frame for a Scout. The default time frame is the last 24 hours.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "alerts",
+                ":scoutId"
+              ],
+              "host": [
+                "{{alerts-scoutId-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<dateTime>",
+                  "description": "Start date and time of the search. The start date can be up to 1 year in the past. The total search duration from the start time to the end time can be a maximum of 24 hours."
+                },
+                {
+                  "disabled": false,
+                  "key": "end",
+                  "value": "<dateTime>",
+                  "description": "End date and time of the search."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "The page of alerts to return. Each page contains up to 100 alerts. If your request returns more than 100 alerts, then the response is paginated."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b874e96c-3cea-4dd6-a380-e21eb1b167fe",
+              "name": "Alert details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{alerts-scoutId-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2023-09-26 08:00:00"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2023-09-27 01:30:00"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"current_page\": 1,\n  \"data\": {\n    \"conditons\": [\n      {\n        \"conditionType\": \"==\",\n        \"property\": \"status\",\n        \"value\": \"failure\"\n      }\n    ],\n    \"scoutId\": 1,\n    \"subType\": \"net_dns\",\n    \"triggers\": [\n      {\n        \"alertLevel\": \"TRIGGERED\",\n        \"cloudHive\": 1,\n        \"stateCount\": 1,\n        \"time\": \"2021-10-05 10:33:55\",\n        \"status\": \"failure\"\n      },\n      {\n        \"alertLevel\": \"TRIGGERED\",\n        \"cloudHive\": 1,\n        \"stateCount\": 2,\n        \"time\": \"2021-10-05 10:34:55\",\n        \"status\": \"failure\"\n      },\n      {\n        \"alertLevel\": \"TRIGGERED\",\n        \"cloudHive\": 1,\n        \"stateCount\": 3,\n        \"time\": \"2021-10-05 10:35:55\",\n        \"status\": \"failure\"\n      },\n      {\n        \"alertLevel\": \"OK\",\n        \"cloudHive\": 1,\n        \"stateCount\": -1,\n        \"time\": \"2021-10-05 10:36:55\",\n        \"status\": \"success\"\n      }\n    ]\n  },\n  \"success\": true,\n  \"total\": 4,\n  \"total_pages\": 1,\n  \"total_per_page\": 100\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e6b70867-a06d-4a8e-b8ee-b69392ca8df1",
+              "name": "Sent data has errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{alerts-scoutId-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2023-09-26 08:00:00"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2023-09-27 01:30:00"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"name\": [\n      \"Missing required data.\"\n    ],\n    \"period\": [\n      \"Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9eccb71a-a80d-4927-9c4c-f05f7d255f2c",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{alerts-scoutId-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2023-09-26 08:00:00"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2023-09-27 01:30:00"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b76ebe60-f16e-4e16-94d8-ef45ce19e502",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alerts",
+                    ":scoutId"
+                  ],
+                  "host": [
+                    "{{alerts-scoutId-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "2023-09-26 08:00:00"
+                    },
+                    {
+                      "key": "end",
+                      "value": "2023-09-27 01:30:00"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d4f714e6-c195-4cfd-8d40-18a4b6fea3d3",
+          "name": "List alert policies for a Scout",
+          "request": {
+            "name": "List alert policies for a Scout",
+            "description": {
+              "content": "Returns all alert policies configured for a Scout. Currently, each Scout supports only a single alert policy.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId",
+                "alerts"
+              ],
+              "host": [
+                "{{scouts-scoutId-alerts-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "399d5c2e-03e0-400e-b0fa-4cf2e1a512e5",
+              "name": "List of alert policies for a Scout.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"alertId\": 123,\n      \"scoutId\": 7852,\n      \"subType\": \"net_http\",\n      \"conditions\": {\n        \"field\": \"status\",\n        \"operator\": \"==\",\n        \"value\": \"failure\"\n      },\n      \"readableConditions\": \"status == failure\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5e7326ef-7857-43b5-bcaa-884681cb302e",
+              "name": "Validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"status\": \"400\",\n      \"code\": \"validation_error\",\n      \"title\": \"Validation Error\",\n      \"detail\": \"Should be one of the following: ['AND', 'OR']\",\n      \"source\": {\n        \"pointer\": \"/conditions/operator\"\n      },\n      \"meta\": {\n        \"input\": \"XOR\",\n        \"type\": \"literal_error\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "317b6390-9962-4a4d-9a52-84b9f922f1f3",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 9843.193663956654,\n        \"key_2\": false\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": 768.0125247315539,\n        \"key_1\": 1494,\n        \"key_2\": 3167.0710368226573,\n        \"key_3\": 484.3109216690622\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8903142b-45ce-4f31-ad25-57f10b98cd68",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440005\",\n      \"status\": \"404\",\n      \"code\": \"not_found\",\n      \"title\": \"Not Found\",\n      \"detail\": \"Alert #123 not found.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6eb92005-d8f6-4baf-8913-50aed5e44c6a",
+              "name": "Server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 9843.193663956654,\n        \"key_2\": false\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": 768.0125247315539,\n        \"key_1\": 1494,\n        \"key_2\": 3167.0710368226573,\n        \"key_3\": 484.3109216690622\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0f35b064-66cc-4202-bcda-4111d177e4a3",
+          "name": "Create alert policy",
+          "request": {
+            "name": "Create alert policy",
+            "description": {
+              "content": "Creates a new alert policy for a Scout. A Scout can have only one alert policy. If one already exists, you can update it or delete it. Alerts trigger when the Scout's test results meet certain conditions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId",
+                "alerts"
+              ],
+              "host": [
+                "{{scouts-scoutId-alerts-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conditions\": {\n    \"field\": \"<string>\",\n    \"operator\": \"<string>\",\n    \"value\": \"<string>\"\n  },\n  \"settings\": {\n    \"sendOnStatusChange\": true,\n    \"consecutiveMatchCount\": 1,\n    \"attachOutput\": \"<boolean,null>\",\n    \"evaluationScope\": \"GLOBAL\",\n    \"targetHives\": {}\n  },\n  \"notifications\": [\n    {\n      \"type\": \"<string>\",\n      \"targets\": [\n        \"<email>\",\n        \"<email>\"\n      ]\n    },\n    {\n      \"type\": \"<string>\",\n      \"targets\": [\n        \"<email>\",\n        \"<email>\"\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b2ce1287-6e3b-473b-b3ae-a7629223a22f",
+              "name": "Alert created successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"data\": {\n    \"alertId\": 9066\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e4f4ff17-2871-4cf1-b883-390dae679f6c",
+              "name": "Validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"status\": \"400\",\n      \"code\": \"validation_error\",\n      \"title\": \"Validation Error\",\n      \"detail\": \"Should be one of the following: ['AND', 'OR']\",\n      \"source\": {\n        \"pointer\": \"/conditions/operator\"\n      },\n      \"meta\": {\n        \"input\": \"XOR\",\n        \"type\": \"literal_error\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "732c3d16-d604-4c9d-96b7-491798cde585",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": true,\n        \"key_1\": false,\n        \"key_2\": 15\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4061,\n        \"key_2\": true\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c6ce2772-5aa6-45e7-afe2-f7b69e85d768",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440005\",\n      \"status\": \"404\",\n      \"code\": \"not_found\",\n      \"title\": \"Not Found\",\n      \"detail\": \"Alert #123 not found.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e8fe01b-539d-43c5-a5ca-b98d26e3c433",
+              "name": "Server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": true,\n        \"key_1\": false,\n        \"key_2\": 15\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4061,\n        \"key_2\": true\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bcfa7107-0c91-4c12-853a-8d52e38d1d51",
+          "name": "Get alert policy details",
+          "request": {
+            "name": "Get alert policy details",
+            "description": {
+              "content": "Returns detailed information about a specific alert policy for a Scout, including settings, notifications, and status.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId",
+                "alerts",
+                ":alertId"
+              ],
+              "host": [
+                "{{scouts-scoutId-alerts-alertId-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "alertId",
+                  "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "96b9a6d9-ae02-4250-9729-1220f04fdd2e",
+              "name": "Detailed information about an alert policy.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"alertId\": 123,\n    \"scoutId\": 7852,\n    \"subType\": \"net_http\",\n    \"conditions\": {\n      \"field\": \"status\",\n      \"operator\": \"==\",\n      \"value\": \"failure\"\n    },\n    \"readableConditions\": \"status == 'failure'\",\n    \"settings\": {\n      \"consecutiveMatchCount\": 2,\n      \"sendOnStatusChange\": true\n    },\n    \"notifications\": [],\n    \"status\": \"active\",\n    \"createdAt\": \"2023-09-26 08:00:00\",\n    \"disabled\": false\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8fa152de-8434-4d62-8a37-9451acd0de0d",
+              "name": "Validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"status\": \"400\",\n      \"code\": \"validation_error\",\n      \"title\": \"Validation Error\",\n      \"detail\": \"Should be one of the following: ['AND', 'OR']\",\n      \"source\": {\n        \"pointer\": \"/conditions/operator\"\n      },\n      \"meta\": {\n        \"input\": \"XOR\",\n        \"type\": \"literal_error\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d489e7d6-2270-42f7-8a6c-794137ae281e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": true,\n        \"key_1\": false,\n        \"key_2\": 15\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4061,\n        \"key_2\": true\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "578d5499-3583-4b7e-95e4-f2e215084d68",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440005\",\n      \"status\": \"404\",\n      \"code\": \"not_found\",\n      \"title\": \"Not Found\",\n      \"detail\": \"Alert #123 not found.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2d4b66b2-9ce9-4c6d-b30e-9f07fd1de280",
+              "name": "Server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": true,\n        \"key_1\": false,\n        \"key_2\": 15\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4061,\n        \"key_2\": true\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fd5063f1-618a-4ca6-a2f8-8135cea0ded7",
+          "name": "Update alert policy",
+          "request": {
+            "name": "Update alert policy",
+            "description": {
+              "content": "Updates an existing alert policy for a specific Scout. Any object not passed is unchanged.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId",
+                "alerts",
+                ":alertId"
+              ],
+              "host": [
+                "{{scouts-scoutId-alerts-alertId-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "alertId",
+                  "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy.\nYou can use [GET /scouts/{scoutId}/alerts](appget_scout_alert_policies) to get the ID of a Scout's alert policy.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disabled\": \"<boolean>\",\n  \"conditions\": {\n    \"field\": \"<string>\",\n    \"operator\": \"<string>\",\n    \"value\": \"<string>\"\n  },\n  \"settings\": {\n    \"sendOnStatusChange\": true,\n    \"consecutiveMatchCount\": 1,\n    \"attachOutput\": \"<boolean,null>\",\n    \"evaluationScope\": \"GLOBAL\",\n    \"targetHives\": {}\n  },\n  \"notifications\": [\n    {\n      \"type\": \"<string>\",\n      \"targets\": [\n        \"<email>\",\n        \"<email>\"\n      ]\n    },\n    {\n      \"type\": \"<string>\",\n      \"targets\": [\n        \"<email>\",\n        \"<email>\"\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "02c93c5b-a763-4f4a-87bc-6def583bb08e",
+              "name": "Alert was updated successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy.\nYou can use [GET /scouts/{scoutId}/alerts](appget_scout_alert_policies) to get the ID of a Scout's alert policy.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"data\": {\n    \"alertId\": 6901\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c2ee4e32-396f-45d1-9698-70667b485896",
+              "name": "Validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy.\nYou can use [GET /scouts/{scoutId}/alerts](appget_scout_alert_policies) to get the ID of a Scout's alert policy.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"status\": \"400\",\n      \"code\": \"validation_error\",\n      \"title\": \"Validation Error\",\n      \"detail\": \"Should be one of the following: ['AND', 'OR']\",\n      \"source\": {\n        \"pointer\": \"/conditions/operator\"\n      },\n      \"meta\": {\n        \"input\": \"XOR\",\n        \"type\": \"literal_error\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0485fc3e-49df-4650-899b-8b26707d327e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy.\nYou can use [GET /scouts/{scoutId}/alerts](appget_scout_alert_policies) to get the ID of a Scout's alert policy.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": true,\n        \"key_1\": false,\n        \"key_2\": 15\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4061,\n        \"key_2\": true\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "31f2c7bc-5cdc-4b92-9019-5253bc6616ab",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy.\nYou can use [GET /scouts/{scoutId}/alerts](appget_scout_alert_policies) to get the ID of a Scout's alert policy.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440005\",\n      \"status\": \"404\",\n      \"code\": \"not_found\",\n      \"title\": \"Not Found\",\n      \"detail\": \"Alert #123 not found.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7bbe579f-f9dc-4f30-b18a-0ee9bd167e53",
+              "name": "Server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy.\nYou can use [GET /scouts/{scoutId}/alerts](appget_scout_alert_policies) to get the ID of a Scout's alert policy.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": true,\n        \"key_1\": false,\n        \"key_2\": 15\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4061,\n        \"key_2\": true\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "26f4e90a-df0a-4849-a237-258b950ec7c4",
+          "name": "Delete alert policy",
+          "request": {
+            "name": "Delete alert policy",
+            "description": {
+              "content": "Deletes an Scout's alert policy.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "scouts",
+                ":scoutId",
+                "alerts",
+                ":alertId"
+              ],
+              "host": [
+                "{{scouts-scoutId-alerts-alertId-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "scoutId",
+                  "description": "(Required) ID of the Scout."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "alertId",
+                  "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ab9622c9-23c4-4c58-9a54-3221c0768b92",
+              "name": "Alert was deleted successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "155bcd86-fea4-4473-ac6d-306882a79911",
+              "name": "Validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"status\": \"400\",\n      \"code\": \"validation_error\",\n      \"title\": \"Validation Error\",\n      \"detail\": \"Should be one of the following: ['AND', 'OR']\",\n      \"source\": {\n        \"pointer\": \"/conditions/operator\"\n      },\n      \"meta\": {\n        \"input\": \"XOR\",\n        \"type\": \"literal_error\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "39da8197-3896-48c3-ab10-a0efcd14c9b3",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": true,\n        \"key_1\": false,\n        \"key_2\": 15\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4061,\n        \"key_2\": true\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "79a7bde9-1323-44dd-a822-5e12e12400de",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440005\",\n      \"status\": \"404\",\n      \"code\": \"not_found\",\n      \"title\": \"Not Found\",\n      \"detail\": \"Alert #123 not found.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3b8f88a-8904-44a7-becf-6a31bd53c469",
+              "name": "Server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "scouts",
+                    ":scoutId",
+                    "alerts",
+                    ":alertId"
+                  ],
+                  "host": [
+                    "{{scouts-scoutId-alerts-alertId-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "scoutId",
+                      "description": "(Required) ID of the Scout."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "alertId",
+                      "description": "(Required) ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": true,\n        \"key_1\": false,\n        \"key_2\": 15\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      },\n      \"meta\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4061,\n        \"key_2\": true\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "baseUrl"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "alerts-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "alerts-id-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/events/v1/alerts",
+      "key": "organizations-orgId-alert-configs-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/synthetic-monitoring/v2/",
+      "key": "alerts-scouts-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/synthetic-monitoring/v2/",
+      "key": "alerts-scoutId-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/synthetic-monitoring/v2/",
+      "key": "scouts-scoutId-alerts-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/synthetic-monitoring/v2/",
+      "key": "scouts-scoutId-alerts-alertId-Url"
+    }
+  ],
+  "info": {
+    "_postman_id": "48c1a4b9-a1ff-4a45-96cd-8c930b47512a",
+    "name": "Controlup Alerts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Operations tagged Alerts across 3 of this provider's published API definitions: controlup-desktops-openapi.yml, controlup-dex-alerts-openapi.yml, controlup-synthetic-monitoring-openapi.yml. Each path carries the servers of the definition it was published in.",
+      "type": "text/plain"
+    }
+  }
+}

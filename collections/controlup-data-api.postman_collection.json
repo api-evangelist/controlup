@@ -1,0 +1,1074 @@
+{
+  "item": [
+    {
+      "id": "b29725e5-a192-4730-b448-085bdb04b12b",
+      "name": "Data",
+      "description": {
+        "content": "These endpoints are for interacting with the raw data stored in data indices.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "fa09074d-2471-4c91-b1e4-4ff3fb37866e",
+          "name": "List all data indices",
+          "request": {
+            "name": "List all data indices",
+            "description": {
+              "content": "Returns a list of all data indices, along with the size and number of rows in each index.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "data"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collapse",
+                  "value": "false",
+                  "description": "Sets whether to collapse weekly data inidices into a single data index. By default, data indices are split into smaller weekly indices so that they are easier to manage. For example, the data index _highresourceprocs_20223400 contains data from the 34th week of 2022 (in UTC)."
+                },
+                {
+                  "disabled": false,
+                  "key": "include_devices",
+                  "value": "false",
+                  "description": "Sets whether to return information about the _devices data index. This is the data index with the columns in the device details grid in the UI."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "772bd3f6-b98f-438c-8b5a-0c7453594d9c",
+              "name": "An array of data indices. Each entry in the array represents a data index.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collapse",
+                      "value": "false"
+                    },
+                    {
+                      "key": "include_devices",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"installed_apps\",\n    \"size_bytes\": 39024,\n    \"count\": 54\n  },\n  {\n    \"name\": \"installed_apps\",\n    \"size_bytes\": 39024,\n    \"count\": 54\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "04f88296-074f-425e-94f8-ce35120ef0c1",
+          "name": "Create a data index",
+          "request": {
+            "name": "Create a data index",
+            "description": {
+              "content": "Creates a new data index.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "data"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "index",
+                  "value": "<string>",
+                  "description": "(Required) The name of the index."
+                },
+                {
+                  "disabled": false,
+                  "key": "payload",
+                  "value": "<string>",
+                  "description": "(Required) a JSON string with the data to be submitted to the new data index."
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4e9a5eb2-fb81-43d4-8b03-09b49b7949d8",
+              "name": "Data index created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The name of the index.",
+                        "type": "text/plain"
+                      },
+                      "key": "index",
+                      "value": "sampleindexname"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) a JSON string with the data to be submitted to the new data index.",
+                        "type": "text/plain"
+                      },
+                      "key": "payload",
+                      "value": "[{\"exampleKey\": \"exampleValue\"}]"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "43919c18-eade-41d0-913f-436f07e849c7",
+          "name": "Get a data index",
+          "request": {
+            "name": "Get a data index",
+            "description": {
+              "content": "Retrieves the contents of a data index.\n\nStandard requests can return a maximum of 10000 rows across all pages. For example, if page 1 has 7000 rows, page 2 will be cut off at 3000 rows regardless of the number of rows in the dataset. If you need more rows, set `export`=`true` and use `_source` to specify which fields to include in the export. This method returns up to 65536 rows, or your license count (whichever is greater).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "data",
+                ":index_name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "size",
+                  "value": "10000",
+                  "description": "The number of rows returned per page. The maximum is 10000 rows per page. Read the endpoint description to learn more about the 10000 row limitation."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page returned. The number of rows per page is set with the `size` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+                },
+                {
+                  "disabled": false,
+                  "key": "export",
+                  "value": "false",
+                  "description": "Sets whether to return the data index without any pagination, up to 65536 rows or your license count (whichever is greater). You must also use `_source` to specify which fields (columns) to return. `size`, `page`, and `from` parameters will be ignored if true."
+                },
+                {
+                  "disabled": false,
+                  "key": "_source[0]",
+                  "value": "<string>",
+                  "description": "If `export`=true, then this parameter sets which field of the data index to return. You can return multiple fields by sending more query parameters and changing the integer in the parameter name (for example, `_source[0]=_device_name&_source[1]=username`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][field]",
+                  "value": "<string>",
+                  "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][type]",
+                  "value": "<string>",
+                  "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filters[0][value]",
+                  "value": "<string>",
+                  "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][field]",
+                  "value": "<string>",
+                  "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "sorters[0][dir]",
+                  "value": "<string>",
+                  "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "index_name",
+                  "description": "(Required) The name of the index to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "32872bda-118f-4444-bb3c-b25d22183409",
+              "name": "Data index contents.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data",
+                    ":index_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "export",
+                      "value": "false"
+                    },
+                    {
+                      "key": "_source[0]",
+                      "value": "_device_name"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index_name",
+                      "description": "(Required) The name of the index to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rows\": [\n    {\n      \"_id\": \"lchs9wH4h2EKvgTVv8rd\",\n      \"_created\": \"2022-01-03T16:47:53.391Z\",\n      \"favourite_website\": \"www.controlup.com\",\n      \"phone_type\": \"iPhone 3\",\n      \"name\": \"John Doe\"\n    }\n  ],\n  \"rows_available\": 200,\n  \"page_size\": 100,\n  \"start_row\": 1,\n  \"end_row\": 100,\n  \"mappings\": [\n    {\n      \"index\": \"string\",\n      \"name\": \"_created\",\n      \"type\": \"string\"\n    },\n    {\n      \"index\": \"string\",\n      \"name\": \"_created\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "581b9186-e7b9-4bf0-8cd6-55c3f138b6e7",
+              "name": "The provided query is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data",
+                    ":index_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "export",
+                      "value": "false"
+                    },
+                    {
+                      "key": "_source[0]",
+                      "value": "_device_name"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index_name",
+                      "description": "(Required) The name of the index to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "896086e9-a25d-4e17-b688-07cb93ef1b97",
+              "name": "The provided index name is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data",
+                    ":index_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2"
+                    },
+                    {
+                      "key": "export",
+                      "value": "false"
+                    },
+                    {
+                      "key": "_source[0]",
+                      "value": "_device_name"
+                    },
+                    {
+                      "key": "filters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "filters[0][type]",
+                      "value": ">="
+                    },
+                    {
+                      "key": "filters[0][value]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorters[0][field]",
+                      "value": "_created"
+                    },
+                    {
+                      "key": "sorters[0][dir]",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index_name",
+                      "description": "(Required) The name of the index to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1ca9f53f-edb6-42c1-aef3-05bdcdee4409",
+          "name": "Get data index mappings",
+          "request": {
+            "name": "Get data index mappings",
+            "description": {
+              "content": "Retrieves the fields within a data index, including the data type of each field.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "data",
+                ":index_name",
+                "mappings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "index_name",
+                  "description": "(Required) The name of the data index."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d6daf2e9-ca19-4bc7-abd4-808ef2ba1f8c",
+              "name": "An array containing the data index mappings.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data",
+                    ":index_name",
+                    "mappings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index_name",
+                      "description": "(Required) The name of the data index."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"index\": \"string\",\n    \"name\": \"_created\",\n    \"type\": \"string\"\n  },\n  {\n    \"index\": \"string\",\n    \"name\": \"_created\",\n    \"type\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1a183019-30e4-468d-8cc5-170fb4ed7a07",
+          "name": "Retrieve a document",
+          "request": {
+            "name": "Retrieve a document",
+            "description": {
+              "content": "Retrieves a document within a data index by its ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "data",
+                ":index_name",
+                ":documentID"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "index_name",
+                  "description": "(Required) Name of the data index that contains the document."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "documentID",
+                  "description": "(Required) ID of the document to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "eac05bed-ed9d-4a18-b4be-ca1668bda797",
+              "name": "Document retrieved successfully. The data in the document depends on the index being retrieved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data",
+                    ":index_name",
+                    ":documentID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index_name",
+                      "description": "(Required) Name of the data index that contains the document."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "documentID",
+                      "description": "(Required) ID of the document to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"GtZWs7QBOFdS21OieyYt\",\n  \"_created\": \"2022-01-03T16:47:53.391Z\",\n  \"favourite_website\": \"www.controlup.com\",\n  \"phone_type\": \"iPhone 3\",\n  \"name\": \"John Doe\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a7bbbda-0e89-4743-af7b-08dd6b37d9d5",
+              "name": "The index name or document ID is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data",
+                    ":index_name",
+                    ":documentID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index_name",
+                      "description": "(Required) Name of the data index that contains the document."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "documentID",
+                      "description": "(Required) ID of the document to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "16b2798b-8b89-4d9c-8667-3917647ebe5d",
+          "name": "List all custom reports",
+          "request": {
+            "name": "List all custom reports",
+            "description": {
+              "content": "Returns a list of custom reports, including the configuration details of each report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "data",
+                "views"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a3c7b14a-be2e-42f2-93df-c763f158eabb",
+              "name": "List of custom reports.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data",
+                    "views"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rows\": [\n    {\n      \"_id\": \"ByRWs4IBOEdS79OieyLo\",\n      \"_created\": \"2022-08-18T23:42:45.544Z\",\n      \"_updated\": \"2022-08-18T23:42:45.544Z\",\n      \"_associated_id\": \"lJTSkoIOBFdS691iFJzH\",\n      \"index\": \"activities\",\n      \"name\": \"sample-report-name\",\n      \"is_public\": true,\n      \"config_data\": \"string\"\n    },\n    {\n      \"_id\": \"ByRWs4IBOEdS79OieyLo\",\n      \"_created\": \"2022-08-18T23:42:45.544Z\",\n      \"_updated\": \"2022-08-18T23:42:45.544Z\",\n      \"_associated_id\": \"lJTSkoIOBFdS691iFJzH\",\n      \"index\": \"activities\",\n      \"name\": \"sample-report-name\",\n      \"is_public\": true,\n      \"config_data\": \"string\"\n    }\n  ],\n  \"rows_available\": 12,\n  \"page_size\": 100,\n  \"start_row\": 1,\n  \"end_row\": 100\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4031bafd-db57-4ec9-a962-83fe439e822a",
+          "name": "Get a custom report",
+          "request": {
+            "name": "Get a custom report",
+            "description": {
+              "content": "Retrieves the configuration details of a custom report by it's ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "data",
+                "views",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) ID of the custom report to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b046bf46-e4ca-4ad4-8815-d3a81abf9400",
+              "name": "Details of the custom report.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "data",
+                    "views",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) ID of the custom report to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"ByRWs4IBOEdS79OieyLo\",\n  \"_created\": \"2022-08-18T23:42:45.544Z\",\n  \"_updated\": \"2022-08-18T23:42:45.544Z\",\n  \"_associated_id\": \"lJTSkoIOBFdS691iFJzH\",\n  \"index\": \"activities\",\n  \"name\": \"sample-report-name\",\n  \"is_public\": true,\n  \"config_data\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/edge/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "839d4ccd-4876-4ce6-beda-d84ef96a5a79",
+    "name": "ControlUp for Desktops Data API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves.",
+      "type": "text/plain"
+    }
+  }
+}

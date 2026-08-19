@@ -1,0 +1,65 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Host pool session hosts API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Host pool session hosts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get session hosts for a host pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/session-hosts",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the host pool."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new, gt, gte, lt, lte (predicate)\n\nFields (names are matched case-insensitively):\nactiveSessions, allowNewSession, cpuPercent, hostNameAlias, hostPool, hostPoolId, id, memoryPercent, name, osType, powerState, provider, region, regionId, resourceGroup, resourceGroupId, scalingLifecycleState, sessionHostResourceId, status, subscription, subscriptionId, syncedAt, totalSessions, vmResourceId, vmSku"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nactiveSessions, allowNewSession, cpuPercent, hostNameAlias, hostPool, hostPoolId, id, memoryPercent, name, osType, powerState, provider, region, regionId, resourceGroup, resourceGroupId, scalingLifecycleState, sessionHostResourceId, status, subscription, subscriptionId, syncedAt, totalSessions, vmResourceId, vmSku\n\nDefault when omitted: name:asc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the VMs that make up the pool — one row per session host with power state, agent status, drain state,\nVM SKU, OS, per-host CPU and memory, and session counts.\nStored inventory rather than a live Azure read, so power and agent state are current as of each row's SyncedAt.\nDescribes the machines, not the users occupying them, and carries no cost data."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

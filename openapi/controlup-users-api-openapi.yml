@@ -1,0 +1,1335 @@
+openapi: 3.2.0
+info:
+  title: Controlup Users API
+  version: '1.0'
+  description: 'Operations tagged Users across 2 of this provider''s published API definitions: controlup-daas-iq-openapi.yml, controlup-dex-platform-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+- url: https://api.controlup.com/v1
+tags:
+- name: Users
+paths:
+  /users/user-info:
+    servers:
+    - url: https://api.controlup.com/daas-iq/v1
+    get:
+      tags:
+      - Users
+      summary: Get current user information
+      description: 'Returns the calling user''s identity, organization context, and permissions, read from the bearer token''s claims.
+
+        Answers "who am I" and "which organization am I in"; it takes no user ID and cannot look anyone else up.'
+      responses:
+        '200':
+          description: Successfully retrieved user information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoDto'
+              example:
+                userId: user-123
+                email: user@example.com
+                name: John Doe
+                firstName: John
+                lastName: Doe
+                region: us-east-1
+                organizationId: 12345678-1234-1234-1234-123456789012
+                organizationName: Example Corp
+                organizationRegion: us
+                isAdmin: false
+                permissions:
+                - CanViewSubscriptions
+                - CanCreateSubscriptions
+                tokenExpiresAt: '2024-01-01T12:00:00Z'
+                tokenIssuedAt: '2024-01-01T06:00:00Z'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /organizations/{orgId}/users:
+    servers:
+    - url: https://api.controlup.com/v1
+    get:
+      operationId: OrgUsersPublicController_getAll
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUsersResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Returns a list of all users in your ControlUp organization, including users with a pending invitation.
+      summary: List all users
+      tags:
+      - Users
+      security:
+      - apiKey: []
+      parameters:
+      - description: 'The page of results to return.
+
+          The first page is page number 1.'
+        in: query
+        name: _page
+        required: false
+        schema:
+          default: '1'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 1
+        style: form
+      - description: The number of results returned per page.
+        in: query
+        name: _limit
+        required: false
+        schema:
+          default: '10'
+          format: int32
+          type: integer
+          minimum: 1
+        example: 10
+        style: form
+      - description: Sorts results according to the specified field.
+        in: query
+        name: _sortBy
+        required: false
+        schema:
+          default: id
+          type: string
+          enum:
+          - id
+          - createdAt
+          - updatedAt
+          - email
+          - fullName
+          - firstName
+          - lastName
+          - phone
+          - avatar
+          - region
+          - eulaVersion
+        example: id
+        style: form
+      - description: The sort order (ascending / descending) of the field specified by the `_sortBy` parameter.
+        in: query
+        name: _order
+        required: false
+        schema:
+          default: asc
+          type: string
+          enum:
+          - asc
+          - desc
+        example: asc
+        style: form
+      - description: 'A search filter that is applied to all fields.
+
+          Only results that contain the specified string are returned.'
+        in: query
+        name: _search
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Include additional information about related resources in the results.
+        in: query
+        name: _include
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIncludes'
+        style: form
+      - description: The format of returned results.
+        in: query
+        name: _format
+        required: false
+        schema:
+          default: json
+          type: string
+          enum:
+          - json
+          - xml
+          - csv
+        example: json
+        style: form
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: A search filter on the `phone` field.
+        in: query
+        name: phone
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `fullName` field.
+        in: query
+        name: fullName
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `lastName` field.
+        in: query
+        name: lastName
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `firstName` field.
+        in: query
+        name: firstName
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `email` field.
+        in: query
+        name: email
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+      - description: A search filter on the `id` field.
+        in: query
+        name: id
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/NonEmptyString'
+        style: form
+  /organizations/{orgId}/users/{id}:
+    servers:
+    - url: https://api.controlup.com/v1
+    get:
+      operationId: OrgUsersPublicController_getOneById
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Returns details of a user.
+      summary: Retrieve a user
+      tags:
+      - Users
+      security:
+      - apiKey: []
+      parameters:
+      - description: The format of returned results.
+        in: query
+        name: _format
+        required: false
+        schema:
+          default: json
+          type: string
+          enum:
+          - json
+          - xml
+          - csv
+        example: json
+        style: form
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: 'ID of the user to retrieve.
+
+          You can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user.'
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+    patch:
+      operationId: OrgUsersPublicController_update
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Updates a user by its ID. Any parameters not passed are not changed.
+      summary: Update a user
+      tags:
+      - Users
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: 'ID of the user to update.
+
+          You can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user.'
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrgUserSettings'
+    delete:
+      operationId: OrgUsersPublicController_delete
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_DeletedActionResponse_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: Deletes a user by its ID from the organization.
+      summary: Delete a user
+      tags:
+      - Users
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: 'ID of the user.
+
+          You can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user.'
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+  /organizations/{orgId}/users/{id}/revoke-api-keys:
+    servers:
+    - url: https://api.controlup.com/v1
+    post:
+      operationId: OrgUsersPublicController_revoke
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse_DeletedActionResponse_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__'
+        '401':
+          description: 'Unauthorized: Access is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__'
+        '403':
+          description: 'Forbidden: Access to this resource is denied'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__'
+        '404':
+          description: 'Not Found: The requested resource could not be found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__'
+      description: 'Revokes all API keys created by the specified user in the organization.
+
+        Revoked API keys can no longer be used to access any data.'
+      summary: Revoke a user’s API keys
+      tags:
+      - Users
+      security:
+      - apiKey: []
+      parameters:
+      - description: ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform.
+        in: path
+        name: orgId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: 'ID of the user to delete.
+
+          You can use [GET /users](orguserspubliccontroller_getall) to see the ID of each user.'
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+components:
+  schemas:
+    APIResponse_DeletedActionResponse_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/DeletedActionResponse'
+      required:
+      - data
+      type: object
+    UpdateUserResponse:
+      $ref: '#/components/schemas/APIResponse_UserAndSettings_'
+      example:
+        id: d1cb6131-7361-4e39-84c7-049e06921a18
+        email: john.doe@controlup.com
+        fullName: John Doe
+        firstName: John
+        lastName: Doe
+        avatar: https://lh3.googleusercontent.com/a/ACg8ocKGQE1KJ6fQFhWdQZQKucAHzKfnoM_xx_gQ-SQhDQJ7MFoijA=s96-c
+        phone: '+972546666666'
+        region: us
+        eulaVersion: '1'
+        createdAt: '2024-08-01T13:26:31.282Z'
+        updatedAt: '2024-08-01T14:50:34.605Z'
+        roles:
+        - id: 1
+          name: Admin
+          description: null
+          isDefault: true
+        settings:
+          loginMethods: null
+          mfaType: null
+          status: active
+          vdiDaasLdapLogin: null
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    DeletedActionResponse:
+      properties:
+        affectedRows:
+          type: number
+          format: double
+      required:
+      - affectedRows
+      type: object
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    RolePublicIncluded:
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: ID of the role.
+          minimum: 1
+        name:
+          type: string
+          description: The role’s name.
+        description:
+          type: string
+          description: The role’s description.
+        isDefault:
+          type: boolean
+          description: Whether the role is one of the default roles configured by ControlUp.
+      required:
+      - isDefault
+      - description
+      - name
+      - id
+      type: object
+    UpdateOrgUserSettings:
+      allOf:
+      - $ref: '#/components/schemas/Partial_Omit_OrgUserSettings.status__'
+      - properties:
+          status:
+            $ref: '#/components/schemas/UpdateUserStatusPublic'
+            description: 'The user’s status.
+
+              A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
+        type: object
+    LoginMethod:
+      enum:
+      - manual
+      - azure
+      - google
+      - saml
+      - drill_down
+      type: string
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    APIResponse_UserAndSettings_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/UserAndSettings'
+      required:
+      - data
+      type: object
+    UserPublic:
+      properties:
+        id:
+          type: string
+          description: ID of the user.
+        email:
+          type: string
+          description: The user’s email address.
+        fullName:
+          type: string
+          description: The user’s full name.
+        firstName:
+          type: string
+          description: The user’s first name.
+        lastName:
+          type: string
+          description: The user’s last name.
+        phone:
+          type: string
+          description: The user’s phone number. This can be used for MFA.
+        avatar:
+          type: string
+          description: The user’s avatar. This feature is not currently used.
+        region:
+          $ref: '#/components/schemas/Region'
+          description: The region in which the user's data is stored.
+        eulaVersion:
+          type: string
+          description: EULA version that the user agreed to.
+        createdAt:
+          type: string
+          description: The date at which the user was first invited or created.
+        updatedAt:
+          type: string
+          description: The date at which the user’s data was last updated.
+        roles:
+          items:
+            $ref: '#/components/schemas/RolePublicIncluded'
+          type: array
+          description: List of roles assigned to the user.
+        settings:
+          $ref: '#/components/schemas/Omit_OrgUserSettings.roleIds_'
+          description: The user's settings in the organization.
+      required:
+      - id
+      type: object
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    UpdateUserStatusPublic:
+      enum:
+      - active
+      - disabled
+      type: string
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    GetUsersResponse:
+      $ref: '#/components/schemas/APIPaginatedResponse_UserPublic-Array_'
+      example:
+        metadata:
+          total: 10
+          limitPerPage: 2
+          currentPageNumber: 1
+          currentPageSize: 2
+          remaining: 8
+        data:
+        - id: 21d43122-53aa-4691-8cf2-1b57f6ee162c
+          email: john.doe@controlup.com
+          fullName: John Doe
+          firstName: John
+          lastName: Doe
+          avatar: https://www.example.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg
+          phone: '+972546666666'
+          region: us
+          eulaVersion: '1'
+          createdAt: '2024-04-29T23:34:00.909Z'
+          updatedAt: '2024-07-01T08:19:57.501Z'
+          roles:
+          - id: 1
+            name: Admin
+            description: null
+            isDefault: true
+          - id: 234
+            name: Help Desk Employee
+            description: null
+            isDefault: false
+          settings:
+            loginMethods:
+            - manual
+            - google
+            - azure
+            - saml
+            vdiDaasLdapLogin: false
+            mfaType: null
+            status: active
+        - id: 21d43122-53aa-4691-8cf2-1b57f6ee162c
+          email: jane.doe@controlup.com
+          fullName: Jane Doe
+          firstName: Jane
+          lastName: Doe
+          avatar: https://www.example.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg
+          phone: '+972546666666'
+          region: us
+          eulaVersion: '1'
+          createdAt: '2024-04-29T23:34:00.909Z'
+          updatedAt: '2024-07-01T08:19:57.501Z'
+          roles:
+          - id: 2
+            name: Editor
+            description: null
+            isDefault: true
+          settings:
+            loginMethods: null
+            vdiDaasLdapLogin: null
+            mfaType: null
+            status: pending
+    UserStatusPublic:
+      enum:
+      - active
+      - disabled
+      - pending
+      type: string
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    APIPaginatedResponse_UserPublic-Array_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_UserPublic-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
+        type: object
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    UserAndSettings:
+      allOf:
+      - $ref: '#/components/schemas/UserPublic'
+      - properties:
+          settings:
+            $ref: '#/components/schemas/Partial_Omit_OrgUserSettings.roleIds__'
+            description: User settings.
+        type: object
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    GetUserResponse:
+      $ref: '#/components/schemas/APIResponse_UserAndSettings_'
+      example:
+        id: d1cb6131-7361-4e39-84c7-049e06921a18
+        email: john.doe@controlup.com
+        fullName: John Doe
+        firstName: John
+        lastName: Doe
+        avatar: https://lh3.googleusercontent.com/a/ACg8ocKGQE1KJ6fQFhWdQZQKucAHzKfnoM_xx_gQ-SQhDQJ7MFoijA=s96-c
+        phone: '+972546666666'
+        region: us
+        eulaVersion: '1'
+        createdAt: '2024-08-01T13:26:31.282Z'
+        updatedAt: '2024-08-01T14:50:34.605Z'
+        roles:
+        - id: 1
+          name: Admin
+          description: null
+          isDefault: true
+        settings:
+          loginMethods: null
+          mfaType: null
+          status: active
+          vdiDaasLdapLogin: null
+    Region:
+      enum:
+      - us
+      - eu
+      - canadacentral
+      type: string
+    APIResponse_UserPublic-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/UserPublic'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    PaginatedResponseMetadata:
+      properties:
+        total:
+          type: number
+          format: double
+          description: The total number of results across all pages.
+        limitPerPage:
+          type: number
+          format: double
+          description: The maximum number of results returned per page (set by the `_limit` parameter).
+        currentPageNumber:
+          type: number
+          format: double
+          description: The page of result returned (set by the `_page` parameter).
+        currentPageSize:
+          type: number
+          format: double
+          description: The number of results on the current page.
+        remaining:
+          type: number
+          format: double
+          description: The total number of results on all pages higher than the current page.
+      required:
+      - remaining
+      - currentPageSize
+      - currentPageNumber
+      - limitPerPage
+      - total
+      type: object
+      example:
+        total: 18
+        limitPerPage: 10
+        currentPageNumber: 1
+        currentPageSize: 10
+        remaining: 8
+    NonEmptyString:
+      type: string
+      minLength: 1
+    Omit_OrgUserSettings.roleIds_:
+      $ref: '#/components/schemas/Pick_OrgUserSettings.Exclude_keyofOrgUserSettings.roleIds__'
+      description: Construct a type with the properties of T except for those in type K.
+    Partial_Omit_OrgUserSettings.status__:
+      properties:
+        vdiDaasLdapLogin:
+          type:
+          - boolean
+          - 'null'
+          description: 'Whether VDI & DaaS LDAP authentication is enabled for the user.
+
+            If LDAP authentication is enabled globally for your organization, it is possible to override the global setting and disable LDAP authentication for a specific user.'
+        loginMethods:
+          items:
+            $ref: '#/components/schemas/LoginMethod'
+          type: array
+          description: 'The user’s allowed login methods.
+
+            If a login method is allowed globally for your organization, it is possible to override the global login methods and remove an allowed login method for a specific user.'
+        mfaType:
+          allOf:
+          - $ref: '#/components/schemas/MFAType'
+          description: 'The user’s MFA method.
+
+            The MFA method must be one of the allowed methods for your organization.'
+        roleIds:
+          items:
+            type: integer
+            format: int32
+          type: array
+          description: 'An array of role IDs (integers) assigned to the user. You can use [GET /roles](orgrolespubliccontroller_getall) to see the ID of each role.
+
+
+            Default role IDs:
+
+            * Admin - 1
+
+            * Editor - 2
+
+            * Viewer - 3
+
+            * No Permissions - 4
+
+            * VDI and DaaS Admins - 5
+
+            * Access Real-Time DX Console - 6'
+          minimum: 1
+      type: object
+      description: Make all properties in T optional
+    Partial_Omit_OrgUserSettings.roleIds__:
+      properties:
+        vdiDaasLdapLogin:
+          type:
+          - boolean
+          - 'null'
+          description: 'Whether VDI & DaaS LDAP authentication is enabled for the user.
+
+            If LDAP authentication is enabled globally for your organization, it is possible to override the global setting and disable LDAP authentication for a specific user.'
+        loginMethods:
+          items:
+            $ref: '#/components/schemas/LoginMethod'
+          type: array
+          description: 'The user’s allowed login methods.
+
+            If a login method is allowed globally for your organization, it is possible to override the global login methods and remove an allowed login method for a specific user.'
+        mfaType:
+          allOf:
+          - $ref: '#/components/schemas/MFAType'
+          description: 'The user’s MFA method.
+
+            The MFA method must be one of the allowed methods for your organization.'
+        status:
+          $ref: '#/components/schemas/UserStatusPublic'
+          description: 'The user’s status.
+
+            A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
+      type: object
+      description: Make all properties in T optional
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    UserIncludes:
+      enum:
+      - roles
+      - settings
+      type: string
+    UserInfoDto:
+      required:
+      - isAdmin
+      - permissions
+      type: object
+      properties:
+        userId:
+          type:
+          - string
+          - 'null'
+          description: Unique identifier for the user.
+        email:
+          type:
+          - string
+          - 'null'
+          description: User's email address.
+        name:
+          type:
+          - string
+          - 'null'
+          description: User's full name.
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: User's first name.
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: User's last name.
+        region:
+          type:
+          - string
+          - 'null'
+          description: User's region.
+        organizationId:
+          type:
+          - string
+          - 'null'
+          description: Organization ID that the user belongs to.
+          format: uuid
+        organizationName:
+          type:
+          - string
+          - 'null'
+          description: Name of the organization that the user belongs to.
+        organizationRegion:
+          type:
+          - string
+          - 'null'
+          description: Region of the organization that the user belongs to.
+        isAdmin:
+          type: boolean
+          description: Indicates whether the user has admin privileges.
+        permissions:
+          type: array
+          items:
+            type: string
+          description: List of permissions granted to the user.
+        tokenExpiresAt:
+          type:
+          - string
+          - 'null'
+          description: Token expiration timestamp.
+        tokenIssuedAt:
+          type:
+          - string
+          - 'null'
+          description: Token issued timestamp.
+      additionalProperties: false
+      description: Data Transfer Object for user information from authenticated user claims.
+    Pick_OrgUserSettings.Exclude_keyofOrgUserSettings.roleIds__:
+      properties:
+        vdiDaasLdapLogin:
+          type:
+          - boolean
+          - 'null'
+          description: 'Whether VDI & DaaS LDAP authentication is enabled for the user.
+
+            If LDAP authentication is enabled globally for your organization, it is possible to override the global setting and disable LDAP authentication for a specific user.'
+        loginMethods:
+          items:
+            $ref: '#/components/schemas/LoginMethod'
+          type: array
+          description: 'The user’s allowed login methods.
+
+            If a login method is allowed globally for your organization, it is possible to override the global login methods and remove an allowed login method for a specific user.'
+        mfaType:
+          allOf:
+          - $ref: '#/components/schemas/MFAType'
+          description: 'The user’s MFA method.
+
+            The MFA method must be one of the allowed methods for your organization.'
+        status:
+          $ref: '#/components/schemas/UserStatusPublic'
+          description: 'The user’s status.
+
+            A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
+      required:
+      - status
+      - mfaType
+      - loginMethods
+      type: object
+      description: From T, pick a set of properties whose keys are in the union K
+    MFAType:
+      enum:
+      - sms
+      - google_totp
+      - microsoft_totp
+      type: string
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+    apiKey:
+      type: http
+      scheme: bearer
+x-refined-from:
+- controlup-daas-iq-openapi.yml
+- controlup-dex-platform-openapi.yml

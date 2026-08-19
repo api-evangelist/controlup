@@ -1,0 +1,847 @@
+openapi: 3.2.0
+info:
+  title: ControlUp for Desktops Surveys API
+  description: "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves."
+  version: 2.159.0
+servers:
+- url: https://api.controlup.com/edge/api
+security:
+- bearerAuth: []
+tags:
+- name: Surveys
+  description: These endpoints are for interacting with Employee Sentiment surveys.
+paths:
+  /user-sentiment/surveys:
+    get:
+      summary: List all surveys
+      description: "Returns a list of all surveys. You can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your surveys.\n"
+      tags:
+      - Surveys
+      operationId: get-surveys
+      parameters:
+      - in: query
+        name: query
+        description: An OpenSearch query.
+        schema:
+          type: object
+          default: false
+      - in: query
+        name: size
+        description: The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter.
+        schema:
+          type: integer
+          default: 10000
+          maximum: 10000
+      - in: query
+        name: page
+        description: The page returned. The number of rows per page is set with the `size` parameter.
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: from
+        description: The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded.
+        schema:
+          type: integer
+          example: 2
+      - $ref: '#/components/parameters/FilterField'
+      - $ref: '#/components/parameters/FilterType'
+      - $ref: '#/components/parameters/FilterValue'
+      - $ref: '#/components/parameters/SorterField'
+      - $ref: '#/components/parameters/SorterDir'
+      responses:
+        '200':
+          description: A list of surveys
+    post:
+      summary: Publish a survey
+      description: Publishes a new survey.
+      tags:
+      - Surveys
+      operationId: publish-survey
+      requestBody:
+        description: Select the type of survey you want to publish to see the parameters.
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/singleSurvey'
+              - $ref: '#/components/schemas/recurringSurvey'
+              - type: object
+                title: On-demand survey
+                properties:
+                  type:
+                    type: string
+                    description: The type of survey to publish.
+                    enum:
+                    - Custom Action
+                  name:
+                    type: string
+                    description: Name of the survey
+                  template_id:
+                    type: string
+                    description: ID of the template from which to create the survey.
+                  status:
+                    description: Set to `Active` to publish the survey. Set to `Draft` to save the survey as a draft.
+                    type: string
+                    enum:
+                    - Draft
+                    - Active
+                  is_identified:
+                    description: Sets whether survey participant identities are recorded (non-anonymous).
+                    type: boolean
+                    default: false
+                required:
+                - type
+                - name
+                - template_id
+                - status
+      responses:
+        '200':
+          description: Survey created
+  /user-sentiment/surveys/{id}:
+    get:
+      summary: Get a survey
+      description: Returns the details of the specified survey.
+      tags:
+      - Surveys
+      operationId: get-survey
+      parameters:
+      - in: path
+        name: id
+        description: The ID of the survey to retrieve.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Survey details
+    delete:
+      summary: Delete a survey
+      description: Deletes a survey
+      tags:
+      - Surveys
+      operationId: delete-survey
+      parameters:
+      - in: path
+        name: id
+        description: ID of the survey to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Survey successfully deleted
+        '404':
+          description: Specified survey doesn't exist
+        '500':
+          $ref: '#/components/responses/500'
+  /user-sentiment/surveys/{id}/pause:
+    post:
+      summary: Pause a survey
+      description: Pauses a survey
+      tags:
+      - Surveys
+      operationId: pause-survey
+      parameters:
+      - in: path
+        name: id
+        description: ID of the survey to pause.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Survey successfully paused
+        '400':
+          description: Survey can't be paused because it isn't active
+        '404':
+          description: Specified survey doesn't exist
+  /user-sentiment/surveys/{id}/resume:
+    post:
+      summary: Resume a survey
+      description: Resume a paused survey
+      tags:
+      - Surveys
+      operationId: resume-survey
+      parameters:
+      - in: path
+        name: id
+        description: ID of the survey to resume.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Survey resumed successfully
+        '400':
+          description: Survey can't be resumed because it wasn't paused
+        '404':
+          description: Specified survey doesn't exist
+  /user-sentiment/surveys/{id}/complete:
+    post:
+      summary: Complete a survey
+      description: Completes a survey
+      tags:
+      - Surveys
+      operationId: complete-survey
+      parameters:
+      - in: path
+        name: id
+        description: ID of the survey to complete.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Survey succesfully completed
+        '400':
+          description: Survey can't be completed because it isn't active
+        '404':
+          description: Specified survey doesn't exist
+  /user-sentiment/results:
+    get:
+      summary: Get survey results
+      description: "Returns one row for each time a survey was opened, started, or completed. Optionally, use the `include_answers` parameter to also return survey answers.\n\nIf you are interested only in returning survey completions (results), you should add a filter to return only rows with `type=Result`. While you can use this endpoint to view all answers in a survey result, you can't query the endpoint based on the answers. To query survey answers, you can use GET [/user-sentiment/results/answers/raw](get-survey-answers).\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your survey results.\n"
+      tags:
+      - Surveys
+      operationId: get-survey-results
+      parameters:
+      - in: query
+        name: include_answers
+        description: Sets whether to return the answers to each survey question.
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: query
+        description: An OpenSearch query.
+        schema:
+          type: object
+          default: false
+      - in: query
+        name: size
+        description: The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter.
+        schema:
+          type: integer
+          default: 10000
+          maximum: 10000
+      - in: query
+        name: page
+        description: The page returned. The number of rows per page is set with the `size` parameter.
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: from
+        description: The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded.
+        schema:
+          type: integer
+          example: 2
+      - $ref: '#/components/parameters/FilterField'
+      - $ref: '#/components/parameters/FilterType'
+      - $ref: '#/components/parameters/FilterValue'
+      - $ref: '#/components/parameters/SorterField'
+      - $ref: '#/components/parameters/SorterDir'
+      responses:
+        '200':
+          description: A list of surveys responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyResult'
+        '500':
+          $ref: '#/components/responses/500'
+  /user-sentiment/results/answers/raw:
+    get:
+      summary: Get survey answers
+      description: "Returns a list of all answers to survey questions.\n\nEach row represents one answer to a survey question per user per device.\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your survey results.\n"
+      tags:
+      - Surveys
+      operationId: get-survey-answers
+      parameters:
+      - in: query
+        name: query
+        description: An OpenSearch query.
+        schema:
+          type: object
+          default: false
+      - in: query
+        name: size
+        description: The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter.
+        schema:
+          type: integer
+          default: 10000
+          maximum: 10000
+      - in: query
+        name: page
+        description: The page returned. The number of rows per page is set with the `size` parameter.
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: from
+        description: The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded.
+        schema:
+          type: integer
+          example: 2
+      - $ref: '#/components/parameters/FilterField'
+      - $ref: '#/components/parameters/FilterType'
+      - $ref: '#/components/parameters/FilterValue'
+      - $ref: '#/components/parameters/SorterField'
+      - $ref: '#/components/parameters/SorterDir'
+      responses:
+        '200':
+          description: A list of surveys answers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyResultAnswers'
+        '500':
+          $ref: '#/components/responses/500'
+components:
+  schemas:
+    commonToSingleAndRecurring:
+      type: object
+      properties:
+        dates_type:
+          description: Sets whether the survey scheduling is based on each device's local time zone, or UTC. For example, if you want the survey to appear for each device at 9AM in each time zone, set to `Local`. If you want the survey to appear simultaneously for all devices regardless of their time zones, set to `UTC`.
+          type: string
+          enum:
+          - Local
+          - UTC
+        targeting_type:
+          description: "Sets how survey participants are targeted.\n * If you target `Users`, the survey appears for all users that sign in on a devices. **You must use `included_users` to specify which users to target**. By default the survey appears for the same user multiple times if they sign in from more than one device (you can change this with the `once_per_user` parameter). You might want to target users if more than one employee uses the same device.\n * If you target `Devices`, the survey appears only once for each device. **You must use `included_devices` to specify which devices to target**.\n"
+          type: string
+          enum:
+          - Devices
+          - Users
+        once_per_user:
+          type: boolean
+          default: false
+          description: If `targeting_type` is set to `Users`, you can set this to `true` so that the survey can be completed by a certain user only once, even if they sign in from multiple devices.
+        targets_percentage:
+          description: The percentage of targeted users/devices to receive the survey. For example, if you set to 50, then 50% of all users/devices that meet your inclusion and exclusion rules receive the survey (randomly selected).
+          type: integer
+          minimum: 5
+          maximum: 100
+          default: 100
+        included_users:
+          description: Applicable and required only if `targeting_type` is set to `Users`. To target all users, set `all` to `true`. Otherwise, set `all` to `false` and use the `directory_services_groups` to target AD groups.
+          type: object
+          properties:
+            all:
+              description: Sets whether to target all users.
+              type: boolean
+            directory_services_groups:
+              description: An array of Active Directory groups to target.
+              type: array
+              items:
+                type: string
+        included_devices:
+          description: Applicable and required only if `targeting_type` is set to `Devices`. To target all devices, set `all` to `true`. Otherwise, set `all` to `false` and use the other parameters to specify device targets.
+          type: object
+          properties:
+            all:
+              description: Sets whether to target all devices.
+              type: boolean
+            directory_service_groups:
+              description: An array of Active Directory groups to target.
+              type: array
+              items:
+                type: string
+            devices:
+              description: Only applicable if `targeting_type` is set to `Devices`. An array of device names to target.
+              type: array
+              items:
+                type: string
+            groups:
+              description: An array of device groups to target.
+              type: array
+              items:
+                type: string
+            tags:
+              description: An array of device tags to target,
+              type: array
+              items:
+                type: string
+        excluded_devices:
+          description: Devices to exclude from receiving the survey.
+          type: object
+          properties:
+            directory_services_groups:
+              description: An array of Active Directory groups.
+              type: array
+              items:
+                type: string
+            devices:
+              description: An array of device names.
+              type: array
+              items:
+                type: string
+            groups:
+              description: An array of device groups.
+              type: array
+              items:
+                type: string
+            tags:
+              description: An array of device tags.
+              type: array
+              items:
+                type: string
+        excluded_users:
+          description: Users to exclude from receiving the survey.
+          type: object
+          properties:
+            directory_services_groups:
+              description: An array of Active Directory groups.
+              type: array
+              items:
+                type: string
+        is_identified:
+          description: Sets whether survey participant identities are recorded (non-anonymous).
+          type: boolean
+          default: false
+      required:
+      - dates_type
+      - targeting_type
+    SurveyResult:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            survey:
+              type: string
+              description: Link to the survey.
+            survey-results:
+              type: string
+              description: Link to the survey results
+        id:
+          type: string
+          description: ID of the result.
+        created:
+          type: string
+          format: date-time
+          description: When the record was created. This isn't necessarily the time that the survey was completed because there might have been a delay in sending the survey data to the server.
+        updated:
+          type: string
+          format: date-time
+          description: When the record was last updated. This isn't relevant for survey results.
+        type:
+          type: string
+          description: The type of survey result. `Visit` means that the survey was opened. `Start` means that the survey was started. `Result` means that the survey was completed.
+        date:
+          type: string
+          format: date-time
+          description: For internal use only.
+        survey_id:
+          type: string
+          description: Survey ID.
+        survey_dates_type:
+          type: string
+          description: Whether the survey activates according to each device's local time zone (`Local`) or according to UTC (`UTC`). This is relevant only if the survey type is Single or Recurring.
+        category:
+          type: string
+          description: Survey template category.
+        instance_id:
+          type: string
+          description: For recurring surveys, this is the date and time of the survey instance.
+        device_tags:
+          type: array
+          items:
+            type: string
+          description: Tags of the device used to access the survey. Returned only for identified surveys.
+        device_groups:
+          type: array
+          items:
+            type: string
+          description: Group of the device used to access the survey. Returned only for identified surveys.
+        device_ds_groups:
+          type: array
+          items:
+            type: string
+          description: AD groups of the device used to complete the survey. Returned only for identified surveys
+        user_ds_groups:
+          type: array
+          items:
+            type: string
+          description: The survey responder's AD groups. Returned only for identified surveys.
+        started_at:
+          type: string
+          format: date-time
+          description: For survey completions (type=Result), this is the time when the survey was started.
+        completed_at:
+          type: string
+          format: date-time
+          description: For survey completions (type=Result), this is the time when the survey was completed.
+        time_taken:
+          type: integer
+          description: The time taken to complete the survey in milliseconds. Returned only for survey completions.
+        answers:
+          type: array
+          description: Answers to the questions in the survey. Returned only if the `include_answers` parameter is set to `true`. Note that you can't query the endpoint based on the answers.
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The type of question. This can be `Free Text`, `Single Selection`, `Multiple Selection`, or `Net Promoter Score`.
+              question_id:
+                type: string
+                format: uuid
+                description: Question ID.
+              time_taken:
+                type: integer
+                description: Time taken to answer the question in milliseconds.
+              selection:
+                type: string
+                description: For single selection, multiple selection, or net promoter score questions, this is the ID or IDs of the selected answers. To see which answers correspond to each ID, you can use GET [/user-sentiment/surveys](get-survey).
+              score:
+                type: integer
+                description: For net promoter score questions, this is the score of the option selected. Ranges from 1 to 5.
+              is_global:
+                type: boolean
+                description: For net promoter score questions, whether the result from this question contributes to the overall net promoter score for the survey.
+              text:
+                type: string
+                description: For free text questions, this is the user's response to the question.
+        score:
+          type: number
+          description: For survey completions (type=Result), the average this is the average score of all Net Promoter Score questions with the Global Net Promoter Score option enabled.
+        score_raw:
+          type: number
+          description: For survey completions (type=Result), the average this is the average score of all Net Promoter Score questions with the Global Net Promoter Score option enabled.
+    recurringSurvey:
+      title: Recurring
+      allOf:
+      - $ref: '#/components/schemas/nameAndTemplateId'
+      - type: object
+        properties:
+          type:
+            description: The type of survey to publish.
+            type: string
+            enum:
+            - Recurring
+          status:
+            description: Set to `Scheduled` to publish the survey. Set to `Draft` to save the survey as a draft.
+            type: string
+            enum:
+            - Scheduled
+            - Draft
+          recurring_rule:
+            type: string
+            description: 'An [iCalendar Recurrence Rule (RRULE)](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) string determining how often the survey repeats and when it ends.
+
+
+              * Example of recurring survey with no end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO`
+
+              * Example of recurring survey with specified end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;UNTIL=2025-01-31T03:30:00.000Z`
+
+              * Example of recurring survey ending after a specific number of occurences: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=5`
+
+              '
+            example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO
+          retries_days_count:
+            description: The number of days after which a user will stop being reminded to complete the survey. You can set this from 0 to the number of days set in the `instance_duration_days` parameter.
+            type: integer
+          retries_interval:
+            description: The number of hours after a user dismisses the survey until they receive they receive another survey notification.
+            type: integer
+            minimum: 1
+            maximum: 24
+          instance_duration_days:
+            type: integer
+            description: Set how long the survey lasts and can be completed after each time it occurs. If the frequency specified in the `recurring_rule` is weekly, `instance_duration_days` can be from 1-6 days. If the frequency specified in the `recurring_rule` is monthly, `instance_duration` can be from 1-21 days.
+          start_date:
+            description: The starting date and time of the survey in ISO string format.
+            example: '2023-11-01T04:00:00.000Z'
+            type: string
+        required:
+        - type
+        - status
+        - recurring_rule
+        - retries_days_count
+        - retries_interval
+        - start_date
+        - instance_duration_days
+      - $ref: '#/components/schemas/commonToSingleAndRecurring'
+    SurveyResultAnswers:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            survey:
+              type: string
+              format: uri
+              description: Link to the survey.
+            survey-results:
+              type: string
+              format: uri
+              description: Link to the survey results.
+        created:
+          type: string
+          format: date-time
+          description: When the record was created. This isn't necessarily the time that the survey was completed because there might have been a delay in sending the survey data to the server.
+        updated:
+          type: string
+          format: date-time
+          description: When the record was last updated. This isn't relevant for survey answers.
+        date:
+          type: string
+          format: date-time
+          description: For internal use only.
+        survey_id:
+          type: string
+          description: Survey ID.
+        survey_version:
+          type: string
+          description: The version of the Employee Sentiment feature for the survey. For surveys created after April 2024, this is always version 2.
+        survey_type:
+          type: string
+          description: Survey type. This can be `Single`, `Recurring`, or `Custom Action`.
+        survey_start_date:
+          type: string
+          format: date-time
+          description: The start date of the survey.
+        survey_dates_type:
+          type: string
+          description: Whether the survey activates according to each device's local time zone (`Local`) or according to UTC (`UTC`). This is relevant only if the survey type is Single or Recurring.
+        is_identified:
+          type: boolean
+          description: Indicates if the surveys responses are identified (non-anonymous).
+        category:
+          type: string
+          description: Survey template category.
+        instance_id:
+          type:
+          - string
+          - 'null'
+          description: For recurring surveys, this is the date and time of the survey instance.
+        result_id:
+          type: string
+          description: Result ID. All answers to a survey from a unique user and device have the same result ID.
+        device_id:
+          type: string
+          description: ID of the device used to complete the survey. Returned only for identified surveys.
+        device_name:
+          type: string
+          description: Name of the device used to complete the survey. Returned only for identified surveys.
+        device_tags:
+          type: array
+          items:
+            type: string
+          description: Tags of the device used to complete the survey. Returned only for identified surveys.
+        device_groups:
+          type: array
+          items:
+            type: string
+          description: Group of the device used to complete the survey. Returned only for identified surveys.
+        device_ds_groups:
+          type: array
+          items:
+            type: string
+          description: AD groups of the device used to complete the survey. Returned only for identified surveys.
+        upn:
+          type: string
+          description: The survey responder's UPN. Returned only for identified surveys.
+        username:
+          type: string
+          description: The survey responder's username.
+        user:
+          type: string
+          description: For internal use only.
+        user_ds_groups:
+          type: array
+          items:
+            type: string
+          description: The survey responder's AD groups. Returned only for identified surveys.
+        result_started_at:
+          type: string
+          format: date-time
+          description: When the user started the survey.
+        result_completed_at:
+          type: string
+          format: date-time
+          description: When the user completed the survey.
+        type:
+          type: string
+          description: The type of question. This can be `Free Text`, `Single Selection`, `Multiple Selection`, or `Net Promoter Score`.
+        question_id:
+          type: string
+          format: uuid
+          description: Question ID. You can use this if you want to find all answers from all users to a specific question. To see more details about the question, you can use GET [/user-sentiment/surveys](get-survey).
+        time_taken:
+          type: integer
+          description: Time taken to answer the question in milliseconds.
+        selection:
+          type: string
+          format: uuid
+          description: For single selection, multiple selection, or net promoter score questions, this is the ID or IDs of the selected answers. To see which answers correspond to each ID, you can use GET [/user-sentiment/surveys](get-survey).
+        text:
+          type: string
+          description: For free text questions, this is the user's response to the question.
+        is_global:
+          type: boolean
+          description: For net promoter score questions, whether the result from this question contributes to the overall net promoter score for the survey.
+        _id:
+          type: string
+          description: ID of the answer.
+        _score:
+          type: integer
+          description: For internal use only.
+    nameAndTemplateId:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the survey
+        template_id:
+          type: string
+          description: ID of the template from which to create the survey.
+      required:
+      - name
+      - template_id
+    singleSurvey:
+      title: Single
+      allOf:
+      - $ref: '#/components/schemas/nameAndTemplateId'
+      - type: object
+        properties:
+          type:
+            description: The type of survey to publish.
+            type: string
+            enum:
+            - Single
+          status:
+            description: Set to `Scheduled` to publish the survey. Set to `Draft` to save the survey as a draft.
+            type: string
+            enum:
+            - Scheduled
+            - Draft
+          retries_interval:
+            description: The number of hours after a user dismisses the survey until they receive they receive another survey notification.
+            type: integer
+            minimum: 1
+            maximum: 24
+          start_date:
+            description: The starting date and time of the survey in ISO string format.
+            example: '2023-11-01T04:00:00.000Z'
+            type: string
+          expiration_date:
+            description: The end date and time of the survey in ISO string format.
+            example: '2023-11-30T05:00:00.000Z'
+            type: string
+        required:
+        - type
+        - status
+        - retries_interval
+        - start_date
+        - expiration_date
+      - $ref: '#/components/schemas/commonToSingleAndRecurring'
+  parameters:
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    FilterType:
+      name: filters[0][type]
+      in: query
+      description: 'The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>
+
+        `<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>
+
+        `boolean` is used to filter boolean fields.<br>
+
+        `like` is used to filter text fields.
+
+        '
+      schema:
+        type: string
+        example: '>='
+        enum:
+        - <
+        - <=
+        - '='
+        - '!='
+        - '>='
+        - '>'
+        - like
+        - boolean
+  responses:
+    '500':
+      description: Something went wrong at the API service.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

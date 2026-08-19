@@ -1,0 +1,657 @@
+{
+  "item": [
+    {
+      "id": "b629a8ce-b267-4ff6-9e16-579ac64257dc",
+      "name": "Host pool deployments",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "045138a4-c614-4eb7-8954-7506e7df4034",
+          "name": "Create host pool deployment",
+          "request": {
+            "name": "Create host pool deployment",
+            "description": {
+              "content": "Starts an asynchronous shell deployment for an Azure Virtual Desktop host pool.\nThe job creates the host pool ARM resource, application group, workspace registration,\nthen imports the created control-plane tree into Foundry.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cloud",
+                "subscriptions",
+                ":subscriptionId",
+                "host-pool-deployments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "subscriptionId",
+                  "description": "(Required) Foundry cloud subscription identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"appGroupType\": \"<string>\",\n  \"hostPoolType\": \"<string>\",\n  \"name\": \"<string>\",\n  \"region\": \"<string>\",\n  \"resourceGroupName\": \"<string>\",\n  \"workspaceResourceId\": \"<string>\",\n  \"appGroupName\": \"<string,null>\",\n  \"loadBalancingAlgorithm\": \"<string>\",\n  \"maxSessionLimit\": \"<integer,null-int32>\",\n  \"assignmentType\": \"<string>\",\n  \"initialHostCount\": 0,\n  \"vmSettings\": {\n    \"availabilityZones\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"deploymentRegion\": \"<string>\",\n    \"deploymentResourceGroupName\": \"<string>\",\n    \"imageSource\": \"<string>\",\n    \"integrityMonitoring\": \"<boolean>\",\n    \"intuneEnrollment\": \"<boolean>\",\n    \"joinType\": \"<string>\",\n    \"localAdminUsername\": \"<string>\",\n    \"networkSecurityGroup\": \"<string>\",\n    \"osDiskSizeBytes\": \"<long>\",\n    \"osDiskStorageAccountType\": \"<string>\",\n    \"primaryVmSize\": \"<string>\",\n    \"publicInboundPorts\": \"<boolean>\",\n    \"secureBoot\": \"<boolean>\",\n    \"securityType\": \"<string>\",\n    \"subnetResourceId\": \"<string>\",\n    \"virtualNetworkResourceId\": \"<string>\",\n    \"vmNamingPrefix\": \"<string>\",\n    \"vTpm\": \"<boolean>\",\n    \"alternativeVmSize\": \"<string,null>\",\n    \"imageResourceId\": \"<string,null>\",\n    \"imageVersionResourceId\": \"<string,null>\",\n    \"existingVmResourceId\": \"<string,null>\",\n    \"adDomain\": \"<string,null>\",\n    \"domainJoinUpn\": \"<string,null>\",\n    \"ouPath\": \"<string,null>\",\n    \"profileStoragePath\": \"<string,null>\",\n    \"tags\": \"<object,null>\",\n    \"localAdminPassword\": \"<string,null>\",\n    \"domainJoinPassword\": \"<string,null>\"\n  },\n  \"tags\": \"<object,null>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c213dbee-6c0a-4abd-bc5c-1a0dd1366627",
+              "name": "Deployment job accepted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a1b2c3d4-5678-90ab-cdef-1234567890ab\",\n  \"jobType\": \"cloudResourceImport\",\n  \"action\": \"Cloud Resource Import\",\n  \"jobUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab\",\n  \"statusUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/status\",\n  \"logsUrl\": \"https://api.example.com/api/v1/jobs/a1b2c3d4-5678-90ab-cdef-1234567890ab/logs\",\n  \"message\": \"Import job created successfully. Poll statusUrl for progress updates.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "33b7a496-e42b-4a56-96fa-cdf3eb325268",
+              "name": "Bad request. Invalid payload or precondition failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 420,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e9f0ba0a-3d59-4f13-97e6-a25992955bfa",
+              "name": "Unauthorized. User is not authenticated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 420,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b977e7e0-e579-4a68-9192-8e951b805095",
+              "name": "Payment required. No active license for the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 420,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bde7b35e-23d0-4caf-9bb9-e8df951ac7be",
+              "name": "Forbidden. User does not have create host pool permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 420,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d9416693-6c17-4e9a-8863-973c05a5d898",
+              "name": "Not found. The specified subscription, resource group, or workspace does not exist.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 420,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ca119a78-47e4-4a79-a31c-3b495f0ed216",
+              "name": "Conflict. The host pool or application group already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 420,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "84972dbc-b0d8-4aa7-90bd-98f64a611a1b",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 420,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7f503e7a-a42e-46b5-a8a6-adf4da01ea8e",
+              "name": "Service unavailable. License status could not be verified. Try again later.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cloud",
+                    "subscriptions",
+                    ":subscriptionId",
+                    "host-pool-deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "subscriptionId",
+                      "description": "(Required) Foundry cloud subscription identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"hp-prod-001\",\n  \"resourceGroupName\": \"rg-prod-avd\",\n  \"region\": \"eastus\",\n  \"appGroupType\": \"desktop\",\n  \"appGroupName\": \"dag-prod-001\",\n  \"hostPoolType\": \"pooled\",\n  \"loadBalancingAlgorithm\": \"breadthFirst\",\n  \"maxSessionLimit\": 10,\n  \"initialHostCount\": 0,\n  \"workspaceResourceId\": \"/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-prod-avd/providers/Microsoft.DesktopVirtualization/workspaces/ws-prod-001\",\n  \"tags\": {\n    \"environment\": \"prod\",\n    \"owner\": \"daasiq\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 420,\n  \"title\": \"string\",\n  \"traceId\": \"string\",\n  \"type\": null,\n  \"detail\": null,\n  \"instance\": \"string\",\n  \"errors\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_2\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_3\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/daas-iq/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "ef90ac0a-5d46-4384-aa58-aa81cfc1ce5b",
+    "name": "DaaS IQ Host pool deployments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)\n\n🔒 **Authentication**\n\nThis API supports two authentication methods:\n\n**1. API Key (Bearer Token)** - Recommended for programmatic access\n- Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)\n- Include in requests: `Authorization: Bearer YOUR_API_KEY`\n\n**2. Cookie Authentication** - For browser-based access\n- Login via DEX authentication service\n- The `user_dex_token` cookie will be automatically included\n\nContact Support:\n Name: ControlUp Support\n Email: support@controlup.com",
+      "type": "text/plain"
+    }
+  }
+}

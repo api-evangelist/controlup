@@ -1,0 +1,2031 @@
+openapi: 3.2.0
+info:
+  title: Controlup Devices API
+  version: '1.0'
+  description: 'Operations tagged Devices across 2 of this provider''s published API definitions: controlup-compliance-openapi.yml, controlup-desktops-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.controlup.com/compliance
+- url: https://api.controlup.com/edge/api
+security:
+- bearerAuth: []
+tags:
+- name: Devices
+  description: Get information about devices.
+paths:
+  /devices:
+    servers:
+    - url: https://api.controlup.com/compliance
+    get:
+      summary: List all devices
+      description: Returns a list of all devices managed by ControlUp for Compliance.
+      operationId: getDevices
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/_page'
+      - $ref: '#/components/parameters/_limit'
+      - $ref: '#/components/parameters/_filters'
+      - $ref: '#/components/parameters/_filterby'
+      - $ref: '#/components/parameters/_sort'
+      - $ref: '#/components/parameters/_orderby'
+      - $ref: '#/components/parameters/_search'
+      - name: device_id
+        in: query
+        description: Filter by the devive ID.
+        schema:
+          type: string
+        example: IHAfqJoB-3oP8zTHt8c
+      - name: device_name
+        in: query
+        description: Filter by the device name.
+        required: false
+        schema:
+          type: string
+        example: my-device-001
+      - name: agent_status
+        in: query
+        description: Filter by agent connection status.
+        required: false
+        schema:
+          type: string
+          enum:
+          - online
+          - offline
+        example: online
+      - name: os_name
+        in: query
+        description: Filter by operating system name.
+        required: false
+        schema:
+          type: string
+        example: Microsoft Windows 11 Pro
+      - name: mac_address
+        in: query
+        description: A search filter on the `mac_address` field.
+        required: false
+        schema:
+          type: string
+        example: 00:1A:2B:3C:4D:5E
+      - name: score
+        in: query
+        description: A search filter on the `score` field.
+        required: false
+        schema:
+          type: number
+          format: float
+        example: 7
+      - name: score_severity
+        in: query
+        description: A search filter on the `score_severity` field.
+        required: false
+        schema:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+        example: LOW
+      - name: issues_count
+        in: query
+        description: A search filter on the `issues_count` field.
+        required: false
+        schema:
+          type: integer
+        example: 0
+      - name: device_group
+        in: query
+        description: A search filter on the `device_group` field.
+        required: false
+        schema:
+          type: string
+        example: SampleGroup
+      - name: location
+        in: query
+        description: A search filter on the `location` field.
+        required: false
+        schema:
+          type: string
+        example: United States - Chicago
+      - name: client_version
+        in: query
+        description: A search filter on the `client_version` field.
+        required: false
+        schema:
+          type: string
+        example: 1.5.2510.08
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/Metadata'
+                    - $ref: '#/components/schemas/PaginationMetadata'
+                  data:
+                    type: array
+                    description: List of device objects.
+                    items:
+                      $ref: '#/components/schemas/Device'
+              examples:
+                successExample:
+                  value:
+                    metadata:
+                      cuRequestId: 7b8a89c7-172b-4a9f-9e58-24636866266d
+                      orgId: 0d5157ef-eb88-4f87-905c-6823fef32f2e
+                      userId: d97b8cde-8c2e-4bba-9f20-2097f9f26de4
+                      total: 51
+                      limitPerPage: 10
+                      currentPageNumber: 1
+                      currentPageSize: 10
+                      remaining: 41
+                    data:
+                    - device_id: QYkHyYoBQ5QdJu1tiAg1
+                      device_name: Oliver’S MAC MINI
+                      agent_status: offline
+                      os_name: macOS
+                      mac_address: null
+                      local_ip: null
+                      public_ip: 59.52.12.248
+                      security_controls: null
+                      last_scan: '2025-09-11T16:44:12.613Z'
+                      score: 10
+                      score_severity: LOW
+                      issues_count: 0
+                      device_group: Ungrouped Devices
+                      device_tags: []
+                      location: United States - New York City
+                      client_version: 1.5.001
+  /devices/{device_id}:
+    servers:
+    - url: https://api.controlup.com/compliance
+    get:
+      summary: Get device details
+      description: Returns details for a specific device, including a summary of the number of issues detected on the device.
+      operationId: getDeviceDetails
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/_page'
+      - $ref: '#/components/parameters/_limit'
+      - $ref: '#/components/parameters/_filters'
+      - $ref: '#/components/parameters/_filterby'
+      - $ref: '#/components/parameters/_sort'
+      - $ref: '#/components/parameters/_orderby'
+      - $ref: '#/components/parameters/_search'
+      - name: device_id
+        in: path
+        description: ID of the device to get.
+        required: true
+        schema:
+          type: string
+        example: IHAfqJoB-3oP8zTHt8c
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/Metadata'
+                  data:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/Device'
+                    - type: object
+                      properties:
+                        vulns_count:
+                          type: string
+                          description: Number of vulnerabilities.
+                        available_patches_count:
+                          type: string
+                          description: Number of patches that have an available remediation.
+                        compliance_count:
+                          type: string
+                          description: Number of compliance issues.
+                        misconfig_count:
+                          type: string
+                          description: Number of misconfigurations.
+  /devices/{device_id}/vulnerabilities:
+    servers:
+    - url: https://api.controlup.com/compliance
+    get:
+      summary: List device vulnerabilities
+      description: Returns a list of vulnerabilities (CVEs) detected on a specific device.
+      operationId: getDeviceVulnerabilities
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/_page'
+      - $ref: '#/components/parameters/_limit'
+      - $ref: '#/components/parameters/_filters'
+      - $ref: '#/components/parameters/_filterby'
+      - $ref: '#/components/parameters/_sort'
+      - $ref: '#/components/parameters/_orderby'
+      - $ref: '#/components/parameters/_search'
+      - name: device_id
+        in: path
+        description: ID of the device.
+        required: true
+        schema:
+          type: string
+        example: IHAfqJoB-3oP8zTHt8c
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/Metadata'
+                    - $ref: '#/components/schemas/PaginationMetadata'
+                  data:
+                    $ref: '#/components/schemas/VulnerabilitiesData'
+  /devices/{device_id}/patches:
+    servers:
+    - url: https://api.controlup.com/compliance
+    get:
+      summary: List device patches
+      description: Returns a list of missing OS and application patches detected on a specific device.
+      operationId: getDevicePatches
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/_page'
+      - $ref: '#/components/parameters/_limit'
+      - $ref: '#/components/parameters/_filters'
+      - $ref: '#/components/parameters/_filterby'
+      - $ref: '#/components/parameters/_sort'
+      - $ref: '#/components/parameters/_orderby'
+      - $ref: '#/components/parameters/_search'
+      - name: device_id
+        in: path
+        description: ID of the device.
+        required: true
+        schema:
+          type: string
+        example: IHAfqJoB-3oP8zTHt8c
+      - name: title
+        in: query
+        description: Filter by application name or OS patch KB number.
+        schema:
+          type: string
+        example: KB890830
+      - name: severity
+        in: query
+        description: Filter by issue severity.
+        schema:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+          example: LOW
+        style: form
+      - name: remediation_status
+        in: query
+        description: Filter by remediation availability.
+        schema:
+          type: string
+          enum:
+          - Available
+          - Unavailable
+          example: Available
+        style: form
+      - name: release_date
+        in: query
+        description: Filter by patch release date.
+        schema:
+          type: string
+      - name: patch_type
+        in: query
+        description: Filter by patch type detection type. `patch` means that a Template detected the patch by scanning for a specific application or OS patch. `vulnerability` means that a Template detected the patch by scanning for one of the relevant CVEs.
+        schema:
+          type: string
+          enum:
+          - patch
+          - vulnerability
+        example: patch
+      - name: is_os
+        in: query
+        description: Set to `true` to return OS patches and `false` to return application patches.
+        schema:
+          type: boolean
+        example: true
+      - name: current_version
+        in: query
+        description: Filter by currently installed version.
+        schema:
+          type: string
+        example: 10.0.22000
+      - name: vendor_name
+        in: query
+        description: Filter by application vendor name.
+        schema:
+          type: string
+        example: Microsoft Corporation
+      - name: last_remediation_status
+        in: query
+        description: A search filter on the `last_remediation_status` field.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: device_action_id
+        in: query
+        description: A search filter on the `device_action_id` field.
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      - name: remediation_availability
+        in: query
+        description: Filter by whether a remediation for the issue is available.
+        schema:
+          type: string
+      - name: remediation_state
+        in: query
+        description: A search filter on the `remediation_state` field.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_action
+        in: query
+        description: A search filter on the `last_event_action` field.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_status
+        in: query
+        description: A search filter on the `last_event_status` field.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_metadata
+        in: query
+        description: A search filter on the `last_event_metadata` field.
+        schema:
+          type: string
+      - name: last_event_created_at
+        in: query
+        description: A search filter on the `last_event_created_at` field.
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/Metadata'
+                    - $ref: '#/components/schemas/PaginationMetadata'
+                  data:
+                    $ref: '#/components/schemas/PatchesData'
+  /devices/{device_id}/compliance:
+    servers:
+    - url: https://api.controlup.com/compliance
+    get:
+      summary: List device compliance issues
+      description: Returns a list of issues from the compliance category detected on a specific device.
+      operationId: getDeviceCompliance
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/_page'
+      - $ref: '#/components/parameters/_limit'
+      - $ref: '#/components/parameters/_filters'
+      - $ref: '#/components/parameters/_filterby'
+      - $ref: '#/components/parameters/_sort'
+      - $ref: '#/components/parameters/_orderby'
+      - $ref: '#/components/parameters/_search'
+      - name: device_id
+        in: path
+        description: ID of the device.
+        required: true
+        schema:
+          type: string
+        example: IHAfqJoB-3oP8zTHt8c
+      - name: title
+        in: query
+        description: Filter by the issue title.
+        schema:
+          type: string
+        example: Disable Solicited Remote Assistance
+      - name: severity
+        in: query
+        description: Filter by the severity level of the issue.
+        schema:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+        example: LOW
+      - name: last_remediation_status
+        in: query
+        description: Filter by the status of the last remediation attempt.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: remediation_availability
+        in: query
+        description: Filter by whether a remediation for the issue is available.
+        schema:
+          type: string
+          enum:
+          - Available
+          - Unavailable
+        example: Unavailable
+      - name: remediation_state
+        in: query
+        description: Filter by the current remediation state.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_action
+        in: query
+        description: Filter by the last recorded action.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_status
+        in: query
+        description: Filter by the status of the last recorded event.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_metadata
+        in: query
+        description: Filter by metadata associated with the last event (assumes string filter for complexity).
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_created_at
+        in: query
+        description: Filter by the creation time of the last recorded event.
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/Metadata'
+                    - $ref: '#/components/schemas/Metadata'
+                  data:
+                    $ref: '#/components/schemas/ComplianceData'
+  /devices/{device_id}/misconfig:
+    servers:
+    - url: https://api.controlup.com/compliance
+    get:
+      summary: List device misconfigurations
+      description: Returns a list of misconfiguration issues detected on a specific device.
+      operationId: getDeviceMisconfig
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/_page'
+      - $ref: '#/components/parameters/_limit'
+      - $ref: '#/components/parameters/_filters'
+      - $ref: '#/components/parameters/_filterby'
+      - $ref: '#/components/parameters/_sort'
+      - $ref: '#/components/parameters/_orderby'
+      - $ref: '#/components/parameters/_search'
+      - name: device_id
+        in: path
+        description: ID of the device.
+        required: true
+        schema:
+          type: string
+        example: IHAfqJoB-3oP8zTHt8c
+      - name: id
+        in: query
+        description: Filter by Issue ID.
+        schema:
+          type: string
+          format: uuid
+      - name: title
+        in: query
+        description: Filter by the issue title.
+        schema:
+          type: string
+        example: SSH Server Service detect and remediate
+      - name: severity
+        in: query
+        description: Filter by the severity level of the issue.
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - LOW
+            - MEDIUM
+            - HIGH
+            - CRITICAL
+        style: form
+        example: LOW
+      - name: remediation_status
+        in: query
+        description: Filter by whether ControlUp can remediate the issue.
+        schema:
+          type: string
+          enum:
+          - Available
+          - Unavailable
+        example: Unavailable
+      - name: last_remediation_status
+        in: query
+        description: Filter by the status of the last remediation attempt.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: device_action_id
+        in: query
+        description: Filter by ID related to the device action.
+        schema:
+          type: string
+          format: uuid
+      - name: remediation_availability
+        in: query
+        description: Filter by whether a remediation for the issue is available.
+        schema:
+          type: string
+          enum:
+          - Available
+          - Unavailable
+      - name: remediation_state
+        in: query
+        description: Filter by the current remediation state.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_action
+        in: query
+        description: Filter by the last recorded action.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_status
+        in: query
+        description: Filter by the status of the last recorded event.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_metadata
+        in: query
+        description: Filter by event metadata.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: last_event_created_at
+        in: query
+        description: Filter by the creation time of the last recorded event.
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/Metadata'
+                    - $ref: '#/components/schemas/PaginationMetadata'
+                  data:
+                    $ref: '#/components/schemas/MisconfigData'
+  /devices/delete:
+    servers:
+    - url: https://api.controlup.com/edge/api
+    post:
+      tags:
+      - Devices
+      summary: Delete devices
+      description: Delete devices by their device ID.
+      operationId: delete-devices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_ids:
+                  description: An array of the device IDs to delete.
+                  type: array
+                  items:
+                    type: string
+                  example:
+                  - rTIBRoIBOFdS29Oi1ATq
+                  - b47LRkQIB8BdS21Oi1TYh
+      responses:
+        '200':
+          description: Devices successfully deleted.
+        '400':
+          description: Invalid request payload.
+        '500':
+          $ref: '#/components/responses/500'
+  /devices/tags:
+    servers:
+    - url: https://api.controlup.com/edge/api
+    get:
+      summary: List all device tags
+      tags:
+      - Devices
+      description: Returns a list of all device tags, including how many devices are using each tag.
+      operationId: list-device-tags
+      responses:
+        '200':
+          description: List of device tags.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      description: The name of the device tag.
+                      type: string
+                    device_count:
+                      description: The number of devices that are using the tag.
+                      type: integer
+    post:
+      tags:
+      - Devices
+      summary: Update device tags
+      description: Adds or removes device tags.
+      operationId: update-tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  description: An array of the IDs of the devices whose tags you want to update.
+                  type: array
+                  items:
+                    type: string
+                  example:
+                  - rTIBRoIBOFdS29Oi1ATq
+                  - b47LRkQIB8BdS21Oi1TYh
+                action:
+                  description: Set whether to `create` or `delete` tags on the selected devices.
+                  type: string
+                  enum:
+                  - create
+                  - delete
+                  example: create
+                tags:
+                  description: An array of the tags to add or remove on the specified devices. Tags can be up to 150 characters long and contain lowercase letters, numbers, -, _, and spaces.
+                  type: array
+                  items:
+                    type: string
+                    maxLength: 150
+                  example:
+                  - testtag1
+                  - testtag2
+      responses:
+        '200':
+          description: Device tags successfully updated. Returns the updated device details.
+        '400':
+          description: Invalid request payload.
+        '500':
+          $ref: '#/components/responses/500'
+  /devices/groups:
+    servers:
+    - url: https://api.controlup.com/edge/api
+    get:
+      summary: List all device groups
+      tags:
+      - Devices
+      description: Returns a list of all device groups, including how many devices are in each group.
+      operationId: list-device-groups
+      responses:
+        '200':
+          description: List of device groups.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      description: The name of the device group.
+                      type: string
+                    device_count:
+                      description: The number of devices that are in the group.
+                      type: integer
+  /devices/set-group:
+    servers:
+    - url: https://api.controlup.com/edge/api
+    post:
+      summary: Set device group
+      tags:
+      - Devices
+      description: Sets the device group for the specified devices. A device can belong to only one group at a time.
+      operationId: add-device-group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_ids:
+                  description: An array of the IDs of the devices to add to the device group.
+                  type: array
+                  items:
+                    type: string
+                  example:
+                  - rTIBRoIBOFdS29Oi1ATq
+                  - b47LRkQIB8BdS21Oi1TYh
+                group:
+                  description: The device group. This does not have to be an existing group.
+                  type: string
+      responses:
+        '200':
+          description: Device added to group successfully.
+  /devices/{deviceID}/actions:
+    servers:
+    - url: https://api.controlup.com/edge/api
+    post:
+      tags:
+      - Devices
+      summary: Perform action on a single device
+      description: Performs an action on the specified device.
+      operationId: run-an-action-single
+      parameters:
+      - in: path
+        name: deviceID
+        schema:
+          type: string
+        required: true
+        description: ID of the device on which to perform the action. You can use [GET /devices](list-devices) to see the ID for each device.
+      requestBody:
+        description: Select the type of action you want to perform to see the required payload. There are payload request samples for each type of action.
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/runcmd-singledevice'
+              - $ref: '#/components/schemas/runcmduser-singledevice'
+              - $ref: '#/components/schemas/sendmessageallusers-singledevice'
+              - $ref: '#/components/schemas/sendmessagesingleuser-singledevice'
+              - $ref: '#/components/schemas/logoffuser'
+              - $ref: '#/components/schemas/disconnectuser'
+              - $ref: '#/components/schemas/reboot'
+              - $ref: '#/components/schemas/termiateprocess'
+              - $ref: '#/components/schemas/runscript-singledevice'
+      responses:
+        '202':
+          description: Action request successfully sent.
+        '400':
+          description: Invalid request payload.
+        '500':
+          $ref: '#/components/responses/500'
+  /devices/action:
+    servers:
+    - url: https://api.controlup.com/edge/api
+    post:
+      tags:
+      - Devices
+      summary: Perform action on multiple devices
+      description: Performs an action on the specified devices. If you want to perform an action on only a single device, we recommend that you use [POST /devices/{deviceID}/action](run-an-action-single) for more options.
+      operationId: run-an-action
+      requestBody:
+        description: Select the type of action you want to perform to see the required `action_data`. There are payload request samples for each type of action.
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/runcmd-multidevice'
+              - $ref: '#/components/schemas/runcmduser-multidevice'
+              - $ref: '#/components/schemas/sendmessageallusers-multidevice'
+              - $ref: '#/components/schemas/sendmessagesingleuser-multidevice'
+              - $ref: '#/components/schemas/runscript-multidevice'
+      responses:
+        '202':
+          description: Action request successfully sent.
+        '400':
+          description: Invalid request payload.
+        '500':
+          $ref: '#/components/responses/500'
+components:
+  parameters:
+    _sort:
+      name: _sort
+      in: query
+      required: false
+      description: 'URL-encoded **JSON string** containing a sort object or an array of sort objects.
+
+
+        #### Sort object structure
+
+        * **`field`** (string): The data field to sort on.
+
+        * **`dir`** (string): Sort direction. Must be one of `asc` (ascending) or `desc` (descending).
+
+        * **`nullsLast`** (boolean, optional): If `true`, null values appear at the end of the results.
+
+
+        #### Examples
+
+        * Single field: `{"field":"score","dir":"desc","nullsLast":true}`
+
+        * Multi-field: `[{"field":"score","dir":"desc"},{"field":"device_name","dir":"asc"}]`
+
+        '
+      schema:
+        type: string
+        example: '{"field":"score","dir":"desc","nullsLast":true}'
+    _filterby:
+      in: query
+      name: _filterby
+      required: false
+      description: 'A URL-encoded **comma-separated list** of filter expressions. Filters are ANDed together implicitly.
+
+
+        #### Filter expression structure
+
+        `field operator value` (e.g., `score gte 90`)
+
+        * field: The data field to apply the filter on.
+
+        * operator: The comparison operator (supports the same operators as the `_filters` parameter. Read the `_filters` description for details).
+
+        * value: The value to compare against. When using the `in` and `nin` operators, the value can take a comma-separated list of values.
+
+
+        You don''t need to specify field types when using this parameter. All filter expressions are sent as strings, and the server handles the conversion to the required field type.
+
+
+        #### Examples:
+
+        Note that the examples must be URL-encoded when sent.
+
+        * Simple: `device_name contains server`
+
+        * Multi-criteria: `device_name contains server,score gte 90`
+
+        * List/IN operator: `tags in prod,qa`
+
+        '
+      schema:
+        type: string
+        example: device_name contains server
+    _filters:
+      in: query
+      name: _filters
+      required: false
+      description: 'URL-encoded **JSON string** containing a single filter object or an array of filter objects. Multiple filter objects are ANDed together.
+
+
+        #### Filter object structure:
+
+        * **`field`** (string): The data field to apply the filter on.
+
+        * **`op`** (string): The comparison operator (see below for allowed operators).
+
+        * **`value`**: The value(s) to compare against. The type depends on the field and operator (see below for allowed operators and values).
+
+
+        #### Supported operators (`op`) and values (`value`)
+
+
+        **Exact comparison**
+
+        * **`eq`** (equal to), **`ne`** (not equal to): Supported by all field types. Value can be string, number, boolean, or `null`.
+
+
+        **Range & ordering**
+
+        * **`gt`** (greater than), **`gte`** (greater than or equal to), **`lt`** (less than), **`lte`** (less than or equal to): Supported by number fields. Value must be a number.
+
+
+        **List membership**
+
+        * **`in`** (is in list), **`nin`** (is not in list): Supported by all field types. Value must be a JSON array of strings, numbers, booleans, or nulls.
+
+
+        **String/text matching**
+
+        * **`contains`**, **`startsWith`**, **`endsWith`**: Supported only by string fields. Value must be a string.
+
+
+        **Presence checks**
+
+        * **`isNull`**, **`notNull`**: Supported by all field types. No value field is required for these operators.
+
+
+        #### Examples
+
+        Note that examples must be url-encoded when sent.
+
+        * Single filter: `{"field":"score","op":"gte","value":90}`
+
+        * Multiple filters: `[{"field":"device_name","op":"contains","value":"vm"},{"field":"tags","op":"in","value":["prod","qa"]}]`
+
+        '
+      schema:
+        type: string
+        example: '{"field":"score","op":"gte","value":90}'
+    _page:
+      in: query
+      name: _page
+      required: false
+      description: The page returned. Pages are 1-based.
+      schema:
+        type: integer
+    _search:
+      in: query
+      name: _search
+      required: false
+      description: 'Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:
+
+        * **Comma-separated string**. For example, `?_search=server,windows`.
+
+        * **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.
+
+        '
+      schema:
+        oneOf:
+        - type: array
+          items:
+            type: string
+          example:
+          - server
+          - windows
+        - type: string
+          example: server,windows
+      style: form
+      explode: true
+    _limit:
+      in: query
+      name: _limit
+      required: false
+      description: The number of rows returned per page.
+      schema:
+        type: integer
+        default: 10
+        maximum: 100
+    _orderby:
+      in: query
+      name: _orderby
+      required: false
+      description: '**Comma-separated list** of sort expressions. Add multiple expressions for multi-field sorting.
+
+
+        #### Sort expression structure
+
+        `<field> <direction>`
+
+        * field: The data field to sort by.
+
+        * direction: The sort direction, either `asc`, or `desc`.
+
+
+
+        #### Examples
+
+        * Simple: `device_name` (sorts by device_name ascending)
+
+        * Complex: `device_name desc,score asc`
+
+        '
+      schema:
+        type: string
+        example: issues_count desc
+  schemas:
+    runscript-multidevice:
+      title: Run script
+      type: object
+      properties:
+        action_data:
+          description: Details about the action to perform.
+          type: object
+          properties:
+            type:
+              description: The type of action to perform. To run a script, enter `RUN_SCRIPT_V2`.
+              type: string
+              enum:
+              - RUN_SCRIPT_V2
+            data:
+              description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `script_id`: The ID of the script to run. You can use [GET /scripts](list-all-scripts) to get script IDs. Note that the type of script (user vs. system) determines how you can set the rest of the parameters below.\n  `run_as_user`: To run a user script as a single user on a single device, set to true. Otherwise, set to false.\n  `run_all_users`: To run a user script as all users on all specified devices, set to true. Otherwise, set to false.\n  `run_as_system`: To run a system script on all specified devices, set to true. Otherwise, set to false.\n  `session_id`: If you set run_as_user to true, enter the ID of the user session to run the script. If you set run_all_users to true, enter 0. If you set run_as_system to true, set to -1.\n  The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
+              type: string
+              example: '{"script_id": "GtajEowBeWR8QD22lr98C","run_as_user": false,"session_id": -1,"run_all_users": false,"run_as_system": true}'
+        device_ids:
+          $ref: '#/components/schemas/deviceIds'
+    runscript-singledevice:
+      title: Run script
+      type: object
+      properties:
+        type:
+          description: The type of action to perform. To run a script, enter `RUN_SCRIPT_V2`.
+          type: string
+          enum:
+          - RUN_SCRIPT_V2
+        data:
+          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `script_id`: The ID of the script to run. You can use [GET /scripts](list-all-scripts) to get script IDs. Note that the type of script (user vs. system) determines how you can set the rest of the parameters below.\n  `run_as_user`: To run a user script as a single user, set to true. Otherwise, set to false.\n  `run_all_users`: To run a user script as all users, set to true. Otherwise, set to false.\n  `run_as_system`: To run a system script, set to true. Otherwise, set to false.\n  `session_id`: If you set run_as_user to true, enter the ID of the user session to run the script. If you set run_all_users to true, enter 0. If you set run_as_system to true, set to -1.\n  The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
+          type: string
+          example: '{"script_id": "GtajEowBeWR8QD22lr98C","run_as_user": false,"session_id": -1,"run_all_users": false,"run_as_system": true}'
+    PatchesData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Issue ID.
+          example: uc84e604-f036-fc88-95a3-3c15423f06af
+        type:
+          type: string
+          description: The issue category.
+          enum:
+          - patch
+          example: patch
+        title:
+          type: string
+          description: For application patches, the name of the application. For OS patches, the KB number.
+          example: WinRAR x64
+        description:
+          type: string
+          description: Patch description.
+        severity:
+          type: string
+          description: The severity level of the issue.
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+          example: LOW
+        status:
+          type: string
+          description: Issue status on the device
+          example: vulnerable
+        origin:
+          type: string
+          description: '* ''builtin'' means that the issue is part of ControlUp''s default issue catalog.
+
+            * ''custom'' means that the issue was added by a ControlUp user.
+
+            '
+          example: builtin
+        remediation_status:
+          type: string
+          description: Indicates whether a remediation is available for the issue.
+          enum:
+          - Available
+          - Unavailable
+          example: Available
+        min_report:
+          type: string
+          description: The first time the missing patch was detected on this device.
+          format: date-time
+          example: '2025-02-06T15:49:15.010Z'
+        max_report:
+          type: string
+          description: The latest time the missing patch was detected on this device.
+          format: date-time
+          example: '2025-08-27T15:52:44.388Z'
+        cves:
+          type: array
+          description: A list of CVEs related to the patch.
+          items:
+            type: string
+            example: CVE-2025-31334
+        release_date:
+          type: string
+          description: Unknown?
+          format: date-time
+          example: '2025-01-15T06:53:11.000Z'
+        install_type:
+          type: string
+          description: Unknown?
+          example: Auto
+        patch_type:
+          type: string
+          description: '* `patch` means that the patch was identified by a Template scanning for the specific application or OS patch.
+
+            * `vulnerability` means that the patch was identified by a Template scanning for one of CVEs related to the patch.
+
+            '
+          enum:
+          - patch
+          - vulnerability
+          example: patch
+        group_key:
+          type: string
+          description: For internal use.
+        security_update_id:
+          type: string
+          description: For internal use.
+        eol:
+          type: boolean
+          description: Whether the application is end of life.
+          example: false
+        is_os:
+          type: boolean
+          description: Whether the patch is an OS patch. `true` if it is an OS patch. `false` if it is an application patch.
+          example: false
+        kb_category:
+          type: string
+          description: For OS patches, the KB category.
+          example: .NET Framework
+        current_version:
+          type: string
+          description: The current software version installed on the device.
+          example: 10.0.22000
+        vendor_name:
+          type:
+          - string
+          - 'null'
+          description: The application vendor name.
+          example: Microsoft Corporation
+        last_remediation_status:
+          type:
+          - string
+          - 'null'
+          description: The latest remediation status. For details, read [Remediation Status](https://support.controlup.com/docs/remediation-status).
+          example: null
+        device_action_id:
+          type:
+          - string
+          - 'null'
+          description: Unknown???.
+          format: uuid
+          example: null
+        remediation_availability:
+          type: string
+          description: Whether ControlUp can install the patch.
+          example: Available
+        remediation_state:
+          type:
+          - string
+          - 'null'
+          description: The current remediation state. Possible values?
+          example: null
+        last_event_action:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_status:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_metadata:
+          type:
+          - object
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_created_at:
+          type:
+          - string
+          - 'null'
+          description: Unknown
+          format: date-time
+          example: null
+        components:
+          description: Application data.
+          type: object
+          properties:
+            paths:
+              type: string
+              description: The application's install patch.
+              example: C:\Program Files\WinRAR\WinRAR.exe
+            version:
+              type: string
+              description: The application version currently installed.
+              example: 6.22.0.0
+            description:
+              type: string
+              description: Application's description.
+              example: WinRAR archiver
+        install_data:
+          description: Application installation data.
+          type: object
+          properties:
+            install_directories:
+              type: array
+              description: Application installation directories.
+              items:
+                type: string
+                example: C:\Program Files\WinRAR\
+        uninstall_data:
+          description: Application uninstall data.
+          type: object
+          properties:
+            uninstall_hive:
+              type: object
+              description: Uninstall hive information.
+              properties:
+                KeyName:
+                  type: string
+                  description: The key name for the software entry.
+                  example: winrar archiver
+                Publisher:
+                  type: string
+                  description: The name of the software publisher.
+                  example: win.rar GmbH
+                ModifyPath:
+                  type: string
+                  description: Modify path.
+                  example: ''
+                DisplayName:
+                  type: string
+                  description: Software display name.
+                  example: WinRAR 6.22 (64-bit)
+                InstallDate:
+                  type: string
+                  description: The date the software was installed.
+                  example: '20230115'
+                DisplayVersion:
+                  type: string
+                  description: The version number displayed to the user.
+                  example: 6.22.0
+                InstallLocation:
+                  type: string
+                  description: The path where the software is installed.
+                  example: C:\Program Files\WinRAR\
+                UninstallString:
+                  type: string
+                  description: The command line string used to initiate the uninstallation.
+                  example: C:\Program Files\WinRAR\uninstall.exe
+        services:
+          description: Related services.
+    sendmessageallusers-multidevice:
+      title: Send message to all users
+      type: object
+      properties:
+        action_data:
+          description: Details about the action to perform.
+          type: object
+          properties:
+            type:
+              description: The type of action to perform. To send a message to all users on all selected devices, enter `DEV_CONSOLEMSG`.
+              type: string
+              enum:
+              - DEV_CONSOLEMSG
+            data:
+              description: The message to send.
+              type: string
+              example: Hello! This is a test message.
+        device_ids:
+          $ref: '#/components/schemas/deviceIds'
+    logoffuser:
+      title: Logoff user
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To logoff a user, enter `DEV_LOGOFF_USER`.
+          type: string
+          enum:
+          - DEV_LOGOFF_USER
+        data:
+          type: string
+          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
+          example: '{"session_id":"1"}'
+    termiateprocess:
+      title: Terminate process
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To terminate a process, enter `PROC_STOP`.
+          type: string
+          enum:
+          - PROC_STOP
+        data:
+          description: The process identifier (PID) of the process to terminate.
+          type: integer
+          format: int64
+          example: 18740
+    disconnectuser:
+      title: Disconnect user
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To disconnect a user, enter `DEV_DISCONNECT_USER`.
+          type: string
+          enum:
+          - DEV_DISCONNECT_USER
+        data:
+          type: string
+          description: "A JSON-formatted string containing the following information (see sample request payload).\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
+          example: '{"session_id":"1"}'
+    Metadata:
+      type: object
+      description: Pagination and request-specific metadata.
+      properties:
+        cuRequestId:
+          type: string
+          format: uuid
+          description: Unique ID for the current request.
+        orgId:
+          type: string
+          format: uuid
+          description: Organization ID associated with the request.
+        userId:
+          type: string
+          format: uuid
+          description: User ID associated with the request.
+    MisconfigData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Issue ID.
+          example: 5hea82cd-8144-445d-9778-bb4d6f52f03e
+        type:
+          type: string
+          description: The issue category.
+          enum:
+          - misconfig
+          example: misconfig
+        title:
+          type: string
+          description: Issue title.
+          example: Disable Solicited Remote Assistance
+        description:
+          type: string
+          description: Issue description.
+          example: 'Remote assistance allows another user to view or take control of the local session of a user.
+
+            Solicited assistance is help that is specifically requested by the local user.
+
+            '
+        severity:
+          type: string
+          description: The severity level of the issue.
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+          example: LOW
+        status:
+          type: string
+          description: Issue status on the device.
+          example: vulnerable
+        origin:
+          type: string
+          description: '''builtin'' means that the issue is part of ControlUp''s default issue catalog.
+
+            ''custom'' means that the issue was added by a ControlUp user.
+
+            '
+          example: builtin
+        remediation_status:
+          type: string
+          description: Indicates whether a remediation is available for the issue.
+          enum:
+          - Available
+          - Unavailable
+          example: Available
+        min_report:
+          type: string
+          description: The first time the issue was detected on this device.
+          format: date-time
+          example: '2025-02-06T15:49:15.010Z'
+        max_report:
+          type: string
+          description: The latest time the vulnerability was detected on this device.
+          format: date-time
+          example: '2025-08-27T15:52:44.388Z'
+        potential_risk:
+          type: string
+          description: A description of the potential risk from the issue.
+        score:
+          type: string
+          description: The issue score.
+          example: 7
+        last_remediation_status:
+          type:
+          - string
+          - 'null'
+          description: The latest remediation status. For details, read [Remediation Status](https://support.controlup.com/docs/remediation-status).
+          example: null
+        device_action_id:
+          type:
+          - string
+          - 'null'
+          description: Unknown???.
+          format: uuid
+          example: null
+        remediation_availability:
+          type: string
+          description: Whether ControlUp can remediate the issue.
+          example: Available
+        remediation_state:
+          type:
+          - string
+          - 'null'
+          description: The current remediation state. Possible values?
+          example: null
+        last_event_action:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_status:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_metadata:
+          type:
+          - object
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_created_at:
+          type:
+          - string
+          - 'null'
+          description: Unknown
+          format: date-time
+          example: null
+    runcmd-singledevice:
+      title: Run command as System/Root
+      type: object
+      properties:
+        type:
+          description: The type of action to perform. To run a command as System/Root, enter `DEV_RUNCMD`.
+          type: string
+          enum:
+          - DEV_RUNCMD
+        data:
+          description: The command to run.
+          type: string
+          example: whoami
+    VulnerabilitiesData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: CVE identifier.
+          example: CVE-2025-0144
+        spm_id:
+          type: string
+          description: Internal identifier.
+          example: 559a7df4-0be9-a32e-487b-e62b3fa8471d
+        type:
+          type: string
+          description: The issue category.
+          enum:
+          - vulnerability
+          example: vulnerability
+        title:
+          type: string
+          description: CVE identifier.
+          example: CVE-2025-0144
+        description:
+          type: string
+          description: Issue description.
+        severity:
+          type: string
+          description: The severity level of the issue.
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+          example: LOW
+        status:
+          type: string
+          description: Issue status on the device.
+          example: vulnerable
+        origin:
+          type: string
+          description: '''builtin'' means that the issue is part of ControlUp''s default issue catalog.
+
+            ''custom'' means that the issue was added by a ControlUp user.
+
+            '
+          example: builtin
+        remediation_status:
+          type: string
+          description: Indicates whether a remediation is available for the issue.
+          enum:
+          - Available
+          - Unavailable
+          example: Available
+        min_report:
+          type: string
+          description: The first time the issue was detected on this device.
+          format: date-time
+          example: '2025-02-06T15:49:15.010Z'
+        max_report:
+          type: string
+          description: The latest time the issue was detected on this device.
+          format: date-time
+          example: '2025-08-27T15:52:44.388Z'
+        cve_2_0:
+          type:
+          - number
+          - 'null'
+          description: CVSS v2 score.
+          format: float
+          example: 3.1
+        cve_3_0:
+          type:
+          - number
+          - 'null'
+          description: CVSS v3 score.
+          format: float
+          example: 3.1
+        epss:
+          type:
+          - number
+          - 'null'
+          description: EPSS score.
+          format: float
+          example: 1.6
+        published_epoch:
+          type: string
+          description: Time and date when the CVE was published.
+          format: date-time
+          example: '2025-01-15T06:53:11.000Z'
+        app_name:
+          type: string
+          description: The name of the affected application.
+          example: Zoom
+        is_os:
+          type: boolean
+          description: Indicates if the vulnerability affects the operating system.
+          example: false
+        last_remediation_status:
+          type:
+          - string
+          - 'null'
+          description: The latest remediation status. For details, read [Remediation Status](https://support.controlup.com/docs/remediation-status).
+          example: null
+        device_action_id:
+          type:
+          - string
+          - 'null'
+          description: Unknown???.
+          format: uuid
+          example: null
+        remediation_availability:
+          type: string
+          description: Whether ControlUp can remediate the issue.
+          example: Available
+        remediation_state:
+          type:
+          - string
+          - 'null'
+          description: The current remediation state. Possible values?
+          example: null
+        last_event_action:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_status:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_metadata:
+          type:
+          - object
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_created_at:
+          type:
+          - string
+          - 'null'
+          description: Unknown
+          format: date-time
+          example: null
+    reboot:
+      title: Reboot device
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To reboot the device, enter `DEV_REBOOT`.
+          type: string
+          enum:
+          - DEV_REBOOT
+    runcmduser-multidevice:
+      title: Run command as user
+      type: object
+      properties:
+        action_data:
+          description: Details about the action to perform.
+          type: object
+          properties:
+            type:
+              description: The type of action to perform. To run a command as a user session, enter `DEV_RUNCMD_USER`. Running a user command is not available on Linux or ChromeOS devices.
+              type: string
+              enum:
+              - DEV_RUNCMD_USER
+            data:
+              type: string
+              description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `command_line`: The command to run.\n  `show_window`: Sets whether to display a window on the device. For example, if you run \"notepad.exe\" with show_window=true, then notepad\n  will open in a window. If you run \"notepad.exe\" with show_window=false, then notepad will run in the background without displaying a window.\n  `session_id`: If device_ids contains only a single device, enter the ID of the session to run the command. Otherwise, ignore this parameter.\n  The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n  `all_users`: If device_ids contains multiple devices, set to true. Otherwise, ignore this parameter.\n"
+              example: '{"all_users":true,"command_line":"whoami","show_window":false}'
+        device_ids:
+          $ref: '#/components/schemas/deviceIds'
+    runcmd-multidevice:
+      title: Run command as System/Root
+      type: object
+      properties:
+        action_data:
+          description: Details about the action to perform.
+          properties:
+            type:
+              description: The type of action to perform. To run a command as System/Root, enter `DEV_RUNCMD`.
+              type: string
+              enum:
+              - DEV_RUNCMD
+            data:
+              description: Enter the command to run.
+              type: string
+              example: whoami
+        device_ids:
+          $ref: '#/components/schemas/deviceIds'
+    deviceIds:
+      type: array
+      description: An array of device IDs on which to perform the action. You can use [GET /devices](list-devices) to get device IDs.
+      items:
+        type: string
+      example:
+      - rTIBRoIBOFdS29Oi1ATq
+      - b47LRkQIB8BdS21Oi1TYh
+    runcmduser-singledevice:
+      title: Run command as user
+      type: object
+      properties:
+        type:
+          description: The type of action to perform. To run a command as a user session, enter `DEV_RUNCMD_USER`. Running a user command is not available on Linux or ChromeOS devices.
+          type: string
+          enum:
+          - DEV_RUNCMD_USER
+        data:
+          type: string
+          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n    `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n    `command_line`: The command to run.\n    `show_window`: Sets whether to display a window on the device. For example, if you run \"notepad.exe\" with show_window=true, then notepad\n    will open in a window. If you run \"notepad.exe\" with show_window=false, then notepad will run in the background without displaying a window.\n"
+          example: '{"session_id":"1","command_line":"whoami","show_window":false}'
+    sendmessagesingleuser-singledevice:
+      title: Send message to a single user
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To send a message to a single user on the device, enter `DEV_USERMSG`.
+          type: string
+          enum:
+          - DEV_USERMSG
+        data:
+          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n  `message_text`: The message to send.\n"
+          example: '{"session_id":"1","message_text":"Test message"}'
+          type: string
+    sendmessageallusers-singledevice:
+      title: Send message to all users
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To send a message to all users on the device, enter `DEV_CONSOLEMSG`.
+          type: string
+          enum:
+          - DEV_CONSOLEMSG
+        data:
+          description: The message to send.
+          type: string
+          example: Hello! This is a test message.
+    ComplianceData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Issue ID.
+          example: 24238694-01f3-447a-b634-5674612a5d44
+        type:
+          type: string
+          description: Issue category.
+          enum:
+          - compliance
+          example: compliance
+        title:
+          type: string
+          description: Issue title.
+          example: Microsoft Intune service disabled
+        description:
+          type: string
+          description: A detailed description of the issue and its significance.
+        severity:
+          type: string
+          description: The severity level of the issue.
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+          example: CRITICAL
+        status:
+          type: string
+          description: Issue status on the device.
+          example: vulnerable
+        origin:
+          type: string
+          description: '* ''builtin'' means that the issue is part of ControlUp''s default issue catalog.
+
+            * ''custom'' means that the issue was added by a ControlUp user.
+
+            '
+          example: builtin
+        remediation_status:
+          type: string
+          description: Indicates if ControlUp is able to remediate the issue.
+          enum:
+          - Available
+          - Unavailable
+          example: Unavailable
+        min_report:
+          type: string
+          format: date-time
+          description: The first time the issue was detected on this device.
+          example: '2025-08-26T10:53:51.908Z'
+        max_report:
+          type: string
+          format: date-time
+          description: The last time the issue was detected on this device.
+          example: '2025-08-27T10:42:34.727Z'
+        potential_risk:
+          type: string
+          description: A description of the potential risk from the issue.
+        score:
+          type: integer
+          description: The issue score.
+          example: 4
+        last_remediation_status:
+          type:
+          - string
+          - 'null'
+          description: The latest remediation status. For details, read [Remediation Status](https://support.controlup.com/docs/remediation-status).
+          example: null
+        device_action_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Unknown?
+          example: null
+        remediation_availability:
+          type: string
+          description: Whether ControlUp can remediate the issue.
+          enum:
+          - Available
+          - Unavailable
+          example: Unavailable
+        remediation_state:
+          type:
+          - string
+          - 'null'
+          description: The current remediation state. Possible values?
+          example: null
+        last_event_action:
+          type:
+          - string
+          - 'null'
+          description: The last recorded action (e.g., 'scan', 'remediate').
+          example: null
+        last_event_status:
+          type:
+          - string
+          - 'null'
+          description: The status of the last recorded event.
+          example: null
+        last_event_metadata:
+          type:
+          - object
+          - 'null'
+          description: Metadata associated with the last event.
+          example: null
+        last_event_created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The creation time of the last recorded event.
+          example: null
+    sendmessagesingleuser-multidevice:
+      title: Send message to a single user
+      type: object
+      properties:
+        action_data:
+          description: Details about the action to perform.
+          type: object
+          properties:
+            type:
+              description: The type of action to perform. To send a message to a single user on the device, enter `DEV_USERMSG`. This option is available only if `device_ids` contains a single device ID.
+              type: string
+              enum:
+              - DEV_USERMSG
+            data:
+              description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n  `message_text`: The message to send.\n"
+              example: '{"session_id":"1","message_text":"Hello! This is a test message."}'
+              type: string
+        device_ids:
+          $ref: '#/components/schemas/deviceIds'
+    Device:
+      type: object
+      description: Detailed information about a single device.
+      properties:
+        device_id:
+          type: string
+          description: Unique identifier for the device. This is the same ID used in the ControlUp for Desktops API.
+          example: IHAfqJoB-3oP8zTHt8c
+        device_name:
+          type: string
+          description: The device's name.
+          example: my-device-001
+        agent_status:
+          type: string
+          enum:
+          - online
+          - offline
+          description: Current connection status of the ControlUp for Compliance Agent.
+          example: online
+        os_name:
+          type: string
+          description: Operating system name.
+          example: Microsoft Windows 11 Pro
+        mac_address:
+          type:
+          - string
+          - 'null'
+          description: MAC address of the device.
+          example: 00:1A:2B:3C:4D:5E
+        local_ip:
+          type:
+          - string
+          - 'null'
+          description: Local IP address of the device.
+          example: 192.168.1.10
+        public_ip:
+          type: string
+          description: Public IP address of the device.
+          example: 203.0.113.42
+        security_controls:
+          type:
+          - array
+          - 'null'
+          description: List of security control software detected on the device. For a list of detectable software, visit [Devices dashboard](https://support.controlup.com/docs/devices-secure-dx).
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Software name
+                example: Microsoft Defender Core Service
+              control_id:
+                type: string
+                description: Unique ID for the software.
+                example: b1268e4g-f705-4245-8598-fa1b61f2b5bd
+        last_scan:
+          type: string
+          format: date-time
+          description: When the device was last scanned by a Template.
+          example: '2025-11-28T12:31:54.296Z'
+        score:
+          type: number
+          format: float
+          description: Security score of the device.
+          example: 5
+        score_severity:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+          description: 'Score category.
+
+            * Low = 8-10
+
+            * Medium = 5-8
+
+            * High = 3-5
+
+            * Critical = 0-3
+
+            '
+          example: Medium
+        issues_count:
+          type: integer
+          description: Number of security issues on the device.
+          example: 8
+        device_group:
+          type: string
+          description: Device group.
+          example: ExampleGroup
+        device_tags:
+          type: array
+          description: Device tags.
+          items:
+            type: string
+          example:
+          - DeviceTag1
+          - DeviceTag2
+        location:
+          type:
+          - string
+          - 'null'
+          description: Geographic location of the device.
+          example: United States - Chicago
+        agent_version:
+          type: string
+          description: Version of the ControlUp for Compliance Agent installed on the device.
+          example: 1.5.2510.08
+    PaginationMetadata:
+      type: object
+      description: Extra metadata for paginated responses.
+      properties:
+        total:
+          type: integer
+          description: Total number of records available.
+        limitPerPage:
+          type: integer
+          description: Maximum number of records requested per page.
+        currentPageNumber:
+          type: integer
+          description: The number of the current page.
+        currentPageSize:
+          type: integer
+          description: Actual number of records returned in the current page.
+        remaining:
+          type: integer
+          description: Number of records remaining after the current page.
+  responses:
+    '500':
+      description: Something went wrong at the API service.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-refined-from:
+- controlup-compliance-openapi.yml
+- controlup-desktops-openapi.yml

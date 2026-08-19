@@ -1,0 +1,204 @@
+{
+  "item": [
+    {
+      "id": "84f6f2fb-c7aa-4bd1-a4b6-52c9d4f8fd2c",
+      "name": "MFAs",
+      "description": {
+        "content": "Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms except Citrix Storefront. Use this resource to retrieve the sets of usernames and phone numbers that have been configured for phone or SMS verification.You must contact [Scoutbees Support](https://controlup.zendesk.com/hc/en-us/requests/new) to associate a username with a phone number for MFA.\n\nVisit [Multi-Factor Authentication](https://support.controlup.com/docs/mfa) for more details on how to configure MFA.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ea20f25b-99eb-4803-a92c-5fe9e9ddc488",
+          "name": "List all MFA users",
+          "request": {
+            "name": "List all MFA users",
+            "description": {
+              "content": "Returns a list of usernames for EUC gateway access that are associated with a phone number for MFA.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "mfas"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "bef6f800-5492-4138-a753-f97f1bc3fab0",
+              "name": "A list of MFA users",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mfas"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"username\": \"hedgehog\",\n      \"phone\": 12345678901\n    },\n    {\n      \"username\": \"atelerix\",\n      \"phone\": 23456789012\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1c04b7a0-8b98-4fb2-a5e0-937225a92043",
+              "name": "Missing or wrong api key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mfas"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a746d5a7-40bd-4b5c-99a8-e05085cddc8e",
+              "name": "Server errors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mfas"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": \"Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.controlup.com/synthetic-monitoring/v2/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d715a98b-11f7-4e33-a08d-dbb6e2ca0697",
+    "name": "Synthetic Monitoring MF As API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms except Citrix Storefront. Use this resource to retrieve the sets of usernames and phone numbers that have been configured for phone or SMS verification.You must contact [Scoutbees Support](https://controlup.zendesk.com/hc/en-us/requests/new) to associate a username with a phone number for MFA.\n\nVisit [Multi-Factor Authentication](https://support.controlup.com/docs/mfa) for more details on how to configure MFA.\n",
+      "type": "text/plain"
+    }
+  }
+}

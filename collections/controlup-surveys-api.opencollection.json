@@ -1,0 +1,341 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ControlUp for Desktops Surveys API",
+    "version": "2.159.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Surveys",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all surveys",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/surveys",
+            "params": [
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "An OpenSearch query."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. The number of rows per page is set with the `size` parameter."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+              },
+              {
+                "name": "filters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+              },
+              {
+                "name": "filters[0][type]",
+                "value": "",
+                "type": "query",
+                "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+              },
+              {
+                "name": "filters[0][value]",
+                "value": "",
+                "type": "query",
+                "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+              },
+              {
+                "name": "sorters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+              },
+              {
+                "name": "sorters[0][dir]",
+                "value": "",
+                "type": "query",
+                "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+              }
+            ]
+          },
+          "docs": "Returns a list of all surveys. You can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your surveys.\n"
+        },
+        {
+          "info": {
+            "name": "Publish a survey",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/surveys",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Publishes a new survey."
+        },
+        {
+          "info": {
+            "name": "Get a survey",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/surveys/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the survey to retrieve."
+              }
+            ]
+          },
+          "docs": "Returns the details of the specified survey."
+        },
+        {
+          "info": {
+            "name": "Delete a survey",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/surveys/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the survey to delete."
+              }
+            ]
+          },
+          "docs": "Deletes a survey"
+        },
+        {
+          "info": {
+            "name": "Pause a survey",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/surveys/:id/pause",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the survey to pause."
+              }
+            ]
+          },
+          "docs": "Pauses a survey"
+        },
+        {
+          "info": {
+            "name": "Resume a survey",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/surveys/:id/resume",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the survey to resume."
+              }
+            ]
+          },
+          "docs": "Resume a paused survey"
+        },
+        {
+          "info": {
+            "name": "Complete a survey",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/surveys/:id/complete",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the survey to complete."
+              }
+            ]
+          },
+          "docs": "Completes a survey"
+        },
+        {
+          "info": {
+            "name": "Get survey results",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/results",
+            "params": [
+              {
+                "name": "include_answers",
+                "value": "",
+                "type": "query",
+                "description": "Sets whether to return the answers to each survey question."
+              },
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "An OpenSearch query."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. The number of rows per page is set with the `size` parameter."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+              },
+              {
+                "name": "filters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+              },
+              {
+                "name": "filters[0][type]",
+                "value": "",
+                "type": "query",
+                "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+              },
+              {
+                "name": "filters[0][value]",
+                "value": "",
+                "type": "query",
+                "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+              },
+              {
+                "name": "sorters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+              },
+              {
+                "name": "sorters[0][dir]",
+                "value": "",
+                "type": "query",
+                "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+              }
+            ]
+          },
+          "docs": "Returns one row for each time a survey was opened, started, or completed. Optionally, use the `include_answers` parameter to also return survey answers.\n\nIf you are interested only in returning survey completions (results), you should add a filter to return only rows with `type=Result`. While you can use this endpoint to view all answers in a survey result, you can't query the endpoint based on the answers. To query survey answers, you can use GET [/user-sentiment/results/answers/raw](get-survey"
+        },
+        {
+          "info": {
+            "name": "Get survey answers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/user-sentiment/results/answers/raw",
+            "params": [
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "An OpenSearch query."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page. The maximum is 10000 rows per page. To return more than 10000 rows on a single page, use the `export` parameter."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. The number of rows per page is set with the `size` parameter."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+              },
+              {
+                "name": "filters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+              },
+              {
+                "name": "filters[0][type]",
+                "value": "",
+                "type": "query",
+                "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+              },
+              {
+                "name": "filters[0][value]",
+                "value": "",
+                "type": "query",
+                "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+              },
+              {
+                "name": "sorters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+              },
+              {
+                "name": "sorters[0][dir]",
+                "value": "",
+                "type": "query",
+                "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+              }
+            ]
+          },
+          "docs": "Returns a list of all answers to survey questions.\n\nEach row represents one answer to a survey question per user per device.\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your survey results.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,822 @@
+openapi: 3.2.0
+info:
+  title: DaaS IQ Onboarding API
+  description: 'Multi-cloud Virtual Desktop Infrastructure Management API (Default Version: v1.0)
+
+
+    🔒 **Authentication**
+
+
+    This API supports two authentication methods:
+
+
+    **1. API Key (Bearer Token)** - Recommended for programmatic access
+
+    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+
+    - Include in requests: `Authorization: Bearer YOUR_API_KEY`
+
+
+    **2. Cookie Authentication** - For browser-based access
+
+    - Login via DEX authentication service
+
+    - The `user_dex_token` cookie will be automatically included'
+  contact:
+    name: ControlUp Support
+    url: https://controlup.com/support
+    email: support@controlup.com
+  version: v1
+  x-build-version: 1.0.107
+servers:
+- url: https://api.controlup.com/daas-iq/v1
+tags:
+- name: Onboarding
+paths:
+  /onboarding:
+    get:
+      tags:
+      - Onboarding
+      summary: List onboarding flows
+      description: 'Returns a summary of every onboarding flow for the signed-in user, with each flow''s progress and dismissal state.
+
+        Scoped to the current user rather than the organization, and summaries only — per-step detail is not included.'
+      operationId: ListOnboardingFlows
+      responses:
+        '200':
+          description: Successfully retrieved onboarding flow summaries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingFlowListDto'
+              example:
+                items:
+                - flow: initial-setup
+                  title: Initial setup
+                  status: started
+                  startedAt: '2026-06-12T20:00:00Z'
+                  displayState: expanded
+                  progressPercent: 33.3
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /onboarding/{flowKey}:
+    get:
+      tags:
+      - Onboarding
+      summary: Get onboarding flow
+      description: 'Returns one onboarding flow for the signed-in user, identified by its slug, including per-step state and the currently active step.
+
+        Expands the step detail that the flow summaries omit.'
+      operationId: GetOnboardingFlow
+      parameters:
+      - name: flowKey
+        in: path
+        description: Onboarding flow slug.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved onboarding flow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingFlowDto'
+              example:
+                flow: initial-setup
+                title: Initial setup
+                status: started
+                startedAt: '2026-06-12T20:00:00Z'
+                displayState: expanded
+                activeStep: configure-autoscale
+                progressPercent: 33.3
+                steps:
+                - key: configure-azure-tenant
+                  title: Configure your Azure Tenant
+                  description: Connect your Azure environment so DaaS IQ can discover and manage your host pools.
+                  deepLinkDestination: Settings -> DaaS IQ -> Azure Tenants
+                  userState: completed
+                  isConfiguredInOrganization: true
+                - key: configure-autoscale
+                  title: Configure Autoscale on a host pool
+                  description: Create a scale profile to automatically right-size your host pools and reduce compute costs.
+                  deepLinkDestination: Host Pools -> [Host Pool] -> Scaling Policy tab
+                  userState: incomplete
+                  isConfiguredInOrganization: false
+                - key: import-master-image
+                  title: Import your master image
+                  description: Import a golden image from your Azure Compute Gallery to enable managed deployments and re-imaging.
+                  deepLinkDestination: DaaS IQ -> Images tab
+                  userState: incomplete
+                  isConfiguredInOrganization: true
+        '400':
+          description: Bad request. Unknown flow slug.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+    patch:
+      tags:
+      - Onboarding
+      summary: Update onboarding flow
+      description: 'Changes flow-level state for the signed-in user: how the flow is displayed, and which step is active.
+
+        Moves the pointer between steps; it does not change whether any individual step is complete.'
+      operationId: UpdateOnboardingFlow
+      parameters:
+      - name: flowKey
+        in: path
+        description: Onboarding flow slug.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Onboarding state update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOnboardingRequest'
+            example:
+              displayState: expanded
+              activeStep: configure-autoscale
+        required: true
+      responses:
+        '200':
+          description: Successfully updated onboarding flow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingFlowDto'
+              example:
+                flow: initial-setup
+                title: Initial setup
+                status: started
+                startedAt: '2026-06-12T20:00:00Z'
+                displayState: expanded
+                activeStep: configure-autoscale
+                progressPercent: 33.3
+                steps:
+                - key: configure-azure-tenant
+                  title: Configure your Azure Tenant
+                  description: Connect your Azure environment so DaaS IQ can discover and manage your host pools.
+                  deepLinkDestination: Settings -> DaaS IQ -> Azure Tenants
+                  userState: completed
+                  isConfiguredInOrganization: true
+                - key: configure-autoscale
+                  title: Configure Autoscale on a host pool
+                  description: Create a scale profile to automatically right-size your host pools and reduce compute costs.
+                  deepLinkDestination: Host Pools -> [Host Pool] -> Scaling Policy tab
+                  userState: incomplete
+                  isConfiguredInOrganization: false
+                - key: import-master-image
+                  title: Import your master image
+                  description: Import a golden image from your Azure Compute Gallery to enable managed deployments and re-imaging.
+                  deepLinkDestination: DaaS IQ -> Images tab
+                  userState: incomplete
+                  isConfiguredInOrganization: true
+        '400':
+          description: Bad request. Unknown flow or invalid active step.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /onboarding/{flowKey}/start:
+    post:
+      tags:
+      - Onboarding
+      summary: Start onboarding flow
+      description: 'Marks a flow as begun for the signed-in user and returns it with its steps initialised.
+
+        Opens the flow; recording progress within it and closing it are separate operations.'
+      operationId: StartOnboardingFlow
+      parameters:
+      - name: flowKey
+        in: path
+        description: Onboarding flow slug.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully started onboarding flow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingFlowDto'
+              example:
+                flow: initial-setup
+                title: Initial setup
+                status: started
+                startedAt: '2026-06-12T20:00:00Z'
+                displayState: expanded
+                activeStep: configure-autoscale
+                progressPercent: 33.3
+                steps:
+                - key: configure-azure-tenant
+                  title: Configure your Azure Tenant
+                  description: Connect your Azure environment so DaaS IQ can discover and manage your host pools.
+                  deepLinkDestination: Settings -> DaaS IQ -> Azure Tenants
+                  userState: completed
+                  isConfiguredInOrganization: true
+                - key: configure-autoscale
+                  title: Configure Autoscale on a host pool
+                  description: Create a scale profile to automatically right-size your host pools and reduce compute costs.
+                  deepLinkDestination: Host Pools -> [Host Pool] -> Scaling Policy tab
+                  userState: incomplete
+                  isConfiguredInOrganization: false
+                - key: import-master-image
+                  title: Import your master image
+                  description: Import a golden image from your Azure Compute Gallery to enable managed deployments and re-imaging.
+                  deepLinkDestination: DaaS IQ -> Images tab
+                  userState: incomplete
+                  isConfiguredInOrganization: true
+        '400':
+          description: Bad request. Unknown flow slug.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /onboarding/{flowKey}/steps/{stepKey}:
+    put:
+      tags:
+      - Onboarding
+      summary: Update onboarding step
+      description: 'Sets the completion state of one named step and returns the whole flow with that step updated.
+
+        The only way to mark a step done; flow-level updates change the active step but never its state.'
+      operationId: UpdateOnboardingStep
+      parameters:
+      - name: flowKey
+        in: path
+        description: Onboarding flow slug.
+        required: true
+        schema:
+          type: string
+      - name: stepKey
+        in: path
+        description: Onboarding step key.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Step state update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOnboardingStepRequest'
+            example:
+              state: completed
+        required: true
+      responses:
+        '200':
+          description: Successfully updated onboarding step.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingFlowDto'
+              example:
+                flow: initial-setup
+                title: Initial setup
+                status: started
+                startedAt: '2026-06-12T20:00:00Z'
+                displayState: expanded
+                activeStep: configure-autoscale
+                progressPercent: 33.3
+                steps:
+                - key: configure-azure-tenant
+                  title: Configure your Azure Tenant
+                  description: Connect your Azure environment so DaaS IQ can discover and manage your host pools.
+                  deepLinkDestination: Settings -> DaaS IQ -> Azure Tenants
+                  userState: completed
+                  isConfiguredInOrganization: true
+                - key: configure-autoscale
+                  title: Configure Autoscale on a host pool
+                  description: Create a scale profile to automatically right-size your host pools and reduce compute costs.
+                  deepLinkDestination: Host Pools -> [Host Pool] -> Scaling Policy tab
+                  userState: incomplete
+                  isConfiguredInOrganization: false
+                - key: import-master-image
+                  title: Import your master image
+                  description: Import a golden image from your Azure Compute Gallery to enable managed deployments and re-imaging.
+                  deepLinkDestination: DaaS IQ -> Images tab
+                  userState: incomplete
+                  isConfiguredInOrganization: true
+        '400':
+          description: Bad request. Unknown flow, invalid step, or invalid state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+  /onboarding/{flowKey}/dismiss:
+    post:
+      tags:
+      - Onboarding
+      summary: Dismiss onboarding flow
+      description: 'Hides the flow for the signed-in user who chose to skip it, leaving step progress untouched.
+
+        Reflects the user opting out rather than finishing: dismissing does not complete the remaining steps.'
+      operationId: DismissOnboardingFlow
+      parameters:
+      - name: flowKey
+        in: path
+        description: Onboarding flow slug.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully dismissed onboarding flow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingFlowDto'
+              example:
+                flow: initial-setup
+                title: Initial setup
+                status: started
+                startedAt: '2026-06-12T20:00:00Z'
+                displayState: expanded
+                activeStep: configure-autoscale
+                progressPercent: 33.3
+                steps:
+                - key: configure-azure-tenant
+                  title: Configure your Azure Tenant
+                  description: Connect your Azure environment so DaaS IQ can discover and manage your host pools.
+                  deepLinkDestination: Settings -> DaaS IQ -> Azure Tenants
+                  userState: completed
+                  isConfiguredInOrganization: true
+                - key: configure-autoscale
+                  title: Configure Autoscale on a host pool
+                  description: Create a scale profile to automatically right-size your host pools and reduce compute costs.
+                  deepLinkDestination: Host Pools -> [Host Pool] -> Scaling Policy tab
+                  userState: incomplete
+                  isConfiguredInOrganization: false
+                - key: import-master-image
+                  title: Import your master image
+                  description: Import a golden image from your Azure Compute Gallery to enable managed deployments and re-imaging.
+                  deepLinkDestination: DaaS IQ -> Images tab
+                  userState: incomplete
+                  isConfiguredInOrganization: true
+        '400':
+          description: Bad request. Unknown flow slug.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. User is not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required. No active license for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden. User does not have permission to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable. License status could not be verified. Try again later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      - CookieAuth: []
+components:
+  schemas:
+    OnboardingDisplayState:
+      enum:
+      - expanded
+      - collapsed
+      - dismissed
+      type: string
+      description: Display state for an onboarding flow.
+    OnboardingFlowDto:
+      required:
+      - displayState
+      - flow
+      - progressPercent
+      - status
+      - steps
+      - title
+      type: object
+      properties:
+        flow:
+          type: string
+          description: Route-safe flow identifier.
+        title:
+          type: string
+          description: Human-readable flow title.
+        status:
+          $ref: '#/components/schemas/OnboardingStatus'
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the user started this onboarding flow.
+          format: date-time
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        dismissedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when onboarding was permanently dismissed.
+          format: date-time
+        activeStep:
+          type:
+          - string
+          - 'null'
+          description: Stable onboarding step key for the active step, if selected.
+        progressPercent:
+          type: number
+          description: Derived user-action progress percentage.
+          format: double
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingStepDto'
+          description: Ordered onboarding steps.
+      additionalProperties: false
+      description: Detailed onboarding flow state for the current user.
+    UpdateOnboardingRequest:
+      required:
+      - displayState
+      type: object
+      properties:
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        activeStep:
+          type:
+          - string
+          - 'null'
+          description: Stable onboarding step key for the active step, if selected.
+      additionalProperties: false
+      description: Request to update onboarding UI state for a flow.
+    OnboardingFlowListDto:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingFlowSummaryDto'
+          description: Onboarding flows available to the current user.
+      additionalProperties: false
+      description: Collection of onboarding flow summaries.
+    UpdateOnboardingStepRequest:
+      required:
+      - state
+      type: object
+      properties:
+        state:
+          $ref: '#/components/schemas/OnboardingStepState'
+      additionalProperties: false
+      description: Request to update the current user's state for an onboarding step.
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    OnboardingStepState:
+      enum:
+      - incomplete
+      - completed
+      - skipped
+      type: string
+      description: Current user's interaction state for an onboarding step.
+    OnboardingStepDto:
+      required:
+      - deepLinkDestination
+      - description
+      - isConfiguredInOrganization
+      - key
+      - title
+      - userState
+      type: object
+      properties:
+        key:
+          type: string
+          description: Stable step identifier.
+        title:
+          type: string
+          description: Human-readable step title.
+        description:
+          type: string
+          description: Short step description.
+        deepLinkDestination:
+          type: string
+          description: Human-readable deep-link destination.
+        userState:
+          $ref: '#/components/schemas/OnboardingStepState'
+        isConfiguredInOrganization:
+          type: boolean
+          description: Whether the organization already has the related configuration.
+      additionalProperties: false
+      description: Current user's state for an onboarding step.
+    OnboardingStatus:
+      enum:
+      - notStarted
+      - started
+      - complete
+      type: string
+      description: Current user's lifecycle state for an onboarding flow.
+    OnboardingFlowSummaryDto:
+      required:
+      - displayState
+      - flow
+      - progressPercent
+      - status
+      - title
+      type: object
+      properties:
+        flow:
+          type: string
+          description: Route-safe flow identifier.
+        title:
+          type: string
+          description: Human-readable flow title.
+        status:
+          $ref: '#/components/schemas/OnboardingStatus'
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the user started this onboarding flow.
+          format: date-time
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        progressPercent:
+          type: number
+          description: Derived user-action progress percentage.
+          format: double
+      additionalProperties: false
+      description: Summary of an onboarding flow for the current user.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: '**API Key Authentication** (Recommended)
+
+
+        [Learn how to create an API key](https://api.controlup.io/reference/how-to-create-api-keys).'
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      description: '**Cookie Authentication** (Browser use)
+
+
+        ⚠️ The ''Authorize'' button cannot set cookies due to browser security.
+
+
+        To authenticate in browser:
+
+        1. Login via DEX authentication service (same browser session)
+
+        2. Or use DevTools Console: `document.cookie = "user_dex_token=YOUR_TOKEN; path=/"`'
+      name: user_dex_token
+      in: cookie
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - swift

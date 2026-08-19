@@ -1,0 +1,334 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VDI & DAAS Machine API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Machine",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get machine statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/machines/statistics/:grouping",
+            "params": [
+              {
+                "name": "grouping",
+                "value": "",
+                "type": "path",
+                "description": "Returns machine resource consumption statistics grouped by the specified entity"
+              },
+              {
+                "name": "aggregationType",
+                "value": "",
+                "type": "query",
+                "description": "Set how machine statistics are aggregated during the selected time range. Avg returns the average of each metric. Max returns the maximum of each metric. Min returns the minimum of each metric. Worst returns either the maximum or minimum of each metric according to each metric type."
+              },
+              {
+                "name": "metricsType",
+                "value": "",
+                "type": "query",
+                "description": "The type of information to return. Default returns all available information."
+              },
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01T00:00:00.000Z",
+                "type": "query",
+                "description": "Start date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02T00:00:00.000Z",
+                "type": "query",
+                "description": "End date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns historical information about machine resource consumption. Visit the <a href='https://support.controlup.com/docs/computer-statistics-report' target='_blank'>Machine Statistics Report</a> documentation for column descriptions and more details."
+        },
+        {
+          "info": {
+            "name": "Get sizing recommendations for virtual environments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/machines/sizing_recommendation/virtualization",
+            "params": [
+              {
+                "name": "activeSessionSizing",
+                "value": "false",
+                "type": "query",
+                "description": "Specifies which calculation method to use for sizing recommendations.\n\nfalse: Calculates utilization averages across a continuous 24/7 period, regardless of whether a session is active. This includes nights and weekends when machines might be idle. If your machines have significantly different resource utilization depending on whether a session is active, then this method can under-estimate a machine's hardware requirements.\n\ntrue: Only calculates utilization averages when an active user session is detected. This can provide a more realistic view of hardware requirements by excluding idle time."
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns sizing recommendations to optimize resource allocation for machines based on historical information. Visit the <a href='https://support.controlup.com/docs/sizing-recommendations-report' target='_blank'>Sizing Recommendations Report</a> documentation for more details."
+        },
+        {
+          "info": {
+            "name": "Get sizing recommendation for machine for Azure environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/machines/sizing_recommendation/azure",
+            "params": [
+              {
+                "name": "license",
+                "value": "Azure Hybrid Benefit",
+                "type": "query",
+                "description": "Your license type for Microsoft Windows Virtual Machines. If you have Azure Hybrid Benefit, enter ‘Azure Hybrid Benefit’. If you purchase a new license for each machine, enter ‘OS (Windows)’."
+              },
+              {
+                "name": "azureRegion",
+                "value": "",
+                "type": "query",
+                "description": "The Azure region where you want to see representative costs. You must provide the name of the region as it appears in the report creation UI."
+              },
+              {
+                "name": "currency",
+                "value": "USD",
+                "type": "query",
+                "description": "The currency used for all cost information in the report."
+              },
+              {
+                "name": "msEaDiscountRatePct",
+                "value": "0",
+                "type": "query",
+                "description": "The discount rate percentage due to a Microsoft Enterprise Agreement. If you don’t have a discount rate, enter `0`."
+              },
+              {
+                "name": "acceleratedNetworking",
+                "value": "Any",
+                "type": "query",
+                "description": "Select whether you require VMs with or without Accelerated Networking. Enter `any` if you have no preference."
+              },
+              {
+                "name": "memoryPreservingMaintenance",
+                "value": "Any",
+                "type": "query",
+                "description": "Select whether you require VMs with or without Memory Preserving Maintenance. Enter `any` if you have no preference."
+              },
+              {
+                "name": "hyperVGeneration",
+                "value": "Any",
+                "type": "query",
+                "description": "Select the required Hyper-V generation for VMs. Enter `any` if you have no preference."
+              },
+              {
+                "name": "cpuArchitectureType",
+                "value": "Any",
+                "type": "query",
+                "description": "Select the required CPU architecture for VMs. Enter `any` if you have no preference."
+              },
+              {
+                "name": "vCPUsPerCore",
+                "value": "Any",
+                "type": "query",
+                "description": "Select the required vCPUs per core for VMs. Enter `any` if you have no preference."
+              },
+              {
+                "name": "rdmaEnabled",
+                "value": "Any",
+                "type": "query",
+                "description": "Select whether you require RDMA-capable VMs. Enter `any` if you have no preference."
+              },
+              {
+                "name": "premiumIO",
+                "value": "Any",
+                "type": "query",
+                "description": "Select whether you require VMs with premium IO. Enter `any` if you have no preference."
+              },
+              {
+                "name": "encryptionAtHostSupport",
+                "value": "Any",
+                "type": "query",
+                "description": "Select whether you require VMs with encryption at host. Enter `any` if you have no preference."
+              },
+              {
+                "name": "diskTier",
+                "value": "Any",
+                "type": "query",
+                "description": "Select your required disk tier. Enter `any` if you have no preference."
+              },
+              {
+                "name": "redundancy",
+                "value": "Any",
+                "type": "query",
+                "description": "Select your required disk redundancy option. Enter `any` if you have no preference."
+              },
+              {
+                "name": "minimumDiskSize",
+                "value": "Any",
+                "type": "query",
+                "description": "Select your required minimum disk size in GB. Enter `any` if you have no preference."
+              },
+              {
+                "name": "costOption",
+                "value": "Any",
+                "type": "query",
+                "description": "Your Azure cost option. Select from pay as you go (`PAYG`), spot machines (`Spot`), reserved instance for one a one-year term (`RESERVED_ONE_YEAR`), or reserved instance for a three-year term (`RESERVED_THREE_YEAR)."
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of items returned per page. Minimum is 1."
+              }
+            ]
+          },
+          "docs": "Returns sizing recommendations to optimize resource allocation for machines based on historical information. Visit the <a href='https://support.controlup.com/docs/sizing-recommendations-report' target='_blank'>Sizing Recommendations Report</a> documentation for more details."
+        },
+        {
+          "info": {
+            "name": "Get aggregated machine statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/historical/v1/machines/aggregated",
+            "params": [
+              {
+                "name": "groupBy",
+                "value": "",
+                "type": "query",
+                "description": "Single machine dimension to group rows by."
+              },
+              {
+                "name": "metrics",
+                "value": "",
+                "type": "query",
+                "description": "One or more machine metrics to aggregate. Repeat the parameter for multiple values."
+              },
+              {
+                "name": "aggregations",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation functions to apply to each metric. Repeat for multiple. Default: avg."
+              },
+              {
+                "name": "presetType",
+                "value": "",
+                "type": "query",
+                "description": "Metric compatibility scope. Restricts which metrics are valid. Default: Default (all metrics)."
+              },
+              {
+                "name": "_sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Response field to sort by (must equal a returned <metric>_<aggregation>, machine_count, or the groupBy field). Default: <first metric>_<first aggregation>."
+              },
+              {
+                "name": "_sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort order. Default: desc."
+              },
+              {
+                "name": "_timeFrom",
+                "value": "2025-02-01T00:00:00.000Z",
+                "type": "query",
+                "description": "Start date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "_timeTo",
+                "value": "2025-02-02T00:00:00.000Z",
+                "type": "query",
+                "description": "End date and time of the search period in the format: YYYY-MM-DD'T'hh:mm:ss.sssZ"
+              },
+              {
+                "name": "operatingSystem",
+                "value": "",
+                "type": "query",
+                "description": "Filter machines whose operating system contains this value (pre-aggregation filter)."
+              },
+              {
+                "name": "hypervisorPlatform",
+                "value": "",
+                "type": "query",
+                "description": "Filter machines whose hypervisor platform contains this value (pre-aggregation filter)."
+              },
+              {
+                "name": "azRegion",
+                "value": "",
+                "type": "query",
+                "description": "Filter machines whose Azure region contains this value (pre-aggregation filter)."
+              },
+              {
+                "name": "azVmSize",
+                "value": "",
+                "type": "query",
+                "description": "Filter machines whose Azure VM size contains this value (pre-aggregation filter)."
+              },
+              {
+                "name": "vmName",
+                "value": "",
+                "type": "query",
+                "description": "Filter machines whose VM name contains this value (pre-aggregation filter)."
+              },
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page number returned. The first page is 1."
+              },
+              {
+                "name": "_limit",
+                "value": "100",
+                "type": "query",
+                "description": "Grouped rows per page. Default: 100, maximum: 10000."
+              }
+            ]
+          },
+          "docs": "Returns aggregated machine metrics (avg/min/max/count) grouped by a single machine dimension such as folder, operating system, hypervisor platform, Azure region/VM size, or GPU architecture/model. Always returns machine_count (COUNT(DISTINCT computer_id)) plus one column per <metric>_<aggregation> combination. Visit the <a href='https://support.controlup.com/docs/computer-statistics-report' target='_blank'>Machine Statistics Report</a> documentation for column descriptions and more details."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

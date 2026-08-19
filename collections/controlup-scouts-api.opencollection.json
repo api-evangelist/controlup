@@ -1,0 +1,226 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Synthetic Monitoring Scouts API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Scouts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Scouts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/synthetic-monitoring/v2/scouts",
+            "params": [
+              {
+                "name": "hiveId",
+                "value": "",
+                "type": "query",
+                "description": "Only return Scouts running from the Custom Hives specified by these hive IDs."
+              },
+              {
+                "name": "cloudHive",
+                "value": "",
+                "type": "query",
+                "description": "Only return Scouts running from the Cloud Hives specified by these hive IDs."
+              },
+              {
+                "name": "scoutName",
+                "value": "",
+                "type": "query",
+                "description": "Filter by Scout name (partial match)."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter the list based on the Scout type."
+              },
+              {
+                "name": "subType",
+                "value": "",
+                "type": "query",
+                "description": "Filter the list based on the Scout sub-type."
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "Filter the list based on the interval (in minutes) of how often a Scout runs."
+              },
+              {
+                "name": "disabled",
+                "value": "",
+                "type": "query",
+                "description": "Use this parameter to only return disabled Scouts. By default, only enabled Scouts are returned."
+              },
+              {
+                "name": "username",
+                "value": "",
+                "type": "query",
+                "description": "Only return Scouts that use this username to access the resource. This only applies to EUC Scouts."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page of Scouts to be returned. Each page contains up to 100 Scouts. If your request returns more than 100 Scouts, then the response is paginated."
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query",
+                "description": "Only return Scouts with the specified tag IDs. You can use [GET /v1/organizations/{orgId}/tags](orgtagspubliccontroller_getall) to get the IDs of each tag."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of your Scouts."
+        },
+        {
+          "info": {
+            "name": "Create a Scout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/synthetic-monitoring/v2/scouts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Scout to test EUC or network resources. Creating a Scout uses credits on your account. If you disable or delete the Scout, then the credits are returned to your account. See [License Information](https://support.controlup.com/docs/license-information) for more details."
+        },
+        {
+          "info": {
+            "name": "Get Scout info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/synthetic-monitoring/v2/scouts/:scoutId",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              },
+              {
+                "name": "start",
+                "value": "2021-01-01 13:21:55",
+                "type": "query",
+                "description": "Start date and time of test results used for the summary."
+              },
+              {
+                "name": "end",
+                "value": "2021-02-01 10:24:55",
+                "type": "query",
+                "description": "End date and time of the test results used for the summary."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the details of a specific Scout, and a summary of it's test results. By default, the summary uses test results from the last 24 hours."
+        },
+        {
+          "info": {
+            "name": "Edit Scout",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.controlup.com/synthetic-monitoring/v2/scouts/:scoutId",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Edits an existing Scout. Any parameters passed in this call will be updated to the new values. Unused parameters will not be changed."
+        },
+        {
+          "info": {
+            "name": "Delete Scout",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/synthetic-monitoring/v2/scouts/:scoutId",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes a Scout. This cannot be undone. Historical test result data for the Scout will still be available.\n\nThe credits used to create the Scout will be returned to your account.\n"
+        },
+        {
+          "info": {
+            "name": "Enable/disable Scout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/synthetic-monitoring/v2/scouts/:scoutId/disabled",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Enables or disables an existing Scout. A Scout only performs tests while it is enabled. \n\nEnabling a Scout uses credits on your account. Disabling a Scout returns the credits.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

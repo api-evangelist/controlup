@@ -1,0 +1,451 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Controlup Alerts API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Alerts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Alerts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/alerts",
+            "params": [
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "An OpenSearch query."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The number of rows returned per page."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page returned. The number of rows per page is set with the `size` parameter."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The index of the `rows` array to start returning data from. The array index starts at 0. For example, if you set `from` = 2, the first two rows are excluded."
+              },
+              {
+                "name": "filters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.\nYou can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>\n"
+              },
+              {
+                "name": "filters[0][type]",
+                "value": "",
+                "type": "query",
+                "description": "The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>\n`<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>\n`boolean` is used to filter boolean fields.<br>\n`like` is used to filter text fields.\n"
+              },
+              {
+                "name": "filters[0][value]",
+                "value": "",
+                "type": "query",
+                "description": "The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>\nIf you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.\n"
+              },
+              {
+                "name": "sorters[0][field]",
+                "value": "",
+                "type": "query",
+                "description": "Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.\nYou can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>\n"
+              },
+              {
+                "name": "sorters[0][dir]",
+                "value": "",
+                "type": "query",
+                "description": "The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of configured alerts.\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query alerts.\n"
+        },
+        {
+          "info": {
+            "name": "Create an Alert",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/alerts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new Alert."
+        },
+        {
+          "info": {
+            "name": "Retrieve Alert",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/alerts/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the alert to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns an alert by its ID.\n"
+        },
+        {
+          "info": {
+            "name": "Edit alert",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/alerts/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the alert to edit."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Edits an existing alert by its ID. Any parameters not passed are unchanged."
+        },
+        {
+          "info": {
+            "name": "Delete alert",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/edge/api/alerts/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the alert to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes an existing alert by its ID."
+        },
+        {
+          "info": {
+            "name": "List all Alerts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/organizations/:orgId/alert-configs",
+            "params": [
+              {
+                "name": "_page",
+                "value": "1",
+                "type": "query",
+                "description": "The page of results to return.\nThe first page is page number 1."
+              },
+              {
+                "name": "_limit",
+                "value": "10",
+                "type": "query",
+                "description": "The number of results returned per page."
+              },
+              {
+                "name": "_sortBy",
+                "value": "id",
+                "type": "query",
+                "description": "Sorts results according to the specified field."
+              },
+              {
+                "name": "_order",
+                "value": "asc",
+                "type": "query",
+                "description": "The sort order (ascending / descending) of the field specified by the `_sortBy` parameter."
+              },
+              {
+                "name": "_search",
+                "value": "",
+                "type": "query",
+                "description": "A search filter that is applied to all fields.\nOnly results that contain the specified string are returned."
+              },
+              {
+                "name": "orgId",
+                "value": "",
+                "type": "path",
+                "description": "ID of your ControlUp organization. You can find your organization ID on the [API Key Management page](how-to-make-api-requests#how-to-find-your-controlup-organization-id) in the DEX platform."
+              },
+              {
+                "name": "filters",
+                "value": "",
+                "type": "query",
+                "description": "JSON filter for narrowing results. Send this value as a URL-encoded JSON string.\n\nExample:\n```\n%7B%22and%22%3A%20%5B%7B%22filter%22%3A%20%7B%22key%22%3A%20%22type%22%2C%20%22op%22%3A%20%22equals%22%2C%20%22value%22%3A%20%22anomaly%22%7D%7D%2C%7B%22filter%22%3A%20%7B%22key%22%3A%20%22severity%22%2C%20%22op%22%3A%20%22equals%22%2C%20%22value%22%3A%20%22low%22%7D%7D%5D%7D\n```\n\nDecoded value:\n```\n{\n  \"and\": [\n    {\n      \"filter\": {\n        \"key\": \"type\",\n        \"op\": \"equals\",\n        \"value\": \"anomaly\"\n      }\n    },\n    {\n      \"filter\": {\n        \"key\": \"severity\",\n        \"op\": \"equals\",\n        \"value\": \"low\"\n      }\n    }\n  ]\n}\n```"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of configured alerts."
+        },
+        {
+          "info": {
+            "name": "List Scout IDs with alerts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/alerts/scouts",
+            "params": [
+              {
+                "name": "start",
+                "value": "2021-01-01 13:21:55",
+                "type": "query",
+                "description": "Start date and time of the search."
+              },
+              {
+                "name": "end",
+                "value": "2021-02-01 10:24:55",
+                "type": "query",
+                "description": "End date and time of the search."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of Scout IDs that have triggered an alert within the specified time frame. The default time frame is the last 24 hours.\n"
+        },
+        {
+          "info": {
+            "name": "List alerts for a Scout",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/alerts/:scoutId",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              },
+              {
+                "name": "start",
+                "value": "2023-09-26 08:00:00",
+                "type": "query",
+                "description": "Start date and time of the search. The start date can be up to 1 year in the past. The total search duration from the start time to the end time can be a maximum of 24 hours."
+              },
+              {
+                "name": "end",
+                "value": "2023-09-27 01:30:00",
+                "type": "query",
+                "description": "End date and time of the search."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page of alerts to return. Each page contains up to 100 alerts. If your request returns more than 100 alerts, then the response is paginated."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns alerts generated within the specified time frame for a Scout. The default time frame is the last 24 hours."
+        },
+        {
+          "info": {
+            "name": "List alert policies for a Scout",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/scouts/:scoutId/alerts",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns all alert policies configured for a Scout. Currently, each Scout supports only a single alert policy."
+        },
+        {
+          "info": {
+            "name": "Create alert policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/edge/api/scouts/:scoutId/alerts",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new alert policy for a Scout. A Scout can have only one alert policy. If one already exists, you can update it or delete it. Alerts trigger when the Scout's test results meet certain conditions."
+        },
+        {
+          "info": {
+            "name": "Get alert policy details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/edge/api/scouts/:scoutId/alerts/:alertId",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              },
+              {
+                "name": "alertId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns detailed information about a specific alert policy for a Scout, including settings, notifications, and status."
+        },
+        {
+          "info": {
+            "name": "Update alert policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/edge/api/scouts/:scoutId/alerts/:alertId",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              },
+              {
+                "name": "alertId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy.\nYou can use [GET /scouts/{scoutId}/alerts](appget_scout_alert_policies) to get the ID of a Scout's alert policy.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates an existing alert policy for a specific Scout. Any object not passed is unchanged."
+        },
+        {
+          "info": {
+            "name": "Delete alert policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/edge/api/scouts/:scoutId/alerts/:alertId",
+            "params": [
+              {
+                "name": "scoutId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout."
+              },
+              {
+                "name": "alertId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the Scout's alert policy. Currently, each Scout supports only a single alert policy."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes an Scout's alert policy."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

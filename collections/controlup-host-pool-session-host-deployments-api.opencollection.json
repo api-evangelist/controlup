@@ -1,0 +1,45 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Host pool session host deployments API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Host pool session host deployments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create session hosts",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/host-pools/:hostPoolId/session-host-deployments",
+            "params": [
+              {
+                "name": "hostPoolId",
+                "value": "",
+                "type": "path",
+                "description": "Foundry host pool identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Adds session hosts to an existing host pool. The new hosts are built from the VM settings already saved\non that pool, so those settings must be in place before this call and are not accepted in the request body.\n            \nFor pools with a DynamicHosts scaling profile, scale-in cleanup treats all stopped\nzero-session hosts above MinHosts as elastic capacity, including manually added hosts."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

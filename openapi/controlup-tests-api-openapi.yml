@@ -1,0 +1,1144 @@
+openapi: 3.2.0
+info:
+  title: Synthetic Monitoring Tests API
+  version: 2.0.0
+  x-logo:
+    url: https://app.scoutbees.io/static/media/scoutbees_new.ef578490.png
+  termsOfService: https://www.controlup.com/privacy-policy/controlup-eula/
+  description: The output of the scout tests
+servers:
+- url: https://api.controlup.com/synthetic-monitoring/v2/
+tags:
+- name: Tests
+  description: The output of the scout tests
+paths:
+  /tests:
+    get:
+      summary: List tests
+      description: 'Returns a list of test, containing the the details and results of each tests. The tests are grouped by their Scouts, with the earliest tests appearing first in each group.
+
+
+        By default, all tests from all Scouts in the last 24 hours are returned.
+
+        '
+      operationId: app.get_tests
+      security:
+      - ApiKeyAuth:
+        - read
+      parameters:
+      - in: query
+        name: start
+        description: Only return tests initiated after this time.
+        schema:
+          type: string
+          format: date-time
+        example: '2021-01-01 13:21:55'
+      - in: query
+        name: end
+        description: Only return tests initiated before this time. You must specify a `start` time to use this parameter.
+        schema:
+          type: string
+          format: date-time
+        example: '2021-02-01 10:24:55'
+      - in: query
+        description: Only return tests from the Scouts specified by these Scout IDs.
+        name: scoutId
+        schema:
+          type: array
+          items:
+            type: integer
+        style: form
+        explode: false
+        example:
+        - 1
+        - 2
+      - in: query
+        name: status
+        description: Filter the list based on the status of the tests.
+        schema:
+          type: string
+          enum:
+          - success
+          - failure
+      - in: query
+        name: page
+        description: The page of tests returned. Each page contains up to 100 tests. If your request returns more than 100 tests, then the response is paginated.
+        schema:
+          type: integer
+      tags:
+      - Tests
+      responses:
+        '200':
+          $ref: '#/components/responses/TestList'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+      x-codeSamples:
+      - lang: cURL
+        source: 'curl -X GET ''https://api.scoutbees.io/honeycomb/v2/tests?scoutId=24,31&status=failure'' \
+
+          -H ''x-scoutbees-key: API-key-here''
+
+          '
+components:
+  schemas:
+    ScoutTestSharedProps:
+      type: object
+      properties:
+        scoutId:
+          type: integer
+          description: The Scout's ID.
+        scoutName:
+          type: string
+          description: The Scout's name.
+        parentScoutId:
+          type: integer
+          description: ID of the parent Scout. Present only when this test result belongs to a child Scout.
+        parentScoutName:
+          type: string
+          description: Name of the parent Scout. Present only when this test result belongs to a child Scout.
+        parentSubType:
+          type: string
+          description: Sub-type of the parent Scout. Present only when this test result belongs to a child Scout.
+          enum:
+          - ms_exchange
+          - net_http
+          - citrix_gateway
+          - citrix_cloud
+          - citrix_storefront
+          - vmware_horizon
+          - vmware_w1
+          - vmware_secsrv
+          - avd
+    ScoutBaseNetProps:
+      title: Network test schema
+      allOf:
+      - type: object
+        properties:
+          type:
+            description: The Scout's type.
+            type: string
+            enum:
+            - network
+      - $ref: '#/components/schemas/ScoutTestSharedProps'
+      - $ref: '#/components/schemas/TestsSharedProps'
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
+    ScoutBaseEucProps:
+      allOf:
+      - $ref: '#/components/schemas/ScoutTestSharedProps'
+      - $ref: '#/components/schemas/ScoutTestEucSharedProps'
+      - $ref: '#/components/schemas/TestsSharedProps'
+      - type: object
+        properties:
+          username:
+            type: string
+            description: The username the Scout uses to access the gateway.
+          resource:
+            type: string
+            description: The resource the Scout accesses and tests.
+          type:
+            type: string
+            enum:
+            - euc
+            description: The Scout's type.
+    TestItem:
+      title: Test results
+      oneOf:
+      - title: EUC tests
+        oneOf:
+        - title: Citrix
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseEucProps'
+          - type: object
+            properties:
+              icaTime:
+                type: integer
+                description: ICA file download phase duration in seconds.
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                type: string
+                description: The Scout's sub-type.
+                enum:
+                - citrix_gateway
+              serverName:
+                type: string
+                description: Name of the Citrix server used.
+        - title: Citrix Cloud Gateway
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseEucProps'
+          - type: object
+            properties:
+              icaTime:
+                type: integer
+                description: ICA file download phase duration in seconds.
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                type: string
+                description: The Scout's sub-type.
+                enum:
+                - citrix_cloud
+        - title: Citrix Virtual Apps and Desktops - Storefront
+          allOf:
+          - type: object
+            properties:
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+          - $ref: '#/components/schemas/ScoutBaseEucProps'
+          - type: object
+            properties:
+              icaTime:
+                type: integer
+                description: ICA file download phase duration in seconds.
+          - type: object
+            properties:
+              subType:
+                type: string
+                description: The Scout's sub-type.
+                enum:
+                - citrix_storefront
+              serverName:
+                type: string
+                description: Citrix server name.
+              catalogName:
+                type: string
+                description: Machine catalog name.
+              desktopGroup:
+                type: string
+                description: Delivery group name.
+              icaRtt:
+                type: integer
+                description: ICA round trip time (RTT).
+              logonDuration:
+                type: number
+                format: float
+                description: Session logon duration.
+        - title: VMware Horizon UAG
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseEucProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                type: string
+                description: The Scout's sub-type.
+                enum:
+                - vmware_horizon
+              serverName:
+                type: string
+                description: Name of the VMware server used.
+        - title: VMware Security Server
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseEucProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                type: string
+                description: The Scout's sub-type.
+                enum:
+                - vmware_secsrv
+              serverName:
+                type: string
+                description: Name of the VMware server used.
+        - title: VMware Workspace One
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseEucProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                type: string
+                description: The Scout's sub-type.
+                enum:
+                - vmware_w1
+              serverName:
+                type: string
+                description: Name of the VMware server used.
+        - title: Azure Virtual Desktop
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseEucProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                type: string
+                description: The Scout's sub-type.
+                enum:
+                - avd
+              serverName:
+                type: string
+                description: Name of the AVD session host the Scout connected to.
+              imgAnomalyScore:
+                type: number
+                format: float
+                description: Image-anomaly score reported by the visual verification step.
+      - title: Network tests
+        oneOf:
+        - title: HTTP
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseNetProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - net_http
+              address:
+                description: The target URL address.
+                type: string
+                format: uri
+              method:
+                description: The HTTP method that the Scout uses.
+                type: string
+                enum:
+                - GET
+                - POST
+              dest:
+                description: The target URL address.
+                type: string
+                format: uri
+              statusCode:
+                description: The HTTP response status code.
+                type: integer
+              latency:
+                description: The total time to receive the response for the HTTP request after starting the test in milliseconds.
+                type: number
+                format: float
+              namelookupTime:
+                description: The name lookup phase duration in milliseconds.
+                type: number
+                format: float
+              connectTime:
+                description: The connection phase duration in milliseconds.
+                type: number
+                format: float
+              tlsHandshakeTime:
+                description: The TLS handshake duration in milliseconds.
+                type: number
+                format: float
+              responseTime:
+                description: The response phase duration after establishing a connection with the server. This is different than the total response time, `latency`.
+                type: number
+                format: float
+              ttfb:
+                description: The time to first byte (TTFB) in milliseconds.
+                type: number
+                format: float
+              redirectTime:
+                description: The redirection time in milliseconds.
+                type: number
+                format: float
+              redirectCount:
+                description: The number of HTTP redirections.
+                type: integer
+              sslVerified:
+                description: Whether the SSL certificate is verified.
+                type: boolean
+              certExpDate:
+                description: The expiry date of the SSL certificate. Measured in Unix time.
+                type: integer
+                format: timestamp
+                example: 1952035200
+              certExpDays:
+                description: The number of days until the SSL certificate expires.
+                type: integer
+              totalBytes:
+                description: The total size of the response in bytes.
+                type: integer
+              bodySize:
+                description: The size of the response body in bytes.
+                type: integer
+        - title: DNS
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseNetProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - net_dns
+              address:
+                description: The target URL address.
+                type: string
+                format: uri
+              record:
+                description: The DNS query type. `A` indicates an address record. `MX` indicates a mail exchange record.
+                type: string
+                enum:
+                - A
+                - MX
+              result:
+                description: The result IP address of the DNS lookup.
+                type: string
+              runtime:
+                description: The test response time in milliseconds.
+                type: number
+                format: float
+        - title: Ping
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseNetProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - net_ping
+              address:
+                description: The target hostname.
+                type: string
+                format: uri
+              avgRtt:
+                description: The average round trip time in milliseconds of the packets sent.
+                type: number
+                format: float
+              minRtt:
+                description: The minimum round trip time in milliseconds of the packets sent.
+                type: number
+                format: float
+              maxRtt:
+                description: The maximum round trip time in milliseconds of the packets sent.
+                type: number
+                format: float
+              jitter:
+                description: The jitter in milliseconds.
+                type: number
+                format: float
+              host:
+                description: The target hostname.
+                type: string
+        - title: Traceroute
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseNetProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - net_traceroute
+              address:
+                description: The target URL address.
+                type: string
+                format: url
+              avgRtt:
+                description: The average round trip time in milliseconds.
+                type: number
+                format: float
+              minRtt:
+                description: The minimum round trip time in milliseconds.
+                type: number
+                format: float
+              maxRtt:
+                description: The maximum round trip time in milliseconds.
+                type: number
+                format: float
+              hops:
+                description: The number of hops to get to the destination.
+                type: integer
+              dest:
+                description: The IP address of the destination.
+                type: string
+              numPaths:
+                description: The number of paths to the destination.
+                type: integer
+              avgJitter:
+                description: The average jitter across all hops in milliseconds.
+                type: number
+                format: float
+              minJitter:
+                description: The minimum jitter for an individual hop in milliseconds.
+                type: number
+                format: float
+              maxJitter:
+                description: The maximum jitter for an individual hop in milliseconds.
+                type: number
+                format: float
+              avgPacketLoss:
+                description: The average packet loss across all hops as a percentage.
+                type: integer
+              minPacketLoss:
+                description: The minimum packet loss for an individual hop as a percentage.
+                type: integer
+              maxPacketLoss:
+                description: The maximum packet loss for an individual hop as a percentage.
+                type: integer
+              numPackets:
+                description: The number of packets sent in the test. This is always 4.
+                type: integer
+        - title: Shell
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseNetProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - shell
+              address:
+                description: The shell command or script that the Scout executes.
+                type: string
+              runtime:
+                description: The shell command's execution duration in milliseconds.
+                type: number
+                format: float
+              errorCode:
+                description: The exit code returned by the shell command.
+                type: integer
+              stdoutLen:
+                description: Length of the standard output, in characters.
+                type: integer
+              stderrLen:
+                description: Length of the standard error output, in characters.
+                type: integer
+        - title: Entra ID
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseNetProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - entra_id
+              userQueryDuration:
+                description: Duration of the user lookup query against Entra ID, in milliseconds.
+                type: number
+                format: float
+              loginDuration:
+                description: Duration of the login flow against Entra ID, in milliseconds.
+                type: number
+                format: float
+              queryDuration:
+                description: Duration of the directory query against Entra ID, in milliseconds.
+                type: number
+                format: float
+              onPremisesSyncEnabled:
+                description: Whether on-premises directory synchronization is enabled for the tenant.
+                type: boolean
+              onPremisesLastSyncDateTime:
+                description: Timestamp of the last successful on-premises directory synchronization. Measured in Unix time.
+                type: integer
+                format: timestamp
+      - title: Application tests
+        oneOf:
+        - title: Siteload
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseAppProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - siteload
+              address:
+                description: The target URL address.
+                type: string
+                format: uri
+              dest:
+                description: The final URL after redirections.
+                type: string
+                format: uri
+              duration:
+                description: Total page load duration in milliseconds.
+                type: number
+                format: float
+              firstPaint:
+                description: Time until the first paint event, in milliseconds.
+                type: number
+                format: float
+              contentfulPaint:
+                description: Time until the first contentful paint event, in milliseconds.
+                type: number
+                format: float
+              domInteractive:
+                description: Time until the DOM reached the interactive state, in milliseconds.
+                type: number
+                format: float
+              domComplete:
+                description: Time until the DOM reached the complete state, in milliseconds.
+                type: number
+                format: float
+              domainLookup:
+                description: DNS lookup duration, in milliseconds.
+                type: number
+                format: float
+              connect:
+                description: TCP connection duration, in milliseconds.
+                type: number
+                format: float
+              sslVerTime:
+                description: SSL verification duration, in milliseconds.
+                type: number
+                format: float
+              redirectTime:
+                description: Total redirection time, in milliseconds.
+                type: number
+                format: float
+                nullable: true
+              ttfb:
+                description: Time to first byte (TTFB), in milliseconds.
+                type: number
+                format: float
+              waitDuration:
+                description: Time waiting for the server to start sending the response, in milliseconds.
+                type: number
+                format: float
+              responseDuration:
+                description: Time spent receiving the response, in milliseconds.
+                type: number
+                format: float
+              processingDuration:
+                description: Time spent processing the response in the browser, in milliseconds.
+                type: number
+                format: float
+              loadDuration:
+                description: Time spent loading the page resources, in milliseconds.
+                type: number
+                format: float
+              requestsNumber:
+                description: Total number of HTTP requests issued while loading the page.
+                type: integer
+              bodySize:
+                description: Size of the main response body in bytes.
+                type: integer
+              downloadSize:
+                description: Total size of all downloaded resources in bytes.
+                type: integer
+              loadSize:
+                description: Total size loaded in bytes, including secondary resources.
+                type: integer
+        - title: Microsoft Teams
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseAppProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - ms_teams
+              relayFqdn:
+                description: Fully qualified domain name of the Teams media relay.
+                type: string
+              relayIp:
+                description: IP address of the Teams media relay.
+                type: string
+              protocol:
+                description: Transport protocol used to reach the relay (e.g., UDP, TCP).
+                type: string
+              port:
+                description: Destination port used to reach the relay.
+                type: integer
+              packetsSent:
+                description: Number of packets sent during the test.
+                type: integer
+              packetsReceived:
+                description: Number of packets received during the test.
+                type: integer
+              packetsLoss:
+                description: Packet loss ratio as a percentage.
+                type: number
+                format: float
+              avgLatency:
+                description: Average round-trip latency to the relay, in milliseconds.
+                type: number
+                format: float
+              avgJitter:
+                description: Average jitter observed during the test, in milliseconds.
+                type: number
+                format: float
+              testDuration:
+                description: Total duration of the media test, in milliseconds.
+                type: number
+                format: float
+              httpDest:
+                description: HTTP endpoint used by the signaling test.
+                type: string
+                format: uri
+              httpStatusCode:
+                description: HTTP response status code from the signaling test.
+                type: integer
+              httpLatency:
+                description: Total time to receive the HTTP response, in milliseconds.
+                type: number
+                format: float
+              httpNamelookupTime:
+                description: DNS lookup duration for the HTTP request, in milliseconds.
+                type: number
+                format: float
+              httpConnectTime:
+                description: TCP connection duration for the HTTP request, in milliseconds.
+                type: number
+                format: float
+              httpTlsHandshakeTime:
+                description: TLS handshake duration for the HTTP request, in milliseconds.
+                type: number
+                format: float
+              httpResponseTime:
+                description: Response phase duration after the connection is established, in milliseconds.
+                type: number
+                format: float
+              httpTtfb:
+                description: Time to first byte (TTFB) for the HTTP request, in milliseconds.
+                type: number
+                format: float
+              httpRedirectTime:
+                description: Total redirection time for the HTTP request, in milliseconds.
+                type: number
+                format: float
+              httpRedirectCount:
+                description: Number of HTTP redirections.
+                type: integer
+              httpCertExpDate:
+                description: Expiry date of the HTTP endpoint's SSL certificate. Measured in Unix time.
+                type: integer
+                format: timestamp
+              httpCertExpDays:
+                description: Number of days until the SSL certificate expires.
+                type: integer
+              httpTotalBytes:
+                description: Total size of the HTTP response in bytes.
+                type: integer
+              httpBodySize:
+                description: Size of the HTTP response body in bytes.
+                type: integer
+              httpStatus:
+                description: Status of the HTTP signaling test (0 success / 1 failure).
+                type: integer
+              httpFailReason:
+                description: Failure reason for the HTTP signaling test, if any.
+                type: string
+        - title: Web Transactions
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseAppProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - web_transactions
+              address:
+                description: The target URL address.
+                type: string
+                format: uri
+              dest:
+                description: The final URL after redirections.
+                type: string
+                format: uri
+              totalDuration:
+                description: Total transaction duration including all steps, in milliseconds.
+                type: number
+                format: float
+              stepsDuration:
+                description: Cumulative duration of the user-defined steps after the initial page load, in milliseconds.
+                type: number
+                format: float
+              duration:
+                description: Initial page load duration, in milliseconds.
+                type: number
+                format: float
+              firstPaint:
+                description: Time until the first paint event, in milliseconds.
+                type: number
+                format: float
+              contentfulPaint:
+                description: Time until the first contentful paint event, in milliseconds.
+                type: number
+                format: float
+              domainLookup:
+                description: DNS lookup duration, in milliseconds.
+                type: number
+                format: float
+              connect:
+                description: TCP connection duration, in milliseconds.
+                type: number
+                format: float
+              sslVerTime:
+                description: SSL verification duration, in milliseconds.
+                type: number
+                format: float
+              redirectTime:
+                description: Total redirection time, in milliseconds.
+                type: number
+                format: float
+                nullable: true
+              domInteractive:
+                description: Time until the DOM reached the interactive state, in milliseconds.
+                type: number
+                format: float
+              domComplete:
+                description: Time until the DOM reached the complete state, in milliseconds.
+                type: number
+                format: float
+              waitDuration:
+                description: Time waiting for the server to start sending the response, in milliseconds.
+                type: number
+                format: float
+              responseDuration:
+                description: Time spent receiving the response, in milliseconds.
+                type: number
+                format: float
+              processingDuration:
+                description: Time spent processing the response in the browser, in milliseconds.
+                type: number
+                format: float
+              loadDuration:
+                description: Time spent loading page resources, in milliseconds.
+                type: number
+                format: float
+              requestsNumber:
+                description: Total number of HTTP requests issued while loading the page.
+                type: integer
+              bodySize:
+                description: Size of the main response body in bytes.
+                type: integer
+              downloadSize:
+                description: Total size of all downloaded resources in bytes.
+                type: integer
+              loadSize:
+                description: Total size loaded in bytes, including secondary resources.
+                type: integer
+        - title: Mail
+          allOf:
+          - $ref: '#/components/schemas/ScoutBaseAppProps'
+          - type: object
+            properties:
+              cloudHive:
+                type: integer
+                format: int32
+                description: ID of the Cloud Hive that runs the Scout.
+              hiveId:
+                type: integer
+                format: int32
+                description: ID of the Custom Hive that runs the Scout.
+              subType:
+                description: The Scout's sub-type.
+                type: string
+                enum:
+                - mail
+              customerEmailServerAddress:
+                description: Address of the customer's email server.
+                type: string
+              clientSentTime:
+                description: Time at which the test client dispatched the probe email. Measured in Unix time.
+                type: integer
+                format: timestamp
+              emailReceivedTime:
+                description: Time at which the probe email was received at the destination. Measured in Unix time.
+                type: integer
+                format: timestamp
+              deliveryDuration:
+                description: End-to-end mail delivery duration, in milliseconds.
+                type: number
+                format: float
+              clientToEmailServerDuration:
+                description: Duration from client send to the customer email server, in milliseconds.
+                type: number
+                format: float
+              emailServerProcessDuration:
+                description: Time spent processing on the customer email server, in milliseconds.
+                type: number
+                format: float
+              emailServerToDestinationDuration:
+                description: Duration from the customer email server to the destination mailbox, in milliseconds.
+                type: number
+                format: float
+              deliveryDurationToEmailServer:
+                description: Delivery duration up to the customer email server, in milliseconds.
+                type: number
+                format: float
+    TestsSharedProps:
+      type: object
+      properties:
+        failReason:
+          type: string
+          description: The reason that the test failed.
+        guid:
+          type: string
+          format: uuid
+          description: The unique ID for the test.
+        time:
+          type: string
+          format: date-time
+          description: The time that the test started.
+        status:
+          description: Overall status for the test, either `success` or `failure`.
+          type: string
+          enum:
+          - success
+          - failure
+    MarshmallowError:
+      type: object
+      properties:
+        errors:
+          type: object
+          items:
+            type: array
+            items:
+              type: string
+      example:
+        errors:
+          name:
+          - Missing required data.
+          period:
+          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
+    ScoutBaseAppProps:
+      title: Application test schema
+      allOf:
+      - type: object
+        properties:
+          type:
+            description: The Scout's type.
+            type: string
+            enum:
+            - application
+      - $ref: '#/components/schemas/ScoutTestSharedProps'
+      - $ref: '#/components/schemas/TestsSharedProps'
+    ScoutTestEucSharedProps:
+      type: object
+      properties:
+        ready:
+          type: number
+          format: float
+          description: Session ready phase duration in seconds. This phase includes checking that the resource is available, accepting conditions, and the server processing the session and releasing control to the Scout.
+        durationReady:
+          type: number
+          format: float
+          description: The total time after starting the test for the session to be ready in seconds.
+        authPhase:
+          type: number
+          format: float
+          description: Authentication phase duration in seconds.
+        connPhase:
+          type: number
+          format: float
+          description: Connection phase duration in seconds.
+        enumTime:
+          type: number
+          format: float
+          description: Resources enumeration phase duration in seconds.
+        sess:
+          type: number
+          format: float
+          description: Session initialization phase duration in seconds.
+        loginAttempts:
+          type: number
+          format: float
+          description: The number of login attempts it took to successfully authenticate the Scout.
+  responses:
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
+    ValidationError:
+      description: Sent data has errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MarshmallowError'
+    TestList:
+      description: A list of tests
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: An array of tests. Each entry in the array is a separate test, containing its details and results.
+                items:
+                  $ref: '#/components/schemas/TestItem'
+              current_page:
+                type: integer
+                description: The current page of tests returned by the request. Change the page with the `page` parameter.
+              total_pages:
+                type: integer
+                description: The total number of pages returned. Each page contains up to 100 tests.
+              total_per_page:
+                type: integer
+                description: The total number of tests that can appear per page.
+                enum:
+                - 100
+              success:
+                type: boolean
+                description: Whether the request was successful.
+              total:
+                type: integer
+                description: The total number of tests returned, based on the request conditions. If `total` is greater than 100, then the tests will be on multiple pages.
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: false
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

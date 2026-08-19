@@ -1,0 +1,423 @@
+openapi: 3.2.0
+info:
+  title: VDI & DaaS Realtime Metrics API
+  description: APIs to manage and query realtime metrics in the VDI environment
+  version: 1.0.0
+servers:
+- url: https://api.controlup.com/vdi/realtime
+  description: Production address
+tags:
+- name: Metrics
+  description: Endpoints to manage and query metrics
+paths:
+  /v1/metrics/query:
+    post:
+      tags:
+      - Metrics
+      summary: Query metrics
+      description: Retrieves realtime metrics data with optional filtering, sorting, pagination, and aggregation capabilities
+      operationId: query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+        '400':
+          description: Bad request - Validation errors or invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      x-required-headers:
+      - InfraGuid
+      - Region
+  /v1/metrics/schema/tables:
+    get:
+      tags:
+      - Metrics
+      summary: Get Tables
+      description: Retrieves a list of available metric tables
+      operationId: getTables
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TableDataContract'
+        '401':
+          description: Unauthorized - Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      x-required-headers:
+      - InfraGuid
+      - Region
+  /v1/metrics/schema/tables/{tableName}:
+    get:
+      tags:
+      - Metrics
+      summary: Get Table Fields
+      description: Retrieves the fields available for a specific metric table
+      operationId: getTableFields
+      parameters:
+      - name: tableName
+        in: path
+        required: true
+        description: The name of the table to retrieve fields for
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TableFieldDataContract'
+        '400':
+          description: Bad request - Validation errors or invalid table name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      x-required-headers:
+      - InfraGuid
+      - Region
+components:
+  schemas:
+    TableFieldDataContract:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the field
+        header:
+          type: string
+          description: The header or display name of the field
+        description:
+          type: string
+          description: Description of the field
+        type:
+          type: string
+          description: The data type of the field
+    QuerySortDataContract:
+      type: object
+      required:
+      - field
+      properties:
+        field:
+          type: string
+          description: The field to sort the results by
+        dir:
+          type: string
+          description: Sort direction (e.g., 'Asc' or 'Desc')
+    QueryOptionsDataContract:
+      type: object
+      properties:
+        nodeId:
+          type: string
+          description: Specific organization tree node identifier to scope the query to
+        showNodeId:
+          type: boolean
+          description: Include tree node IDs in the returned response data
+        counters:
+          description: Advanced options for fetching performance counters
+          $ref: '#/components/schemas/QueryCounterOptionsDataContract'
+        translateEnums:
+          type: boolean
+          description: Translate numeric enum values to human-readable strings
+        bypassCache:
+          type: boolean
+          description: Force the query to bypass cache and fetch the most recent realtime data
+        drillDownOrigin:
+          type: string
+          description: Origin identifier when performing a drill-down query from a higher level
+        dataLoss:
+          description: Configuration for handling potential realtime data loss
+          $ref: '#/components/schemas/QueryDataLossOptionsDataContract'
+        includeDataEmptyReason:
+          type: boolean
+          description: Include reasons in the response when requested data columns are empty
+        siteId:
+          type: string
+          description: Monitor site identifier to scope the query
+        usePartialFolderData:
+          type: boolean
+          description: Allow returning partial data for folder hierarchies
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+              example: Invalid request parameters
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    description: Field name that caused the error
+                  message:
+                    type: string
+                    description: Specific error message for the field
+              description: Detailed error information per field
+          required:
+          - code
+          - message
+      required:
+      - error
+    QueryDataLossOptionsDataContract:
+      type: object
+      properties:
+        threshold:
+          type: integer
+          description: Threshold limit for acceptable data loss before failing the query
+        timeout:
+          type: integer
+          description: Timeout in milliseconds to wait for data recovery
+    QueryCounterOptionsDataContract:
+      type: object
+      properties:
+        includeStress:
+          type: boolean
+          description: Include stress level indicators for the counters
+        allSamples:
+          type: boolean
+          description: Include all raw data samples
+        includeAgg:
+          type: boolean
+          description: Include aggregated statistics
+        includeTag:
+          type: boolean
+          description: Include counter tags
+        includeTimestamp:
+          type: boolean
+          description: Include timestamps for counter values
+        aggStats:
+          type: boolean
+          description: Compute and return aggregated statistics for the counters
+        flatAgg:
+          type: boolean
+          description: Flatten the aggregated results into the root data objects
+        returnOnlyValue:
+          type: boolean
+          description: Return only the bare counter values without additional metadata
+    QueryResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          description: List of dynamic JSON objects containing the queried metric fields
+          items:
+            type: object
+        success:
+          type: boolean
+          description: Indicates whether the query executed successfully
+        error:
+          type: string
+          description: Error message if the query execution failed
+        total:
+          type: integer
+          description: Total number of records matching the query before pagination
+        returned:
+          type: integer
+          description: Number of records returned in the current page
+    TableDataContract:
+      type: object
+      properties:
+        tableName:
+          type: string
+          description: The name of the table
+        description:
+          type: string
+          description: Description of the table
+    QueryMatchDataContract:
+      type: object
+      required:
+      - field
+      - term
+      properties:
+        field:
+          type: string
+          description: The field to match against
+        term:
+          type: string
+          description: The text term to search for
+        regex:
+          type: boolean
+          description: Indicates if the term should be evaluated as a regular expression
+    QueryPageDataContract:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: Number of items to skip before returning results (0-based)
+        size:
+          type: integer
+          description: Maximum number of items to return in this page
+    QueryConditionDataContract:
+      type: object
+      properties:
+        and:
+          type: array
+          description: List of nested conditions that must all evaluate to true
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        or:
+          type: array
+          description: List of nested conditions where at least one must evaluate to true
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        not:
+          type: array
+          description: List of nested conditions that must evaluate to false
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        field:
+          type: string
+          description: The field to apply the condition operator against
+        op:
+          type: string
+          description: The comparison operator (e.g., 'eq', 'ne', 'gt', 'lt', 'gte', 'lte', 'mask', 'like')
+        value:
+          type: object
+          description: The value to compare against. Can be a string, number, boolean, or array of values.
+    QueryFieldDescriptorDataContract:
+      type: object
+      required:
+      - field
+      properties:
+        field:
+          type: string
+          description: The name of the metric or field to return
+        history:
+          type: integer
+          description: Number of historical data points to include for this metric
+        severityLevel:
+          type: boolean
+          description: Include the severity level status for this field
+        includeAvg:
+          type: boolean
+          description: Include the average value aggregation for this field
+        includeMax:
+          type: boolean
+          description: Include the maximum value aggregation for this field
+    QueryRequest:
+      type: object
+      required:
+      - table
+      properties:
+        table:
+          type: string
+          description: The metrics table to query
+        match:
+          type: array
+          description: Text search filters applied to specific fields
+          items:
+            $ref: '#/components/schemas/QueryMatchDataContract'
+        sort:
+          type: array
+          description: Sorting criteria for the results
+          items:
+            $ref: '#/components/schemas/QuerySortDataContract'
+        fields:
+          type: array
+          description: List of metric fields to include in the query response
+          items:
+            $ref: '#/components/schemas/QueryFieldDescriptorDataContract'
+        page:
+          description: Pagination settings for the query results
+          $ref: '#/components/schemas/QueryPageDataContract'
+        where:
+          description: Complex filtering conditions (And/Or/Not tree)
+          $ref: '#/components/schemas/QueryConditionDataContract'
+        options:
+          description: Advanced query execution and configuration options
+          $ref: '#/components/schemas/QueryOptionsDataContract'
+        focus:
+          type: string
+          description: Focus context for the query (e.g. scoping to a specific view)
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from authentication service
+x-readme:
+  proxy-enabled: false

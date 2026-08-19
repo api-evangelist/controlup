@@ -1,0 +1,65 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Synthetic Monitoring Tests API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tests",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List tests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/synthetic-monitoring/v2/tests",
+            "params": [
+              {
+                "name": "start",
+                "value": "2021-01-01 13:21:55",
+                "type": "query",
+                "description": "Only return tests initiated after this time."
+              },
+              {
+                "name": "end",
+                "value": "2021-02-01 10:24:55",
+                "type": "query",
+                "description": "Only return tests initiated before this time. You must specify a `start` time to use this parameter."
+              },
+              {
+                "name": "scoutId",
+                "value": "1,2",
+                "type": "query",
+                "description": "Only return tests from the Scouts specified by these Scout IDs."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter the list based on the status of the tests."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page of tests returned. Each page contains up to 100 tests. If your request returns more than 100 tests, then the response is paginated."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of test, containing the the details and results of each tests. The tests are grouped by their Scouts, with the earliest tests appearing first in each group.\n\nBy default, all tests from all Scouts in the last 24 hours are returned.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

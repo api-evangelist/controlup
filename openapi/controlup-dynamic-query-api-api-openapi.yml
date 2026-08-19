@@ -1,0 +1,472 @@
+openapi: 3.2.0
+info:
+  title: VDI & DAAS Dynamic Query API API
+  version: 1.0.0
+  description: Dynamic SQL transformation and execution
+servers:
+- url: https://api.controlup.com/historical
+security:
+- bearer-jwt:
+  - read
+  - write
+tags:
+- name: Dynamic Query API
+  description: Dynamic SQL transformation and execution
+paths:
+  /v1/dynamic-query/execute:
+    post:
+      tags:
+      - Dynamic Query API
+      summary: Transform and Execute SQL Query
+      description: Parse, validate, transform, and execute a SQL query, ensuring the result conforms to the expected structure and can be run safely.
+      operationId: execute
+      requestBody:
+        description: SQL SELECT statement with date range and pagination parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SqlQuery'
+        required: true
+      responses:
+        '200':
+          description: SQL transformed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResult'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+  /v1/dynamic-query/schema:
+    get:
+      tags:
+      - Dynamic Query API
+      summary: Get Database Schema as CSV
+      description: Retrieve the database schema metadata in CSV format for download
+      operationId: getSchema
+      parameters:
+      - name: tableName
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Database schema CSV downloaded successfully
+          content:
+            text/csv: {}
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+components:
+  schemas:
+    JsonPrimitive:
+      type: object
+      properties:
+        asNumber:
+          type: number
+        asFloat:
+          type: number
+          format: float
+        asByte:
+          type: string
+          format: byte
+        asCharacter:
+          type: string
+          deprecated: true
+        asBigDecimal:
+          type: number
+        asBigInteger:
+          type: integer
+        asShort:
+          type: integer
+          format: int32
+        string:
+          type: boolean
+        asString:
+          type: string
+        number:
+          type: boolean
+        boolean:
+          type: boolean
+        asInt:
+          type: integer
+          format: int32
+        asDouble:
+          type: number
+          format: double
+        asLong:
+          type: integer
+          format: int64
+        asBoolean:
+          type: boolean
+        jsonArray:
+          type: boolean
+        jsonObject:
+          type: boolean
+        jsonPrimitive:
+          type: boolean
+        asJsonNull: {}
+        jsonNull:
+          type: boolean
+        asJsonPrimitive: {}
+        asJsonArray:
+          $ref: '#/components/schemas/JsonArray'
+        asJsonObject:
+          $ref: '#/components/schemas/JsonObject'
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    QueryResult:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonObject'
+    JsonNull:
+      type: object
+      properties:
+        asNumber:
+          type: number
+        asFloat:
+          type: number
+          format: float
+        asByte:
+          type: string
+          format: byte
+        jsonArray:
+          type: boolean
+        jsonObject:
+          type: boolean
+        jsonPrimitive:
+          type: boolean
+        asJsonNull: {}
+        asCharacter:
+          type: string
+          deprecated: true
+        asBigDecimal:
+          type: number
+        asBigInteger:
+          type: integer
+        asShort:
+          type: integer
+          format: int32
+        jsonNull:
+          type: boolean
+        asJsonPrimitive:
+          $ref: '#/components/schemas/JsonPrimitive'
+        asJsonArray:
+          $ref: '#/components/schemas/JsonArray'
+        asJsonObject:
+          $ref: '#/components/schemas/JsonObject'
+        asString:
+          type: string
+        asInt:
+          type: integer
+          format: int32
+        asDouble:
+          type: number
+          format: double
+        asLong:
+          type: integer
+          format: int64
+        asBoolean:
+          type: boolean
+    JsonArray:
+      type: object
+      properties:
+        asNumber:
+          type: number
+        asFloat:
+          type: number
+          format: float
+        asByte:
+          type: string
+          format: byte
+        asCharacter:
+          type: string
+          deprecated: true
+        asBigDecimal:
+          type: number
+        asBigInteger:
+          type: integer
+        asShort:
+          type: integer
+          format: int32
+        asString:
+          type: string
+        empty:
+          type: boolean
+        asInt:
+          type: integer
+          format: int32
+        asDouble:
+          type: number
+          format: double
+        asLong:
+          type: integer
+          format: int64
+        asBoolean:
+          type: boolean
+        jsonArray:
+          type: boolean
+        jsonObject:
+          type: boolean
+        jsonPrimitive:
+          type: boolean
+        asJsonNull: {}
+        jsonNull:
+          type: boolean
+        asJsonPrimitive: {}
+        asJsonArray: {}
+        asJsonObject:
+          $ref: '#/components/schemas/JsonObject'
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    SqlQuery:
+      type: object
+      description: SQL SELECT statement with date range and pagination parameters
+      properties:
+        query:
+          type: string
+          description: SQL SELECT statement
+          example: SELECT computer_id, host_name FROM machine_aggregation_5m
+        from:
+          type: string
+          format: date
+          description: 'Start date of the search period in the format: YYYY-MM-DD'
+          example: '2025-02-01'
+        to:
+          type: string
+          format: date
+          description: 'End date of the search period in the format: YYYY-MM-DD'
+          example: '2025-02-02'
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of items returned per page. Minimum is 1.
+          example: 20
+          maximum: 5000
+          minimum: 1
+        page:
+          type: integer
+          format: int32
+          description: The page number returned. The first page is 1.
+          example: 1
+          maximum: 10000
+          minimum: 1
+    JsonObject:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        asNumber:
+          type: number
+        asFloat:
+          type: number
+          format: float
+        asByte:
+          type: string
+          format: byte
+        jsonArray:
+          type: boolean
+        jsonObject:
+          type: boolean
+        jsonPrimitive:
+          type: boolean
+        asJsonNull:
+          $ref: '#/components/schemas/JsonNull'
+        asCharacter:
+          type: string
+          deprecated: true
+        asBigDecimal:
+          type: number
+        asBigInteger:
+          type: integer
+        asShort:
+          type: integer
+          format: int32
+        jsonNull:
+          type: boolean
+        asJsonPrimitive:
+          $ref: '#/components/schemas/JsonPrimitive'
+        asJsonArray:
+          $ref: '#/components/schemas/JsonArray'
+        asJsonObject:
+          $ref: '#/components/schemas/JsonObject'
+        asString:
+          type: string
+        asInt:
+          type: integer
+          format: int32
+        asDouble:
+          type: number
+          format: double
+        asLong:
+          type: integer
+          format: int64
+        asBoolean:
+          type: boolean
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false
+  explorer-enabled: true
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

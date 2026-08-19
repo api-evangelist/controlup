@@ -1,0 +1,302 @@
+openapi: 3.2.0
+info:
+  title: VDI & DAAS Windows Events API
+  version: 1.0.0
+  description: Windows Event Log Monitoring history
+servers:
+- url: https://api.controlup.com/historical
+security:
+- bearer-jwt:
+  - read
+  - write
+tags:
+- name: WindowsEvents
+  description: Windows Event Log Monitoring history
+paths:
+  /v1/windowsEvents:
+    get:
+      tags:
+      - WindowsEvents
+      summary: Get Windows Events
+      description: Returns matched Event Log Monitoring rows (30-day rolling retention, filtered on event timestamp).
+      operationId: getWindowsEvents
+      parameters:
+      - name: _timeFrom
+        in: query
+        description: 'Start date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: false
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-01T00:00:00.000Z'
+      - name: _timeTo
+        in: query
+        description: 'End date and time of the search period in the format: YYYY-MM-DD''T''hh:mm:ss.sssZ'
+        required: false
+        schema:
+          type: string
+          format: date-time
+        example: '2025-02-02T00:00:00.000Z'
+      - name: logLevel
+        in: query
+        description: 'Filter by log level. CSV, case-insensitive. Valid values: Critical, Error, Warning, Information, Verbose.'
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: logName
+        in: query
+        description: Filter by the full programmatic log name (e.g. Microsoft-FSLogix-Apps/Operational). Exact match, case-insensitive. CSV.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: sourceName
+        in: query
+        description: Filter by event source/provider name. Exact match, case-insensitive. CSV.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: eventId
+        in: query
+        description: Filter by Windows event ID. CSV.
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int32
+      - name: machineName
+        in: query
+        description: Filter by machine name. Exact match, case-insensitive. CSV.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: userName
+        in: query
+        description: Filter by user name (DOMAIN\User or SID-string fallback). Exact match, case-insensitive. CSV.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: _sortBy
+        in: query
+        description: 'Response field to sort by. Default: eventTime.'
+        required: false
+        schema:
+          type: string
+      - name: _sortOrder
+        in: query
+        description: 'Sort order. Default: desc.'
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _page
+        in: query
+        description: The page number returned. The first page is 1.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 1
+      - name: _limit
+        in: query
+        description: The number of items returned per page. Minimum is 1.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100000
+          minimum: 1
+        example: 20
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalListResponseWindowsEventResult'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalListResponseWindowsEventResult'
+        '400':
+          description: Bad Request - one of the inputs isn't correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '401':
+          description: User is not authorized to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '403':
+          description: Authorization details are not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '501':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+        '504':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/HistoricalErrorResponse'
+components:
+  schemas:
+    WindowsEventResult:
+      type: object
+      properties:
+        eventTime:
+          type: string
+          format: date-time
+        logLevel:
+          type: string
+        logName:
+          type: string
+        sourceName:
+          type: string
+        eventId:
+          type: integer
+          format: int32
+        machineName:
+          type: string
+        userName:
+          type: string
+        message:
+          type: string
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    HistoricalListResponseWindowsEventResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WindowsEventResult'
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false
+  explorer-enabled: true
+  samples-languages:
+  - shell
+  - powershell
+  - node
+  - javascript
+  - python
+  - c
+  - clojure
+  - cplusplus
+  - csharp
+  - http
+  - go
+  - java
+  - json
+  - kotlin
+  - objectivec
+  - ocaml
+  - php
+  - r
+  - ruby
+  - shell
+  - swift

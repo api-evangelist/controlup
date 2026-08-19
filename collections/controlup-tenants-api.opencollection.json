@@ -1,0 +1,925 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DaaS IQ Tenants API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tenants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get tenant credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns every credential in the tenant's pool — the default one plus any additional service principals added for\nload balancing — with sensitive values masked.\nDescribes how credentials are configured, not whether they currently work: health, cooldown, and usage metrics are absent."
+        },
+        {
+          "info": {
+            "name": "Add a credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Adds a new credential to a tenant's credential pool.\nThis is useful for adding additional service principals for load balancing API calls.\nAutomatically triggers credential verification in the background to update health status."
+        },
+        {
+          "info": {
+            "name": "Get a credential by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one credential's configuration: auth type, masked secret fields, and whether it is enabled.\nConfiguration only — it reports nothing about that credential's live health, cooldown, or usage."
+        },
+        {
+          "info": {
+            "name": "Update a credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates an existing credential with new authentication details.\nAutomatically clears any stale operational state (cooldown, health metrics) after update.\nAutomatically triggers credential verification in the background to update health status."
+        },
+        {
+          "info": {
+            "name": "Patch a credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Partially updates a credential. Only provided fields will be updated.\nAutomatically clears any stale operational state (cooldown, health metrics) after update.\nAutomatically triggers credential verification in the background to update health status."
+        },
+        {
+          "info": {
+            "name": "Delete a credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Soft deletes a credential from a tenant.\nIf deleting the default credential, another credential will be automatically promoted to default (prioritizes enabled credentials, then oldest by creation date).\nValidation rules:\n- Cannot delete the only credential for a tenant\n- Cannot delete if it would leave no enabled credentials"
+        },
+        {
+          "info": {
+            "name": "Enable a credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId/enable",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Enables a credential for use in the credential pool.\nEnabled credentials will be selected for API operations via round-robin (LRU) selection.\nAutomatically clears any stale operational state (cooldown, health metrics) to provide a fresh start."
+        },
+        {
+          "info": {
+            "name": "Disable a credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId/disable",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Disables a credential from being used in the credential pool.\nDisabled credentials will not be selected for API operations but remain in the system.\nCannot disable the last enabled credential for a tenant."
+        },
+        {
+          "info": {
+            "name": "Get credentials status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/status",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns live operational status for every credential in the tenant: health, rate-limit cooldown, and usage metrics.\nReports whether credentials are currently working rather than how they are configured, and covers the whole pool in one call."
+        },
+        {
+          "info": {
+            "name": "Get credential status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId/status",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns live operational status for one credential: health, rate-limit cooldown, and usage metrics.\nReports whether that credential is currently working rather than how it is configured, and covers a single credential rather than the pool."
+        },
+        {
+          "info": {
+            "name": "Verify default credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/verify",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Tests one credential live against Azure AD — the tenant's default specifically, not round-robin selection —\nand returns step-by-step results. Success clears stale operational state such as cooldown and health metrics.\nScoped to authentication by that single credential; refreshing the tenant status is the broader check that\nwalks every subscription and updates overall tenant health."
+        },
+        {
+          "info": {
+            "name": "Verify a credential by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId/verify",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier to verify."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verifies a specific credential for a tenant. Tests authentication with Azure AD and tenant access.\nThis verifies the exact credential specified - NOT round-robin selection.\nOn successful verification, automatically clears any stale operational state (cooldown, health metrics)."
+        },
+        {
+          "info": {
+            "name": "Verify default credentials (transcript)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/verify/transcript",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verifies the default credential for a tenant with formatted output lines. Check IsSuccess field for result.\nThis verifies the specific default credential - NOT round-robin selection.\nOn successful verification, automatically clears any stale operational state (cooldown, health metrics)."
+        },
+        {
+          "info": {
+            "name": "Verify a credential by ID (transcript)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId/verify/transcript",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier to verify."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verifies a specific credential for a tenant with formatted output lines. Check IsSuccess field for result.\nThis verifies the exact credential specified - NOT round-robin selection.\nOn successful verification, automatically clears any stale operational state (cooldown, health metrics)."
+        },
+        {
+          "info": {
+            "name": "Verify default credentials - streaming (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/verify/stream",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Streams real-time verification progress for the tenant's default credential over a WebSocket, as structured JSON messages.\nVerifies that one default credential rather than exercising round-robin selection, and clears stale cooldown and health metrics on success.\n**DEPRECATED:** use `POST /api/v1/cloud/tenants/{tenantId}/credentials/verify/sse` instead — same message format over a\nsimpler protocol. This WebSocket endpoint is kept only for backward compatibility with existing UI clients."
+        },
+        {
+          "info": {
+            "name": "Verify a credential by ID - streaming (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId/verify/stream",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier to verify."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Streams real-time verification progress for one named credential over a WebSocket, as structured JSON messages.\nVerifies the exact credential given rather than exercising round-robin selection, and clears stale cooldown and health metrics on success.\n**DEPRECATED:** use `POST /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify/sse` instead — same message\nformat over a simpler protocol. This WebSocket endpoint is kept only for backward compatibility with existing UI clients."
+        },
+        {
+          "info": {
+            "name": "Verify default credentials - streaming",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/verify/sse",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Streams real-time tenant credential verification progress via Server-Sent Events (SSE).\nEach event is a JSON message: `data: {\"type\":\"step_started\",\"stepName\":\"...\",\"stepNumber\":1}\\n\\n`\nReplaces the WebSocket-based `/verify/stream` endpoint. Same message format, simpler protocol."
+        },
+        {
+          "info": {
+            "name": "Verify a credential by ID - streaming",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/credentials/:credentialId/verify/sse",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "credentialId",
+                "value": "",
+                "type": "path",
+                "description": "The credential identifier to verify."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Streams real-time tenant credential verification progress via Server-Sent Events (SSE).\nEach event is a JSON message: `data: {\"type\":\"step_started\",\"stepName\":\"...\",\"stepNumber\":1}\\n\\n`\nReplaces the WebSocket-based `/verify/stream` endpoint. Same message format, simpler protocol."
+        },
+        {
+          "info": {
+            "name": "Discover subscriptions accessible by tenant's default credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/discover/subscriptions",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, name, state, tenantId\n\nDefault when omitted: name:asc."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Discovers the subscriptions the tenant's default credential can reach — for Azure, those the service principal was granted.\nEach row is flagged with isAlreadyManaged, so this distinguishes what could still be onboarded from what\nalready has been. Exercises only the default credential."
+        },
+        {
+          "info": {
+            "name": "Discover resources across subscriptions in a tenant",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/discover/resources",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "types",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of resource types to discover (e.g., \"HostPool\", \"HostPool,Image\")."
+              },
+              {
+                "name": "subscriptionIds",
+                "value": "",
+                "type": "query",
+                "description": "Optional comma-separated list of Azure subscription IDs (GUIDs) to query.\nIf provided, only these subscriptions will be queried (skips subscription discovery).\nIf not provided, all subscriptions accessible by the tenant's credentials will be discovered and queried."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\nid, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncpuArchitectureType, galleryId, galleryName, generation, hasVersion, hostPoolType, hyperVGeneration, id, imageDefinitionId, imageDefinitionName, imageSourceType, isAlreadyManaged, location, name, offer, osDiskSizeBytes, osDiskSizeGiB, osDiskSizeInGb, osState, osType, powerState, publisher, recommendedCoresMax, recommendedCoresMin, recommendedMemoryMax, recommendedMemoryMaxBytes, recommendedMemoryMin, recommendedMemoryMinBytes, resourceGroup, securityType, sku, storageAccountType, subnetId, subscriptionId, tags, type, version, vmSize, vnetId\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Discovers resource metadata for several types at once by querying the cloud provider live, each row flagged with\nisAlreadyManaged so resources already imported into DaaS IQ can be told apart from candidates.\n            \nIf subscriptionIds is provided, only those subscriptions are queried (faster — skips subscription discovery).\nIf subscriptionIds is not provided, all accessible subscriptions are discovered and queried."
+        },
+        {
+          "info": {
+            "name": "Discover host pools across all subscriptions in a tenant",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/discover/resources/hostpools",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter expression.\n\nSupports JSON and RQL formats:\n\n- JSON: {\"and\":[{\"field\":\"status\",\"op\":\"eq\",\"value\":\"Active\"},{\"field\":\"name\",\"op\":\"ct\",\"value\":\"Smith, John\"}]}\n- RQL: and(eq(status,Active),ct(name,Smith%2C%20John)) — values are URL-decoded; encode reserved characters\n\nOperators:\nand, or, not (logical); eq, neq, ct, nct, sw, nsw, ew, new (predicate)\n\nFields (names are matched case-insensitively):\nhostPoolType, id, isAlreadyManaged, location, name, resourceGroup, subscriptionId, type"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\nhostPoolType, id, isAlreadyManaged, location, name, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Discovers host pools as they exist in Azure, with pool type, load balancer configuration, and session limits.\nIncludes pools never imported, so it answers \"what is out there\" rather than \"what do we manage\"."
+        },
+        {
+          "info": {
+            "name": "Discover images across all subscriptions in a tenant (Deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/discover/resources/images",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The tenant identifier."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression for ordering results.\n\nFormat:\nfield:direction,otherField:direction\n\nDirections: asc, desc, ascending, descending — defaults to ascending when omitted\n\nFields (names are matched case-insensitively):\ncpuArchitectureType, hyperVGeneration, id, isAlreadyManaged, location, name, osDiskSizeGiB, osState, osType, resourceGroup, subscriptionId, tags, type\n\nDefault when omitted: name:asc.\n\nDynamic properties.* field paths are also allowed (for example properties.hostPoolType)."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The page number to retrieve (1-based). Default: 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of items per page (1-100). Default: 50."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\n<b>DEPRECATED:</b> Image discovery is replaced by Image Management. Use /discover/resources/virtualmachines for the import wizard.\n            Image metadata with source type (Managed or SharedImageGallery), OS type, and disk information."
+        },
+        {
+          "info": {
+            "name": "Import cloud resources for a tenant",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:tenantId/resources/import",
+            "params": [
+              {
+                "name": "tenantId",
+                "value": "",
+                "type": "path",
+                "description": "The unique tenant identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a single long-running parent job that orchestrates subscription-level import jobs.\nThe parent job discovers subscriptions, dispatches child import jobs (one per subscription),\naggregates progress, and determines overall success/failure.\n            \nTwo modes are supported:\n1. **Import All**: Set `importAll: true` to discover all subscriptions and import all resources\n2. **Selective Import**: Provide specific subscriptions and resource IDs to import\n            \nSelective imports default"
+        },
+        {
+          "info": {
+            "name": "Get tenants",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query",
+                "description": "Optional. The cloud provider identifier (e.g., \"azure\", \"aws\", \"gcp\")."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the cloud provider tenants in the organization — Azure AD, AWS Organizations, GCP Organizations —\noptionally narrowed to one provider, each with its default credential masked.\nConfiguration only: no health, verification results, or the subscriptions beneath each tenant."
+        },
+        {
+          "info": {
+            "name": "Create a new tenant with default credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new tenant with the specified configuration and default credential in a single operation.\nThe provided credentials will become the tenant's default credential used for API authentication.\nNote: For Azure providers, the TenantId field in credentials is automatically populated from the ProviderTenantId."
+        },
+        {
+          "info": {
+            "name": "Get a tenant by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique tenant identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one tenant in the same shape as a list row: provider, identifiers, and masked default credential.\nConfiguration only: no health, no verification results, and no credentials beyond the default."
+        },
+        {
+          "info": {
+            "name": "Update an existing tenant",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique tenant identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates an existing tenant with the specified configuration. Provider changes are only allowed for tenants in Draft state.\nIf AuthType and Credentials are provided, also updates the default credential."
+        },
+        {
+          "info": {
+            "name": "Partially update a tenant",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique tenant identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Partially updates a tenant. All fields are optional - only provided fields will be updated.\nFor credential updates, you can provide partial credentials (e.g., just clientSecret) to update specific fields."
+        },
+        {
+          "info": {
+            "name": "Delete a tenant",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique tenant identifier."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Soft deletes a tenant and its associated credentials."
+        },
+        {
+          "info": {
+            "name": "Get tenant status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:id/status",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique tenant identifier."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of additional data to include (subscriptions, credentials)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the tenant's aggregated health and verification details, computed from every credential and subscription beneath it.\nReads the last stored result without contacting the cloud provider, so it is fast and safe to call repeatedly,\nbut reflects the previous evaluation rather than this moment; a never-evaluated tenant reports Unknown.\nUse this to display known health. To re-test connectivity right now, refresh the status instead.\n            \nUse the `include` parameter to request additional "
+        },
+        {
+          "info": {
+            "name": "Refresh tenant status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.controlup.com/daas-iq/v1/cloud/tenants/:id/status/refresh",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique tenant identifier."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of additional data to include (subscriptions, credentials)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Re-tests the tenant against the cloud provider now, verifying every subscription beneath it and re-aggregating\nthe result, then stores it so later reads of the tenant status return this outcome.\nThe authoritative answer to \"is this tenant working right now\", at the cost of live provider calls across\nevery subscription. Covers the whole tenant, whereas verifying a credential tests one credential in isolation.\n            \nUse the `include` parameter to request additional details:\n- `subscriptions"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
