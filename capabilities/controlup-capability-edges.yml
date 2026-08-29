@@ -1,0 +1,209 @@
+slug: controlup
+provider: ControlUp
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 19
+edges:
+- tag: Organizations
+  spec_file: controlup-organizations-api-openapi.yml
+  capability_id: BC-4230.10
+  capability_id_l1: BC-4230
+  capability_name: Tenant Provisioning & Lifecycle
+  confidence: 0.82
+  evidence: POST /organizations/{tenantManagerOrgId}/tenants "Create a tenant organization"; schemas TenantManagerOrganizationStatus,
+    Region
+  reason: Creation and listing of tenant organizations under a tenant manager, with status and region,
+    plus copying tenant data — squarely tenant provisioning and lifecycle in a multi-tenant SaaS.
+- tag: Host pool cost
+  spec_file: controlup-host-pool-cost-api-openapi.yml
+  capability_id: BC-600.80
+  capability_id_l1: BC-600
+  capability_name: IT Financial Management
+  confidence: 0.78
+  evidence: GET /cloud/host-pools/{hostPoolId}/cost  Get host pool cost breakdown and trend; GetHostPoolSavings  Get
+    host pool autoscale savings
+  reason: Cost breakdown, savings and cost export for cloud host pools is IT spend visibility and cost
+    optimisation (IT financial management), not general financial accounting.
+- tag: Subscriptions
+  spec_file: controlup-subscriptions-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.78
+  evidence: GET /cloud/subscriptions/{subscriptionId}/metadata/vm-sizes 'Get available VM sizes for a
+    region'; 'Get compute quota usage for a region'; LookupVirtualNetworks
+  reason: 'Despite the tag name, these are cloud provider subscriptions (Azure-style): regions, VM sizes,
+    OS disks, compute quota, virtual networks and permission preflight. This is cloud infrastructure management,
+    not commercial subscription lifecycle.'
+- tag: Host pool VM settings
+  spec_file: controlup-host-pool-vm-settings-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: PUT /cloud/host-pools/{hostPoolId}/vm-settings  Create or replace VM settings for a host pool;
+    schemas LookedUpVirtualNetworkSubnetDto, VmSizeDto, DiskSizeDto
+  reason: Manages virtual machine sizing, image, network and disk configuration for cloud desktop host
+    pools — cloud compute/infrastructure management.
+- tag: Host pools
+  spec_file: controlup-host-pools-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: GET /cloud/host-pools  GetHostPools  Get host pools; "Multi-cloud Virtual Desktop Infrastructure
+    Management API"; schemas CloudProvider, HostPoolMetricsResult
+  reason: Operations manage VDI host pools (cloud compute infrastructure for virtual desktops) including
+    deletion from Azure and metrics — this is IT infrastructure management, not a business-domain capability.
+- tag: Machine
+  spec_file: controlup-machine-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: GET /v1/machines/sizing_recommendation/azure  Get sizing recommendation for machine for Azure
+    environment; GET /v1/machines/statistics/{grouping}
+  reason: Machine usage statistics and compute sizing recommendations for virtual/Azure environments —
+    IT infrastructure capacity and utilisation management of the endpoint estate.
+- tag: Machines
+  spec_file: controlup-machines-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: POST /v1/machines  upsertMachines  Create or update machines; "APIs to manage configurations
+    in the VDI environment"
+  reason: CRUD over the VDI machine inventory and its agent/status/load-balancing configuration — management
+    of compute infrastructure assets.
+- tag: Master images
+  spec_file: controlup-master-images-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: POST /cloud/master-images/deploy-from-marketplace  Deploy Master Image from curated Marketplace;
+    GET /cloud/master-images/{id}/decommission-plan  Get decommission plan
+  reason: Lifecycle of VDI golden/master VM images — deploy, promote, publish, decommission — is cloud
+    compute image and infrastructure management, not product release engineering of the vendor's own software.
+- tag: Session
+  spec_file: controlup-session-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.75
+  evidence: GET /v1/sessions getSessionsStatistics 'Get session statistics'; 'Session statistics report';
+    schemas SessionResourcesResult, SessionState
+  reason: Operations report statistics, timelines and resource usage for VDI/DaaS user sessions — monitoring
+    of the running IT estate, i.e. IT operations monitoring, not a commercial or customer-facing capability.
+- tag: Alerts - Devices
+  spec_file: controlup-alerts-devices-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.72
+  evidence: POST /organizations/{orgId}/alert-configs/desktop AlertsDesktopController_createDesktopAlert
+    Create a Devices alert; schemas DesktopAlertMetricCondition, DesktopAlertMetric, Severity
+  reason: 'CRUD over desktop alert configurations with metric conditions and severity, plus ServiceNow
+    custom fields for ticketing — endpoint monitoring and alert routing within day-to-day IT operations.
+    Homograph check: ''Alerts'' here is device telemetry thresholds, not any business alerting.'
+- tag: Host pool deployments
+  spec_file: controlup-host-pool-deployments-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.72
+  evidence: POST /cloud/subscriptions/{subscriptionId}/host-pool-deployments  CreateHostPoolDeployment  Create
+    host pool deployment
+  reason: Provisioning cloud host pools (VM join type, image source, load balancing) is cloud infrastructure
+    provisioning under IT infrastructure management.
+- tag: Host pool session host deployments
+  spec_file: controlup-host-pool-session-host-deployments-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.72
+  evidence: POST /cloud/host-pools/{hostPoolId}/session-host-deployments  CreateSessionHostDeployment  Create
+    session hosts
+  reason: Creating session host VMs within a host pool is compute provisioning, i.e. IT infrastructure
+    management.
+- tag: Roles
+  spec_file: controlup-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: POST /organizations/{orgId}/roles "Create a role"; schemas GetRoleResponse, api_keys, REMEDIATION_FLOW,
+    reports
+  reason: CRUD over organization roles with permission scopes — role-based access control administration,
+    i.e. identity and access management. Borderline admin plumbing, hence 0.72.
+- tag: Alerts
+  spec_file: controlup-alerts-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: GET /alerts get-alerts List all Alerts; POST /scouts/{scoutId}/alerts app.create_scout_alert
+    Create alert policy; schemas AlertConditionObjectCitrix, AlertConditionObjectAvd, AlertTriggerSettings
+  reason: These are monitoring alert policies and trigger conditions over Citrix/AVD/Teams estate and
+    synthetic-monitoring scouts — IT operational monitoring and automation of the end-user computing estate,
+    not financial-crime or business alerting. ControlUp is a devtool/ITOM vendor, so the cross-industry
+    IT capability is the honest mapping; ambiguity remains between IT Operations and Observability framing.
+- tag: IP Allowlist
+  spec_file: controlup-ip-allowlist-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /organizations/{orgId}/ip-allowlist  Create an IP allowlist entry; schema IpAddressOrCIDR
+  reason: IP allowlisting governs which network sources may access the org's tenant — an access control
+    mechanism. Mapped to Identity & Access Management, though it is arguably plain platform security configuration.
+- tag: MFAs
+  spec_file: controlup-mfas-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: '"Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms";
+    GET /mfas  List all MFA users'
+  reason: Retrieves usernames/phone numbers configured for phone or SMS verification used by synthetic
+    monitoring robots — authentication credential configuration, closest to Identity & Access Management.
+- tag: Metrics
+  spec_file: controlup-metrics-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: '"APIs to manage and query realtime metrics in the VDI environment"; POST /v1/metrics/query  Query
+    metrics'
+  reason: Realtime metric querying over the monitored VDI estate is IT operations monitoring. Note this
+    monitors the customer's endpoint estate (IT Operations), not the vendor's own SaaS service, so BC-4220.20
+    would be wrong.
+- tag: Session hosts
+  spec_file: controlup-session-hosts-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: POST /cloud/session-hosts/{sessionHostId}/actions 'Execute an action on a session host'; 'Multi-cloud
+    Virtual Desktop Infrastructure Management API'
+  reason: Executes lifecycle/management actions on virtual desktop session host machines and lists their
+    sessions — management of compute infrastructure hosting the VDI estate.
+- tag: Users
+  spec_file: controlup-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: GET /organizations/{orgId}/users, PATCH .../users/{id} "Update a user", POST .../revoke-api-keys
+    "Revoke a user’s API keys"; schemas LoginMethod, MFAType, OrgUserSettings.roleIds
+  reason: Administration of platform user accounts, roles, login methods/MFA and credential revocation
+    within an organisation — identity and access administration rather than HR employee records.
