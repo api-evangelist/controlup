@@ -136,6 +136,50 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
+    UserActivityResult:
+      type: object
+      properties:
+        user_name:
+          type: string
+        user_account:
+          type: string
+        user_id:
+          type: string
+        activity_statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityStatus'
+    ActivityStatus:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        activity_status:
+          type: string
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     HistoricalListResponseUserActivityResult:
       type: object
       properties:
@@ -181,50 +225,6 @@ components:
         timeFrom:
           type: string
         timeTo:
-          type: string
-    UserActivityResult:
-      type: object
-      properties:
-        user_name:
-          type: string
-        user_account:
-          type: string
-        user_id:
-          type: string
-        activity_statuses:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActivityStatus'
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
-    ActivityStatus:
-      type: object
-      properties:
-        start:
-          type: string
-          format: date-time
-        end:
-          type: string
-          format: date-time
-        activity_status:
           type: string
   securitySchemes:
     bearer-jwt:

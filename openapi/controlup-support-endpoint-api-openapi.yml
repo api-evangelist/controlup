@@ -86,13 +86,15 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
-    UploadStartDate:
+    HistoricalErrorResponse:
       type: object
       properties:
-        startDate:
-          type: string
-        timeZone:
-          type: string
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     UserMetadata:
       type: object
       properties:
@@ -141,15 +143,13 @@ components:
         statusCode:
           type: integer
           format: int32
-    HistoricalErrorResponse:
+    UploadStartDate:
       type: object
       properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
+        startDate:
+          type: string
+        timeZone:
+          type: string
   securitySchemes:
     bearer-jwt:
       type: http

@@ -205,6 +205,35 @@ components:
           type: string
         message:
           type: string
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    HistoricalListResponseWindowsEventResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WindowsEventResult'
     UserMetadata:
       type: object
       properties:
@@ -242,35 +271,6 @@ components:
           type: string
         timeTo:
           type: string
-    HistoricalListResponseWindowsEventResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WindowsEventResult'
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
   securitySchemes:
     bearer-jwt:
       type: http

@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -884,6 +884,469 @@ paths:
       - CookieAuth: []
 components:
   schemas:
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    VmSecurityType:
+      enum:
+      - trustedLaunch
+      - standard
+      - confidentialVM
+      type: string
+      description: Security profile for Azure VMs.
+    DiscoverableResourceType:
+      enum:
+      - subscription
+      - resourceGroup
+      - workspace
+      - image
+      - gallery
+      - galleryImage
+      - galleryImageVersion
+      - hostPool
+      - virtualMachine
+      - virtualNetwork
+      type: string
+      description: 'Public API enum for resource types that users can discover/import.
+
+        Only includes high-level resource types exposed to end users.'
+    HostPoolVmSettingsDto:
+      required:
+      - availabilityZones
+      - deploymentRegion
+      - deploymentResourceGroupName
+      - hostPoolId
+      - imageSource
+      - integrityMonitoring
+      - intuneEnrollment
+      - joinType
+      - localAdminUsername
+      - networkSecurityGroup
+      - osDiskSizeBytes
+      - osDiskStorageAccountType
+      - primaryVmSize
+      - publicInboundPorts
+      - secureBoot
+      - securityType
+      - subnetResourceId
+      - virtualNetworkResourceId
+      - vmNamingPrefix
+      - vTpm
+      type: object
+      properties:
+        deploymentRegion:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: 'Region code (e.g. `eastus`) where session hosts are deployed.
+
+            Drives region-sensitive compatibility validation and the deployment location.'
+        deploymentResourceGroupName:
+          maxLength: 90
+          minLength: 1
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type: string
+          description: 'Name of the resource group session hosts are deployed into (e.g. `rg-avd-prod`).
+
+            Resolved within the subscription that owns the host pool.'
+        vmNamingPrefix:
+          maxLength: 11
+          minLength: 1
+          type: string
+          description: Prefix used for newly created session host VM names.
+        primaryVmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Primary VM size used for provisioning.
+        alternativeVmSize:
+          maxLength: 64
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional fallback VM size used when the primary size is unavailable.
+        availabilityZones:
+          type: array
+          items:
+            type: string
+          description: Requested availability zones for session host deployment.
+        imageSource:
+          $ref: '#/components/schemas/HostPoolVmImageSource'
+        imageResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image when gallery image source is used.
+        imageVersionResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image version when gallery image source is used.
+        existingVmResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the existing VM when existing VM image source is used.
+        osDiskStorageAccountType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: OS disk storage account type.
+        osDiskSizeBytes:
+          minimum: 1
+          type: integer
+          description: Requested OS disk size in bytes.
+          format: int64
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        secureBoot:
+          type: boolean
+          description: Indicates whether Secure Boot is enabled.
+        vTpm:
+          type: boolean
+          description: Indicates whether virtual TPM is enabled.
+        integrityMonitoring:
+          type: boolean
+          description: Indicates whether integrity monitoring is enabled.
+        virtualNetworkResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the virtual network.
+        subnetResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the subnet (identifies both the virtual network and subnet).
+        networkSecurityGroup:
+          $ref: '#/components/schemas/HostPoolVmNetworkSecurityGroup'
+        publicInboundPorts:
+          type: boolean
+          description: Indicates whether public inbound ports are allowed.
+        joinType:
+          $ref: '#/components/schemas/HostPoolVmJoinType'
+        adDomain:
+          type:
+          - string
+          - 'null'
+          description: Active Directory domain for AD join scenarios.
+        domainJoinUpn:
+          type:
+          - string
+          - 'null'
+          description: Domain join user principal name for AD join scenarios.
+        ouPath:
+          type:
+          - string
+          - 'null'
+          description: Organizational unit path for AD join scenarios.
+        localAdminUsername:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: Local administrator username configured on session hosts.
+        profileStoragePath:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional FSLogix profile storage UNC path.
+        intuneEnrollment:
+          type: boolean
+          description: Indicates whether Intune enrollment is enabled.
+        tags:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Tags applied to created session host resources.
+        hostPoolId:
+          type: string
+          description: Host pool identifier associated with these settings.
+          format: uuid
+        localAdminPassword:
+          type:
+          - string
+          - 'null'
+          description: 'Local administrator password placeholder value.
+
+            Secret values are not returned in plaintext.'
+        domainJoinPassword:
+          type:
+          - string
+          - 'null'
+          description: 'Domain join password placeholder value.
+
+            Secret values are not returned in plaintext.'
+        details:
+          $ref: '#/components/schemas/HostPoolVmSettingsDetailsDto'
+      additionalProperties: false
+      description: 'VM settings response for a host pool.
+
+        Secret values are never returned in plaintext.'
+    LookedUpResourceGroupDto:
+      required:
+      - id
+      - location
+      - name
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+      additionalProperties: false
+      description: 'Represents a looked-up Azure resource group.
+
+        Resource groups are containers, not resources — they derive from the entity base
+
+        rather than the resource DTO since they don''t belong to a resource group.'
+    HostPoolVmImageSource:
+      enum:
+      - gallery
+      - existingVm
+      type: string
+      description: Image source selection for host pool VM settings.
+    HostPoolVmNetworkSecurityGroup:
+      enum:
+      - basic
+      type: string
+      description: Network security group preset for host pool VM settings.
+    SaveHostPoolVmSettingsRequest:
+      required:
+      - availabilityZones
+      - deploymentRegion
+      - deploymentResourceGroupName
+      - imageSource
+      - integrityMonitoring
+      - intuneEnrollment
+      - joinType
+      - localAdminUsername
+      - networkSecurityGroup
+      - osDiskSizeBytes
+      - osDiskStorageAccountType
+      - primaryVmSize
+      - publicInboundPorts
+      - secureBoot
+      - securityType
+      - subnetResourceId
+      - virtualNetworkResourceId
+      - vmNamingPrefix
+      - vTpm
+      type: object
+      properties:
+        deploymentRegion:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: 'Region code (e.g. `eastus`) where session hosts are deployed.
+
+            Drives region-sensitive compatibility validation and the deployment location.'
+        deploymentResourceGroupName:
+          maxLength: 90
+          minLength: 1
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type: string
+          description: 'Name of the resource group session hosts are deployed into (e.g. `rg-avd-prod`).
+
+            Resolved within the subscription that owns the host pool.'
+        vmNamingPrefix:
+          maxLength: 11
+          minLength: 1
+          type: string
+          description: Prefix used for newly created session host VM names.
+        primaryVmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Primary VM size used for provisioning.
+        alternativeVmSize:
+          maxLength: 64
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional fallback VM size used when the primary size is unavailable.
+        availabilityZones:
+          type: array
+          items:
+            type: string
+          description: Requested availability zones for session host deployment.
+        imageSource:
+          $ref: '#/components/schemas/HostPoolVmImageSource'
+        imageResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image when gallery image source is used.
+        imageVersionResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the gallery image version when gallery image source is used.
+        existingVmResourceId:
+          type:
+          - string
+          - 'null'
+          description: Full ARM resource ID of the existing VM when existing VM image source is used.
+        osDiskStorageAccountType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: OS disk storage account type.
+        osDiskSizeBytes:
+          minimum: 1
+          type: integer
+          description: Requested OS disk size in bytes.
+          format: int64
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        secureBoot:
+          type: boolean
+          description: Indicates whether Secure Boot is enabled.
+        vTpm:
+          type: boolean
+          description: Indicates whether virtual TPM is enabled.
+        integrityMonitoring:
+          type: boolean
+          description: Indicates whether integrity monitoring is enabled.
+        virtualNetworkResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the virtual network.
+        subnetResourceId:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          description: Full ARM resource ID of the subnet (identifies both the virtual network and subnet).
+        networkSecurityGroup:
+          $ref: '#/components/schemas/HostPoolVmNetworkSecurityGroup'
+        publicInboundPorts:
+          type: boolean
+          description: Indicates whether public inbound ports are allowed.
+        joinType:
+          $ref: '#/components/schemas/HostPoolVmJoinType'
+        adDomain:
+          type:
+          - string
+          - 'null'
+          description: Active Directory domain for AD join scenarios.
+        domainJoinUpn:
+          type:
+          - string
+          - 'null'
+          description: Domain join user principal name for AD join scenarios.
+        ouPath:
+          type:
+          - string
+          - 'null'
+          description: Organizational unit path for AD join scenarios.
+        localAdminUsername:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: Local administrator username configured on session hosts.
+        profileStoragePath:
+          maxLength: 256
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Optional FSLogix profile storage UNC path.
+        intuneEnrollment:
+          type: boolean
+          description: Indicates whether Intune enrollment is enabled.
+        tags:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Tags applied to created session host resources.
+        localAdminPassword:
+          maxLength: 256
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional local administrator password to set or update.
+        domainJoinPassword:
+          maxLength: 256
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional domain join password used when AD join is selected.
+      additionalProperties: false
+      description: Full request payload for creating or replacing VM settings for a host pool.
     VmSizeDto:
       required:
       - cores
@@ -1073,87 +1536,67 @@ components:
       description: 'Data transfer object representing a virtual machine size/SKU.
 
         Contains specifications and capabilities for capacity planning and provisioning.'
-    VmSecurityType:
-      enum:
-      - trustedLaunch
-      - standard
-      - confidentialVM
-      type: string
-      description: Security profile for Azure VMs.
-    HostPoolVmImageSource:
-      enum:
-      - gallery
-      - existingVm
-      type: string
-      description: Image source selection for host pool VM settings.
-    HostPoolVmNetworkSecurityGroup:
-      enum:
-      - basic
-      type: string
-      description: Network security group preset for host pool VM settings.
-    ErrorResponse:
+    LookedUpVirtualMachineDto:
       required:
-      - status
-      - title
-      - traceId
+      - generation
+      - id
+      - isAlreadyManaged
+      - location
+      - name
+      - osType
+      - powerState
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      - vmSize
       type: object
       properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
         type:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the problem type.
-        title:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
           type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          description: The HTTP status code.
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the specific occurrence of the problem.
-        errors:
-          type:
-          - object
-          - 'null'
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
           additionalProperties:
-            type: array
-            items:
-              type: string
-          description: 'Dictionary of field-specific validation errors (only present for validation failures).
-
-            Key is the field name, value is an array of error messages for that field.'
-        traceId:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
           type: string
-          description: Request ID (cu-request-id) for tracking and debugging purposes.
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
+        generation:
+          type: string
+          description: Hyper-V generation ("V1" or "V2").
+        powerState:
+          type: string
+          description: 'Current power state: "PowerState/running", "PowerState/deallocated", "PowerState/stopped",
+
+            "PowerState/starting", or "PowerState/stopping".'
+          example: PowerState/running
+        vmSize:
+          type: string
+          description: Azure VM size (e.g., "Standard_D2s_v5").
+        osType:
+          type: string
+          description: OS type (e.g., "Windows", "Linux").
       additionalProperties: false
-      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
-
-        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    DiscoverableResourceType:
-      enum:
-      - subscription
-      - resourceGroup
-      - workspace
-      - image
-      - gallery
-      - galleryImage
-      - galleryImageVersion
-      - hostPool
-      - virtualMachine
-      - virtualNetwork
-      type: string
-      description: 'Public API enum for resource types that users can discover/import.
-
-        Only includes high-level resource types exposed to end users.'
+      description: Represents a looked-up virtual machine resource with promoted VM-specific properties.
     RegionMetadataDto:
       required:
       - displayName
@@ -1198,183 +1641,6 @@ components:
             Null when zone data was not requested; empty array when the region has no zones.'
       additionalProperties: false
       description: Region metadata for a subscription.
-    HostPoolVmSettingsDto:
-      required:
-      - availabilityZones
-      - deploymentRegion
-      - deploymentResourceGroupName
-      - hostPoolId
-      - imageSource
-      - integrityMonitoring
-      - intuneEnrollment
-      - joinType
-      - localAdminUsername
-      - networkSecurityGroup
-      - osDiskSizeBytes
-      - osDiskStorageAccountType
-      - primaryVmSize
-      - publicInboundPorts
-      - secureBoot
-      - securityType
-      - subnetResourceId
-      - virtualNetworkResourceId
-      - vmNamingPrefix
-      - vTpm
-      type: object
-      properties:
-        deploymentRegion:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: 'Region code (e.g. `eastus`) where session hosts are deployed.
-
-            Drives region-sensitive compatibility validation and the deployment location.'
-        deploymentResourceGroupName:
-          maxLength: 90
-          minLength: 1
-          pattern: ^[-\w.()]{0,89}[-\w()]$
-          type: string
-          description: 'Name of the resource group session hosts are deployed into (e.g. `rg-avd-prod`).
-
-            Resolved within the subscription that owns the host pool.'
-        vmNamingPrefix:
-          maxLength: 11
-          minLength: 1
-          type: string
-          description: Prefix used for newly created session host VM names.
-        primaryVmSize:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Primary VM size used for provisioning.
-        alternativeVmSize:
-          maxLength: 64
-          minLength: 1
-          type:
-          - string
-          - 'null'
-          description: Optional fallback VM size used when the primary size is unavailable.
-        availabilityZones:
-          type: array
-          items:
-            type: string
-          description: Requested availability zones for session host deployment.
-        imageSource:
-          $ref: '#/components/schemas/HostPoolVmImageSource'
-        imageResourceId:
-          type:
-          - string
-          - 'null'
-          description: Full ARM resource ID of the gallery image when gallery image source is used.
-        imageVersionResourceId:
-          type:
-          - string
-          - 'null'
-          description: Full ARM resource ID of the gallery image version when gallery image source is used.
-        existingVmResourceId:
-          type:
-          - string
-          - 'null'
-          description: Full ARM resource ID of the existing VM when existing VM image source is used.
-        osDiskStorageAccountType:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: OS disk storage account type.
-        osDiskSizeBytes:
-          minimum: 1
-          type: integer
-          description: Requested OS disk size in bytes.
-          format: int64
-        securityType:
-          $ref: '#/components/schemas/VmSecurityType'
-        secureBoot:
-          type: boolean
-          description: Indicates whether Secure Boot is enabled.
-        vTpm:
-          type: boolean
-          description: Indicates whether virtual TPM is enabled.
-        integrityMonitoring:
-          type: boolean
-          description: Indicates whether integrity monitoring is enabled.
-        virtualNetworkResourceId:
-          maxLength: 2048
-          minLength: 1
-          type: string
-          description: Full ARM resource ID of the virtual network.
-        subnetResourceId:
-          maxLength: 2048
-          minLength: 1
-          type: string
-          description: Full ARM resource ID of the subnet (identifies both the virtual network and subnet).
-        networkSecurityGroup:
-          $ref: '#/components/schemas/HostPoolVmNetworkSecurityGroup'
-        publicInboundPorts:
-          type: boolean
-          description: Indicates whether public inbound ports are allowed.
-        joinType:
-          $ref: '#/components/schemas/HostPoolVmJoinType'
-        adDomain:
-          type:
-          - string
-          - 'null'
-          description: Active Directory domain for AD join scenarios.
-        domainJoinUpn:
-          type:
-          - string
-          - 'null'
-          description: Domain join user principal name for AD join scenarios.
-        ouPath:
-          type:
-          - string
-          - 'null'
-          description: Organizational unit path for AD join scenarios.
-        localAdminUsername:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Local administrator username configured on session hosts.
-        profileStoragePath:
-          maxLength: 256
-          minLength: 1
-          type:
-          - string
-          - 'null'
-          description: Optional FSLogix profile storage UNC path.
-        intuneEnrollment:
-          type: boolean
-          description: Indicates whether Intune enrollment is enabled.
-        tags:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          description: Tags applied to created session host resources.
-        hostPoolId:
-          type: string
-          description: Host pool identifier associated with these settings.
-          format: uuid
-        localAdminPassword:
-          type:
-          - string
-          - 'null'
-          description: 'Local administrator password placeholder value.
-
-            Secret values are not returned in plaintext.'
-        domainJoinPassword:
-          type:
-          - string
-          - 'null'
-          description: 'Domain join password placeholder value.
-
-            Secret values are not returned in plaintext.'
-        details:
-          $ref: '#/components/schemas/HostPoolVmSettingsDetailsDto'
-      additionalProperties: false
-      description: 'VM settings response for a host pool.
-
-        Secret values are never returned in plaintext.'
     LookedUpImageDto:
       required:
       - hasVersion
@@ -1507,219 +1773,71 @@ components:
           example: true
       additionalProperties: false
       description: Represents a looked-up image resource.
-    SaveHostPoolVmSettingsRequest:
-      required:
-      - availabilityZones
-      - deploymentRegion
-      - deploymentResourceGroupName
-      - imageSource
-      - integrityMonitoring
-      - intuneEnrollment
-      - joinType
-      - localAdminUsername
-      - networkSecurityGroup
-      - osDiskSizeBytes
-      - osDiskStorageAccountType
-      - primaryVmSize
-      - publicInboundPorts
-      - secureBoot
-      - securityType
-      - subnetResourceId
-      - virtualNetworkResourceId
-      - vmNamingPrefix
-      - vTpm
-      type: object
-      properties:
-        deploymentRegion:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: 'Region code (e.g. `eastus`) where session hosts are deployed.
-
-            Drives region-sensitive compatibility validation and the deployment location.'
-        deploymentResourceGroupName:
-          maxLength: 90
-          minLength: 1
-          pattern: ^[-\w.()]{0,89}[-\w()]$
-          type: string
-          description: 'Name of the resource group session hosts are deployed into (e.g. `rg-avd-prod`).
-
-            Resolved within the subscription that owns the host pool.'
-        vmNamingPrefix:
-          maxLength: 11
-          minLength: 1
-          type: string
-          description: Prefix used for newly created session host VM names.
-        primaryVmSize:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Primary VM size used for provisioning.
-        alternativeVmSize:
-          maxLength: 64
-          minLength: 1
-          type:
-          - string
-          - 'null'
-          description: Optional fallback VM size used when the primary size is unavailable.
-        availabilityZones:
-          type: array
-          items:
-            type: string
-          description: Requested availability zones for session host deployment.
-        imageSource:
-          $ref: '#/components/schemas/HostPoolVmImageSource'
-        imageResourceId:
-          type:
-          - string
-          - 'null'
-          description: Full ARM resource ID of the gallery image when gallery image source is used.
-        imageVersionResourceId:
-          type:
-          - string
-          - 'null'
-          description: Full ARM resource ID of the gallery image version when gallery image source is used.
-        existingVmResourceId:
-          type:
-          - string
-          - 'null'
-          description: Full ARM resource ID of the existing VM when existing VM image source is used.
-        osDiskStorageAccountType:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: OS disk storage account type.
-        osDiskSizeBytes:
-          minimum: 1
-          type: integer
-          description: Requested OS disk size in bytes.
-          format: int64
-        securityType:
-          $ref: '#/components/schemas/VmSecurityType'
-        secureBoot:
-          type: boolean
-          description: Indicates whether Secure Boot is enabled.
-        vTpm:
-          type: boolean
-          description: Indicates whether virtual TPM is enabled.
-        integrityMonitoring:
-          type: boolean
-          description: Indicates whether integrity monitoring is enabled.
-        virtualNetworkResourceId:
-          maxLength: 2048
-          minLength: 1
-          type: string
-          description: Full ARM resource ID of the virtual network.
-        subnetResourceId:
-          maxLength: 2048
-          minLength: 1
-          type: string
-          description: Full ARM resource ID of the subnet (identifies both the virtual network and subnet).
-        networkSecurityGroup:
-          $ref: '#/components/schemas/HostPoolVmNetworkSecurityGroup'
-        publicInboundPorts:
-          type: boolean
-          description: Indicates whether public inbound ports are allowed.
-        joinType:
-          $ref: '#/components/schemas/HostPoolVmJoinType'
-        adDomain:
-          type:
-          - string
-          - 'null'
-          description: Active Directory domain for AD join scenarios.
-        domainJoinUpn:
-          type:
-          - string
-          - 'null'
-          description: Domain join user principal name for AD join scenarios.
-        ouPath:
-          type:
-          - string
-          - 'null'
-          description: Organizational unit path for AD join scenarios.
-        localAdminUsername:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Local administrator username configured on session hosts.
-        profileStoragePath:
-          maxLength: 256
-          minLength: 1
-          type:
-          - string
-          - 'null'
-          description: Optional FSLogix profile storage UNC path.
-        intuneEnrollment:
-          type: boolean
-          description: Indicates whether Intune enrollment is enabled.
-        tags:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          description: Tags applied to created session host resources.
-        localAdminPassword:
-          maxLength: 256
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional local administrator password to set or update.
-        domainJoinPassword:
-          maxLength: 256
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional domain join password used when AD join is selected.
-      additionalProperties: false
-      description: Full request payload for creating or replacing VM settings for a host pool.
-    LookedUpVirtualNetworkSubnetDto:
-      required:
-      - addressPrefixes
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Subnet resource identifier.
-        name:
-          type: string
-          description: Subnet name.
-        addressPrefixes:
-          type: array
-          items:
-            type: string
-          description: Subnet address prefix(es).
-        nsgId:
-          type:
-          - string
-          - 'null'
-          description: Network security group resource identifier, when attached.
-      additionalProperties: false
-      description: Represents a looked-up subnet in a virtual network.
     HostPoolVmJoinType:
       enum:
       - ad
       - entraId
       type: string
       description: Directory join strategy for session host VMs.
-    LookedUpVirtualMachineDto:
+    DiskSizeDto:
       required:
-      - generation
+      - size
+      - tier
+      - type
+      - typeDisplayName
+      type: object
+      properties:
+        type:
+          type: string
+          description: 'Disk SKU family name (for example: Premium_LRS).'
+        typeDisplayName:
+          type: string
+          description: 'User-friendly display name for disk family (for example: Premium SSD).'
+        size:
+          type: string
+          description: 'Azure disk SKU size code (for example: P10, E20, S30).'
+        tier:
+          type: string
+          description: 'Azure disk SKU tier (for example: Premium, Standard).'
+        minSizeBytes:
+          type:
+          - integer
+          - 'null'
+          description: Minimum supported size in bytes for this SKU option (if provided by provider capabilities).
+          format: int64
+        maxSizeBytes:
+          type:
+          - integer
+          - 'null'
+          description: Maximum supported size in bytes for this SKU option (if provided by provider capabilities).
+          format: int64
+        availableZones:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Zones where this size option is available.
+
+            Null when zone data is unavailable.'
+      additionalProperties: false
+      description: A flat OS disk size option row for VM-size catalog responses.
+    ImageSourceType:
+      enum:
+      - managed
+      - sharedImageGallery
+      type: string
+      description: Represents the source type of a virtual machine image.
+    LookedUpVirtualNetworkDto:
+      required:
       - id
-      - isAlreadyManaged
       - location
       - name
-      - osType
-      - powerState
       - resourceGroup
+      - subnets
       - subscriptionId
       - tags
       - type
-      - vmSize
       type: object
       properties:
         id:
@@ -1746,27 +1864,65 @@ components:
         resourceGroup:
           type: string
           description: Resource group name containing this resource.
-        isAlreadyManaged:
-          type: boolean
-          description: Whether this resource is already managed by the application
-          example: false
-        generation:
-          type: string
-          description: Hyper-V generation ("V1" or "V2").
-        powerState:
-          type: string
-          description: 'Current power state: "PowerState/running", "PowerState/deallocated", "PowerState/stopped",
-
-            "PowerState/starting", or "PowerState/stopping".'
-          example: PowerState/running
-        vmSize:
-          type: string
-          description: Azure VM size (e.g., "Standard_D2s_v5").
-        osType:
-          type: string
-          description: OS type (e.g., "Windows", "Linux").
+        subnets:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpVirtualNetworkSubnetDto'
+          description: Gets the list of subnets in this virtual network.
       additionalProperties: false
-      description: Represents a looked-up virtual machine resource with promoted VM-specific properties.
+      description: Represents a looked-up virtual network resource.
+    LookedUpVirtualNetworkSubnetDto:
+      required:
+      - addressPrefixes
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Subnet resource identifier.
+        name:
+          type: string
+          description: Subnet name.
+        addressPrefixes:
+          type: array
+          items:
+            type: string
+          description: Subnet address prefix(es).
+        nsgId:
+          type:
+          - string
+          - 'null'
+          description: Network security group resource identifier, when attached.
+      additionalProperties: false
+      description: Represents a looked-up subnet in a virtual network.
+    HostPoolVmSettingsDetailsDto:
+      type: object
+      properties:
+        deploymentRegion:
+          $ref: '#/components/schemas/RegionMetadataDto'
+        deploymentResourceGroup:
+          $ref: '#/components/schemas/LookedUpResourceGroupDto'
+        primaryVmSize:
+          $ref: '#/components/schemas/VmSizeDto'
+        alternativeVmSize:
+          $ref: '#/components/schemas/VmSizeDto'
+        image:
+          $ref: '#/components/schemas/LookedUpImageDto'
+        imageResourceGroup:
+          $ref: '#/components/schemas/LookedUpResourceGroupDto'
+        imageVersion:
+          $ref: '#/components/schemas/LookedUpGalleryImageVersionDto'
+        existingVM:
+          $ref: '#/components/schemas/LookedUpVirtualMachineDto'
+        osDiskSize:
+          $ref: '#/components/schemas/DiskSizeDto'
+        virtualNetwork:
+          $ref: '#/components/schemas/LookedUpVirtualNetworkDto'
+        virtualNetworkResourceGroup:
+          $ref: '#/components/schemas/LookedUpResourceGroupDto'
+      additionalProperties: false
+      description: Enriched lookup/resource details for host pool VM settings.
     LookedUpGalleryImageVersionDto:
       required:
       - id
@@ -1848,162 +2004,6 @@ components:
           description: Azure regions where this image version has replicas.
       additionalProperties: false
       description: Represents a looked-up gallery image version resource.
-    ImageSourceType:
-      enum:
-      - managed
-      - sharedImageGallery
-      type: string
-      description: Represents the source type of a virtual machine image.
-    LookedUpResourceGroupDto:
-      required:
-      - id
-      - location
-      - name
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-      additionalProperties: false
-      description: 'Represents a looked-up Azure resource group.
-
-        Resource groups are containers, not resources — they derive from the entity base
-
-        rather than the resource DTO since they don''t belong to a resource group.'
-    DiskSizeDto:
-      required:
-      - size
-      - tier
-      - type
-      - typeDisplayName
-      type: object
-      properties:
-        type:
-          type: string
-          description: 'Disk SKU family name (for example: Premium_LRS).'
-        typeDisplayName:
-          type: string
-          description: 'User-friendly display name for disk family (for example: Premium SSD).'
-        size:
-          type: string
-          description: 'Azure disk SKU size code (for example: P10, E20, S30).'
-        tier:
-          type: string
-          description: 'Azure disk SKU tier (for example: Premium, Standard).'
-        minSizeBytes:
-          type:
-          - integer
-          - 'null'
-          description: Minimum supported size in bytes for this SKU option (if provided by provider capabilities).
-          format: int64
-        maxSizeBytes:
-          type:
-          - integer
-          - 'null'
-          description: Maximum supported size in bytes for this SKU option (if provided by provider capabilities).
-          format: int64
-        availableZones:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: 'Zones where this size option is available.
-
-            Null when zone data is unavailable.'
-      additionalProperties: false
-      description: A flat OS disk size option row for VM-size catalog responses.
-    LookedUpVirtualNetworkDto:
-      required:
-      - id
-      - location
-      - name
-      - resourceGroup
-      - subnets
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-        resourceGroup:
-          type: string
-          description: Resource group name containing this resource.
-        subnets:
-          type: array
-          items:
-            $ref: '#/components/schemas/LookedUpVirtualNetworkSubnetDto'
-          description: Gets the list of subnets in this virtual network.
-      additionalProperties: false
-      description: Represents a looked-up virtual network resource.
-    HostPoolVmSettingsDetailsDto:
-      type: object
-      properties:
-        deploymentRegion:
-          $ref: '#/components/schemas/RegionMetadataDto'
-        deploymentResourceGroup:
-          $ref: '#/components/schemas/LookedUpResourceGroupDto'
-        primaryVmSize:
-          $ref: '#/components/schemas/VmSizeDto'
-        alternativeVmSize:
-          $ref: '#/components/schemas/VmSizeDto'
-        image:
-          $ref: '#/components/schemas/LookedUpImageDto'
-        imageResourceGroup:
-          $ref: '#/components/schemas/LookedUpResourceGroupDto'
-        imageVersion:
-          $ref: '#/components/schemas/LookedUpGalleryImageVersionDto'
-        existingVM:
-          $ref: '#/components/schemas/LookedUpVirtualMachineDto'
-        osDiskSize:
-          $ref: '#/components/schemas/DiskSizeDto'
-        virtualNetwork:
-          $ref: '#/components/schemas/LookedUpVirtualNetworkDto'
-        virtualNetworkResourceGroup:
-          $ref: '#/components/schemas/LookedUpResourceGroupDto'
-      additionalProperties: false
-      description: Enriched lookup/resource details for host pool VM settings.
   securitySchemes:
     BearerAuth:
       type: http

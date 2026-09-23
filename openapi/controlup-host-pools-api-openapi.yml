@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -752,34 +752,163 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    JobType:
-      enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
-      type: string
-      description: 'Defines the types of background jobs supported by the system.
+    HostPoolQueryResult:
+      required:
+      - activeSessions
+      - avgCpuPercent
+      - hasNativeScalingPlan
+      - hasSessionHostConfig
+      - id
+      - name
+      - provider
+      - region
+      - regionId
+      - resourceGroup
+      - resourceGroupId
+      - runningHosts
+      - stoppedHosts
+      - subscription
+      - subscriptionId
+      - syncedAt
+      - totalHosts
+      - totalSessions
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the host pool.
+          format: uuid
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        name:
+          type: string
+          description: Host pool friendly name.
+        subscription:
+          type: string
+          description: Subscription display name the host pool belongs to.
+        subscriptionId:
+          type: string
+          description: Subscription ID the host pool belongs to.
+          format: uuid
+        resourceGroup:
+          type: string
+          description: Resource group (provider-agnostic grouping; for AWS this might become organizational unit).
+        resourceGroupId:
+          type: string
+          description: Resource group ID.
+          format: uuid
+        region:
+          type: string
+          description: Human-friendly display name for the region (e.g., 'East US', 'West Europe').
+        regionId:
+          type: string
+          description: Region or location code.
+        type:
+          type: string
+          description: 'Host pool type: ''Pooled'' or ''Personal''.'
+        assignmentType:
+          type:
+          - string
+          - 'null'
+          description: 'Assignment type for personal desktops: ''Automatic'' or ''Direct''. NULL for pooled pools.'
+        totalHosts:
+          type: integer
+          description: Total number of session hosts in this pool.
+          format: int32
+        runningHosts:
+          type: integer
+          description: 'Number of running hosts in this pool (latest metric value).
 
-        Each job type is processed by a specific worker and has its own parameter structure.'
+            Returns 0 if metric data has not been collected yet.'
+          format: int32
+        stoppedHosts:
+          type: integer
+          description: 'Number of stopped hosts in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: int32
+        activeSessions:
+          type: integer
+          description: 'Number of active user sessions in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: int32
+        totalSessions:
+          type: integer
+          description: 'Total number of user sessions in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: int32
+        avgCpuPercent:
+          type: number
+          description: 'Average CPU percentage across all session hosts in this pool (latest metric value).
+
+            Returns 0 if metric data has not been collected yet.'
+          format: double
+        hasSessionHostConfig:
+          type: boolean
+          description: Whether session host VM settings are configured for this host pool.
+        hasNativeScalingPlan:
+          type: boolean
+          description: 'Whether an Azure-native Scaling Plan is assigned to this host pool.
+
+            When true, the native plan may conflict with DaaS IQ autoscale.'
+        syncedAt:
+          type: string
+          description: Timestamp when this host pool was last synced from the provider.
+          format: date-time
+      additionalProperties: false
+      description: 'Provider-agnostic host pool list item (currently Azure only; future providers may reuse).
+
+        Contains only fields that are presently persisted or directly calculable.'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
     HostPoolDetailsResult:
       required:
       - activeSessions
@@ -1004,119 +1133,52 @@ components:
       description: 'Extended host pool details for the host pool details page.
 
         Includes summary widgets data, overview tab details, and configuration info.'
-    HostPoolQueryResultPagedResult:
+    JobCreatedDto:
       required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/HostPoolQueryResult'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: The current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
-
-        Supports traditional page-based pagination with skip/take semantics.'
-    ErrorResponse:
-      required:
-      - status
-      - title
-      - traceId
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the problem type.
-        title:
+        id:
           type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          description: The HTTP status code.
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the specific occurrence of the problem.
-        errors:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: 'Dictionary of field-specific validation errors (only present for validation failures).
-
-            Key is the field name, value is an array of error messages for that field.'
-        traceId:
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
           type: string
-          description: Request ID (cu-request-id) for tracking and debugging purposes.
-      additionalProperties: false
-      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+          description: 'Job action identifier.
 
-        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    CloudProvider:
-      enum:
-      - azure
-      type: string
-      description: Enumeration of supported cloud provider identifiers.
-    MetricDataPoint:
-      required:
-      - timestamp
-      - value
-      type: object
-      properties:
-        timestamp:
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
           type: string
-          description: Timestamp of the measurement.
-          format: date-time
-        value:
-          type: number
-          description: Metric value at this timestamp.
-          format: double
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
       additionalProperties: false
-      description: Single data point in a time-series metric.
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
     HostPoolMetricsResult:
       required:
       - activeSessions
@@ -1167,116 +1229,55 @@ components:
       description: 'Time-series metrics result for host pool charts.
 
         Contains multiple metric series for different chart types.'
-    HostPoolQueryResult:
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+    MetricDataPoint:
       required:
-      - activeSessions
-      - avgCpuPercent
-      - hasNativeScalingPlan
-      - hasSessionHostConfig
-      - id
-      - name
-      - provider
-      - region
-      - regionId
-      - resourceGroup
-      - resourceGroupId
-      - runningHosts
-      - stoppedHosts
-      - subscription
-      - subscriptionId
-      - syncedAt
-      - totalHosts
-      - totalSessions
-      - type
+      - timestamp
+      - value
       type: object
       properties:
-        id:
+        timestamp:
           type: string
-          description: Unique identifier for the host pool.
-          format: uuid
-        provider:
-          $ref: '#/components/schemas/CloudProvider'
-        name:
-          type: string
-          description: Host pool friendly name.
-        subscription:
-          type: string
-          description: Subscription display name the host pool belongs to.
-        subscriptionId:
-          type: string
-          description: Subscription ID the host pool belongs to.
-          format: uuid
-        resourceGroup:
-          type: string
-          description: Resource group (provider-agnostic grouping; for AWS this might become organizational unit).
-        resourceGroupId:
-          type: string
-          description: Resource group ID.
-          format: uuid
-        region:
-          type: string
-          description: Human-friendly display name for the region (e.g., 'East US', 'West Europe').
-        regionId:
-          type: string
-          description: Region or location code.
-        type:
-          type: string
-          description: 'Host pool type: ''Pooled'' or ''Personal''.'
-        assignmentType:
-          type:
-          - string
-          - 'null'
-          description: 'Assignment type for personal desktops: ''Automatic'' or ''Direct''. NULL for pooled pools.'
-        totalHosts:
-          type: integer
-          description: Total number of session hosts in this pool.
-          format: int32
-        runningHosts:
-          type: integer
-          description: 'Number of running hosts in this pool (latest metric value).
-
-            Returns 0 if metric data has not been collected yet.'
-          format: int32
-        stoppedHosts:
-          type: integer
-          description: 'Number of stopped hosts in this pool (latest metric value).
-
-            Returns 0 if metric data has not been collected yet.'
-          format: int32
-        activeSessions:
-          type: integer
-          description: 'Number of active user sessions in this pool (latest metric value).
-
-            Returns 0 if metric data has not been collected yet.'
-          format: int32
-        totalSessions:
-          type: integer
-          description: 'Total number of user sessions in this pool (latest metric value).
-
-            Returns 0 if metric data has not been collected yet.'
-          format: int32
-        avgCpuPercent:
-          type: number
-          description: 'Average CPU percentage across all session hosts in this pool (latest metric value).
-
-            Returns 0 if metric data has not been collected yet.'
-          format: double
-        hasSessionHostConfig:
-          type: boolean
-          description: Whether session host VM settings are configured for this host pool.
-        hasNativeScalingPlan:
-          type: boolean
-          description: 'Whether an Azure-native Scaling Plan is assigned to this host pool.
-
-            When true, the native plan may conflict with DaaS IQ autoscale.'
-        syncedAt:
-          type: string
-          description: Timestamp when this host pool was last synced from the provider.
+          description: Timestamp of the measurement.
           format: date-time
+        value:
+          type: number
+          description: Metric value at this timestamp.
+          format: double
       additionalProperties: false
-      description: 'Provider-agnostic host pool list item (currently Azure only; future providers may reuse).
+      description: Single data point in a time-series metric.
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
 
-        Contains only fields that are presently persisted or directly calculable.'
+        Each job type is processed by a specific worker and has its own parameter structure.'
     HostPoolsStatistics:
       required:
       - activeSessions
@@ -1327,52 +1328,51 @@ components:
       description: 'Aggregate statistics for host pools across an organization.
 
         Provides summary counts by host pool type.'
-    JobCreatedDto:
+    HostPoolQueryResultPagedResult:
       required:
-      - action
-      - id
-      - jobType
-      - jobUrl
-      - logsUrl
-      - message
-      - statusUrl
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
       type: object
       properties:
-        id:
-          type: string
-          description: Unique identifier for the created job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostPoolQueryResult'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
 
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
 
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        jobUrl:
-          type: string
-          description: URL to get full job details (includes parameters).
-        statusUrl:
-          type: string
-          description: 'URL to poll for lightweight status updates (no parameters).
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
 
-            Poll this endpoint every 2-5 seconds while job is running.'
-        logsUrl:
-          type: string
-          description: URL to get job logs in JSON format.
-        message:
-          type: string
-          description: 'Human-readable message about job creation.
-
-            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+            May be null if the data source does not support total count queries.'
+          format: int32
       additionalProperties: false
-      description: 'Lightweight response returned when a job is created.
+      description: 'Represents a paginated result set with metadata for navigation.
 
-        Contains only essential information needed to track the job.
-
-        Use the statusUrl to poll for updates and jobUrl to get full details.'
+        Supports traditional page-based pagination with skip/take semantics.'
   securitySchemes:
     BearerAuth:
       type: http

@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -838,42 +838,63 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    JobType:
-      enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
-      type: string
-      description: 'Defines the types of background jobs supported by the system.
+    JobStatusDto:
+      required:
+      - action
+      - cancellationRequested
+      - canRetry
+      - id
+      - jobType
+      - progress
+      - status
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
 
-        Each job type is processed by a specific worker and has its own parameter structure.'
-    JobInitiationType:
-      enum:
-      - userInitiated
-      - systemScheduled
-      type: string
-      description: 'Indicates how a job was initiated - by a user action or by a system scheduler.
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
 
-        Used to filter job lists in UI and apply different retention policies.'
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        status:
+          $ref: '#/components/schemas/JobStatus'
+        progress:
+          type: integer
+          description: Progress percentage (0-100).
+          format: int32
+        currentStep:
+          type:
+          - string
+          - 'null'
+          description: 'Current step description for user feedback.
+
+            Example: "Gathering resource data (45/100)"'
+        cancellationRequested:
+          type: boolean
+          description: 'Whether cancellation has been requested for this job.
+
+            Worker checks this flag and stops at next safe checkpoint.'
+        canRetry:
+          type: boolean
+          description: 'Whether this job can be retried by the user from the Activity Feed.
+
+            True only when Status is Failed and the job type is registered as user-retriable.
+
+            Computed at mapping time (not stored in the database).'
+      additionalProperties: false
+      description: 'Lightweight job status for polling (optimized for frequent requests).
+
+        Contains only fields that change during execution.
+
+        Use this for status polling every 2-5 seconds while job is running.
+
+        For full details (including parameters, timestamps, errors), use GET /jobs/{id}.'
     JobStatus:
       enum:
       - queued
@@ -885,55 +906,6 @@ components:
       description: 'Generic status enum for all background jobs.
 
         Represents the lifecycle states common to all job types.'
-    JobCancellationResponseDto:
-      required:
-      - jobId
-      - message
-      type: object
-      properties:
-        jobId:
-          type: string
-          description: Identifier of the job the cancellation was requested for.
-          format: uuid
-        message:
-          type: string
-          description: 'Human-readable confirmation that the request was accepted.
-
-            Cancellation is cooperative, so the job stops at its next safe checkpoint rather than immediately.'
-      additionalProperties: false
-      description: Response returned when cancellation of a job has been requested.
-    JobLogDto:
-      required:
-      - id
-      - loggedAt
-      - message
-      - severity
-      type: object
-      properties:
-        id:
-          type: integer
-          description: 'Unique identifier for this log entry (for cursor-based pagination).
-
-            Use this value in the ''after'' query parameter to get subsequent logs.'
-          format: int64
-        loggedAt:
-          type: string
-          description: Timestamp when this log entry was created.
-          format: date-time
-        severity:
-          $ref: '#/components/schemas/JobLogSeverity'
-        message:
-          type: string
-          description: User-facing message describing what happened.
-        phase:
-          type:
-          - string
-          - 'null'
-          description: 'Optional phase/stage of job execution.
-
-            Examples: "Discovery", "Gathering", "Saving", "Finalizing"'
-      additionalProperties: false
-      description: Represents a user-facing log entry for a background job.
     ErrorResponse:
       required:
       - status
@@ -981,6 +953,192 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    JobInitiationType:
+      enum:
+      - userInitiated
+      - systemScheduled
+      type: string
+      description: 'Indicates how a job was initiated - by a user action or by a system scheduler.
+
+        Used to filter job lists in UI and apply different retention policies.'
+    JobLogSeverity:
+      enum:
+      - info
+      - warning
+      - error
+      - success
+      type: string
+      description: 'Severity levels for job log entries.
+
+        Determines how the log is displayed in the UI (color, icon, filtering).'
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+    JobCancellationResponseDto:
+      required:
+      - jobId
+      - message
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Identifier of the job the cancellation was requested for.
+          format: uuid
+        message:
+          type: string
+          description: 'Human-readable confirmation that the request was accepted.
+
+            Cancellation is cooperative, so the job stops at its next safe checkpoint rather than immediately.'
+      additionalProperties: false
+      description: Response returned when cancellation of a job has been requested.
+    JobPartialDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobPartialDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    JobLogDto:
+      required:
+      - id
+      - loggedAt
+      - message
+      - severity
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 'Unique identifier for this log entry (for cursor-based pagination).
+
+            Use this value in the ''after'' query parameter to get subsequent logs.'
+          format: int64
+        loggedAt:
+          type: string
+          description: Timestamp when this log entry was created.
+          format: date-time
+        severity:
+          $ref: '#/components/schemas/JobLogSeverity'
+        message:
+          type: string
+          description: User-facing message describing what happened.
+        phase:
+          type:
+          - string
+          - 'null'
+          description: 'Optional phase/stage of job execution.
+
+            Examples: "Discovery", "Gathering", "Saving", "Finalizing"'
+      additionalProperties: false
+      description: Represents a user-facing log entry for a background job.
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
     JobDto:
       required:
       - action
@@ -1118,119 +1276,6 @@ components:
         Extends ControlUp.Foundry.Api.Dtos.Jobs.JobPartialDto with the error messages.
 
         Job parameters are available via a dedicated GET /jobs/{id}/parameters endpoint.'
-    JobStatusDto:
-      required:
-      - action
-      - cancellationRequested
-      - canRetry
-      - id
-      - jobType
-      - progress
-      - status
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
-
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
-
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        status:
-          $ref: '#/components/schemas/JobStatus'
-        progress:
-          type: integer
-          description: Progress percentage (0-100).
-          format: int32
-        currentStep:
-          type:
-          - string
-          - 'null'
-          description: 'Current step description for user feedback.
-
-            Example: "Gathering resource data (45/100)"'
-        cancellationRequested:
-          type: boolean
-          description: 'Whether cancellation has been requested for this job.
-
-            Worker checks this flag and stops at next safe checkpoint.'
-        canRetry:
-          type: boolean
-          description: 'Whether this job can be retried by the user from the Activity Feed.
-
-            True only when Status is Failed and the job type is registered as user-retriable.
-
-            Computed at mapping time (not stored in the database).'
-      additionalProperties: false
-      description: 'Lightweight job status for polling (optimized for frequent requests).
-
-        Contains only fields that change during execution.
-
-        Use this for status polling every 2-5 seconds while job is running.
-
-        For full details (including parameters, timestamps, errors), use GET /jobs/{id}.'
-    JobCreatedDto:
-      required:
-      - action
-      - id
-      - jobType
-      - jobUrl
-      - logsUrl
-      - message
-      - statusUrl
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the created job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
-
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
-
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        jobUrl:
-          type: string
-          description: URL to get full job details (includes parameters).
-        statusUrl:
-          type: string
-          description: 'URL to poll for lightweight status updates (no parameters).
-
-            Poll this endpoint every 2-5 seconds while job is running.'
-        logsUrl:
-          type: string
-          description: URL to get job logs in JSON format.
-        message:
-          type: string
-          description: 'Human-readable message about job creation.
-
-            Example: "Import job created successfully. Poll statusUrl for progress updates."'
-      additionalProperties: false
-      description: 'Lightweight response returned when a job is created.
-
-        Contains only essential information needed to track the job.
-
-        Use the statusUrl to poll for updates and jobUrl to get full details.'
-    JobLogSeverity:
-      enum:
-      - info
-      - warning
-      - error
-      - success
-      type: string
-      description: 'Severity levels for job log entries.
-
-        Determines how the log is displayed in the UI (color, icon, filtering).'
     JobPartialDto:
       required:
       - action
@@ -1364,51 +1409,6 @@ components:
         Use this for job lists where full details aren''t needed.
 
         For detailed information including parameters and errors, use ControlUp.Foundry.Api.Dtos.Jobs.JobDto.'
-    JobPartialDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobPartialDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
   securitySchemes:
     BearerAuth:
       type: http

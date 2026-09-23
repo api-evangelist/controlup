@@ -5,22 +5,18 @@ info:
   x-logo:
     url: https://app.scoutbees.io/static/media/scoutbees_new.ef578490.png
   termsOfService: https://www.controlup.com/privacy-policy/controlup-eula/
-  description: 'Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms except Citrix Storefront. Use this resource to retrieve the sets of usernames and phone numbers that have been configured for phone or SMS verification.You must contact [Scoutbees Support](https://controlup.zendesk.com/hc/en-us/requests/new) to associate a username with a phone number for MFA.
+  description: 'Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms except Citrix Storefront. Use this resource to retrieve the sets of usernames and phone numbers that have been configured for phone or SMS verification.You must contact Scoutbees Support to associate a username with a phone number for MFA.
 
 
-    Visit [Multi-Factor Authentication](https://support.controlup.com/docs/mfa) for more details on how to configure MFA.
-
-    '
+    Visit Multi-Factor Authentication for more details on how to configure MFA.'
 servers:
 - url: https://api.controlup.com/synthetic-monitoring/v2/
 tags:
 - name: MFAs
-  description: 'Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms except Citrix Storefront. Use this resource to retrieve the sets of usernames and phone numbers that have been configured for phone or SMS verification.You must contact [Scoutbees Support](https://controlup.zendesk.com/hc/en-us/requests/new) to associate a username with a phone number for MFA.
+  description: 'Multi-factor authentication (MFA) is supported for gateway access on all EUC platforms except Citrix Storefront. Use this resource to retrieve the sets of usernames and phone numbers that have been configured for phone or SMS verification.You must contact Scoutbees Support to associate a username with a phone number for MFA.
 
 
-    Visit [Multi-Factor Authentication](https://support.controlup.com/docs/mfa) for more details on how to configure MFA.
-
-    '
+    Visit Multi-Factor Authentication for more details on how to configure MFA.'
 paths:
   /mfas:
     get:
@@ -48,6 +44,24 @@ paths:
           '
 components:
   responses:
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
     MFAList:
       description: A list of MFA users
       content:
@@ -77,24 +91,6 @@ components:
               phone: 12345678901
             - username: atelerix
               phone: 23456789012
-    Unauthorized:
-      description: Missing or wrong api key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Unauthorized
-    ServerError:
-      description: Server errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Server Error
   schemas:
     BaseError:
       type: object

@@ -155,9 +155,7 @@ paths:
         When a machine already exists, only provided fields that differ from current values are applied; unspecified fields are left unchanged.
 
 
-        Note: If the ControlUp environment has the agent setting ''Deploy agents automatically (from monitor only)'' enabled in the configuration console, adding a new machine (with isOutboundReady = false) via this endpoint will cause the ControlUp Monitor to attempt agent deployment to that machine automatically. This process runs from the Monitor service and requires valid domain credentials configured for the Monitor with local administrator rights on the target machines and necessary network/prerequisite access.
-
-        '
+        Note: If the ControlUp environment has the agent setting ''Deploy agents automatically (from monitor only)'' enabled in the configuration console, adding a new machine (with isOutboundReady = false) via this endpoint will cause the ControlUp Monitor to attempt agent deployment to that machine automatically. This process runs from the Monitor service and requires valid domain credentials configured for the Monitor with local administrator rights on the target machines and necessary network/prerequisite access.'
       operationId: upsertMachines
       requestBody:
         required: true
@@ -339,19 +337,6 @@ paths:
       - Region
 components:
   schemas:
-    MachineLoadBalancingDataContract:
-      type: object
-      description: Load balancing configuration for the machine. Returned only if `includeDetails` is set to `true`.
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates if load balancing is enabled
-        weight:
-          type: integer
-          description: Load balancing weight
-          minimum: 0
-          maximum: 1000
-          example: 100
     MachineStatusDataContract:
       type: object
       description: Machine status information
@@ -362,6 +347,25 @@ components:
         isOutboundReady:
           type: boolean
           description: Indicates if the machine is ready for outbound connections
+    MachineAgentDataContract:
+      type: object
+      description: Agent information for the machine. Returned only if `includeDetails` is set to `true`.
+      properties:
+        port:
+          type: integer
+          description: Port number the agent is listening on
+          example: 443
+        installMode:
+          type: boolean
+          description: Indicates if the agent is in install mode
+    MachineManagementDataContract:
+      type: object
+      description: Management information for the machine. Returned only if `includeDetails` is set to `true`.
+      properties:
+        addedViaSyncByExtensionId:
+          type: string
+          description: Extension ID that added this machine via built-in folder sync (supported from version 9.0)
+          example: horizon-extension-ID
     MachineVdiStatusDataContract:
       type: object
       description: VDI-specific status information. Returned only if `includeDetails` is set to `true`.
@@ -376,37 +380,6 @@ components:
           format: date-time
           description: Date since when the machine has been missing in the EUC API
           example: '2024-01-10T08:00:00Z'
-    DeleteMachineResponse:
-      type: object
-      properties:
-        fqdn:
-          type: string
-          description: FQDN of the affected machine
-          example: prod-web-01.contoso.com
-        status:
-          $ref: '#/components/schemas/ItemDeletionStatus'
-      required:
-      - fqdn
-      - status
-    ItemDeletionStatus:
-      type: string
-      description: Result status of the deletion operation for a given item
-      enum:
-      - Unspecified
-      - Deleted
-      - NotFound
-      - AlreadyWasDeleted
-    MachineCapabilitiesDataContract:
-      type: object
-      description: Machine capabilities information
-      properties:
-        outboundReady:
-          type: boolean
-          description: Indicates if the machine supports outbound connections
-        frameworkVersion:
-          type: string
-          description: .NET Framework version installed on the machine
-          example: '4.8'
     GetMachinesResponse:
       type: object
       properties:
@@ -451,6 +424,77 @@ components:
           - message
       required:
       - error
+    UpsertMachinesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineDataContract'
+      required:
+      - data
+    GetMachineResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/MachineDataContract'
+      required:
+      - data
+    DeleteMachineResponse:
+      type: object
+      properties:
+        fqdn:
+          type: string
+          description: FQDN of the affected machine
+          example: prod-web-01.contoso.com
+        status:
+          $ref: '#/components/schemas/ItemDeletionStatus'
+      required:
+      - fqdn
+      - status
+    MachineLoadBalancingDataContract:
+      type: object
+      description: Load balancing configuration for the machine. Returned only if `includeDetails` is set to `true`.
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates if load balancing is enabled
+        weight:
+          type: integer
+          description: Load balancing weight
+          minimum: 0
+          maximum: 1000
+          example: 100
+    DeleteMachineDataContract:
+      type: object
+      required:
+      - fqdn
+      properties:
+        fqdn:
+          type: string
+          description: Fully qualified domain name of the machine to delete
+          maxLength: 255
+          example: prod-web-01.contoso.com
+    MachineCapabilitiesDataContract:
+      type: object
+      description: Machine capabilities information
+      properties:
+        outboundReady:
+          type: boolean
+          description: Indicates if the machine supports outbound connections
+        frameworkVersion:
+          type: string
+          description: .NET Framework version installed on the machine
+          example: '4.8'
+    DeleteMachinesResponse:
+      type: object
+      properties:
+        affectedMachines:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeleteMachineResponse'
+      required:
+      - affectedMachines
     SearchMetadataContract:
       type: object
       properties:
@@ -497,83 +541,6 @@ components:
       - total
       - page
       - limit
-    MachineAgentDataContract:
-      type: object
-      description: Agent information for the machine. Returned only if `includeDetails` is set to `true`.
-      properties:
-        port:
-          type: integer
-          description: Port number the agent is listening on
-          example: 443
-        installMode:
-          type: boolean
-          description: Indicates if the agent is in install mode
-    GetMachineResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/MachineDataContract'
-      required:
-      - data
-    MachineManagementDataContract:
-      type: object
-      description: Management information for the machine. Returned only if `includeDetails` is set to `true`.
-      properties:
-        addedViaSyncByExtensionId:
-          type: string
-          description: Extension ID that added this machine via built-in folder sync (supported from version 9.0)
-          example: horizon-extension-ID
-    DeleteMachinesResponse:
-      type: object
-      properties:
-        affectedMachines:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeleteMachineResponse'
-      required:
-      - affectedMachines
-    DeleteMachineDataContract:
-      type: object
-      required:
-      - fqdn
-      properties:
-        fqdn:
-          type: string
-          description: Fully qualified domain name of the machine to delete
-          maxLength: 255
-          example: prod-web-01.contoso.com
-    UpdateMachineDataContract:
-      type: object
-      required:
-      - computerName
-      properties:
-        computerName:
-          type: string
-          description: Machine name (NetBIOS)
-          maxLength: 255
-          example: PROD-WEB-01
-        domainName:
-          type: string
-          description: Domain name the machine belongs to
-          maxLength: 255
-          example: contoso.com
-        folderPath:
-          type: string
-          description: Target folder path; must exist when provided
-          example: \orgname\foldername
-        siteName:
-          type: string
-          description: Target monitor site name; must exist when provided
-          maxLength: 255
-          example: US-East
-        description:
-          type: string
-          description: Machine description
-          maxLength: 255
-          example: Production web server
-        isOutboundReady:
-          type: boolean
-          description: Enables outbound connectivity when true; clears when false/null
     MachineDataContract:
       type: object
       properties:
@@ -626,15 +593,46 @@ components:
           $ref: '#/components/schemas/MachineManagementDataContract'
         vdiStatus:
           $ref: '#/components/schemas/MachineVdiStatusDataContract'
-    UpsertMachinesResponse:
+    ItemDeletionStatus:
+      type: string
+      description: Result status of the deletion operation for a given item
+      enum:
+      - Unspecified
+      - Deleted
+      - NotFound
+      - AlreadyWasDeleted
+    UpdateMachineDataContract:
       type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MachineDataContract'
       required:
-      - data
+      - computerName
+      properties:
+        computerName:
+          type: string
+          description: Machine name (NetBIOS)
+          maxLength: 255
+          example: PROD-WEB-01
+        domainName:
+          type: string
+          description: Domain name the machine belongs to
+          maxLength: 255
+          example: contoso.com
+        folderPath:
+          type: string
+          description: Target folder path; must exist when provided
+          example: \orgname\foldername
+        siteName:
+          type: string
+          description: Target monitor site name; must exist when provided
+          maxLength: 255
+          example: US-East
+        description:
+          type: string
+          description: Machine description
+          maxLength: 255
+          example: Production web server
+        isOutboundReady:
+          type: boolean
+          description: Enables outbound connectivity when true; clears when false/null
   securitySchemes:
     BearerAuth:
       type: http

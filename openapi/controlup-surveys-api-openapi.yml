@@ -1,7 +1,11 @@
 openapi: 3.2.0
 info:
   title: ControlUp for Desktops Surveys API
-  description: "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves."
+  description: 'This is a working document that details the supported Edge DX API endpoints which can be used by things
+
+    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made
+
+    to try and prevent breaking changes as the API evolves.'
   version: 2.159.0
 servers:
 - url: https://api.controlup.com/edge/api
@@ -14,7 +18,11 @@ paths:
   /user-sentiment/surveys:
     get:
       summary: List all surveys
-      description: "Returns a list of all surveys. You can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your surveys.\n"
+      description: 'Returns a list of all surveys. You can either:
+
+        * Use `query` to use an OpenSearch query. Note that you can''t create an OpenSearch query using the request builder built into the documentation.
+
+        * Use the remaining query parameters to query your surveys.'
       tags:
       - Surveys
       operationId: get-surveys
@@ -202,7 +210,17 @@ paths:
   /user-sentiment/results:
     get:
       summary: Get survey results
-      description: "Returns one row for each time a survey was opened, started, or completed. Optionally, use the `include_answers` parameter to also return survey answers.\n\nIf you are interested only in returning survey completions (results), you should add a filter to return only rows with `type=Result`. While you can use this endpoint to view all answers in a survey result, you can't query the endpoint based on the answers. To query survey answers, you can use GET [/user-sentiment/results/answers/raw](get-survey-answers).\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your survey results.\n"
+      description: 'Returns one row for each time a survey was opened, started, or completed. Optionally, use the `include_answers` parameter to also return survey answers.
+
+
+        If you are interested only in returning survey completions (results), you should add a filter to return only rows with `type=Result`. While you can use this endpoint to view all answers in a survey result, you can''t query the endpoint based on the answers. To query survey answers, you can use GET /user-sentiment/results/answers/raw.
+
+
+        You can either:
+
+        * Use `query` to use an OpenSearch query. Note that you can''t create an OpenSearch query using the request builder built into the documentation.
+
+        * Use the remaining query parameters to query your survey results.'
       tags:
       - Surveys
       operationId: get-survey-results
@@ -255,7 +273,17 @@ paths:
   /user-sentiment/results/answers/raw:
     get:
       summary: Get survey answers
-      description: "Returns a list of all answers to survey questions.\n\nEach row represents one answer to a survey question per user per device.\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query your survey results.\n"
+      description: 'Returns a list of all answers to survey questions.
+
+
+        Each row represents one answer to a survey question per user per device.
+
+
+        You can either:
+
+        * Use `query` to use an OpenSearch query. Note that you can''t create an OpenSearch query using the request builder built into the documentation.
+
+        * Use the remaining query parameters to query your survey results.'
       tags:
       - Surveys
       operationId: get-survey-answers
@@ -301,6 +329,60 @@ paths:
           $ref: '#/components/responses/500'
 components:
   schemas:
+    recurringSurvey:
+      title: Recurring
+      allOf:
+      - $ref: '#/components/schemas/nameAndTemplateId'
+      - type: object
+        properties:
+          type:
+            description: The type of survey to publish.
+            type: string
+            enum:
+            - Recurring
+          status:
+            description: Set to `Scheduled` to publish the survey. Set to `Draft` to save the survey as a draft.
+            type: string
+            enum:
+            - Scheduled
+            - Draft
+          recurring_rule:
+            type: string
+            description: 'An [iCalendar Recurrence Rule (RRULE)](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) string determining how often the survey repeats and when it ends.
+
+
+              * Example of recurring survey with no end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO`
+
+              * Example of recurring survey with specified end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;UNTIL=2025-01-31T03:30:00.000Z`
+
+              * Example of recurring survey ending after a specific number of occurences: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=5`
+
+              '
+            example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO
+          retries_days_count:
+            description: The number of days after which a user will stop being reminded to complete the survey. You can set this from 0 to the number of days set in the `instance_duration_days` parameter.
+            type: integer
+          retries_interval:
+            description: The number of hours after a user dismisses the survey until they receive they receive another survey notification.
+            type: integer
+            minimum: 1
+            maximum: 24
+          instance_duration_days:
+            type: integer
+            description: Set how long the survey lasts and can be completed after each time it occurs. If the frequency specified in the `recurring_rule` is weekly, `instance_duration_days` can be from 1-6 days. If the frequency specified in the `recurring_rule` is monthly, `instance_duration` can be from 1-21 days.
+          start_date:
+            description: The starting date and time of the survey in ISO string format.
+            example: '2023-11-01T04:00:00.000Z'
+            type: string
+        required:
+        - type
+        - status
+        - recurring_rule
+        - retries_days_count
+        - retries_interval
+        - start_date
+        - instance_duration_days
+      - $ref: '#/components/schemas/commonToSingleAndRecurring'
     commonToSingleAndRecurring:
       type: object
       properties:
@@ -512,60 +594,6 @@ components:
         score_raw:
           type: number
           description: For survey completions (type=Result), the average this is the average score of all Net Promoter Score questions with the Global Net Promoter Score option enabled.
-    recurringSurvey:
-      title: Recurring
-      allOf:
-      - $ref: '#/components/schemas/nameAndTemplateId'
-      - type: object
-        properties:
-          type:
-            description: The type of survey to publish.
-            type: string
-            enum:
-            - Recurring
-          status:
-            description: Set to `Scheduled` to publish the survey. Set to `Draft` to save the survey as a draft.
-            type: string
-            enum:
-            - Scheduled
-            - Draft
-          recurring_rule:
-            type: string
-            description: 'An [iCalendar Recurrence Rule (RRULE)](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) string determining how often the survey repeats and when it ends.
-
-
-              * Example of recurring survey with no end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO`
-
-              * Example of recurring survey with specified end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;UNTIL=2025-01-31T03:30:00.000Z`
-
-              * Example of recurring survey ending after a specific number of occurences: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=5`
-
-              '
-            example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO
-          retries_days_count:
-            description: The number of days after which a user will stop being reminded to complete the survey. You can set this from 0 to the number of days set in the `instance_duration_days` parameter.
-            type: integer
-          retries_interval:
-            description: The number of hours after a user dismisses the survey until they receive they receive another survey notification.
-            type: integer
-            minimum: 1
-            maximum: 24
-          instance_duration_days:
-            type: integer
-            description: Set how long the survey lasts and can be completed after each time it occurs. If the frequency specified in the `recurring_rule` is weekly, `instance_duration_days` can be from 1-6 days. If the frequency specified in the `recurring_rule` is monthly, `instance_duration` can be from 1-21 days.
-          start_date:
-            description: The starting date and time of the survey in ISO string format.
-            example: '2023-11-01T04:00:00.000Z'
-            type: string
-        required:
-        - type
-        - status
-        - recurring_rule
-        - retries_days_count
-        - retries_interval
-        - start_date
-        - instance_duration_days
-      - $ref: '#/components/schemas/commonToSingleAndRecurring'
     SurveyResultAnswers:
       type: object
       properties:
@@ -691,18 +719,6 @@ components:
         _score:
           type: integer
           description: For internal use only.
-    nameAndTemplateId:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the survey
-        template_id:
-          type: string
-          description: ID of the template from which to create the survey.
-      required:
-      - name
-      - template_id
     singleSurvey:
       title: Single
       allOf:
@@ -740,18 +756,19 @@ components:
         - start_date
         - expiration_date
       - $ref: '#/components/schemas/commonToSingleAndRecurring'
+    nameAndTemplateId:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the survey
+        template_id:
+          type: string
+          description: ID of the template from which to create the survey.
+      required:
+      - name
+      - template_id
   parameters:
-    FilterField:
-      name: filters[0][field]
-      in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
-
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
     SorterField:
       name: sorters[0][field]
       in: query
@@ -763,32 +780,6 @@ components:
       schema:
         type: string
         example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
-    FilterValue:
-      name: filters[0][value]
-      in: query
-      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
-
-        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
-
-        '
-      schema:
-        oneOf:
-        - type: string
-          title: String
-        - type: number
-          title: Number
-        - type: boolean
-          title: Boolean
     FilterType:
       name: filters[0][type]
       in: query
@@ -813,6 +804,43 @@ components:
         - '>'
         - like
         - boolean
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
   responses:
     '500':
       description: Something went wrong at the API service.

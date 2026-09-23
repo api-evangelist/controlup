@@ -1,7 +1,11 @@
 openapi: 3.2.0
 info:
   title: ControlUp for Desktops Data API
-  description: "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves."
+  description: 'This is a working document that details the supported Edge DX API endpoints which can be used by things
+
+    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made
+
+    to try and prevent breaking changes as the API evolves.'
   version: 2.159.0
 servers:
 - url: https://api.controlup.com/edge/api
@@ -78,6 +82,8 @@ paths:
       responses:
         '200':
           description: Data index created
+      operationId: postData
+      x-operation-id-source: derived
   /data/{index_name}:
     get:
       summary: Get a data index
@@ -86,9 +92,7 @@ paths:
       description: 'Retrieves the contents of a data index.
 
 
-        Standard requests can return a maximum of 10000 rows across all pages. For example, if page 1 has 7000 rows, page 2 will be cut off at 3000 rows regardless of the number of rows in the dataset. If you need more rows, set `export`=`true` and use `_source` to specify which fields to include in the export. This method returns up to 65536 rows, or your license count (whichever is greater).
-
-        '
+        Standard requests can return a maximum of 10000 rows across all pages. For example, if page 1 has 7000 rows, page 2 will be cut off at 3000 rows regardless of the number of rows in the dataset. If you need more rows, set `export`=`true` and use `_source` to specify which fields to include in the export. This method returns up to 65536 rows, or your license count (whichever is greater).'
       operationId: get-data-index
       parameters:
       - in: path
@@ -266,6 +270,18 @@ paths:
                 $ref: '#/components/schemas/CustomReportDetails'
 components:
   schemas:
+    IndexMappings:
+      type: object
+      properties:
+        index:
+          type: string
+        name:
+          description: The name of the field.
+          type: string
+          example: _created
+        type:
+          description: The data type of the field.
+          type: string
     CustomReportDetails:
       type: object
       properties:
@@ -338,67 +354,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IndexMappings'
-    IndexMappings:
-      type: object
-      properties:
-        index:
-          type: string
-        name:
-          description: The name of the field.
-          type: string
-          example: _created
-        type:
-          description: The data type of the field.
-          type: string
   parameters:
-    FilterField:
-      name: filters[0][field]
-      in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
-
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    SorterField:
-      name: sorters[0][field]
-      in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
-
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
-    FilterValue:
-      name: filters[0][value]
-      in: query
-      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
-
-        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
-
-        '
-      schema:
-        oneOf:
-        - type: string
-          title: String
-        - type: number
-          title: Number
-        - type: boolean
-          title: Boolean
     FilterType:
       name: filters[0][type]
       in: query
@@ -423,6 +379,54 @@ components:
         - '>'
         - like
         - boolean
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
   securitySchemes:
     bearerAuth:
       type: http

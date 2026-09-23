@@ -18,9 +18,7 @@ paths:
       description: 'Returns a list of test, containing the the details and results of each tests. The tests are grouped by their Scouts, with the earliest tests appearing first in each group.
 
 
-        By default, all tests from all Scouts in the last 24 hours are returned.
-
-        '
+        By default, all tests from all Scouts in the last 24 hours are returned.'
       operationId: app.get_tests
       security:
       - ApiKeyAuth:
@@ -85,6 +83,94 @@ paths:
           '
 components:
   schemas:
+    ScoutBaseAppProps:
+      title: Application test schema
+      allOf:
+      - type: object
+        properties:
+          type:
+            description: The Scout's type.
+            type: string
+            enum:
+            - application
+      - $ref: '#/components/schemas/ScoutTestSharedProps'
+      - $ref: '#/components/schemas/TestsSharedProps'
+    TestsSharedProps:
+      type: object
+      properties:
+        failReason:
+          type: string
+          description: The reason that the test failed.
+        guid:
+          type: string
+          format: uuid
+          description: The unique ID for the test.
+        time:
+          type: string
+          format: date-time
+          description: The time that the test started.
+        status:
+          description: Overall status for the test, either `success` or `failure`.
+          type: string
+          enum:
+          - success
+          - failure
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
+    ScoutBaseEucProps:
+      allOf:
+      - $ref: '#/components/schemas/ScoutTestSharedProps'
+      - $ref: '#/components/schemas/ScoutTestEucSharedProps'
+      - $ref: '#/components/schemas/TestsSharedProps'
+      - type: object
+        properties:
+          username:
+            type: string
+            description: The username the Scout uses to access the gateway.
+          resource:
+            type: string
+            description: The resource the Scout accesses and tests.
+          type:
+            type: string
+            enum:
+            - euc
+            description: The Scout's type.
+    ScoutTestEucSharedProps:
+      type: object
+      properties:
+        ready:
+          type: number
+          format: float
+          description: Session ready phase duration in seconds. This phase includes checking that the resource is available, accepting conditions, and the server processing the session and releasing control to the Scout.
+        durationReady:
+          type: number
+          format: float
+          description: The total time after starting the test for the session to be ready in seconds.
+        authPhase:
+          type: number
+          format: float
+          description: Authentication phase duration in seconds.
+        connPhase:
+          type: number
+          format: float
+          description: Connection phase duration in seconds.
+        enumTime:
+          type: number
+          format: float
+          description: Resources enumeration phase duration in seconds.
+        sess:
+          type: number
+          format: float
+          description: Session initialization phase duration in seconds.
+        loginAttempts:
+          type: number
+          format: float
+          description: The number of login attempts it took to successfully authenticate the Scout.
     ScoutTestSharedProps:
       type: object
       properties:
@@ -125,31 +211,21 @@ components:
             - network
       - $ref: '#/components/schemas/ScoutTestSharedProps'
       - $ref: '#/components/schemas/TestsSharedProps'
-    BaseError:
+    MarshmallowError:
       type: object
       properties:
         errors:
-          type: string
-      required:
-      - errors
-    ScoutBaseEucProps:
-      allOf:
-      - $ref: '#/components/schemas/ScoutTestSharedProps'
-      - $ref: '#/components/schemas/ScoutTestEucSharedProps'
-      - $ref: '#/components/schemas/TestsSharedProps'
-      - type: object
-        properties:
-          username:
-            type: string
-            description: The username the Scout uses to access the gateway.
-          resource:
-            type: string
-            description: The resource the Scout accesses and tests.
-          type:
-            type: string
-            enum:
-            - euc
-            description: The Scout's type.
+          type: object
+          items:
+            type: array
+            items:
+              type: string
+      example:
+        errors:
+          name:
+          - Missing required data.
+          period:
+          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
     TestItem:
       title: Test results
       oneOf:
@@ -982,84 +1058,6 @@ components:
                 description: Delivery duration up to the customer email server, in milliseconds.
                 type: number
                 format: float
-    TestsSharedProps:
-      type: object
-      properties:
-        failReason:
-          type: string
-          description: The reason that the test failed.
-        guid:
-          type: string
-          format: uuid
-          description: The unique ID for the test.
-        time:
-          type: string
-          format: date-time
-          description: The time that the test started.
-        status:
-          description: Overall status for the test, either `success` or `failure`.
-          type: string
-          enum:
-          - success
-          - failure
-    MarshmallowError:
-      type: object
-      properties:
-        errors:
-          type: object
-          items:
-            type: array
-            items:
-              type: string
-      example:
-        errors:
-          name:
-          - Missing required data.
-          period:
-          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
-    ScoutBaseAppProps:
-      title: Application test schema
-      allOf:
-      - type: object
-        properties:
-          type:
-            description: The Scout's type.
-            type: string
-            enum:
-            - application
-      - $ref: '#/components/schemas/ScoutTestSharedProps'
-      - $ref: '#/components/schemas/TestsSharedProps'
-    ScoutTestEucSharedProps:
-      type: object
-      properties:
-        ready:
-          type: number
-          format: float
-          description: Session ready phase duration in seconds. This phase includes checking that the resource is available, accepting conditions, and the server processing the session and releasing control to the Scout.
-        durationReady:
-          type: number
-          format: float
-          description: The total time after starting the test for the session to be ready in seconds.
-        authPhase:
-          type: number
-          format: float
-          description: Authentication phase duration in seconds.
-        connPhase:
-          type: number
-          format: float
-          description: Connection phase duration in seconds.
-        enumTime:
-          type: number
-          format: float
-          description: Resources enumeration phase duration in seconds.
-        sess:
-          type: number
-          format: float
-          description: Session initialization phase duration in seconds.
-        loginAttempts:
-          type: number
-          format: float
-          description: The number of login attempts it took to successfully authenticate the Scout.
   responses:
     ServerError:
       description: Server errors
@@ -1070,6 +1068,12 @@ components:
           example:
             success: false
             errors: Server Error
+    ValidationError:
+      description: Sent data has errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MarshmallowError'
     Unauthorized:
       description: Missing or wrong api key
       content:
@@ -1079,12 +1083,6 @@ components:
           example:
             success: false
             errors: Unauthorized
-    ValidationError:
-      description: Sent data has errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MarshmallowError'
     TestList:
       description: A list of tests
       content:

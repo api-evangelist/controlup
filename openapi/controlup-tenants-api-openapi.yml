@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -1210,6 +1210,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: getCloudTenantsByTenantIdCredentialsVerifyStream
+      x-operation-id-source: derived
   /cloud/tenants/{tenantId}/credentials/{credentialId}/verify/stream:
     get:
       tags:
@@ -1288,6 +1290,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: getCloudTenantsByTenantIdCredentialsByCredentialIdVerifyStream
+      x-operation-id-source: derived
   /cloud/tenants/{tenantId}/credentials/verify/sse:
     post:
       tags:
@@ -1354,6 +1358,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: postCloudTenantsByTenantIdCredentialsVerifySse
+      x-operation-id-source: derived
   /cloud/tenants/{tenantId}/credentials/{credentialId}/verify/sse:
     post:
       tags:
@@ -1427,6 +1433,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: postCloudTenantsByTenantIdCredentialsByCredentialIdVerifySse
+      x-operation-id-source: derived
   /cloud/tenants/{tenantId}/discover/subscriptions:
     get:
       tags:
@@ -1560,7 +1568,14 @@ paths:
       tags:
       - Tenants
       summary: Discover resources across subscriptions in a tenant
-      description: "Discovers resource metadata for several types at once by querying the cloud provider live, each row flagged with\nisAlreadyManaged so resources already imported into DaaS IQ can be told apart from candidates.\n            \nIf subscriptionIds is provided, only those subscriptions are queried (faster — skips subscription discovery).\nIf subscriptionIds is not provided, all accessible subscriptions are discovered and queried."
+      description: 'Discovers resource metadata for several types at once by querying the cloud provider live, each row flagged with
+
+        isAlreadyManaged so resources already imported into DaaS IQ can be told apart from candidates.
+
+
+        If subscriptionIds is provided, only those subscriptions are queried (faster — skips subscription discovery).
+
+        If subscriptionIds is not provided, all accessible subscriptions are discovered and queried.'
       operationId: DiscoverTenantResources
       parameters:
       - name: tenantId
@@ -1981,7 +1996,9 @@ paths:
       tags:
       - Tenants
       summary: Discover images across all subscriptions in a tenant (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Image discovery is replaced by Image Management. Use /discover/resources/virtualmachines for the import wizard.\n            Image metadata with source type (Managed or SharedImageGallery), OS type, and disk information."
+      description: 'DEPRECATED: Image discovery is replaced by Image Management. Use /discover/resources/virtualmachines for the import wizard.
+
+        Image metadata with source type (Managed or SharedImageGallery), OS type, and disk information.'
       operationId: DiscoverTenantImages
       parameters:
       - name: tenantId
@@ -2117,7 +2134,32 @@ paths:
       tags:
       - Tenants
       summary: Import cloud resources for a tenant
-      description: "Creates a single long-running parent job that orchestrates subscription-level import jobs.\nThe parent job discovers subscriptions, dispatches child import jobs (one per subscription),\naggregates progress, and determines overall success/failure.\n            \nTwo modes are supported:\n1. **Import All**: Set `importAll: true` to discover all subscriptions and import all resources\n2. **Selective Import**: Provide specific subscriptions and resource IDs to import\n            \nSelective imports default to reconcile behavior: subscriptions and resources omitted from the request\nare soft-deleted. Set `importMode` to `Additive` for host-pool-only imports that must preserve\nall existing managed resources.\n            \nWhen importing, CloudSubscription records are automatically created for Azure subscriptions\nthat don't exist yet in the system. These subscriptions are linked to the tenant and use\nthe tenant's default credentials."
+      description: 'Creates a single long-running parent job that orchestrates subscription-level import jobs.
+
+        The parent job discovers subscriptions, dispatches child import jobs (one per subscription),
+
+        aggregates progress, and determines overall success/failure.
+
+
+        Two modes are supported:
+
+        1. **Import All**: Set `importAll: true` to discover all subscriptions and import all resources
+
+        2. **Selective Import**: Provide specific subscriptions and resource IDs to import
+
+
+        Selective imports default to reconcile behavior: subscriptions and resources omitted from the request
+
+        are soft-deleted. Set `importMode` to `Additive` for host-pool-only imports that must preserve
+
+        all existing managed resources.
+
+
+        When importing, CloudSubscription records are automatically created for Azure subscriptions
+
+        that don''t exist yet in the system. These subscriptions are linked to the tenant and use
+
+        the tenant''s default credentials.'
       operationId: ImportTenantResources
       parameters:
       - name: tenantId
@@ -2730,7 +2772,23 @@ paths:
       tags:
       - Tenants
       summary: Get tenant status
-      description: "Returns the tenant's aggregated health and verification details, computed from every credential and subscription beneath it.\nReads the last stored result without contacting the cloud provider, so it is fast and safe to call repeatedly,\nbut reflects the previous evaluation rather than this moment; a never-evaluated tenant reports Unknown.\nUse this to display known health. To re-test connectivity right now, refresh the status instead.\n            \nUse the `include` parameter to request additional details:\n- `subscriptions` - Include status for each subscription under the tenant\n- `credentials` - Include detailed status (health, cooldown, usage metrics) for each credential\n            \nMultiple values can be combined with commas: `include=subscriptions,credentials`"
+      description: 'Returns the tenant''s aggregated health and verification details, computed from every credential and subscription beneath it.
+
+        Reads the last stored result without contacting the cloud provider, so it is fast and safe to call repeatedly,
+
+        but reflects the previous evaluation rather than this moment; a never-evaluated tenant reports Unknown.
+
+        Use this to display known health. To re-test connectivity right now, refresh the status instead.
+
+
+        Use the `include` parameter to request additional details:
+
+        - `subscriptions` - Include status for each subscription under the tenant
+
+        - `credentials` - Include detailed status (health, cooldown, usage metrics) for each credential
+
+
+        Multiple values can be combined with commas: `include=subscriptions,credentials`'
       operationId: GetTenantStatus
       parameters:
       - name: id
@@ -2802,7 +2860,23 @@ paths:
       tags:
       - Tenants
       summary: Refresh tenant status
-      description: "Re-tests the tenant against the cloud provider now, verifying every subscription beneath it and re-aggregating\nthe result, then stores it so later reads of the tenant status return this outcome.\nThe authoritative answer to \"is this tenant working right now\", at the cost of live provider calls across\nevery subscription. Covers the whole tenant, whereas verifying a credential tests one credential in isolation.\n            \nUse the `include` parameter to request additional details:\n- `subscriptions` - Include status for each subscription under the tenant\n- `credentials` - Include detailed status (health, cooldown, usage metrics) for each credential\n            \nMultiple values can be combined with commas: `include=subscriptions,credentials`"
+      description: 'Re-tests the tenant against the cloud provider now, verifying every subscription beneath it and re-aggregating
+
+        the result, then stores it so later reads of the tenant status return this outcome.
+
+        The authoritative answer to "is this tenant working right now", at the cost of live provider calls across
+
+        every subscription. Covers the whole tenant, whereas verifying a credential tests one credential in isolation.
+
+
+        Use the `include` parameter to request additional details:
+
+        - `subscriptions` - Include status for each subscription under the tenant
+
+        - `credentials` - Include detailed status (health, cooldown, usage metrics) for each credential
+
+
+        Multiple values can be combined with commas: `include=subscriptions,credentials`'
       operationId: RefreshTenantStatus
       parameters:
       - name: id
@@ -2887,198 +2961,6 @@ components:
       description: 'Request model for patching (partial update) a cloud tenant.
 
         All fields are optional - only provided fields will be updated.'
-    TenantLifecycleState:
-      enum:
-      - draft
-      - active
-      - deleting
-      - deleted
-      type: string
-      description: 'Lifecycle state of a cloud tenant.
-
-        Represents the tenant''s position in the management workflow.'
-    UpdateCloudTenantRequest:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          maxLength: 128
-          minLength: 1
-          type: string
-          description: User-friendly name for the tenant.
-        defaultCredential:
-          $ref: '#/components/schemas/UpdateCloudCredentialRequest'
-      additionalProperties: false
-      description: 'Request model for updating a cloud tenant.
-
-        Allows updating tenant name and optionally replacing the default credential.'
-    VerificationTranscriptResponse:
-      required:
-      - isSuccess
-      - output
-      type: object
-      properties:
-        isSuccess:
-          type: boolean
-          description: Whether the operation was successful.
-          example: true
-        output:
-          type: array
-          items:
-            type: string
-          description: Formatted output lines from the operation.
-      additionalProperties: false
-      description: 'Generic response for operations that produce formatted line-by-line output.
-
-        Can be used for validations, diagnostics, migrations, deployments, or any operation
-
-        that provides step-by-step progress or results as text output.'
-    CloudProvider:
-      enum:
-      - azure
-      type: string
-      description: Enumeration of supported cloud provider identifiers.
-    VmSecurityType:
-      enum:
-      - trustedLaunch
-      - standard
-      - confidentialVM
-      type: string
-      description: Security profile for Azure VMs.
-    VerificationResponse:
-      required:
-      - completedAt
-      - durationMs
-      - isSuccess
-      - steps
-      type: object
-      properties:
-        isSuccess:
-          type: boolean
-          description: 'Whether the overall verification was successful.
-
-            All steps must succeed for this to be true.'
-          example: true
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/VerificationStepResponse'
-          description: 'List of verification steps and their individual results.
-
-            Each step represents a specific check performed against the cloud provider API.'
-        errorMessage:
-          type:
-          - string
-          - 'null'
-          description: 'Overall error message if the verification failed.
-
-            Typically contains the error from the first failed step.'
-          example: 'Authentication failed: Invalid client secret'
-        completedAt:
-          type: string
-          description: Timestamp when the verification completed (UTC).
-          format: date-time
-          example: '2025-10-09T14:30:00Z'
-        durationMs:
-          type: integer
-          description: Total duration of the verification process in milliseconds.
-          format: int64
-          example: 950
-      additionalProperties: false
-      description: 'Response containing detailed results of a credential verification operation.
-
-        Includes overall success status, individual step results, and timing information.'
-    CloudProviderAuthType:
-      enum:
-      - azureServicePrincipal
-      - azureServicePrincipalCertificate
-      type: string
-      description: Specifies the supported authentication types for connecting to various cloud providers and services.
-    JobType:
-      enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
-      type: string
-      description: 'Defines the types of background jobs supported by the system.
-
-        Each job type is processed by a specific worker and has its own parameter structure.'
-    VerificationStatus:
-      enum:
-      - notChecked
-      - inProgress
-      - success
-      - warning
-      - failed
-      type: string
-      description: Represents the status of a verification check (credentials, inventory sync, etc.).
-    DiscoveredHostPoolDto:
-      required:
-      - hostPoolType
-      - id
-      - isAlreadyManaged
-      - location
-      - name
-      - resourceGroup
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-        resourceGroup:
-          type: string
-          description: Resource group name containing this resource.
-        isAlreadyManaged:
-          type: boolean
-          description: Whether this resource is already managed by the application
-          example: false
-        hostPoolType:
-          $ref: '#/components/schemas/HostPoolType'
-      additionalProperties: false
-      description: 'Represents a discovered Azure Virtual Desktop host pool.
-
-        Extends the base CloudResourceDto with host pool-specific properties.'
     ImportTenantResourcesRequest:
       type: object
       properties:
@@ -3115,6 +2997,94 @@ components:
         1. Import ALL resources from ALL subscriptions under the tenant (importAll = true)
 
         2. Import specific resources grouped by subscription (subscriptions collection)'
+    CreateCloudTenantRequest:
+      required:
+      - defaultCredential
+      - name
+      - provider
+      - providerTenantId
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        providerTenantId:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: 'Provider''s tenant identifier.
+
+            Azure: Tenant ID (Directory ID), AWS: Organization ID, GCP: Organization ID.'
+        name:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: User-friendly name for the tenant.
+        defaultCredential:
+          $ref: '#/components/schemas/CreateCloudCredentialRequest'
+      additionalProperties: false
+      description: 'Request model for creating a new cloud tenant with its default credential.
+
+        The default credential is created as a separate entity linked to the tenant.'
+    VerificationStepResponse:
+      required:
+      - durationMs
+      - isSuccess
+      - status
+      - stepName
+      type: object
+      properties:
+        stepName:
+          type: string
+          description: Name or description of the verification step.
+          example: Authenticating with Azure AD
+        status:
+          $ref: '#/components/schemas/VerificationStepStatus'
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional warning or error detail (null for most successes).
+        isSuccess:
+          type: boolean
+          description: Whether this verification step succeeded.
+          readOnly: true
+          example: true
+        durationMs:
+          type: integer
+          description: Duration of this step in milliseconds.
+          format: int64
+          example: 450
+      additionalProperties: false
+      description: 'Response DTO representing a single verification step result.
+
+        Each step contains information about a specific check performed during credential verification.'
+    VerificationTranscriptResponse:
+      required:
+      - isSuccess
+      - output
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          description: Whether the operation was successful.
+          example: true
+        output:
+          type: array
+          items:
+            type: string
+          description: Formatted output lines from the operation.
+      additionalProperties: false
+      description: 'Generic response for operations that produce formatted line-by-line output.
+
+        Can be used for validations, diagnostics, migrations, deployments, or any operation
+
+        that provides step-by-step progress or results as text output.'
+    HostPoolType:
+      enum:
+      - pooled
+      - personal
+      type: string
+      description: Represents the type of Azure Virtual Desktop host pool.
     ErrorResponse:
       required:
       - status
@@ -3162,6 +3132,248 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    DiscoveredSubscriptionDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredSubscriptionDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+    DiscoveredImageDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredImageDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    SubscriptionHealthStatus:
+      enum:
+      - unknown
+      - healthy
+      - warning
+      - error
+      - inProgress
+      type: string
+      description: 'Operational health status of an active cloud subscription.
+
+        Only meaningful when SubscriptionLifecycleState = Active.
+
+        Derived from last verification and inventory sync results.'
+    CloudTenantStatusDto:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/TenantHealthStatus'
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the current status.
+
+            Examples: "All checks passed", "2 subscriptions have credential errors", "Secret expires in 5 days".'
+        lastVerifiedAt:
+          type:
+          - string
+          - 'null'
+          description: 'Timestamp when the tenant''s credentials were last verified.
+
+            Updated by the credentials verification background job.'
+          format: date-time
+        subscriptions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TenantSubscriptionStatusDto'
+          description: Detailed status information for each subscription under this tenant.
+        credentials:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CredentialStatusDto'
+          description: Pool status (health, cooldown, usage) for each credential under this tenant.
+      additionalProperties: false
+      description: 'Status information for a cloud tenant.
+
+        Used when querying tenant status directly (e.g., GET /tenants/{id}/status).
+
+        Provides aggregated health status computed from credentials and subscription statuses.'
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    VmSecurityType:
+      enum:
+      - trustedLaunch
+      - standard
+      - confidentialVM
+      type: string
+      description: Security profile for Azure VMs.
+    DiscoverableResourceType:
+      enum:
+      - subscription
+      - resourceGroup
+      - workspace
+      - image
+      - gallery
+      - galleryImage
+      - galleryImageVersion
+      - hostPool
+      - virtualMachine
+      - virtualNetwork
+      type: string
+      description: 'Public API enum for resource types that users can discover/import.
+
+        Only includes high-level resource types exposed to end users.'
     TenantSubscriptionStatusDto:
       required:
       - credentialsVerificationStatus
@@ -3232,112 +3444,215 @@ components:
       description: 'Subscription status details within a tenant status response.
 
         Includes subscription identity and full status information.'
-    DiscoverableResourceType:
+    CreateCloudCredentialRequest:
+      required:
+      - authType
+      - credentials
+      type: object
+      properties:
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Credentials dictionary with required fields for the authentication type.
+
+            Sensitive fields will be encrypted and stored securely.
+
+
+            For Azure credentials (AzureServicePrincipal, AzureServicePrincipalCertificate):
+
+            - tenantId is automatically populated from the parent tenant''s ProviderTenantId and should not be provided
+
+            - Required fields: clientId, clientSecret (or clientCertificate for certificate auth)'
+      additionalProperties: false
+      description: Request model for creating a new cloud credential.
+    ResourceImportMode:
       enum:
-      - subscription
-      - resourceGroup
-      - workspace
-      - image
-      - gallery
-      - galleryImage
-      - galleryImageVersion
-      - hostPool
-      - virtualMachine
-      - virtualNetwork
+      - reconcile
+      - additive
       type: string
-      description: 'Public API enum for resource types that users can discover/import.
-
-        Only includes high-level resource types exposed to end users.'
-    DiscoveredImageDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
+      description: Defines how a resource import treats managed resources omitted from the import request.
+    PatchCloudCredentialRequest:
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/DiscoveredImageDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
           type:
-          - integer
+          - object
           - 'null'
-          description: 'Total count of items across all pages (if available).
+          additionalProperties:
+            type: string
+          description: 'Credentials dictionary. Can provide partial credentials (e.g., just clientSecret)
 
-            May be null if the data source does not support total count queries.'
-          format: int32
+            to update specific fields. Sensitive fields will be encrypted and stored securely.
+
+
+            For Azure credentials: tenantId is automatically derived from the parent tenant
+
+            and should not be provided.'
       additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
+      description: 'Request model for patching (partial update) a cloud credential.
 
-        Supports traditional page-based navigation with forward/backward capability.'
-    DiscoveredSubscriptionDtoPagedResultDto:
+        All fields are optional - only provided fields will be updated.'
+    CloudTenantDto:
       required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
+      - createdAt
+      - defaultCredential
+      - healthStatus
+      - id
+      - lastUpdated
+      - lifecycleState
+      - name
+      - provider
+      - providerTenantId
+      - subscriptionCount
       type: object
       properties:
-        items:
+        id:
+          type: string
+          description: Unique identifier for the tenant.
+          format: uuid
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        providerTenantId:
+          type: string
+          description: 'Provider''s tenant identifier.
+
+            Azure: Tenant ID (Directory ID), AWS: Organization ID, GCP: Organization ID.'
+        name:
+          type: string
+          description: User-friendly name for the tenant.
+        defaultCredential:
+          $ref: '#/components/schemas/TenantDefaultCredentialDto'
+        lifecycleState:
+          $ref: '#/components/schemas/TenantLifecycleState'
+        healthStatus:
+          $ref: '#/components/schemas/TenantHealthStatus'
+        healthStatusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the current tenant health status.
+
+            Examples: "All checks passed", "2 subscriptions have credential errors", "Secret expires in 5 days".'
+        subscriptionCount:
+          type: integer
+          description: 'Number of active subscriptions under this tenant.
+
+            Excludes deleted subscriptions.'
+          format: int32
+        lastDiscoveryAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last subscription discovery.
+          format: date-time
+        createdAt:
+          type: string
+          description: Timestamp when the tenant was created.
+          format: date-time
+        lastUpdated:
+          type: string
+          description: Timestamp of the last update.
+          format: date-time
+      additionalProperties: false
+      description: Response DTO representing a cloud tenant (Azure AD Tenant, AWS Organization, GCP Organization).
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+    CloudResourceIdsByTypeDto:
+      required:
+      - ids
+      - type
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        ids:
+          uniqueItems: true
           type: array
           items:
-            $ref: '#/components/schemas/DiscoveredSubscriptionDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
+            type: string
+          description: Set of specific resource IDs to import for this resource type.
       additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
+      description: Represents a collection of resource IDs for a specific resource type.
+    CloudProviderAuthType:
+      enum:
+      - azureServicePrincipal
+      - azureServicePrincipalCertificate
+      type: string
+      description: Specifies the supported authentication types for connecting to various cloud providers and services.
+    TenantDefaultCredentialDto:
+      required:
+      - authType
+      - credentials
+      type: object
+      properties:
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Credentials dictionary with sensitive values masked.
 
-        Supports traditional page-based navigation with forward/backward capability.'
+            Only non-sensitive metadata fields (e.g., ClientId) are shown in clear text.
+
+            Sensitive fields (e.g., ClientSecret) show first 3 characters followed by asterisks.'
+      additionalProperties: false
+      description: 'Simplified response DTO for a tenant''s default credential (nested within CloudTenantDto).
+
+        Contains only authentication type and masked credentials.
+
+        For full credential details (Id, IsEnabled, timestamps), use GET /tenants/{id}/credentials.'
+    VerificationResponse:
+      required:
+      - completedAt
+      - durationMs
+      - isSuccess
+      - steps
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          description: 'Whether the overall verification was successful.
+
+            All steps must succeed for this to be true.'
+          example: true
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/VerificationStepResponse'
+          description: 'List of verification steps and their individual results.
+
+            Each step represents a specific check performed against the cloud provider API.'
+        errorMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Overall error message if the verification failed.
+
+            Typically contains the error from the first failed step.'
+          example: 'Authentication failed: Invalid client secret'
+        completedAt:
+          type: string
+          description: Timestamp when the verification completed (UTC).
+          format: date-time
+          example: '2025-10-09T14:30:00Z'
+        durationMs:
+          type: integer
+          description: Total duration of the verification process in milliseconds.
+          format: int64
+          example: 950
+      additionalProperties: false
+      description: 'Response containing detailed results of a credential verification operation.
+
+        Includes overall success status, individual step results, and timing information.'
     UpdateCloudCredentialRequest:
       required:
       - authType
@@ -3362,106 +3677,122 @@ components:
             - Required fields: clientId, clientSecret (or clientCertificate for certificate auth)'
       additionalProperties: false
       description: Request model for updating a cloud credential.
-    ResourceImportMode:
+    TenantLifecycleState:
       enum:
-      - reconcile
-      - additive
+      - draft
+      - active
+      - deleting
+      - deleted
       type: string
-      description: Defines how a resource import treats managed resources omitted from the import request.
-    VerificationStepResponse:
+      description: 'Lifecycle state of a cloud tenant.
+
+        Represents the tenant''s position in the management workflow.'
+    VerificationStatus:
+      enum:
+      - notChecked
+      - inProgress
+      - success
+      - warning
+      - failed
+      type: string
+      description: Represents the status of a verification check (credentials, inventory sync, etc.).
+    CredentialStatusDto:
       required:
-      - durationMs
-      - isSuccess
+      - authFailureCount
+      - failedUsages
+      - failureRatePercent
+      - id
+      - rateLimitCount
       - status
-      - stepName
+      - successfulUsages
+      - successRatePercent
+      - totalUsages
       type: object
       properties:
-        stepName:
+        id:
           type: string
-          description: Name or description of the verification step.
-          example: Authenticating with Azure AD
+          description: Unique identifier of the credential.
+          format: uuid
         status:
-          $ref: '#/components/schemas/VerificationStepStatus'
-        detail:
+          $ref: '#/components/schemas/CredentialStatus'
+        statusMessage:
           type:
           - string
           - 'null'
-          description: Optional warning or error detail (null for most successes).
-        isSuccess:
-          type: boolean
-          description: Whether this verification step succeeded.
-          readOnly: true
-          example: true
-        durationMs:
-          type: integer
-          description: Duration of this step in milliseconds.
-          format: int64
-          example: 450
-      additionalProperties: false
-      description: 'Response DTO representing a single verification step result.
-
-        Each step contains information about a specific check performed during credential verification.'
-    DiscoveredHostPoolDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/DiscoveredHostPoolDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
+          description: Human-readable message describing the current status.
+        cooldownRemainingSeconds:
           type:
-          - integer
+          - number
           - 'null'
-          description: 'Total count of items across all pages (if available).
+          description: 'Remaining cooldown time in seconds, if the credential is rate limited.
 
-            May be null if the data source does not support total count queries.'
+            Null if not in cooldown.'
+          format: double
+        lastUsedAt:
+          type:
+          - string
+          - 'null'
+          description: 'When the credential was last used for an operation.
+
+            Null if never used or data has expired.'
+          format: date-time
+        totalUsages:
+          type: integer
+          description: Total number of usages (business operations) with this credential in the tracking window.
           format: int32
+        successfulUsages:
+          type: integer
+          description: Number of successful usages.
+          format: int32
+        failedUsages:
+          type: integer
+          description: Number of failed usages.
+          format: int32
+        successRatePercent:
+          type: number
+          description: Success rate as a percentage (0-100).
+          format: double
+        failureRatePercent:
+          type: number
+          description: Failure rate as a percentage (0-100).
+          format: double
+        rateLimitCount:
+          type: integer
+          description: Number of times this credential received a 429 (Too Many Requests) response.
+          format: int32
+        authFailureCount:
+          type: integer
+          description: Number of times this credential received 401/403 auth errors.
+          format: int32
+        lastErrorCode:
+          type:
+          - string
+          - 'null'
+          description: Last error code received (e.g., "429", "401", "500").
       additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
+      description: 'Response DTO representing the pool status of a credential.
 
-        Supports traditional page-based navigation with forward/backward capability.'
-    TenantHealthStatus:
-      enum:
-      - unknown
-      - healthy
-      - warning
-      - error
-      type: string
-      description: 'Aggregated health status for a cloud tenant.
-
-        Computed from subscription health statuses and credential verification results.'
-    TenantDefaultCredentialDto:
+        Includes health status, cooldown state, and usage metrics from Redis.'
+    CloudCredentialDto:
       required:
       - authType
+      - createdAt
       - credentials
+      - id
+      - isDefault
+      - lastUpdated
+      - status
+      - tenantId
       type: object
       properties:
+        id:
+          type: string
+          description: Unique identifier for the credential.
+          format: uuid
+        tenantId:
+          type: string
+          description: ID of the parent tenant.
+          format: uuid
         authType:
           $ref: '#/components/schemas/CloudProviderAuthType'
         credentials:
@@ -3470,121 +3801,72 @@ components:
             type: string
           description: 'Credentials dictionary with sensitive values masked.
 
-            Only non-sensitive metadata fields (e.g., ClientId) are shown in clear text.
+            Only non-sensitive metadata fields (e.g., ClientId) are shown in clear text.'
+        isDefault:
+          type: boolean
+          description: 'Whether this credential is the default credential for the tenant.
 
-            Sensitive fields (e.g., ClientSecret) show first 3 characters followed by asterisks.'
+            The default credential is used when no specific credential is specified.'
+        status:
+          $ref: '#/components/schemas/CredentialStatus'
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the credential status.
+
+            Provides context for non-healthy statuses (e.g., "Failed subscription access verification").'
+        lastUsedAt:
+          type:
+          - string
+          - 'null'
+          description: 'Timestamp when this credential was last used for API calls.
+
+            Used for round-robin (LRU) selection.'
+          format: date-time
+        createdAt:
+          type: string
+          description: Timestamp when the credential was created.
+          format: date-time
+        lastUpdated:
+          type: string
+          description: Timestamp of the last update.
+          format: date-time
       additionalProperties: false
-      description: 'Simplified response DTO for a tenant''s default credential (nested within CloudTenantDto).
-
-        Contains only authentication type and masked credentials.
-
-        For full credential details (Id, IsEnabled, timestamps), use GET /tenants/{id}/credentials.'
-    DiscoveredManagedCloudResourceDtoPagedResultDto:
+      description: Response DTO representing a cloud credential (Service Principal, IAM User/Role, etc.).
+    UpdateCloudTenantRequest:
       required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
+      - name
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/DiscoveredManagedCloudResourceDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
+        name:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: User-friendly name for the tenant.
+        defaultCredential:
+          $ref: '#/components/schemas/UpdateCloudCredentialRequest'
       additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
+      description: 'Request model for updating a cloud tenant.
 
-        Supports traditional page-based navigation with forward/backward capability.'
-    SubscriptionHealthStatus:
-      enum:
-      - unknown
-      - healthy
-      - warning
-      - error
-      - inProgress
-      type: string
-      description: 'Operational health status of an active cloud subscription.
-
-        Only meaningful when SubscriptionLifecycleState = Active.
-
-        Derived from last verification and inventory sync results.'
+        Allows updating tenant name and optionally replacing the default credential.'
     ImageSourceType:
       enum:
       - managed
       - sharedImageGallery
       type: string
       description: Represents the source type of a virtual machine image.
-    CloudTenantStatusDto:
-      required:
-      - status
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/TenantHealthStatus'
-        statusMessage:
-          type:
-          - string
-          - 'null'
-          description: 'Human-readable message describing the current status.
+    CredentialStatus:
+      enum:
+      - unknown
+      - healthy
+      - rateLimited
+      - unhealthy
+      - disabled
+      type: string
+      description: 'Status of an individual credential.
 
-            Examples: "All checks passed", "2 subscriptions have credential errors", "Secret expires in 5 days".'
-        lastVerifiedAt:
-          type:
-          - string
-          - 'null'
-          description: 'Timestamp when the tenant''s credentials were last verified.
-
-            Updated by the credentials verification background job.'
-          format: date-time
-        subscriptions:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TenantSubscriptionStatusDto'
-          description: Detailed status information for each subscription under this tenant.
-        credentials:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CredentialStatusDto'
-          description: Pool status (health, cooldown, usage) for each credential under this tenant.
-      additionalProperties: false
-      description: 'Status information for a cloud tenant.
-
-        Used when querying tenant status directly (e.g., GET /tenants/{id}/status).
-
-        Provides aggregated health status computed from credentials and subscription statuses.'
+        Used for rate limiting, health tracking, and administrative state.'
     DiscoveredSubscriptionDto:
       required:
       - id
@@ -3631,75 +3913,101 @@ components:
           example: false
       additionalProperties: false
       description: Represents a subscription discovered from a cloud tenant.
-    PatchCloudCredentialRequest:
+    DiscoveredHostPoolDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
       type: object
       properties:
-        authType:
-          $ref: '#/components/schemas/CloudProviderAuthType'
-        credentials:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredHostPoolDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
           type:
-          - object
+          - integer
           - 'null'
-          additionalProperties:
-            type: string
-          description: 'Credentials dictionary. Can provide partial credentials (e.g., just clientSecret)
+          description: 'Total count of items across all pages (if available).
 
-            to update specific fields. Sensitive fields will be encrypted and stored securely.
-
-
-            For Azure credentials: tenantId is automatically derived from the parent tenant
-
-            and should not be provided.'
+            May be null if the data source does not support total count queries.'
+          format: int32
       additionalProperties: false
-      description: 'Request model for patching (partial update) a cloud credential.
+      description: 'Generic paginated response wrapper for API endpoints.
 
-        All fields are optional - only provided fields will be updated.'
-    JobCreatedDto:
+        Supports traditional page-based navigation with forward/backward capability.'
+    DiscoveredManagedCloudResourceDto:
       required:
-      - action
       - id
-      - jobType
-      - jobUrl
-      - logsUrl
-      - message
-      - statusUrl
+      - isAlreadyManaged
+      - location
+      - name
+      - properties
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
       type: object
       properties:
         id:
           type: string
-          description: Unique identifier for the created job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
+          description: 'Cloud provider resource identifier.
 
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
-
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        jobUrl:
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
           type: string
-          description: URL to get full job details (includes parameters).
-        statusUrl:
+          description: Cloud provider subscription ID containing this entity.
+        name:
           type: string
-          description: 'URL to poll for lightweight status updates (no parameters).
-
-            Poll this endpoint every 2-5 seconds while job is running.'
-        logsUrl:
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
           type: string
-          description: URL to get job logs in JSON format.
-        message:
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of additional entity properties.
+        resourceGroup:
           type: string
-          description: 'Human-readable message about job creation.
-
-            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
       additionalProperties: false
-      description: 'Lightweight response returned when a job is created.
+      description: 'Represents a discovered cloud resource with managed status.
 
-        Contains only essential information needed to track the job.
-
-        Use the statusUrl to poll for updates and jobUrl to get full details.'
+        Used by the generic multi-type discover endpoint where resources may be already imported.'
     DiscoveredImageDto:
       required:
       - id
@@ -3829,183 +4137,44 @@ components:
       description: 'Represents a discovered virtual machine image.
 
         Extends the base CloudResourceDto with image-specific properties.'
-    CreateCloudCredentialRequest:
+    TenantSubscriptionImportDto:
       required:
-      - authType
-      - credentials
+      - providerSubscriptionId
+      - resources
       type: object
       properties:
-        authType:
-          $ref: '#/components/schemas/CloudProviderAuthType'
-        credentials:
-          type: object
-          additionalProperties:
-            type: string
-          description: 'Credentials dictionary with required fields for the authentication type.
+        providerSubscriptionId:
+          minLength: 1
+          type: string
+          description: 'The cloud provider''s subscription identifier (e.g., Azure Subscription GUID).
 
-            Sensitive fields will be encrypted and stored securely.
+            If a CloudSubscription with this ID doesn''t exist, one will be created and linked to the tenant.'
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudResourceIdsByTypeDto'
+          description: 'Resources to import from this subscription, organized by type.
 
-
-            For Azure credentials (AzureServicePrincipal, AzureServicePrincipalCertificate):
-
-            - tenantId is automatically populated from the parent tenant''s ProviderTenantId and should not be provided
-
-            - Required fields: clientId, clientSecret (or clientCertificate for certificate auth)'
+            Each item specifies a resource type and the Azure resource IDs to import.'
       additionalProperties: false
-      description: Request model for creating a new cloud credential.
-    HostPoolType:
+      description: Represents a subscription and its resources to import.
+    TenantHealthStatus:
       enum:
-      - pooled
-      - personal
+      - unknown
+      - healthy
+      - warning
+      - error
       type: string
-      description: Represents the type of Azure Virtual Desktop host pool.
-    CredentialStatusDto:
+      description: 'Aggregated health status for a cloud tenant.
+
+        Computed from subscription health statuses and credential verification results.'
+    DiscoveredHostPoolDto:
       required:
-      - authFailureCount
-      - failedUsages
-      - failureRatePercent
-      - id
-      - rateLimitCount
-      - status
-      - successfulUsages
-      - successRatePercent
-      - totalUsages
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the credential.
-          format: uuid
-        status:
-          $ref: '#/components/schemas/CredentialStatus'
-        statusMessage:
-          type:
-          - string
-          - 'null'
-          description: Human-readable message describing the current status.
-        cooldownRemainingSeconds:
-          type:
-          - number
-          - 'null'
-          description: 'Remaining cooldown time in seconds, if the credential is rate limited.
-
-            Null if not in cooldown.'
-          format: double
-        lastUsedAt:
-          type:
-          - string
-          - 'null'
-          description: 'When the credential was last used for an operation.
-
-            Null if never used or data has expired.'
-          format: date-time
-        totalUsages:
-          type: integer
-          description: Total number of usages (business operations) with this credential in the tracking window.
-          format: int32
-        successfulUsages:
-          type: integer
-          description: Number of successful usages.
-          format: int32
-        failedUsages:
-          type: integer
-          description: Number of failed usages.
-          format: int32
-        successRatePercent:
-          type: number
-          description: Success rate as a percentage (0-100).
-          format: double
-        failureRatePercent:
-          type: number
-          description: Failure rate as a percentage (0-100).
-          format: double
-        rateLimitCount:
-          type: integer
-          description: Number of times this credential received a 429 (Too Many Requests) response.
-          format: int32
-        authFailureCount:
-          type: integer
-          description: Number of times this credential received 401/403 auth errors.
-          format: int32
-        lastErrorCode:
-          type:
-          - string
-          - 'null'
-          description: Last error code received (e.g., "429", "401", "500").
-      additionalProperties: false
-      description: 'Response DTO representing the pool status of a credential.
-
-        Includes health status, cooldown state, and usage metrics from Redis.'
-    CloudTenantDto:
-      required:
-      - createdAt
-      - defaultCredential
-      - healthStatus
-      - id
-      - lastUpdated
-      - lifecycleState
-      - name
-      - provider
-      - providerTenantId
-      - subscriptionCount
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the tenant.
-          format: uuid
-        provider:
-          $ref: '#/components/schemas/CloudProvider'
-        providerTenantId:
-          type: string
-          description: 'Provider''s tenant identifier.
-
-            Azure: Tenant ID (Directory ID), AWS: Organization ID, GCP: Organization ID.'
-        name:
-          type: string
-          description: User-friendly name for the tenant.
-        defaultCredential:
-          $ref: '#/components/schemas/TenantDefaultCredentialDto'
-        lifecycleState:
-          $ref: '#/components/schemas/TenantLifecycleState'
-        healthStatus:
-          $ref: '#/components/schemas/TenantHealthStatus'
-        healthStatusMessage:
-          type:
-          - string
-          - 'null'
-          description: 'Human-readable message describing the current tenant health status.
-
-            Examples: "All checks passed", "2 subscriptions have credential errors", "Secret expires in 5 days".'
-        subscriptionCount:
-          type: integer
-          description: 'Number of active subscriptions under this tenant.
-
-            Excludes deleted subscriptions.'
-          format: int32
-        lastDiscoveryAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp of the last subscription discovery.
-          format: date-time
-        createdAt:
-          type: string
-          description: Timestamp when the tenant was created.
-          format: date-time
-        lastUpdated:
-          type: string
-          description: Timestamp of the last update.
-          format: date-time
-      additionalProperties: false
-      description: Response DTO representing a cloud tenant (Azure AD Tenant, AWS Organization, GCP Organization).
-    DiscoveredManagedCloudResourceDto:
-      required:
+      - hostPoolType
       - id
       - isAlreadyManaged
       - location
       - name
-      - properties
       - resourceGroup
       - subscriptionId
       - tags
@@ -4033,11 +4202,6 @@ components:
           additionalProperties:
             type: string
           description: Gets a collection of tags associated with the entity.
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of additional entity properties.
         resourceGroup:
           type: string
           description: Resource group name containing this resource.
@@ -4045,120 +4209,57 @@ components:
           type: boolean
           description: Whether this resource is already managed by the application
           example: false
+        hostPoolType:
+          $ref: '#/components/schemas/HostPoolType'
       additionalProperties: false
-      description: 'Represents a discovered cloud resource with managed status.
+      description: 'Represents a discovered Azure Virtual Desktop host pool.
 
-        Used by the generic multi-type discover endpoint where resources may be already imported.'
-    TenantSubscriptionImportDto:
+        Extends the base CloudResourceDto with host pool-specific properties.'
+    DiscoveredManagedCloudResourceDtoPagedResultDto:
       required:
-      - providerSubscriptionId
-      - resources
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
       type: object
       properties:
-        providerSubscriptionId:
-          minLength: 1
-          type: string
-          description: 'The cloud provider''s subscription identifier (e.g., Azure Subscription GUID).
-
-            If a CloudSubscription with this ID doesn''t exist, one will be created and linked to the tenant.'
-        resources:
+        items:
           type: array
           items:
-            $ref: '#/components/schemas/CloudResourceIdsByTypeDto'
-          description: 'Resources to import from this subscription, organized by type.
+            $ref: '#/components/schemas/DiscoveredManagedCloudResourceDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
 
-            Each item specifies a resource type and the Azure resource IDs to import.'
-      additionalProperties: false
-      description: Represents a subscription and its resources to import.
-    CreateCloudTenantRequest:
-      required:
-      - defaultCredential
-      - name
-      - provider
-      - providerTenantId
-      type: object
-      properties:
-        provider:
-          $ref: '#/components/schemas/CloudProvider'
-        providerTenantId:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: 'Provider''s tenant identifier.
-
-            Azure: Tenant ID (Directory ID), AWS: Organization ID, GCP: Organization ID.'
-        name:
-          maxLength: 128
-          minLength: 1
-          type: string
-          description: User-friendly name for the tenant.
-        defaultCredential:
-          $ref: '#/components/schemas/CreateCloudCredentialRequest'
-      additionalProperties: false
-      description: 'Request model for creating a new cloud tenant with its default credential.
-
-        The default credential is created as a separate entity linked to the tenant.'
-    CloudCredentialDto:
-      required:
-      - authType
-      - createdAt
-      - credentials
-      - id
-      - isDefault
-      - lastUpdated
-      - status
-      - tenantId
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the credential.
-          format: uuid
-        tenantId:
-          type: string
-          description: ID of the parent tenant.
-          format: uuid
-        authType:
-          $ref: '#/components/schemas/CloudProviderAuthType'
-        credentials:
-          type: object
-          additionalProperties:
-            type: string
-          description: 'Credentials dictionary with sensitive values masked.
-
-            Only non-sensitive metadata fields (e.g., ClientId) are shown in clear text.'
-        isDefault:
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
           type: boolean
-          description: 'Whether this credential is the default credential for the tenant.
+          description: 'Indicates if more pages are available.
 
-            The default credential is used when no specific credential is specified.'
-        status:
-          $ref: '#/components/schemas/CredentialStatus'
-        statusMessage:
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
           type:
-          - string
+          - integer
           - 'null'
-          description: 'Human-readable message describing the credential status.
+          description: 'Total count of items across all pages (if available).
 
-            Provides context for non-healthy statuses (e.g., "Failed subscription access verification").'
-        lastUsedAt:
-          type:
-          - string
-          - 'null'
-          description: 'Timestamp when this credential was last used for API calls.
-
-            Used for round-robin (LRU) selection.'
-          format: date-time
-        createdAt:
-          type: string
-          description: Timestamp when the credential was created.
-          format: date-time
-        lastUpdated:
-          type: string
-          description: Timestamp of the last update.
-          format: date-time
+            May be null if the data source does not support total count queries.'
+          format: int32
       additionalProperties: false
-      description: Response DTO representing a cloud credential (Service Principal, IAM User/Role, etc.).
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
     VerificationStepStatus:
       enum:
       - success
@@ -4166,33 +4267,6 @@ components:
       - failure
       type: string
       description: Discrete states a verification step can finish in.
-    CloudResourceIdsByTypeDto:
-      required:
-      - ids
-      - type
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        ids:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Set of specific resource IDs to import for this resource type.
-      additionalProperties: false
-      description: Represents a collection of resource IDs for a specific resource type.
-    CredentialStatus:
-      enum:
-      - unknown
-      - healthy
-      - rateLimited
-      - unhealthy
-      - disabled
-      type: string
-      description: 'Status of an individual credential.
-
-        Used for rate limiting, health tracking, and administrative state.'
   securitySchemes:
     BearerAuth:
       type: http

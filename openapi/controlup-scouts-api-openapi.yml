@@ -8,9 +8,7 @@ info:
   description: 'Scouts are the proactive tests that you configure to monitor the availability and health of various resources. There are different types of Scouts, depending on the type of resource you want to test. Within each type, there are sub-types which determine which test is performed and the available test configuration options.
 
 
-    Scouts are initiated from Hives, which are either hosted in the cloud (Cloud Hives), or installed on-premises (Custom Hives).
-
-    '
+    Scouts are initiated from Hives, which are either hosted in the cloud (Cloud Hives), or installed on-premises (Custom Hives).'
 servers:
 - url: https://api.controlup.com/synthetic-monitoring/v2/
 tags:
@@ -18,9 +16,7 @@ tags:
   description: 'Scouts are the proactive tests that you configure to monitor the availability and health of various resources. There are different types of Scouts, depending on the type of resource you want to test. Within each type, there are sub-types which determine which test is performed and the available test configuration options.
 
 
-    Scouts are initiated from Hives, which are either hosted in the cloud (Cloud Hives), or installed on-premises (Custom Hives).
-
-    '
+    Scouts are initiated from Hives, which are either hosted in the cloud (Cloud Hives), or installed on-premises (Custom Hives).'
 paths:
   /scouts:
     get:
@@ -115,7 +111,7 @@ paths:
           '
     post:
       summary: Create a Scout
-      description: Create a Scout to test EUC or network resources. Creating a Scout uses credits on your account. If you disable or delete the Scout, then the credits are returned to your account. See [License Information](https://support.controlup.com/docs/license-information) for more details.
+      description: Create a Scout to test EUC or network resources. Creating a Scout uses credits on your account. If you disable or delete the Scout, then the credits are returned to your account. See License Information for more details.
       operationId: app.create_scout
       security:
       - ApiKeyAuth:
@@ -242,9 +238,7 @@ paths:
       description: 'Deletes a Scout. This cannot be undone. Historical test result data for the Scout will still be available.
 
 
-        The credits used to create the Scout will be returned to your account.
-
-        '
+        The credits used to create the Scout will be returned to your account.'
       operationId: app.delete_scout
       security:
       - ApiKeyAuth:
@@ -277,7 +271,10 @@ paths:
   /scouts/{scoutId}/disabled:
     post:
       summary: Enable/disable Scout
-      description: "Enables or disables an existing Scout. A Scout only performs tests while it is enabled. \n\nEnabling a Scout uses credits on your account. Disabling a Scout returns the credits.\n"
+      description: 'Enables or disables an existing Scout. A Scout only performs tests while it is enabled.
+
+
+        Enabling a Scout uses credits on your account. Disabling a Scout returns the credits.'
       operationId: app.disable_scout
       security:
       - ApiKeyAuth:
@@ -316,8 +313,306 @@ paths:
         source: "curl -X POST 'https://api.scoutbees.io/honeycomb/v2/scouts/10354/disabled' \\\n-H 'x-scoutbees-key: API-key-here' \\\n-H 'Content-Type: application/json' \\\n--data-raw '{\n    \"disabled\": true\n}'\n"
 components:
   schemas:
-    ScoutCreateHttp:
-      title: HTTP
+    MailExtras:
+      title: Mail options
+      description: Additional options for the Mail Scout. Mail authenticates exclusively via the user-delegated OAuth flow against Microsoft Entra ID — pass the delegated access token in the top-level `password` field. The application-credentials flow (client_id + client_secret) used by `entra_id` Scouts is **not** supported for `mail`.
+      type: object
+      properties:
+        subType:
+          type: string
+          description: Direction of the mail-flow test performed by the Scout. `outgoing` sends mail from the authenticated mailbox to a Scoutbees-managed recipient; `incoming` does the reverse. Sender, recipient, and mail-service endpoints are managed by Scoutbees based on this direction and cannot be overridden via the API.
+          enum:
+          - incoming
+          - outgoing
+        authentication:
+          type: string
+          description: The authentication flow used to acquire a token against the mail service. Only `oauth` is supported for mail.
+          enum:
+          - oauth
+        timeout:
+          type: number
+          format: float
+          description: The maximum wait time for a single mail probe (in seconds).
+          minimum: 30
+          maximum: 180
+          default: 30
+      required:
+      - subType
+      - authentication
+    CloudOrCustomHive:
+      oneOf:
+      - title: Cloud Hive
+        type: object
+        properties:
+          cloudHive:
+            type: integer
+            format: int32
+            description: ID of the Cloud Hive from which the Scout will run.
+      - title: Custom Hive
+        type: object
+        properties:
+          hiveId:
+            type: integer
+            format: int32
+            description: ID of the Custom Hive from which the Scout will run.
+    EucExtras:
+      description: Additional options.
+      type: object
+      properties:
+        sessionTimeout:
+          type: integer
+          description: The maximum wait time (in seconds) for the session to be fully ready.
+          minimum: 10
+          maximum: 450
+        connectionTimeout:
+          type: integer
+          description: The maximum wait time (in seconds) for the connection phase to the session.
+          minimum: 10
+          maximum: 300
+        loginAttempts:
+          type: integer
+          description: The maximum number of allowed unssuccessful login attempts.
+          minimum: 1
+          maximum: 5
+    HostnameAndIp:
+      title: Hostname & IP
+      type: object
+      properties:
+        address:
+          type: string
+          format: hostname or ipv4
+          description: The target hostname or IP address.
+    ScoutCreateWebTransactions:
+      title: Web Transactions
+      description: Drives a real browser through a list of steps and reports timing and navigation metrics for each step.
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type.
+            enum:
+            - web_transactions
+          address:
+            type: string
+            format: url
+            description: The starting URL for the transaction flow.
+          transactionFlows:
+            type: array
+            description: Ordered list of steps the Scout executes against the target site.
+            items:
+              $ref: '#/components/schemas/WebTransactionFlow'
+          otp:
+            $ref: '#/components/schemas/OTP'
+          options:
+            $ref: '#/components/schemas/WebTransactionsExtras'
+        required:
+        - address
+        - transactionFlows
+    ScoutEditTraceroute:
+      title: Traceroute
+      allOf:
+      - $ref: '#/components/schemas/HostnameAndIp'
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          options:
+            $ref: '#/components/schemas/TracerouteExtras'
+    Hives:
+      type: object
+      properties:
+        hives:
+          type: object
+          description: IDs of the Cloud and Custom Hives from which the Scout runs.
+          properties:
+            cloud:
+              type: array
+              description: Cloud Hive IDs.
+              items:
+                type: integer
+                format: int32
+                minimum: 1
+                exclusiveMinimum: false
+            custom:
+              type: array
+              description: Custom Hive IDs.
+              items:
+                type: integer
+                format: int32
+                minimum: 1
+                exclusiveMinimum: false
+    MarshmallowError:
+      type: object
+      properties:
+        errors:
+          type: object
+          items:
+            type: array
+            items:
+              type: string
+      example:
+        errors:
+          name:
+          - Missing required data.
+          period:
+          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
+    Protocols:
+      title: UDP | TCP
+      properties:
+        protocol:
+          type: string
+          enum:
+          - TCP
+          - UDP
+          description: The protocol used. By default, the scout uses the `ICMP` protocol.
+        port:
+          type: integer
+          description: The target port.
+          minimum: 1
+          maximum: 65535
+        payload:
+          description: The payload size (in bytes).
+          type: integer
+          minimum: 0
+          maximum: 32
+          default: 32
+      required:
+      - port
+    EntraIdExtras:
+      title: Entra ID options
+      description: Additional options for the Entra ID (Azure AD) Scout.
+      type: object
+      properties:
+        authentication:
+          type: string
+          description: The authentication flow used to acquire a token against the Entra ID tenant.
+          enum:
+          - application
+          - oauth
+        connectStatus:
+          type: boolean
+          description: Whether the Scout verifies the tenant connection status.
+          default: true
+        querySignedInTestUser:
+          type: boolean
+          description: Whether the Scout queries the signed-in test user as part of the test.
+          default: true
+        clientSecretLast6Chars:
+          type: string
+          description: The last 6 characters of the client secret, retained for identification only. Set by the server when `authentication` is `application`; user-supplied values are ignored.
+          readOnly: true
+      required:
+      - authentication
+    ScoutCreateEuc:
+      title: EUC Scout
+      oneOf:
+      - $ref: '#/components/schemas/ScoutCreateCitrix'
+      - $ref: '#/components/schemas/ScoutCreateCitrixCloud'
+      - $ref: '#/components/schemas/ScoutCreateStorefront'
+      - $ref: '#/components/schemas/ScoutCreateVmware'
+      - $ref: '#/components/schemas/ScoutCreateVmwareWsOne'
+      - $ref: '#/components/schemas/ScoutCreateVmwareSecServer'
+      - $ref: '#/components/schemas/ScoutCreateAvd'
+      type: object
+      properties:
+        address:
+          type: string
+          format: url
+          description: The address of the gateway that the Scout accesses.
+        scoutName:
+          type: string
+          description: The Scout's name.
+        interval:
+          type: integer
+          description: The interval (in minutes) of how often the Scout runs.
+          enum:
+          - 5
+          - 10
+          - 15
+          - 30
+          - 60
+        resource:
+          type: string
+          description: The published resource that the Scout accesses and tests.
+        username:
+          type: string
+          description: The username used to access the gateway.
+        password:
+          type: string
+          description: The password used to access the gateway.
+          writeOnly: true
+        options:
+          $ref: '#/components/schemas/EucExtras'
+      required:
+      - address
+      - subType
+      - scoutName
+      - hiveId
+      - cloudHive
+      - name
+      - interval
+      - resource
+      - username
+      - password
+    ScoutCreateSiteload:
+      title: Siteload
+      description: Loads the target page in a real browser and measures key page-load metrics.
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type.
+            enum:
+            - siteload
+          address:
+            type: string
+            format: url
+            description: The URL the Scout loads.
+          options:
+            $ref: '#/components/schemas/SiteloadExtras'
+        required:
+        - address
+    PingExtras:
+      title: Ping options
+      description: Additional options.
+      oneOf:
+      - $ref: '#/components/schemas/ProtocolICMP'
+      - $ref: '#/components/schemas/Protocols'
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of packets sent during the test. Jitter can be measured if there is more than one packet.
+          minimum: 1
+          maximum: 10
+          default: 4
+        successfulPercentage:
+          type: integer
+          enum:
+          - 20
+          - 40
+          - 60
+          - 80
+          - 100
+          description: The percentage of packets that must be received for the test to be successful.
+        timeout:
+          description: The maximum response wait time (in seconds).
+          type: number
+          format: float
+          minimum: 0.001
+          maximum: 3.6
+          default: 1
+        maxttl:
+          description: The maximum time to live (TTL) in ms.
+          type: integer
+          minimum: 1
+          maximum: 255
+          default: 64
+    ScoutEditMsTeams:
+      title: Microsoft Teams
       allOf:
       - $ref: '#/components/schemas/Hives'
       - type: object
@@ -325,46 +620,33 @@ components:
           address:
             type: string
             format: url
-            description: The target URL for the HTTP request.
-          subType:
-            type: string
-            description: The Scout's sub-type. This indicates the type of network test the Scout performs.
-            enum:
-            - net_http
+            description: The Teams edge URL probed by the Scout.
+            maxLength: 1000
           options:
-            $ref: '#/components/schemas/HttpExtras'
-    ScoutEditEntraId:
-      title: Entra ID
+            $ref: '#/components/schemas/MsTeamsExtras'
+    ScoutEditApp:
+      title: Edit Application Scout
+      oneOf:
+      - $ref: '#/components/schemas/ScoutEditMsExchange'
+      - $ref: '#/components/schemas/ScoutEditMsTeams'
+      - $ref: '#/components/schemas/ScoutEditWebTransactions'
+      - $ref: '#/components/schemas/ScoutEditMail'
+      - $ref: '#/components/schemas/ScoutEditSiteload'
       allOf:
-      - $ref: '#/components/schemas/Hives'
       - type: object
         properties:
-          address:
+          scoutName:
             type: string
-            description: The Entra ID tenant ID the Scout authenticates against.
-          username:
-            type: string
-            description: Email of the user the Scout authenticates as.
-            maxLength: 100
-          password:
-            type: object
-            description: Authentication credentials. For `application` auth, supply `clientId` and `clientSecret`. For `oauth` auth, supply the OAuth token data returned by the consent flow.
-            writeOnly: true
-          options:
-            $ref: '#/components/schemas/EntraIdExtras'
-    ScoutCreateVmwareWsOne:
-      title: VMware Workspace One
-      allOf:
-      - $ref: '#/components/schemas/CloudOrCustomHive'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
+            description: The Scout's name.
+          interval:
+            type: integer
+            description: The interval (in minutes) of how often the Scout runs.
             enum:
-            - vmware_w1
-          otp:
-            $ref: '#/components/schemas/OTP'
+            - 5
+            - 10
+            - 15
+            - 30
+            - 60
     TracerouteExtras:
       description: Additional options.
       title: Traceroute options
@@ -398,47 +680,6 @@ components:
           minimum: 1
           maximum: 10
           default: 3
-    ScoutItem:
-      oneOf:
-      - $ref: '#/components/schemas/ScoutItemEuc'
-      - $ref: '#/components/schemas/ScoutItemNet'
-      - $ref: '#/components/schemas/ScoutItemApp'
-      type: object
-      title: Scout Properties
-      description: Details about the Scout.
-      properties:
-        scoutId:
-          type: integer
-          description: ID of the Scout.
-        scoutName:
-          type: string
-          description: The Scout's name.
-        interval:
-          type: integer
-          description: The interval (in minutes) of how often the Scout runs.
-        lastRun:
-          type: number
-          format: timestamp
-          description: The time the Scout was last run. Measured in Unix time.
-        createdAt:
-          type: string
-          format: datetime
-          description: The time the Scout was created. Formatted as yyyy-MM-dd HH-mm-ss.
-        disabled:
-          type: boolean
-          description: Whether the Scout is disabled.
-        tags:
-          description: Key-value pairs that are associated with the Scout. These can be used to organize your Scouts.
-          type: array
-          items:
-            type: object
-            properties:
-              key:
-                type: string
-                description: The name of the tag.
-              value:
-                type: string
-                description: The value of the tag.
     ScoutCreatePing:
       title: Ping
       allOf:
@@ -453,31 +694,42 @@ components:
             - net_ping
           options:
             $ref: '#/components/schemas/PingExtras'
-    EntraIdExtras:
-      title: Entra ID options
-      description: Additional options for the Entra ID (Azure AD) Scout.
+    SiteloadExtras:
       type: object
+      title: Siteload options
+      description: Additional options for the Siteload Scout.
       properties:
-        authentication:
-          type: string
-          description: The authentication flow used to acquire a token against the Entra ID tenant.
-          enum:
-          - application
-          - oauth
-        connectStatus:
+        timeout:
+          type: number
+          format: float
+          description: The maximum wait time for the page to load (in seconds).
+          minimum: 0
+          maximum: 90
+          default: 30
+        sslVerify:
           type: boolean
-          description: Whether the Scout verifies the tenant connection status.
+          description: Whether the Scout validates the SSL certificate of the target site. Set to `false` to test sites with private or self-signed certificates.
           default: true
-        querySignedInTestUser:
+        screenshot:
           type: boolean
-          description: Whether the Scout queries the signed-in test user as part of the test.
+          description: Whether the Scout captures a screenshot of the loaded page for each test run.
           default: true
-        clientSecretLast6Chars:
+        requiredText:
           type: string
-          description: The last 6 characters of the client secret, retained for identification only. Set by the server when `authentication` is `application`; user-supplied values are ignored.
-          readOnly: true
-      required:
-      - authentication
+          description: A string the Scout looks for in the rendered page. The test fails if it isn't found.
+          maxLength: 2048
+        successCode:
+          type: array
+          description: HTTP response codes the Scout considers successful.
+          default:
+          - 2xx
+          items:
+            type: string
+            enum:
+            - 1xx
+            - 2xx
+            - 4xx
+            - 5xx
     WebTransactionFlow:
       title: Web Transaction Step
       description: 'A single step in the Web Transactions flow.
@@ -629,183 +881,390 @@ components:
                 enum:
                 - last
                 - original
-    ScoutCreateEucDomain:
+    WebTransactionsExtras:
+      title: Web Transactions options
+      description: Additional options for the Web Transactions Scout.
       type: object
       properties:
-        domain:
+        sslVerify:
+          type: boolean
+          description: Whether the Scout validates the SSL certificate of the target site. Set to false to test sites with private or self-signed certificates.
+          default: true
+        successCode:
+          type: array
+          description: A list of the HTTP response codes that the Scout considers successful.
+          default:
+          - 2xx
+          items:
+            type: string
+            enum:
+            - 1xx
+            - 2xx
+            - 4xx
+            - 5xx
+        windowType:
           type: string
-          description: The domain used to access the gateway.
-      required:
-      - domain
-    OTP:
-      description: 'One-time password (OTP) information for the Scout. MFA is supported for all EUC Scout platforms except Citrix Storefront.
-
-
-        Visit [Multi-Factor Authentication](https://support.controlup.com/docs/mfa) for more details on how to configure MFA.
-
-        '
-      nullable: true
-      oneOf:
-      - title: TOTP | OTP
-        type: object
-        nullable: true
+          description: Preset window form factor. Mutually exclusive with `windowSize`.
+          enum:
+          - desktop
+          - mobile
+        windowSize:
+          type: object
+          description: Explicit browser window dimensions. Mutually exclusive with `windowType`.
+          properties:
+            height:
+              type: integer
+              minimum: 0
+              maximum: 4000
+            width:
+              type: integer
+              minimum: 0
+              maximum: 4000
+        transactionTimeout:
+          type: integer
+          description: The maximum runtime allowed for the entire transaction (in seconds).
+          minimum: 30
+          maximum: 180
+          default: 30
+    ScoutItemNet:
+      title: Network Scouts
+      description: Network properties
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
         properties:
           type:
             type: string
-            description: 'The OTP method used. `totp` means that the Scout is registered as a TOTP device and will dynamically use the current OTP. `static` means that the Scout always uses the same static PIN. These methods are only available for single-step MFA.
-
-              '
+            description: The Scout's type.
             enum:
-            - totp
-            - static
-          code:
+            - network
+          subType:
             type: string
-            description: The TOTP code or the static PIN, depending on `type`.
-        required:
-        - type
-        - code
-      - title: OTP phone call
-        type: object
-        nullable: true
+            description: The Scout's sub-type.
+            enum:
+            - net_ping
+            - net_dns
+            - net_traceroute
+            - net_http
+            - shell
+            - entra_id
+          address:
+            type: string
+            description: The hostname or IP address that the Scout accesses.
+          options:
+            type: object
+            description: Additional options.
+            oneOf:
+            - $ref: '#/components/schemas/PingExtras'
+            - $ref: '#/components/schemas/DNSExtras'
+            - $ref: '#/components/schemas/TracerouteExtras'
+            - $ref: '#/components/schemas/HttpExtras'
+          children:
+            type: array
+            description: Child Scouts that make up the parent Scout's checks. Present only for `net_http` Scouts, which probe the route to the target with a network traceroute.
+            items:
+              type: object
+              properties:
+                scoutId:
+                  type: integer
+                  description: ID of the child Scout.
+                scoutName:
+                  type: string
+                  description: The child Scout's name.
+                subType:
+                  type: string
+                  description: The child Scout's sub-type.
+                  enum:
+                  - net_traceroute
+                address:
+                  type: string
+                  description: The hostname or URL the child Scout accesses.
+                options:
+                  type: object
+                  description: Additional options for the child Scout.
+                summary:
+                  $ref: '#/components/schemas/ScoutSummary'
+    ScoutCreateCitrixCloud:
+      title: Citrix Cloud Gateway
+      allOf:
+      - $ref: '#/components/schemas/ScoutCreateEucDomain'
+      - $ref: '#/components/schemas/CloudOrCustomHive'
+      - type: object
         properties:
-          type:
+          subType:
             type: string
-            description: "The OTP method used. `phone` means that the Scout uses a phone call for authentication. This method is only available for dual-step MFA.\n\nYou must contact [Scoutbees Support](https://controlup.zendesk.com/hc/en-us/requests/new) to configure a phone number for phone authentication. You can [get a list of MFA users](https://scoutbees.io/honeycomb/v2#tag/MFAs/operation/honeycomb.api.get_org_mfas) that are configured with a phone number for authentication. \n"
+            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
             enum:
-            - phone
-          phone:
-            type: string
-            description: Phone number used for phone call verification.
-        required:
-        - type
-        - phone
-      - title: OTP SMS
-        description: Single-step two-Factor authentication method
-        type: object
-        nullable: true
-        properties:
-          type:
-            type: string
-            description: 'The OTP method used. `sms` means that the Scout uses SMS to receive a passcode for authentication. This method is only available for dual-step MFA.
-
-
-              You must contact ControlUp Support to configure a phone number for SMS authentication. You can [get a list of MFA users](honeycombapiget_org_mfas) that are configured with a phone number for authentication.
-
-              '
-            enum:
-            - sms
-          phone:
-            type: string
-            description: Phone number used for SMS verification.
-          reset:
-            type: boolean
-            description: Set to `true` if your MFA vendor sends multiple passcodes in a single SMS. Set to `false` if your MFA vendor sends a single passcode per SMS.
-            default: false
-        required:
-        - type
-        - phone
-    ScoutCreateEuc:
-      title: EUC Scout
-      oneOf:
-      - $ref: '#/components/schemas/ScoutCreateCitrix'
-      - $ref: '#/components/schemas/ScoutCreateCitrixCloud'
-      - $ref: '#/components/schemas/ScoutCreateStorefront'
-      - $ref: '#/components/schemas/ScoutCreateVmware'
-      - $ref: '#/components/schemas/ScoutCreateVmwareWsOne'
-      - $ref: '#/components/schemas/ScoutCreateVmwareSecServer'
-      - $ref: '#/components/schemas/ScoutCreateAvd'
+            - citrix_cloud
+          otp:
+            $ref: '#/components/schemas/OTP'
+    Hostname:
+      title: Hostname
       type: object
       properties:
         address:
           type: string
-          format: url
-          description: The address of the gateway that the Scout accesses.
+          format: hostname
+          description: The target hostname.
+    ScoutCreateShell:
+      title: Shell
+      description: Runs an executable from a Custom Hive. Shell Scouts can only run from Custom Hives.
+      allOf:
+      - type: object
+        properties:
+          hives:
+            type: object
+            description: Custom Hives that run the Scout. Shell Scouts do not support Cloud Hives.
+            properties:
+              custom:
+                type: array
+                description: Custom Hive IDs.
+                minItems: 1
+                items:
+                  type: integer
+                  format: int32
+            required:
+            - custom
+          subType:
+            type: string
+            description: The Scout's sub-type.
+            enum:
+            - shell
+          address:
+            type: string
+            description: The executable the Scout runs on the host where its Custom Hive is installed.
+          options:
+            $ref: '#/components/schemas/ShellExtras'
+        required:
+        - hives
+        - address
+    ScoutEditWebTransactions:
+      title: Web Transactions
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          address:
+            type: string
+            format: url
+            description: The starting URL for the transaction flow.
+          transactionFlows:
+            type: array
+            description: Ordered list of steps the Scout executes against the target site.
+            items:
+              $ref: '#/components/schemas/WebTransactionFlow'
+          otp:
+            $ref: '#/components/schemas/OTP'
+          options:
+            $ref: '#/components/schemas/WebTransactionsExtras'
+    ScoutEditEntraId:
+      title: Entra ID
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          address:
+            type: string
+            description: The Entra ID tenant ID the Scout authenticates against.
+          username:
+            type: string
+            description: Email of the user the Scout authenticates as.
+            maxLength: 100
+          password:
+            type: object
+            description: Authentication credentials. For `application` auth, supply `clientId` and `clientSecret`. For `oauth` auth, supply the OAuth token data returned by the consent flow.
+            writeOnly: true
+          options:
+            $ref: '#/components/schemas/EntraIdExtras'
+    ScoutEditMsExchange:
+      title: Microsoft Exchange
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties: {}
+    ScoutItem:
+      oneOf:
+      - $ref: '#/components/schemas/ScoutItemEuc'
+      - $ref: '#/components/schemas/ScoutItemNet'
+      - $ref: '#/components/schemas/ScoutItemApp'
+      type: object
+      title: Scout Properties
+      description: Details about the Scout.
+      properties:
+        scoutId:
+          type: integer
+          description: ID of the Scout.
         scoutName:
           type: string
           description: The Scout's name.
         interval:
           type: integer
           description: The interval (in minutes) of how often the Scout runs.
-          enum:
-          - 5
-          - 10
-          - 15
-          - 30
-          - 60
-        resource:
+        lastRun:
+          type: number
+          format: timestamp
+          description: The time the Scout was last run. Measured in Unix time.
+        createdAt:
           type: string
-          description: The published resource that the Scout accesses and tests.
-        username:
-          type: string
-          description: The username used to access the gateway.
-        password:
-          type: string
-          description: The password used to access the gateway.
-          writeOnly: true
-        options:
-          $ref: '#/components/schemas/EucExtras'
-      required:
-      - address
-      - subType
-      - scoutName
-      - hiveId
-      - cloudHive
-      - name
-      - interval
-      - resource
-      - username
-      - password
-    HttpProxy:
-      description: Proxy information. A proxy server is only available if the Scout is running from a Custom Hive.
-      oneOf:
+          format: datetime
+          description: The time the Scout was created. Formatted as yyyy-MM-dd HH-mm-ss.
+        disabled:
+          type: boolean
+          description: Whether the Scout is disabled.
+        tags:
+          description: Key-value pairs that are associated with the Scout. These can be used to organize your Scouts.
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: The name of the tag.
+              value:
+                type: string
+                description: The value of the tag.
+    ScoutCreateMail:
+      title: Mail
+      description: End-to-end mail-flow probe. Sends a message from one mailbox to another and measures delivery duration across each hop in the path.
+      allOf:
+      - $ref: '#/components/schemas/Hives'
       - type: object
-        title: No proxy
         properties:
-          type:
+          subType:
             type: string
-            description: '''none'' means that there is no proxy. The request is sent directly to the server.'
+            description: The Scout's sub-type.
             enum:
-            - none
-      - type: object
-        title: Inherited
-        properties:
-          type:
-            type: string
-            description: '''inherited'' means that the Scout uses the same proxy server data that is configured for the Custom Hive running the Scout.'
-            enum:
-            - inherited
-      - type: object
-        title: Custom
-        properties:
-          type:
-            type: string
-            description: '''custom'' means that a proxy server is configured for the Scout.'
-            enum:
-            - custom
+            - mail
           address:
             type: string
-            format: url
-            description: The address of the proxy server.
-          port:
-            description: The port used for the proxy server.
-            type: integer
-            minimum: 1
-            maximum: 65535
-            default: 1080
-          protocol:
-            description: The HTTP protocol.
+            description: The Entra ID tenant ID the Scout authenticates against.
+          username:
+            type: string
+            description: Email of the user the Scout authenticates as.
+            maxLength: 100
+          password:
+            type: object
+            description: OAuth token data returned by the Entra ID user-consent flow. Must contain `accessToken` (delegated). Refresh-token fields obtained during consent should be included so the scout can renew without re-prompting.
+            writeOnly: true
+          options:
+            $ref: '#/components/schemas/MailExtras'
+        required:
+        - address
+        - username
+        - password
+    ScoutCreateVmwareWsOne:
+      title: VMware Workspace One
+      allOf:
+      - $ref: '#/components/schemas/CloudOrCustomHive'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
+            enum:
+            - vmware_w1
+          otp:
+            $ref: '#/components/schemas/OTP'
+    ScoutCreateVmwareSecServer:
+      title: VMware Security Server
+      allOf:
+      - $ref: '#/components/schemas/ScoutCreateEucDomain'
+      - $ref: '#/components/schemas/CloudOrCustomHive'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
+            enum:
+            - vmware_secsrv
+          otp:
+            $ref: '#/components/schemas/OTP'
+    ScoutCreateDNS:
+      title: DNS
+      allOf:
+      - $ref: '#/components/schemas/Hostname'
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type. This indicates the type of network test the Scout performs.
+            enum:
+            - net_dns
+          options:
+            $ref: '#/components/schemas/DNSExtras'
+    HttpExtras:
+      type: object
+      title: HTTP options
+      description: Additional options.
+      properties:
+        method:
+          description: The HTTP method.
+          type: string
+          enum:
+          - GET
+          - POST
+          default: GET
+        requestBody:
+          description: Data sent in the request body. The HTTP `method` must be set to "POST" to send request body data. The data can be in any format (for example, json or string).
+          type: string
+        timeout:
+          description: The maximum wait time for the request (in seconds).
+          type: number
+          format: float
+          minimum: 0.001
+          maximum: 30
+          default: 10
+        sslVerify:
+          description: Whether the Scout needs to validate the SSL certificate of the website. If true, the test will fail if the certificate isn't trusted. If false, you will be able to test websites with private or self-signed certificates.
+          type: boolean
+          default: false
+        pattern:
+          description: A string that the Scout will look for in the response. If not found, the test will fail.
+          type: string
+        maxRedirects:
+          description: The maximum number of redirects to follow before the test fails.
+          type: integer
+          default: 10
+        successCode:
+          description: A list of the HTTP response codes that the Scout will consider successful.
+          type: array
+          default:
+          - 2xx
+          items:
             type: string
             enum:
-            - http
-            - https
-          username:
-            description: The username for the proxy server.
-            type: string
-          password:
-            description: The password for the proxy server.
-            type: string
-            format: password
-            writeOnly: true
+            - 1xx
+            - 2xx
+            - 3xx
+            - 4xx
+            - 5xx
+        headers:
+          description: A list of headers to send in the HTTP request.
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: Header name.
+              value:
+                type: string
+                description: Header value.
+        auth:
+          description: Authentication information for accessing the website.
+          allOf:
+          - $ref: '#/components/schemas/HttpAuth'
+          - required:
+            - type
+            - username
+            - password
+        proxy:
+          allOf:
+          - $ref: '#/components/schemas/HttpProxy'
+          - required:
+            - type
+            - address
     ScoutEditMail:
       title: Mail
       allOf:
@@ -825,41 +1284,90 @@ components:
             writeOnly: true
           options:
             $ref: '#/components/schemas/MailExtras'
-    ProtocolICMP:
-      title: ICMP
-      properties:
-        protocol:
-          description: 'The protocol used. By default, the scout uses the `ICMP` protocol.
-
-            '
-          type: string
-          enum:
-          - ICMP
-          default: ICMP
-        payload:
-          description: The payload size (in bytes). The `payload` must be 32 bytes for the ICMP `protocol`.
-          type: integer
-          enum:
-          - 32
-    EucExtras:
-      description: Additional options.
-      type: object
-      properties:
-        sessionTimeout:
-          type: integer
-          description: The maximum wait time (in seconds) for the session to be fully ready.
-          minimum: 10
-          maximum: 450
-        connectionTimeout:
-          type: integer
-          description: The maximum wait time (in seconds) for the connection phase to the session.
-          minimum: 10
-          maximum: 300
-        loginAttempts:
-          type: integer
-          description: The maximum number of allowed unssuccessful login attempts.
-          minimum: 1
-          maximum: 5
+    ScoutCreateNet:
+      title: Network Scout
+      oneOf:
+      - $ref: '#/components/schemas/ScoutCreatePing'
+      - $ref: '#/components/schemas/ScoutCreateDNS'
+      - $ref: '#/components/schemas/ScoutCreateTraceroute'
+      - $ref: '#/components/schemas/ScoutCreateHttp'
+      - $ref: '#/components/schemas/ScoutCreateShell'
+      - $ref: '#/components/schemas/ScoutCreateEntraId'
+      allOf:
+      - type: object
+        properties:
+          scoutName:
+            type: string
+            description: The Scout's name.
+          interval:
+            type: integer
+            description: The interval (in minutes) of how often the Scout runs.
+            enum:
+            - 1
+            - 2
+            - 3
+            - 5
+            - 10
+            - 15
+            - 30
+            - 60
+      required:
+      - scoutName
+      - interval
+      - address
+      - subType
+      - hives
+    ScoutEditShell:
+      title: Shell
+      allOf:
+      - type: object
+        properties:
+          hives:
+            type: object
+            description: Custom Hives that run the Scout. Shell Scouts do not support Cloud Hives.
+            properties:
+              custom:
+                type: array
+                description: Custom Hive IDs.
+                minItems: 1
+                items:
+                  type: integer
+                  format: int32
+          address:
+            type: string
+            description: The executable the Scout runs on the host where its Custom Hive is installed.
+          options:
+            $ref: '#/components/schemas/ShellExtras'
+    ScoutEditSiteload:
+      title: Siteload
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          address:
+            type: string
+            format: url
+            description: The URL the Scout loads.
+          options:
+            $ref: '#/components/schemas/SiteloadExtras'
+    ScoutCreateMsTeams:
+      title: Microsoft Teams
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type.
+            enum:
+            - ms_teams
+          address:
+            type: string
+            format: url
+            description: The Teams edge URL probed by the Scout.
+            maxLength: 1000
+          options:
+            $ref: '#/components/schemas/MsTeamsExtras'
     ScoutSummary:
       title: Summary
       description: Statistics about the Scout's test results.
@@ -1201,39 +1709,262 @@ components:
               type: number
               format: float
               description: Average delivery duration up to the customer email server, in ms.
-    ScoutCreateNet:
-      title: Network Scout
-      oneOf:
-      - $ref: '#/components/schemas/ScoutCreatePing'
-      - $ref: '#/components/schemas/ScoutCreateDNS'
-      - $ref: '#/components/schemas/ScoutCreateTraceroute'
-      - $ref: '#/components/schemas/ScoutCreateHttp'
-      - $ref: '#/components/schemas/ScoutCreateShell'
-      - $ref: '#/components/schemas/ScoutCreateEntraId'
+    ShellExtras:
+      title: Shell options
+      description: Additional options for the Shell Scout. The Scout runs the executable named in `address` on the host where its Custom Hive is installed.
+      type: object
+      properties:
+        args:
+          type: string
+          description: Command-line arguments passed to the executable.
+        env:
+          type: object
+          description: Environment variables to set when running the executable.
+          additionalProperties:
+            type: string
+        workingDir:
+          type: string
+          description: Working directory in which the executable runs.
+        errorCode:
+          type: array
+          description: Exit-code ranges that the Scout considers successful. Each item is `[min, max]` inclusive.
+          default:
+          - - 0
+            - 0
+          items:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items:
+              type: integer
+        timeout:
+          type: number
+          format: float
+          description: The maximum execution time (in seconds).
+          minimum: 0.1
+          maximum: 180
+          default: 30
+        pattern:
+          type: string
+          description: A string the Scout looks for in stdout. The test fails if it isn't found.
+          maxLength: 1024
+        stdin:
+          type: string
+          description: Data piped to the executable's stdin.
+          maxLength: 2048
+    ScoutCreateTraceroute:
+      title: Traceroute
       allOf:
+      - $ref: '#/components/schemas/HostnameAndIp'
+      - $ref: '#/components/schemas/Hives'
       - type: object
         properties:
-          scoutName:
+          subType:
             type: string
-            description: The Scout's name.
-          interval:
-            type: integer
-            description: The interval (in minutes) of how often the Scout runs.
+            description: The Scout's sub-type. This indicates the type of network test the Scout performs.
             enum:
-            - 1
-            - 2
-            - 3
-            - 5
-            - 10
-            - 15
-            - 30
-            - 60
+            - net_traceroute
+          options:
+            $ref: '#/components/schemas/TracerouteExtras'
+    ScoutItemApp:
+      title: Application Scouts
+      description: Application properties
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          type:
+            type: string
+            description: The Scout's type.
+            enum:
+            - application
+          subType:
+            type: string
+            description: The Scout's sub-type.
+            enum:
+            - ms_exchange
+            - ms_teams
+            - web_transactions
+            - mail
+            - siteload
+          address:
+            type: string
+            description: The address that the Scout accesses.
+          options:
+            type: object
+            description: Additional options.
+          children:
+            type: array
+            description: Child Scouts that make up the parent Scout's checks. Present only for `ms_exchange` Scouts, whose probes are themselves network Scouts.
+            items:
+              type: object
+              properties:
+                scoutId:
+                  type: integer
+                  description: ID of the child Scout.
+                scoutName:
+                  type: string
+                  description: The child Scout's name.
+                subType:
+                  type: string
+                  description: The child Scout's sub-type.
+                  enum:
+                  - net_ping
+                address:
+                  type: string
+                  description: The hostname or URL the child Scout accesses.
+                options:
+                  type: object
+                  description: Additional options for the child Scout.
+                summary:
+                  $ref: '#/components/schemas/ScoutSummary'
+    ScoutEditPing:
+      title: Ping
+      allOf:
+      - $ref: '#/components/schemas/HostnameAndIp'
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          options:
+            $ref: '#/components/schemas/PingExtras'
+    ScoutCreateMsExchange:
+      title: Microsoft Exchange
+      description: Parent Scout that aggregates probes against the Exchange mail infrastructure. The actual probes are child Scouts of `net_ping` sub-type that the backend creates automatically.
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type.
+            enum:
+            - ms_exchange
+    OTP:
+      description: 'One-time password (OTP) information for the Scout. MFA is supported for all EUC Scout platforms except Citrix Storefront.
+
+
+        Visit [Multi-Factor Authentication](https://support.controlup.com/docs/mfa) for more details on how to configure MFA.
+
+        '
+      nullable: true
+      oneOf:
+      - title: TOTP | OTP
+        type: object
+        nullable: true
+        properties:
+          type:
+            type: string
+            description: 'The OTP method used. `totp` means that the Scout is registered as a TOTP device and will dynamically use the current OTP. `static` means that the Scout always uses the same static PIN. These methods are only available for single-step MFA.
+
+              '
+            enum:
+            - totp
+            - static
+          code:
+            type: string
+            description: The TOTP code or the static PIN, depending on `type`.
+        required:
+        - type
+        - code
+      - title: OTP phone call
+        type: object
+        nullable: true
+        properties:
+          type:
+            type: string
+            description: "The OTP method used. `phone` means that the Scout uses a phone call for authentication. This method is only available for dual-step MFA.\n\nYou must contact [Scoutbees Support](https://controlup.zendesk.com/hc/en-us/requests/new) to configure a phone number for phone authentication. You can [get a list of MFA users](https://scoutbees.io/honeycomb/v2#tag/MFAs/operation/honeycomb.api.get_org_mfas) that are configured with a phone number for authentication. \n"
+            enum:
+            - phone
+          phone:
+            type: string
+            description: Phone number used for phone call verification.
+        required:
+        - type
+        - phone
+      - title: OTP SMS
+        description: Single-step two-Factor authentication method
+        type: object
+        nullable: true
+        properties:
+          type:
+            type: string
+            description: 'The OTP method used. `sms` means that the Scout uses SMS to receive a passcode for authentication. This method is only available for dual-step MFA.
+
+
+              You must contact ControlUp Support to configure a phone number for SMS authentication. You can [get a list of MFA users](honeycombapiget_org_mfas) that are configured with a phone number for authentication.
+
+              '
+            enum:
+            - sms
+          phone:
+            type: string
+            description: Phone number used for SMS verification.
+          reset:
+            type: boolean
+            description: Set to `true` if your MFA vendor sends multiple passcodes in a single SMS. Set to `false` if your MFA vendor sends a single passcode per SMS.
+            default: false
+        required:
+        - type
+        - phone
+    HttpProxy:
+      description: Proxy information. A proxy server is only available if the Scout is running from a Custom Hive.
+      oneOf:
+      - type: object
+        title: No proxy
+        properties:
+          type:
+            type: string
+            description: '''none'' means that there is no proxy. The request is sent directly to the server.'
+            enum:
+            - none
+      - type: object
+        title: Inherited
+        properties:
+          type:
+            type: string
+            description: '''inherited'' means that the Scout uses the same proxy server data that is configured for the Custom Hive running the Scout.'
+            enum:
+            - inherited
+      - type: object
+        title: Custom
+        properties:
+          type:
+            type: string
+            description: '''custom'' means that a proxy server is configured for the Scout.'
+            enum:
+            - custom
+          address:
+            type: string
+            format: url
+            description: The address of the proxy server.
+          port:
+            description: The port used for the proxy server.
+            type: integer
+            minimum: 1
+            maximum: 65535
+            default: 1080
+          protocol:
+            description: The HTTP protocol.
+            type: string
+            enum:
+            - http
+            - https
+          username:
+            description: The username for the proxy server.
+            type: string
+          password:
+            description: The password for the proxy server.
+            type: string
+            format: password
+            writeOnly: true
+    ScoutCreateEucDomain:
+      type: object
+      properties:
+        domain:
+          type: string
+          description: The domain used to access the gateway.
       required:
-      - scoutName
-      - interval
-      - address
-      - subType
-      - hives
+      - domain
     ScoutCreateAvd:
       title: Azure Virtual Desktop
       allOf:
@@ -1251,141 +1982,63 @@ components:
             nullable: true
           otp:
             $ref: '#/components/schemas/OTP'
-    ScoutCreateSiteload:
-      title: Siteload
-      description: Loads the target page in a real browser and measures key page-load metrics.
+    ScoutCreateHttp:
+      title: HTTP
       allOf:
       - $ref: '#/components/schemas/Hives'
       - type: object
         properties:
-          subType:
-            type: string
-            description: The Scout's sub-type.
-            enum:
-            - siteload
           address:
             type: string
             format: url
-            description: The URL the Scout loads.
+            description: The target URL for the HTTP request.
+          subType:
+            type: string
+            description: The Scout's sub-type. This indicates the type of network test the Scout performs.
+            enum:
+            - net_http
           options:
-            $ref: '#/components/schemas/SiteloadExtras'
-        required:
-        - address
-    MailExtras:
-      title: Mail options
-      description: Additional options for the Mail Scout. Mail authenticates exclusively via the user-delegated OAuth flow against Microsoft Entra ID — pass the delegated access token in the top-level `password` field. The application-credentials flow (client_id + client_secret) used by `entra_id` Scouts is **not** supported for `mail`.
+            $ref: '#/components/schemas/HttpExtras'
+    HttpAuth:
+      oneOf:
+      - type: object
+        title: No auth
+        properties:
+          type:
+            type: string
+            description: '''none'' means that the Scout uses no authentication. No username or password required.'
+            enum:
+            - none
+      - type: object
+        title: Has auth
+        properties:
+          type:
+            type: string
+            description: '''ntlm'' or ''basic'' means that a username and password is required.'
+            enum:
+            - ntlm
+            - basic
+          username:
+            description: The username used to access the website.
+            type: string
+          password:
+            description: The password used to access the website.
+            type: string
+            format: password
+            writeOnly: true
+    ScoutCreateStorefront:
+      title: Citrix Virtual Apps and Desktops - Storefront
       type: object
       properties:
+        hiveId:
+          type: integer
+          format: int32
+          description: ID of the Custom Hive from which the Scout will run.
         subType:
           type: string
-          description: Direction of the mail-flow test performed by the Scout. `outgoing` sends mail from the authenticated mailbox to a Scoutbees-managed recipient; `incoming` does the reverse. Sender, recipient, and mail-service endpoints are managed by Scoutbees based on this direction and cannot be overridden via the API.
+          description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
           enum:
-          - incoming
-          - outgoing
-        authentication:
-          type: string
-          description: The authentication flow used to acquire a token against the mail service. Only `oauth` is supported for mail.
-          enum:
-          - oauth
-        timeout:
-          type: number
-          format: float
-          description: The maximum wait time for a single mail probe (in seconds).
-          minimum: 30
-          maximum: 180
-          default: 30
-      required:
-      - subType
-      - authentication
-    ScoutCreateEntraId:
-      title: Entra ID
-      description: Tests connectivity and authentication against a Microsoft Entra ID (Azure AD) tenant.
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type.
-            enum:
-            - entra_id
-          address:
-            type: string
-            description: The Entra ID tenant ID the Scout authenticates against.
-          username:
-            type: string
-            description: Email of the user the Scout authenticates as.
-            maxLength: 100
-          password:
-            type: object
-            description: Authentication credentials. For `application` auth, supply `clientId` and `clientSecret`. For `oauth` auth, supply the OAuth token data returned by the consent flow.
-            writeOnly: true
-          options:
-            $ref: '#/components/schemas/EntraIdExtras'
-        required:
-        - address
-        - password
-    ScoutCreateVmwareSecServer:
-      title: VMware Security Server
-      allOf:
-      - $ref: '#/components/schemas/ScoutCreateEucDomain'
-      - $ref: '#/components/schemas/CloudOrCustomHive'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
-            enum:
-            - vmware_secsrv
-          otp:
-            $ref: '#/components/schemas/OTP'
-    ScoutCreateCitrix:
-      title: Citrix Virtual Apps and Desktops - NetScaler Gateway
-      allOf:
-      - $ref: '#/components/schemas/CloudOrCustomHive'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
-            enum:
-            - citrix_gateway
-          otp:
-            $ref: '#/components/schemas/OTP'
-    ScoutEditMsExchange:
-      title: Microsoft Exchange
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties: {}
-    ScoutCreateWebTransactions:
-      title: Web Transactions
-      description: Drives a real browser through a list of steps and reports timing and navigation metrics for each step.
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type.
-            enum:
-            - web_transactions
-          address:
-            type: string
-            format: url
-            description: The starting URL for the transaction flow.
-          transactionFlows:
-            type: array
-            description: Ordered list of steps the Scout executes against the target site.
-            items:
-              $ref: '#/components/schemas/WebTransactionFlow'
-          otp:
-            $ref: '#/components/schemas/OTP'
-          options:
-            $ref: '#/components/schemas/WebTransactionsExtras'
-        required:
-        - address
-        - transactionFlows
+          - citrix_storefront
     DNSExtras:
       title: DNS options
       description: Additional options.
@@ -1498,49 +2151,81 @@ components:
                 description: Additional options for the child Scout.
               summary:
                 $ref: '#/components/schemas/ScoutSummary'
-    ShellExtras:
-      title: Shell options
-      description: Additional options for the Shell Scout. The Scout runs the executable named in `address` on the host where its Custom Hive is installed.
+    ScoutCreateVmware:
+      title: VMware Horizon UAG
+      allOf:
+      - $ref: '#/components/schemas/ScoutCreateEucDomain'
+      - $ref: '#/components/schemas/CloudOrCustomHive'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
+            enum:
+            - vmware_horizon
+          otp:
+            $ref: '#/components/schemas/OTP'
+    MsTeamsExtras:
+      title: Microsoft Teams options
+      description: Additional options for the Microsoft Teams Scout.
       type: object
       properties:
-        args:
+        relayAddress:
           type: string
-          description: Command-line arguments passed to the executable.
-        env:
-          type: object
-          description: Environment variables to set when running the executable.
-          additionalProperties:
-            type: string
-        workingDir:
+          description: The Teams media relay address (hostname or IP) probed by the Scout.
+        edgeAddress:
           type: string
-          description: Working directory in which the executable runs.
-        errorCode:
-          type: array
-          description: Exit-code ranges that the Scout considers successful. Each item is `[min, max]` inclusive.
-          default:
-          - - 0
-            - 0
-          items:
-            type: array
-            minItems: 2
-            maxItems: 2
-            items:
-              type: integer
-        timeout:
+          format: url
+          description: The Teams edge URL probed by the Scout. Must use HTTPS.
+        allowedLoss:
           type: number
           format: float
-          description: The maximum execution time (in seconds).
-          minimum: 0.1
-          maximum: 180
-          default: 30
-        pattern:
+          description: The maximum tolerated packet loss percentage before the test fails.
+          minimum: 0
+          maximum: 100
+          default: 0
+        failureCondition:
           type: string
-          description: A string the Scout looks for in stdout. The test fails if it isn't found.
-          maxLength: 1024
-        stdin:
+          description: How the Scout decides the test failed when more than one probe is configured.
+          enum:
+          - all
+          - one_of_them
+          default: one_of_them
+    BaseError:
+      type: object
+      properties:
+        errors:
           type: string
-          description: Data piped to the executable's stdin.
-          maxLength: 2048
+      required:
+      - errors
+    ScoutCreateEntraId:
+      title: Entra ID
+      description: Tests connectivity and authentication against a Microsoft Entra ID (Azure AD) tenant.
+      allOf:
+      - $ref: '#/components/schemas/Hives'
+      - type: object
+        properties:
+          subType:
+            type: string
+            description: The Scout's sub-type.
+            enum:
+            - entra_id
+          address:
+            type: string
+            description: The Entra ID tenant ID the Scout authenticates against.
+          username:
+            type: string
+            description: Email of the user the Scout authenticates as.
+            maxLength: 100
+          password:
+            type: object
+            description: Authentication credentials. For `application` auth, supply `clientId` and `clientSecret`. For `oauth` auth, supply the OAuth token data returned by the consent flow.
+            writeOnly: true
+          options:
+            $ref: '#/components/schemas/EntraIdExtras'
+        required:
+        - address
+        - password
     ScoutEditEuc:
       title: Edit EUC Scout
       type: object
@@ -1580,294 +2265,6 @@ components:
           domain:
             type: string
             description: 'The domain used to access the gateway. This is only available for the following sub-types: `citrix_cloud`, `vmware_horizon`, `vmware_secsrv`.'
-    ScoutCreateStorefront:
-      title: Citrix Virtual Apps and Desktops - Storefront
-      type: object
-      properties:
-        hiveId:
-          type: integer
-          format: int32
-          description: ID of the Custom Hive from which the Scout will run.
-        subType:
-          type: string
-          description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
-          enum:
-          - citrix_storefront
-    Hives:
-      type: object
-      properties:
-        hives:
-          type: object
-          description: IDs of the Cloud and Custom Hives from which the Scout runs.
-          properties:
-            cloud:
-              type: array
-              description: Cloud Hive IDs.
-              items:
-                type: integer
-                format: int32
-                minimum: 1
-                exclusiveMinimum: false
-            custom:
-              type: array
-              description: Custom Hive IDs.
-              items:
-                type: integer
-                format: int32
-                minimum: 1
-                exclusiveMinimum: false
-    ScoutEditMsTeams:
-      title: Microsoft Teams
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          address:
-            type: string
-            format: url
-            description: The Teams edge URL probed by the Scout.
-            maxLength: 1000
-          options:
-            $ref: '#/components/schemas/MsTeamsExtras'
-    ScoutEditDNS:
-      title: DNS
-      allOf:
-      - $ref: '#/components/schemas/Hostname'
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          options:
-            $ref: '#/components/schemas/DNSExtras'
-    SiteloadExtras:
-      type: object
-      title: Siteload options
-      description: Additional options for the Siteload Scout.
-      properties:
-        timeout:
-          type: number
-          format: float
-          description: The maximum wait time for the page to load (in seconds).
-          minimum: 0
-          maximum: 90
-          default: 30
-        sslVerify:
-          type: boolean
-          description: Whether the Scout validates the SSL certificate of the target site. Set to `false` to test sites with private or self-signed certificates.
-          default: true
-        screenshot:
-          type: boolean
-          description: Whether the Scout captures a screenshot of the loaded page for each test run.
-          default: true
-        requiredText:
-          type: string
-          description: A string the Scout looks for in the rendered page. The test fails if it isn't found.
-          maxLength: 2048
-        successCode:
-          type: array
-          description: HTTP response codes the Scout considers successful.
-          default:
-          - 2xx
-          items:
-            type: string
-            enum:
-            - 1xx
-            - 2xx
-            - 4xx
-            - 5xx
-    ScoutCreateCitrixCloud:
-      title: Citrix Cloud Gateway
-      allOf:
-      - $ref: '#/components/schemas/ScoutCreateEucDomain'
-      - $ref: '#/components/schemas/CloudOrCustomHive'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
-            enum:
-            - citrix_cloud
-          otp:
-            $ref: '#/components/schemas/OTP'
-    Protocols:
-      title: UDP | TCP
-      properties:
-        protocol:
-          type: string
-          enum:
-          - TCP
-          - UDP
-          description: The protocol used. By default, the scout uses the `ICMP` protocol.
-        port:
-          type: integer
-          description: The target port.
-          minimum: 1
-          maximum: 65535
-        payload:
-          description: The payload size (in bytes).
-          type: integer
-          minimum: 0
-          maximum: 32
-          default: 32
-      required:
-      - port
-    ScoutEditPing:
-      title: Ping
-      allOf:
-      - $ref: '#/components/schemas/HostnameAndIp'
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          options:
-            $ref: '#/components/schemas/PingExtras'
-    ScoutCreateMsTeams:
-      title: Microsoft Teams
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type.
-            enum:
-            - ms_teams
-          address:
-            type: string
-            format: url
-            description: The Teams edge URL probed by the Scout.
-            maxLength: 1000
-          options:
-            $ref: '#/components/schemas/MsTeamsExtras'
-    ScoutCreateVmware:
-      title: VMware Horizon UAG
-      allOf:
-      - $ref: '#/components/schemas/ScoutCreateEucDomain'
-      - $ref: '#/components/schemas/CloudOrCustomHive'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
-            enum:
-            - vmware_horizon
-          otp:
-            $ref: '#/components/schemas/OTP'
-    ScoutItemApp:
-      title: Application Scouts
-      description: Application properties
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          type:
-            type: string
-            description: The Scout's type.
-            enum:
-            - application
-          subType:
-            type: string
-            description: The Scout's sub-type.
-            enum:
-            - ms_exchange
-            - ms_teams
-            - web_transactions
-            - mail
-            - siteload
-          address:
-            type: string
-            description: The address that the Scout accesses.
-          options:
-            type: object
-            description: Additional options.
-          children:
-            type: array
-            description: Child Scouts that make up the parent Scout's checks. Present only for `ms_exchange` Scouts, whose probes are themselves network Scouts.
-            items:
-              type: object
-              properties:
-                scoutId:
-                  type: integer
-                  description: ID of the child Scout.
-                scoutName:
-                  type: string
-                  description: The child Scout's name.
-                subType:
-                  type: string
-                  description: The child Scout's sub-type.
-                  enum:
-                  - net_ping
-                address:
-                  type: string
-                  description: The hostname or URL the child Scout accesses.
-                options:
-                  type: object
-                  description: Additional options for the child Scout.
-                summary:
-                  $ref: '#/components/schemas/ScoutSummary'
-    ScoutEditWebTransactions:
-      title: Web Transactions
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          address:
-            type: string
-            format: url
-            description: The starting URL for the transaction flow.
-          transactionFlows:
-            type: array
-            description: Ordered list of steps the Scout executes against the target site.
-            items:
-              $ref: '#/components/schemas/WebTransactionFlow'
-          otp:
-            $ref: '#/components/schemas/OTP'
-          options:
-            $ref: '#/components/schemas/WebTransactionsExtras'
-    Hostname:
-      title: Hostname
-      type: object
-      properties:
-        address:
-          type: string
-          format: hostname
-          description: The target hostname.
-    ScoutEditApp:
-      title: Edit Application Scout
-      oneOf:
-      - $ref: '#/components/schemas/ScoutEditMsExchange'
-      - $ref: '#/components/schemas/ScoutEditMsTeams'
-      - $ref: '#/components/schemas/ScoutEditWebTransactions'
-      - $ref: '#/components/schemas/ScoutEditMail'
-      - $ref: '#/components/schemas/ScoutEditSiteload'
-      allOf:
-      - type: object
-        properties:
-          scoutName:
-            type: string
-            description: The Scout's name.
-          interval:
-            type: integer
-            description: The interval (in minutes) of how often the Scout runs.
-            enum:
-            - 5
-            - 10
-            - 15
-            - 30
-            - 60
-    MarshmallowError:
-      type: object
-      properties:
-        errors:
-          type: object
-          items:
-            type: array
-            items:
-              type: string
-      example:
-        errors:
-          name:
-          - Missing required data.
-          period:
-          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
     ScoutEditHttp:
       title: HTTP
       allOf:
@@ -1880,177 +2277,15 @@ components:
             description: The target URL for the HTTP request.
           options:
             $ref: '#/components/schemas/HttpExtras'
-    ScoutEditShell:
-      title: Shell
+    ScoutEditDNS:
+      title: DNS
       allOf:
-      - type: object
-        properties:
-          hives:
-            type: object
-            description: Custom Hives that run the Scout. Shell Scouts do not support Cloud Hives.
-            properties:
-              custom:
-                type: array
-                description: Custom Hive IDs.
-                minItems: 1
-                items:
-                  type: integer
-                  format: int32
-          address:
-            type: string
-            description: The executable the Scout runs on the host where its Custom Hive is installed.
-          options:
-            $ref: '#/components/schemas/ShellExtras'
-    ScoutEditSiteload:
-      title: Siteload
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          address:
-            type: string
-            format: url
-            description: The URL the Scout loads.
-          options:
-            $ref: '#/components/schemas/SiteloadExtras'
-    ScoutItemNet:
-      title: Network Scouts
-      description: Network properties
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          type:
-            type: string
-            description: The Scout's type.
-            enum:
-            - network
-          subType:
-            type: string
-            description: The Scout's sub-type.
-            enum:
-            - net_ping
-            - net_dns
-            - net_traceroute
-            - net_http
-            - shell
-            - entra_id
-          address:
-            type: string
-            description: The hostname or IP address that the Scout accesses.
-          options:
-            type: object
-            description: Additional options.
-            oneOf:
-            - $ref: '#/components/schemas/PingExtras'
-            - $ref: '#/components/schemas/DNSExtras'
-            - $ref: '#/components/schemas/TracerouteExtras'
-            - $ref: '#/components/schemas/HttpExtras'
-          children:
-            type: array
-            description: Child Scouts that make up the parent Scout's checks. Present only for `net_http` Scouts, which probe the route to the target with a network traceroute.
-            items:
-              type: object
-              properties:
-                scoutId:
-                  type: integer
-                  description: ID of the child Scout.
-                scoutName:
-                  type: string
-                  description: The child Scout's name.
-                subType:
-                  type: string
-                  description: The child Scout's sub-type.
-                  enum:
-                  - net_traceroute
-                address:
-                  type: string
-                  description: The hostname or URL the child Scout accesses.
-                options:
-                  type: object
-                  description: Additional options for the child Scout.
-                summary:
-                  $ref: '#/components/schemas/ScoutSummary'
-    ScoutCreateMail:
-      title: Mail
-      description: End-to-end mail-flow probe. Sends a message from one mailbox to another and measures delivery duration across each hop in the path.
-      allOf:
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type.
-            enum:
-            - mail
-          address:
-            type: string
-            description: The Entra ID tenant ID the Scout authenticates against.
-          username:
-            type: string
-            description: Email of the user the Scout authenticates as.
-            maxLength: 100
-          password:
-            type: object
-            description: OAuth token data returned by the Entra ID user-consent flow. Must contain `accessToken` (delegated). Refresh-token fields obtained during consent should be included so the scout can renew without re-prompting.
-            writeOnly: true
-          options:
-            $ref: '#/components/schemas/MailExtras'
-        required:
-        - address
-        - username
-        - password
-    BaseError:
-      type: object
-      properties:
-        errors:
-          type: string
-      required:
-      - errors
-    HostnameAndIp:
-      title: Hostname & IP
-      type: object
-      properties:
-        address:
-          type: string
-          format: hostname or ipv4
-          description: The target hostname or IP address.
-    ScoutEditTraceroute:
-      title: Traceroute
-      allOf:
-      - $ref: '#/components/schemas/HostnameAndIp'
+      - $ref: '#/components/schemas/Hostname'
       - $ref: '#/components/schemas/Hives'
       - type: object
         properties:
           options:
-            $ref: '#/components/schemas/TracerouteExtras'
-    HttpAuth:
-      oneOf:
-      - type: object
-        title: No auth
-        properties:
-          type:
-            type: string
-            description: '''none'' means that the Scout uses no authentication. No username or password required.'
-            enum:
-            - none
-      - type: object
-        title: Has auth
-        properties:
-          type:
-            type: string
-            description: '''ntlm'' or ''basic'' means that a username and password is required.'
-            enum:
-            - ntlm
-            - basic
-          username:
-            description: The username used to access the website.
-            type: string
-          password:
-            description: The password used to access the website.
-            type: string
-            format: password
-            writeOnly: true
+            $ref: '#/components/schemas/DNSExtras'
     ScoutEditNet:
       title: Edit Network Scout
       oneOf:
@@ -2078,209 +2313,22 @@ components:
             - 15
             - 30
             - 60
-    WebTransactionsExtras:
-      title: Web Transactions options
-      description: Additional options for the Web Transactions Scout.
-      type: object
+    ProtocolICMP:
+      title: ICMP
       properties:
-        sslVerify:
-          type: boolean
-          description: Whether the Scout validates the SSL certificate of the target site. Set to false to test sites with private or self-signed certificates.
-          default: true
-        successCode:
-          type: array
-          description: A list of the HTTP response codes that the Scout considers successful.
-          default:
-          - 2xx
-          items:
-            type: string
-            enum:
-            - 1xx
-            - 2xx
-            - 4xx
-            - 5xx
-        windowType:
+        protocol:
+          description: 'The protocol used. By default, the scout uses the `ICMP` protocol.
+
+            '
           type: string
-          description: Preset window form factor. Mutually exclusive with `windowSize`.
           enum:
-          - desktop
-          - mobile
-        windowSize:
-          type: object
-          description: Explicit browser window dimensions. Mutually exclusive with `windowType`.
-          properties:
-            height:
-              type: integer
-              minimum: 0
-              maximum: 4000
-            width:
-              type: integer
-              minimum: 0
-              maximum: 4000
-        transactionTimeout:
+          - ICMP
+          default: ICMP
+        payload:
+          description: The payload size (in bytes). The `payload` must be 32 bytes for the ICMP `protocol`.
           type: integer
-          description: The maximum runtime allowed for the entire transaction (in seconds).
-          minimum: 30
-          maximum: 180
-          default: 30
-    ScoutCreateTraceroute:
-      title: Traceroute
-      allOf:
-      - $ref: '#/components/schemas/HostnameAndIp'
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type. This indicates the type of network test the Scout performs.
-            enum:
-            - net_traceroute
-          options:
-            $ref: '#/components/schemas/TracerouteExtras'
-    HttpExtras:
-      type: object
-      title: HTTP options
-      description: Additional options.
-      properties:
-        method:
-          description: The HTTP method.
-          type: string
           enum:
-          - GET
-          - POST
-          default: GET
-        requestBody:
-          description: Data sent in the request body. The HTTP `method` must be set to "POST" to send request body data. The data can be in any format (for example, json or string).
-          type: string
-        timeout:
-          description: The maximum wait time for the request (in seconds).
-          type: number
-          format: float
-          minimum: 0.001
-          maximum: 30
-          default: 10
-        sslVerify:
-          description: Whether the Scout needs to validate the SSL certificate of the website. If true, the test will fail if the certificate isn't trusted. If false, you will be able to test websites with private or self-signed certificates.
-          type: boolean
-          default: false
-        pattern:
-          description: A string that the Scout will look for in the response. If not found, the test will fail.
-          type: string
-        maxRedirects:
-          description: The maximum number of redirects to follow before the test fails.
-          type: integer
-          default: 10
-        successCode:
-          description: A list of the HTTP response codes that the Scout will consider successful.
-          type: array
-          default:
-          - 2xx
-          items:
-            type: string
-            enum:
-            - 1xx
-            - 2xx
-            - 3xx
-            - 4xx
-            - 5xx
-        headers:
-          description: A list of headers to send in the HTTP request.
-          type: array
-          items:
-            type: object
-            properties:
-              key:
-                type: string
-                description: Header name.
-              value:
-                type: string
-                description: Header value.
-        auth:
-          description: Authentication information for accessing the website.
-          allOf:
-          - $ref: '#/components/schemas/HttpAuth'
-          - required:
-            - type
-            - username
-            - password
-        proxy:
-          allOf:
-          - $ref: '#/components/schemas/HttpProxy'
-          - required:
-            - type
-            - address
-    MsTeamsExtras:
-      title: Microsoft Teams options
-      description: Additional options for the Microsoft Teams Scout.
-      type: object
-      properties:
-        relayAddress:
-          type: string
-          description: The Teams media relay address (hostname or IP) probed by the Scout.
-        edgeAddress:
-          type: string
-          format: url
-          description: The Teams edge URL probed by the Scout. Must use HTTPS.
-        allowedLoss:
-          type: number
-          format: float
-          description: The maximum tolerated packet loss percentage before the test fails.
-          minimum: 0
-          maximum: 100
-          default: 0
-        failureCondition:
-          type: string
-          description: How the Scout decides the test failed when more than one probe is configured.
-          enum:
-          - all
-          - one_of_them
-          default: one_of_them
-    ScoutCreateDNS:
-      title: DNS
-      allOf:
-      - $ref: '#/components/schemas/Hostname'
-      - $ref: '#/components/schemas/Hives'
-      - type: object
-        properties:
-          subType:
-            type: string
-            description: The Scout's sub-type. This indicates the type of network test the Scout performs.
-            enum:
-            - net_dns
-          options:
-            $ref: '#/components/schemas/DNSExtras'
-    ScoutCreateShell:
-      title: Shell
-      description: Runs an executable from a Custom Hive. Shell Scouts can only run from Custom Hives.
-      allOf:
-      - type: object
-        properties:
-          hives:
-            type: object
-            description: Custom Hives that run the Scout. Shell Scouts do not support Cloud Hives.
-            properties:
-              custom:
-                type: array
-                description: Custom Hive IDs.
-                minItems: 1
-                items:
-                  type: integer
-                  format: int32
-            required:
-            - custom
-          subType:
-            type: string
-            description: The Scout's sub-type.
-            enum:
-            - shell
-          address:
-            type: string
-            description: The executable the Scout runs on the host where its Custom Hive is installed.
-          options:
-            $ref: '#/components/schemas/ShellExtras'
-        required:
-        - hives
-        - address
+          - 32
     ScoutCreateApp:
       title: Application Scout
       oneOf:
@@ -2309,140 +2357,19 @@ components:
       - interval
       - subType
       - hives
-    ScoutCreateMsExchange:
-      title: Microsoft Exchange
-      description: Parent Scout that aggregates probes against the Exchange mail infrastructure. The actual probes are child Scouts of `net_ping` sub-type that the backend creates automatically.
+    ScoutCreateCitrix:
+      title: Citrix Virtual Apps and Desktops - NetScaler Gateway
       allOf:
-      - $ref: '#/components/schemas/Hives'
+      - $ref: '#/components/schemas/CloudOrCustomHive'
       - type: object
         properties:
           subType:
             type: string
-            description: The Scout's sub-type.
+            description: The Scout's sub-type. This indicates the EUC platform that the Scout accesses.
             enum:
-            - ms_exchange
-    CloudOrCustomHive:
-      oneOf:
-      - title: Cloud Hive
-        type: object
-        properties:
-          cloudHive:
-            type: integer
-            format: int32
-            description: ID of the Cloud Hive from which the Scout will run.
-      - title: Custom Hive
-        type: object
-        properties:
-          hiveId:
-            type: integer
-            format: int32
-            description: ID of the Custom Hive from which the Scout will run.
-    PingExtras:
-      title: Ping options
-      description: Additional options.
-      oneOf:
-      - $ref: '#/components/schemas/ProtocolICMP'
-      - $ref: '#/components/schemas/Protocols'
-      type: object
-      properties:
-        count:
-          type: integer
-          description: The number of packets sent during the test. Jitter can be measured if there is more than one packet.
-          minimum: 1
-          maximum: 10
-          default: 4
-        successfulPercentage:
-          type: integer
-          enum:
-          - 20
-          - 40
-          - 60
-          - 80
-          - 100
-          description: The percentage of packets that must be received for the test to be successful.
-        timeout:
-          description: The maximum response wait time (in seconds).
-          type: number
-          format: float
-          minimum: 0.001
-          maximum: 3.6
-          default: 1
-        maxttl:
-          description: The maximum time to live (TTL) in ms.
-          type: integer
-          minimum: 1
-          maximum: 255
-          default: 64
-  responses:
-    ServerError:
-      description: Server errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Server Error
-    Unauthorized:
-      description: Missing or wrong api key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Unauthorized
-    ScoutList:
-      description: A list of Scouts
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                description: An array of Scouts. Each entry in the array is a separate Scout, containing the relevant details and configurations for the Scout's `type` and `subType`.
-                items:
-                  $ref: '#/components/schemas/ScoutItem'
-              currentPage:
-                type: integer
-                description: The current page of Scouts returned by the request. Change the page with the `page` request parameter.
-              totalPages:
-                type: integer
-                description: The total number of pages returned. Each page contains up to 100 Scouts.
-              success:
-                type: boolean
-                description: Whether the request was successful.
-              total:
-                type: integer
-                description: The total number of Scouts returned, based on the filters and conditions specified in the request. If `total` is greater than 100, then the Scouts will be on multiple pages.
-          examples:
-            ScoutItemsResponse:
-              $ref: '#/components/examples/ScoutList'
-    ScoutItem:
-      description: Scout information.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/components/schemas/ScoutItem'
-              summary:
-                $ref: '#/components/schemas/ScoutSummary'
-              success:
-                type: boolean
-                description: Whether the request was successful.
-          examples:
-            ScoutCitrixItem:
-              $ref: '#/components/examples/ScoutCitrixItem'
-            ScoutTracerouteItem:
-              $ref: '#/components/examples/ScoutTracerouteItem'
-    ValidationError:
-      description: Sent data has errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MarshmallowError'
+            - citrix_gateway
+          otp:
+            $ref: '#/components/schemas/OTP'
   examples:
     ScoutList:
       summary: Sample of euc scout
@@ -2497,6 +2424,43 @@ components:
           scoutName: example-ping-ns
           subType: net_ping
           type: network
+    ScoutTracerouteItem:
+      summary: Traceroute (Net) scout example
+      value:
+        success: true
+        data:
+          address: ns.example.com
+          cloudHive: eu-central-1
+          createdAt: '2021-05-24 11:30:07'
+          disabled: false
+          domain: null
+          hiveId: null
+          interval: 10
+          lastRun: 1624878718129
+          options:
+            maxttl: 30
+            minttl: 1
+            num_paths: 3
+            port: 443
+            protocol: TCP
+            timeout: 3.6
+          scoutId: 1
+          scoutName: test.cu.ns
+          subType: net_traceroute
+          type: network
+          tags:
+          - key: Application
+            value: Application
+        summary:
+          avgRtt95Percentile: 310.27
+          avgRttAvg: 155.93
+          avgRttMax: 475.28
+          avgRttMedian: 136.19
+          endTime: '2021-06-26 00:00:00'
+          startTime: '2021-06-25 00:00:00'
+          successfulTests: 135
+          totalSuccess: 93.75
+          totalTests: 144
     ScoutCitrixItem:
       summary: Citrix (EUC) scout example
       value:
@@ -2540,43 +2504,76 @@ components:
           successfulTests: 287
           totalSuccess: 99.65
           totalTests: 288
-    ScoutTracerouteItem:
-      summary: Traceroute (Net) scout example
-      value:
-        success: true
-        data:
-          address: ns.example.com
-          cloudHive: eu-central-1
-          createdAt: '2021-05-24 11:30:07'
-          disabled: false
-          domain: null
-          hiveId: null
-          interval: 10
-          lastRun: 1624878718129
-          options:
-            maxttl: 30
-            minttl: 1
-            num_paths: 3
-            port: 443
-            protocol: TCP
-            timeout: 3.6
-          scoutId: 1
-          scoutName: test.cu.ns
-          subType: net_traceroute
-          type: network
-          tags:
-          - key: Application
-            value: Application
-        summary:
-          avgRtt95Percentile: 310.27
-          avgRttAvg: 155.93
-          avgRttMax: 475.28
-          avgRttMedian: 136.19
-          endTime: '2021-06-26 00:00:00'
-          startTime: '2021-06-25 00:00:00'
-          successfulTests: 135
-          totalSuccess: 93.75
-          totalTests: 144
+  responses:
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
+    ValidationError:
+      description: Sent data has errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MarshmallowError'
+    ScoutItem:
+      description: Scout information.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/ScoutItem'
+              summary:
+                $ref: '#/components/schemas/ScoutSummary'
+              success:
+                type: boolean
+                description: Whether the request was successful.
+          examples:
+            ScoutCitrixItem:
+              $ref: '#/components/examples/ScoutCitrixItem'
+            ScoutTracerouteItem:
+              $ref: '#/components/examples/ScoutTracerouteItem'
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
+    ScoutList:
+      description: A list of Scouts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: An array of Scouts. Each entry in the array is a separate Scout, containing the relevant details and configurations for the Scout's `type` and `subType`.
+                items:
+                  $ref: '#/components/schemas/ScoutItem'
+              currentPage:
+                type: integer
+                description: The current page of Scouts returned by the request. Change the page with the `page` request parameter.
+              totalPages:
+                type: integer
+                description: The total number of pages returned. Each page contains up to 100 Scouts.
+              success:
+                type: boolean
+                description: Whether the request was successful.
+              total:
+                type: integer
+                description: The total number of Scouts returned, based on the filters and conditions specified in the request. If `total` is greater than 100, then the Scouts will be on multiple pages.
+          examples:
+            ScoutItemsResponse:
+              $ref: '#/components/examples/ScoutList'
   parameters:
     Type:
       in: query

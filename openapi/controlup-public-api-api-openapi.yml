@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Flow3 Public Public API API
+  title: Flow3 Public Public API
   description: Public API endpoints for Flow3 - accessible via Bearer authentication using a DEX token
   version: 1.0.0
 servers:
@@ -936,51 +936,15 @@ paths:
       - BearerAuth: []
 components:
   schemas:
-    FlowRunStatus:
-      type: string
-      enum:
-      - unspecified
-      - running
-      - completed
-      - failed
-      - canceled
-      - terminated
-      - continued as new
-      - time out
-      - waiting for action
-      title: FlowRunStatus
-    IntegrationSortBy:
-      type: string
-      enum:
-      - name
-      - createdDate
-      - createdAt
-      - updatedAt
-      title: IntegrationSortBy
-    FlowScheduleType:
-      type: string
-      enum:
-      - manual
-      - api
-      - listener
-      - Form
-      - time
-      title: FlowScheduleType
-    HTTPValidationError:
+    FlowEnableDisableRequest:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        isActive:
+          type: boolean
+          title: Isactive
       type: object
-      title: HTTPValidationError
-    SortOrder:
-      type: string
-      enum:
-      - asc
-      - desc
-      title: SortOrder
+      required:
+      - isActive
+      title: FlowEnableDisableRequest
     ValidationError:
       properties:
         loc:
@@ -1002,15 +966,21 @@ components:
       - msg
       - type
       title: ValidationError
-    FlowEnableDisableRequest:
-      properties:
-        isActive:
-          type: boolean
-          title: Isactive
-      type: object
-      required:
-      - isActive
-      title: FlowEnableDisableRequest
+    FlowScheduleType:
+      type: string
+      enum:
+      - manual
+      - api
+      - listener
+      - Form
+      - time
+      title: FlowScheduleType
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      title: SortOrder
     FormSortBy:
       type: string
       enum:
@@ -1020,6 +990,36 @@ components:
       - updatedAt
       - lastRun
       title: FormSortBy
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    IntegrationSortBy:
+      type: string
+      enum:
+      - name
+      - createdDate
+      - createdAt
+      - updatedAt
+      title: IntegrationSortBy
+    FlowRunStatus:
+      type: string
+      enum:
+      - unspecified
+      - running
+      - completed
+      - failed
+      - canceled
+      - terminated
+      - continued as new
+      - time out
+      - waiting for action
+      title: FlowRunStatus
     FlowSortBy:
       type: string
       enum:

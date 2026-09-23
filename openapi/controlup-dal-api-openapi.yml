@@ -1,7 +1,11 @@
 openapi: 3.2.0
 info:
   title: ControlUp for Desktops Dal API
-  description: "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves."
+  description: 'This is a working document that details the supported Edge DX API endpoints which can be used by things
+
+    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made
+
+    to try and prevent breaking changes as the API evolves.'
   version: 2.159.0
 servers:
 - url: https://api.controlup.com/edge/api
@@ -24,9 +28,7 @@ paths:
         For example, you can use this endpoint to search the disk_info data index, but only return data for devices located in New York.
 
 
-        A maximum of 10000 rows can be returned per request. To return more data, you must set `export` to true and use the `_source` parameter to set which fields to return in the data query. For example: `{"data_query":{"_source":["prop1","prop2"]},"export":true}`
-
-        '
+        A maximum of 10000 rows can be returned per request. To return more data, you must set `export` to true and use the `_source` parameter to set which fields to return in the data query. For example: `{"data_query":{"_source":["prop1","prop2"]},"export":true}`'
       operationId: get-scoped-data-index
       parameters:
       - in: path
@@ -75,18 +77,6 @@ paths:
           description: The provided index name is invalid.
 components:
   schemas:
-    IndexMappings:
-      type: object
-      properties:
-        index:
-          type: string
-        name:
-          description: The name of the field.
-          type: string
-          example: _created
-        type:
-          description: The data type of the field.
-          type: string
     DataIndexContents:
       type: object
       properties:
@@ -123,6 +113,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IndexMappings'
+    IndexMappings:
+      type: object
+      properties:
+        index:
+          type: string
+        name:
+          description: The name of the field.
+          type: string
+          example: _created
+        type:
+          description: The data type of the field.
+          type: string
   securitySchemes:
     bearerAuth:
       type: http

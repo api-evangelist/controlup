@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -31,12 +31,12 @@ info:
 servers:
 - url: https://api.controlup.com/daas-iq/v1
 tags:
-- name: User sessions
+- name: User Sessions
 paths:
   /cloud/user-sessions/{userSessionId}/actions:
     post:
       tags:
-      - User sessions
+      - User Sessions
       summary: Execute an action on a user session
       description: Creates a background job to perform the action (send message, sign out, disconnect). Poll the statusUrl for progress updates.
       operationId: ExecuteUserSessionAction
@@ -117,41 +117,6 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    JobType:
-      enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
-      type: string
-      description: 'Defines the types of background jobs supported by the system.
-
-        Each job type is processed by a specific worker and has its own parameter structure.'
-    UserSessionActionType:
-      enum:
-      - sendMessage
-      - signOut
-      - disconnect
-      type: string
-      description: Types of actions that can be performed on a user session.
     ErrorResponse:
       required:
       - status
@@ -199,31 +164,6 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    UserSessionActionRequest:
-      required:
-      - actionType
-      type: object
-      properties:
-        actionType:
-          $ref: '#/components/schemas/UserSessionActionType'
-        messageTitle:
-          maxLength: 256
-          type:
-          - string
-          - 'null'
-          description: 'The title of the message to send to the user.
-
-            Required for SendMessage action.'
-        messageBody:
-          maxLength: 1024
-          type:
-          - string
-          - 'null'
-          description: 'The body of the message to send to the user.
-
-            Required for SendMessage action.'
-      additionalProperties: false
-      description: Request to execute an action on a user session.
     JobCreatedDto:
       required:
       - action
@@ -270,6 +210,66 @@ components:
         Contains only essential information needed to track the job.
 
         Use the statusUrl to poll for updates and jobUrl to get full details.'
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    UserSessionActionType:
+      enum:
+      - sendMessage
+      - signOut
+      - disconnect
+      type: string
+      description: Types of actions that can be performed on a user session.
+    UserSessionActionRequest:
+      required:
+      - actionType
+      type: object
+      properties:
+        actionType:
+          $ref: '#/components/schemas/UserSessionActionType'
+        messageTitle:
+          maxLength: 256
+          type:
+          - string
+          - 'null'
+          description: 'The title of the message to send to the user.
+
+            Required for SendMessage action.'
+        messageBody:
+          maxLength: 1024
+          type:
+          - string
+          - 'null'
+          description: 'The body of the message to send to the user.
+
+            Required for SendMessage action.'
+      additionalProperties: false
+      description: Request to execute an action on a user session.
   securitySchemes:
     BearerAuth:
       type: http

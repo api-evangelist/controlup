@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -31,12 +31,12 @@ info:
 servers:
 - url: https://api.controlup.com/daas-iq/v1
 tags:
-- name: Cloud providers
+- name: Cloud Providers
 paths:
   /cloud/providers:
     get:
       tags:
-      - Cloud providers
+      - Cloud Providers
       summary: Get supported cloud providers
       description: 'Returns the cloud providers this platform can integrate with, together with their display names.
 
@@ -89,7 +89,7 @@ paths:
   /cloud/providers/auth-types:
     get:
       tags:
-      - Cloud providers
+      - Cloud Providers
       summary: Get supported authentication types
       description: 'Returns the union of authentication types across every supported cloud provider.
 
@@ -142,7 +142,7 @@ paths:
   /cloud/providers/{provider}/auth-types:
     get:
       tags:
-      - Cloud providers
+      - Cloud Providers
       summary: Get authentication types for a provider
       description: 'Returns only the authentication types valid for one named provider — the set to offer once a provider has
 
@@ -258,11 +258,6 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    CloudProvider:
-      enum:
-      - azure
-      type: string
-      description: Enumeration of supported cloud provider identifiers.
     CloudProviderAuthTypeDto:
       required:
       - authType
@@ -283,6 +278,17 @@ components:
           description: Detailed description of this authentication type.
       additionalProperties: false
       description: Data Transfer Object for cloud provider authentication type information.
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+    CloudProviderAuthType:
+      enum:
+      - azureServicePrincipal
+      - azureServicePrincipalCertificate
+      type: string
+      description: Specifies the supported authentication types for connecting to various cloud providers and services.
     CloudProviderDto:
       required:
       - displayName
@@ -296,12 +302,6 @@ components:
           description: Human-readable display name for the cloud provider.
       additionalProperties: false
       description: Data Transfer Object for cloud provider information.
-    CloudProviderAuthType:
-      enum:
-      - azureServicePrincipal
-      - azureServicePrincipalCertificate
-      type: string
-      description: Specifies the supported authentication types for connecting to various cloud providers and services.
   securitySchemes:
     BearerAuth:
       type: http

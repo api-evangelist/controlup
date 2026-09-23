@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -547,22 +547,6 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    ScalingStrategyDto:
-      required:
-      - provisioningMode
-      - smartMinimums
-      type: object
-      properties:
-        provisioningMode:
-          $ref: '#/components/schemas/ProvisioningMode'
-        staticConfig:
-          $ref: '#/components/schemas/StaticConfigDto'
-        elasticConfig:
-          $ref: '#/components/schemas/ElasticConfigDto'
-        smartMinimums:
-          $ref: '#/components/schemas/SmartMinimumsDto'
-      additionalProperties: false
-      description: Scaling strategy including provisioning mode and mode-specific configuration.
     StaticConfigDto:
       required:
       - createAdditionalHostsIfNeeded
@@ -580,47 +564,73 @@ components:
           description: Whether to create additional hosts if not enough exist in the pool.
       additionalProperties: false
       description: Static provisioning configuration.
-    ScaleTriggersDto:
+    SmartMinimumsDto:
       required:
-      - freeSessionsThreshold
+      - enabled
       type: object
       properties:
-        cpuThresholdPercent:
+        enabled:
+          type: boolean
+          description: Whether smart minimums is enabled.
+        utilizationThresholdPercent:
           maximum: 100
-          minimum: 5
+          minimum: 1
           type:
           - integer
           - 'null'
-          description: CPU usage threshold percentage. Null (omitted) means the metric is disabled and will not be evaluated.
+          description: Utilization threshold percentage below which the minimum hosts rule is ignored.
           format: int32
-        memoryThresholdPercent:
-          maximum: 100
-          minimum: 5
+        timeWindowMinutes:
+          maximum: 2147483647
+          minimum: 1
           type:
           - integer
           - 'null'
-          description: Memory usage threshold percentage. Null (omitted) means the metric is disabled and will not be evaluated.
+          description: Time window in minutes to evaluate utilization before scaling down.
           format: int32
-        freeSessionsThreshold:
+        scaleDownToHostCount:
+          maximum: 2147483647
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Number of hosts to scale down to when utilization is below threshold.
+          format: int32
+      additionalProperties: false
+      description: Smart minimums configuration to prevent scaling down during low utilization.
+    ElasticConfigDto:
+      required:
+      - burstBatchSize
+      - elasticScalingMode
+      - maxHosts
+      - minHosts
+      - performance
+      type: object
+      properties:
+        minHosts:
           maximum: 2147483647
           minimum: 0
           type: integer
-          description: Free sessions threshold for scaling actions. Required — cannot be disabled.
+          description: Minimum number of hosts (floor) that should be available.
           format: int32
+        maxHosts:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: Maximum number of hosts (ceiling) that can be active.
+          format: int32
+        burstBatchSize:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Number of hosts to start/stop in a single scaling operation.
+          format: int32
+        elasticScalingMode:
+          $ref: '#/components/schemas/ElasticScalingMode'
+        performance:
+          $ref: '#/components/schemas/ElasticPerformanceDto'
       additionalProperties: false
-      description: Performance thresholds that trigger scaling actions.
-    ElasticScalingMode:
-      enum:
-      - powerManagementOnly
-      - dynamicHosts
-      type: string
-      description: Defines the elastic scaling mode for host pool capacity management.
-    ProvisioningMode:
-      enum:
-      - static
-      - elastic
-      type: string
-      description: Defines the provisioning and scaling mode for host pools.
+      description: Elastic provisioning configuration.
     ScalingProfileResult:
       required:
       - color
@@ -657,46 +667,35 @@ components:
           description: Host pools currently using this scaling profile.
       additionalProperties: false
       description: Represents a scaling profile that defines scaling behavior and parameters.
-    ScalingProfileResponseDto:
+    ElasticPerformanceDto:
       required:
-      - color
-      - experience
-      - id
-      - name
-      - strategy
+      - aggressiveness
+      - scaleInTriggers
+      - scaleOutTriggers
+      - stabilizationWindowMinutes
       type: object
       properties:
-        name:
-          maxLength: 100
-          minLength: 3
-          type: string
-          description: User-friendly name for the scaling profile.
-        description:
-          maxLength: 500
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional description for the scaling profile.
-        color:
-          maxLength: 50
-          minLength: 1
-          type: string
-          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
-
-            Examples: "blue", "primary-1", "accent-red", etc.'
-        strategy:
-          $ref: '#/components/schemas/ScalingStrategyDto'
-        experience:
-          $ref: '#/components/schemas/UserExperienceDto'
-        id:
-          type: string
-          description: Unique identifier for the scaling profile.
-          format: uuid
+        scaleOutTriggers:
+          $ref: '#/components/schemas/ScaleTriggersDto'
+        scaleInTriggers:
+          $ref: '#/components/schemas/ScaleTriggersDto'
+        aggressiveness:
+          $ref: '#/components/schemas/ScalingAggressiveness'
+        stabilizationWindowMinutes:
+          maximum: 60
+          minimum: 1
+          type: integer
+          description: Stabilization window in minutes before evaluating scaling actions.
+          format: int32
       additionalProperties: false
-      description: 'Full scaling profile response including all configuration details.
-
-        Returned when fetching a specific scaling profile by ID.'
+      description: Performance settings for elastic provisioning.
+    ScalingAggressiveness:
+      enum:
+      - gentle
+      - balanced
+      - aggressive
+      type: string
+      description: Defines the aggressiveness level for scaling operations.
     NotificationSettingsDto:
       required:
       - allowSnooze
@@ -733,63 +732,6 @@ components:
           format: int32
       additionalProperties: false
       description: User notification settings when sessions are about to be ended.
-    ElasticPerformanceDto:
-      required:
-      - aggressiveness
-      - scaleInTriggers
-      - scaleOutTriggers
-      - stabilizationWindowMinutes
-      type: object
-      properties:
-        scaleOutTriggers:
-          $ref: '#/components/schemas/ScaleTriggersDto'
-        scaleInTriggers:
-          $ref: '#/components/schemas/ScaleTriggersDto'
-        aggressiveness:
-          $ref: '#/components/schemas/ScalingAggressiveness'
-        stabilizationWindowMinutes:
-          maximum: 60
-          minimum: 1
-          type: integer
-          description: Stabilization window in minutes before evaluating scaling actions.
-          format: int32
-      additionalProperties: false
-      description: Performance settings for elastic provisioning.
-    SaveScalingProfileRequest:
-      required:
-      - color
-      - experience
-      - name
-      - strategy
-      type: object
-      properties:
-        name:
-          maxLength: 100
-          minLength: 3
-          type: string
-          description: User-friendly name for the scaling profile.
-        description:
-          maxLength: 500
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional description for the scaling profile.
-        color:
-          maxLength: 50
-          minLength: 1
-          type: string
-          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
-
-            Examples: "blue", "primary-1", "accent-red", etc.'
-        strategy:
-          $ref: '#/components/schemas/ScalingStrategyDto'
-        experience:
-          $ref: '#/components/schemas/UserExperienceDto'
-      additionalProperties: false
-      description: 'Consolidated request model for creating or updating a scaling profile.
-
-        Use for both POST (create) and PUT (update) operations.'
     ErrorResponse:
       required:
       - status
@@ -837,47 +779,147 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    SmartMinimumsDto:
+    ScalingStrategyDto:
       required:
-      - enabled
+      - provisioningMode
+      - smartMinimums
       type: object
       properties:
-        enabled:
-          type: boolean
-          description: Whether smart minimums is enabled.
-        utilizationThresholdPercent:
+        provisioningMode:
+          $ref: '#/components/schemas/ProvisioningMode'
+        staticConfig:
+          $ref: '#/components/schemas/StaticConfigDto'
+        elasticConfig:
+          $ref: '#/components/schemas/ElasticConfigDto'
+        smartMinimums:
+          $ref: '#/components/schemas/SmartMinimumsDto'
+      additionalProperties: false
+      description: Scaling strategy including provisioning mode and mode-specific configuration.
+    ScalingProfileResponseDto:
+      required:
+      - color
+      - experience
+      - id
+      - name
+      - strategy
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 3
+          type: string
+          description: User-friendly name for the scaling profile.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the scaling profile.
+        color:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
+
+            Examples: "blue", "primary-1", "accent-red", etc.'
+        strategy:
+          $ref: '#/components/schemas/ScalingStrategyDto'
+        experience:
+          $ref: '#/components/schemas/UserExperienceDto'
+        id:
+          type: string
+          description: Unique identifier for the scaling profile.
+          format: uuid
+      additionalProperties: false
+      description: 'Full scaling profile response including all configuration details.
+
+        Returned when fetching a specific scaling profile by ID.'
+    ElasticScalingMode:
+      enum:
+      - powerManagementOnly
+      - dynamicHosts
+      type: string
+      description: Defines the elastic scaling mode for host pool capacity management.
+    HostPoolInfo:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Internal Foundry host pool ID.
+          format: uuid
+        name:
+          type: string
+          description: Host pool friendly name.
+      additionalProperties: false
+      description: Minimal host pool information for scaling profile usage.
+    ScaleTriggersDto:
+      required:
+      - freeSessionsThreshold
+      type: object
+      properties:
+        cpuThresholdPercent:
           maximum: 100
-          minimum: 1
+          minimum: 5
           type:
           - integer
           - 'null'
-          description: Utilization threshold percentage below which the minimum hosts rule is ignored.
+          description: CPU usage threshold percentage. Null (omitted) means the metric is disabled and will not be evaluated.
           format: int32
-        timeWindowMinutes:
-          maximum: 2147483647
-          minimum: 1
+        memoryThresholdPercent:
+          maximum: 100
+          minimum: 5
           type:
           - integer
           - 'null'
-          description: Time window in minutes to evaluate utilization before scaling down.
+          description: Memory usage threshold percentage. Null (omitted) means the metric is disabled and will not be evaluated.
           format: int32
-        scaleDownToHostCount:
+        freeSessionsThreshold:
           maximum: 2147483647
           minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Number of hosts to scale down to when utilization is below threshold.
+          type: integer
+          description: Free sessions threshold for scaling actions. Required — cannot be disabled.
           format: int32
       additionalProperties: false
-      description: Smart minimums configuration to prevent scaling down during low utilization.
-    ScalingAggressiveness:
-      enum:
-      - gentle
-      - balanced
-      - aggressive
-      type: string
-      description: Defines the aggressiveness level for scaling operations.
+      description: Performance thresholds that trigger scaling actions.
+    SaveScalingProfileRequest:
+      required:
+      - color
+      - experience
+      - name
+      - strategy
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 3
+          type: string
+          description: User-friendly name for the scaling profile.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the scaling profile.
+        color:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
+
+            Examples: "blue", "primary-1", "accent-red", etc.'
+        strategy:
+          $ref: '#/components/schemas/ScalingStrategyDto'
+        experience:
+          $ref: '#/components/schemas/UserExperienceDto'
+      additionalProperties: false
+      description: 'Consolidated request model for creating or updating a scaling profile.
+
+        Use for both POST (create) and PUT (update) operations.'
     UserExperienceDto:
       required:
       - notifications
@@ -901,54 +943,12 @@ components:
             Examples: "blue", "primary-1", "accent-red", etc.'
       additionalProperties: false
       description: Request model for changing a scaling profile's color.
-    HostPoolInfo:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Internal Foundry host pool ID.
-          format: uuid
-        name:
-          type: string
-          description: Host pool friendly name.
-      additionalProperties: false
-      description: Minimal host pool information for scaling profile usage.
-    ElasticConfigDto:
-      required:
-      - burstBatchSize
-      - elasticScalingMode
-      - maxHosts
-      - minHosts
-      - performance
-      type: object
-      properties:
-        minHosts:
-          maximum: 2147483647
-          minimum: 0
-          type: integer
-          description: Minimum number of hosts (floor) that should be available.
-          format: int32
-        maxHosts:
-          maximum: 2147483647
-          minimum: 0
-          type: integer
-          description: Maximum number of hosts (ceiling) that can be active.
-          format: int32
-        burstBatchSize:
-          maximum: 2147483647
-          minimum: 1
-          type: integer
-          description: Number of hosts to start/stop in a single scaling operation.
-          format: int32
-        elasticScalingMode:
-          $ref: '#/components/schemas/ElasticScalingMode'
-        performance:
-          $ref: '#/components/schemas/ElasticPerformanceDto'
-      additionalProperties: false
-      description: Elastic provisioning configuration.
+    ProvisioningMode:
+      enum:
+      - static
+      - elastic
+      type: string
+      description: Defines the provisioning and scaling mode for host pools.
   securitySchemes:
     BearerAuth:
       type: http

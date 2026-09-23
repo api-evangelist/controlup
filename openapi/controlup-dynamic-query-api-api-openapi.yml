@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: VDI & DAAS Dynamic Query API API
+  title: VDI & DAAS Dynamic Query API
   version: 1.0.0
   description: Dynamic SQL transformation and execution
 servers:
@@ -180,114 +180,6 @@ components:
           $ref: '#/components/schemas/JsonArray'
         asJsonObject:
           $ref: '#/components/schemas/JsonObject'
-    UserMetadata:
-      type: object
-      properties:
-        orgId:
-          type: string
-        infraGuid:
-          type: string
-        region:
-          type: string
-        userId:
-          type: string
-        total:
-          type: integer
-          format: int64
-        limitPerPage:
-          type: integer
-          format: int32
-        currentPageNumber:
-          type: integer
-          format: int32
-        currentPageSize:
-          type: integer
-          format: int32
-        remaining:
-          type: integer
-          format: int64
-        userEmail:
-          type: string
-        truncated:
-          type: boolean
-        truncationLimit:
-          type: integer
-          format: int32
-        timeFrom:
-          type: string
-        timeTo:
-          type: string
-    QueryResult:
-      type: object
-      properties:
-        size:
-          type: integer
-          format: int32
-        page:
-          type: integer
-          format: int32
-        pageSize:
-          type: integer
-          format: int32
-        from:
-          type: string
-          format: date
-        to:
-          type: string
-          format: date
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonObject'
-    JsonNull:
-      type: object
-      properties:
-        asNumber:
-          type: number
-        asFloat:
-          type: number
-          format: float
-        asByte:
-          type: string
-          format: byte
-        jsonArray:
-          type: boolean
-        jsonObject:
-          type: boolean
-        jsonPrimitive:
-          type: boolean
-        asJsonNull: {}
-        asCharacter:
-          type: string
-          deprecated: true
-        asBigDecimal:
-          type: number
-        asBigInteger:
-          type: integer
-        asShort:
-          type: integer
-          format: int32
-        jsonNull:
-          type: boolean
-        asJsonPrimitive:
-          $ref: '#/components/schemas/JsonPrimitive'
-        asJsonArray:
-          $ref: '#/components/schemas/JsonArray'
-        asJsonObject:
-          $ref: '#/components/schemas/JsonObject'
-        asString:
-          type: string
-        asInt:
-          type: integer
-          format: int32
-        asDouble:
-          type: number
-          format: double
-        asLong:
-          type: integer
-          format: int64
-        asBoolean:
-          type: boolean
     JsonArray:
       type: object
       properties:
@@ -346,6 +238,43 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Error'
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
     SqlQuery:
       type: object
       description: SQL SELECT statement with date range and pagination parameters
@@ -378,6 +307,55 @@ components:
           example: 1
           maximum: 10000
           minimum: 1
+    JsonNull:
+      type: object
+      properties:
+        asNumber:
+          type: number
+        asFloat:
+          type: number
+          format: float
+        asByte:
+          type: string
+          format: byte
+        jsonArray:
+          type: boolean
+        jsonObject:
+          type: boolean
+        jsonPrimitive:
+          type: boolean
+        asJsonNull: {}
+        asCharacter:
+          type: string
+          deprecated: true
+        asBigDecimal:
+          type: number
+        asBigInteger:
+          type: integer
+        asShort:
+          type: integer
+          format: int32
+        jsonNull:
+          type: boolean
+        asJsonPrimitive:
+          $ref: '#/components/schemas/JsonPrimitive'
+        asJsonArray:
+          $ref: '#/components/schemas/JsonArray'
+        asJsonObject:
+          $ref: '#/components/schemas/JsonObject'
+        asString:
+          type: string
+        asInt:
+          type: integer
+          format: int32
+        asDouble:
+          type: number
+          format: double
+        asLong:
+          type: integer
+          format: int64
+        asBoolean:
+          type: boolean
     JsonObject:
       type: object
       properties:
@@ -441,6 +419,28 @@ components:
         statusCode:
           type: integer
           format: int32
+    QueryResult:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonObject'
   securitySchemes:
     bearer-jwt:
       type: http

@@ -242,7 +242,7 @@ paths:
       tags:
       - Applications
       summary: Get application statistics
-      description: Returns usage details and resource consumption statistics for all applications (per version number). Statistics are aggregated either weekly (Monday-Sunday) or monthly, depending on the timeFrame parameter. Visit the <a href='https://support.controlup.com/docs/application-statistics-report' target='_blank'>App Statistics Report</a> documentation for column descriptions and more details.
+      description: Returns usage details and resource consumption statistics for all applications (per version number). Statistics are aggregated either weekly (Monday-Sunday) or monthly, depending on the timeFrame parameter. Visit the App Statistics Report documentation for column descriptions and more details.
       operationId: getAppStats
       parameters:
       - name: timeFrame
@@ -351,88 +351,6 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
-    AppStatsResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApplicationStatistics'
-    UserMetadata:
-      type: object
-      properties:
-        orgId:
-          type: string
-        infraGuid:
-          type: string
-        region:
-          type: string
-        userId:
-          type: string
-        total:
-          type: integer
-          format: int64
-        limitPerPage:
-          type: integer
-          format: int32
-        currentPageNumber:
-          type: integer
-          format: int32
-        currentPageSize:
-          type: integer
-          format: int32
-        remaining:
-          type: integer
-          format: int64
-        userEmail:
-          type: string
-        truncated:
-          type: boolean
-        truncationLimit:
-          type: integer
-          format: int32
-        timeFrom:
-          type: string
-        timeTo:
-          type: string
-    AppUsageSingleResult:
-      type: object
-      properties:
-        computer_grouping:
-          type: array
-          items:
-            $ref: '#/components/schemas/ByComputer'
-        user_grouping:
-          type: array
-          items:
-            $ref: '#/components/schemas/ByUser'
-        concurrent_instances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConcurrentInstances'
-        unique_users:
-          type: integer
-          format: int32
-    ByUser:
-      type: object
-      properties:
-        user_account:
-          type: string
-        total_instances:
-          type: integer
-          format: int32
-        unique_machines:
-          type: integer
-          format: int32
-        process_name:
-          type: string
-        last_use_time:
-          type: string
-          format: date-time
-        process_version:
-          type: string
     AppUsageAllResult:
       type: object
       properties:
@@ -449,22 +367,19 @@ components:
         update_time:
           type: string
           format: date-time
-    HistoricalSingleResponseAppUsageSingleResult:
+    ConcurrentInstances:
       type: object
       properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          $ref: '#/components/schemas/AppUsageSingleResult'
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
+        process_name:
+          type: string
+        process_version:
+          type: string
+        peak_concurrency:
+          type: integer
+          format: int32
+        date_time:
+          type: string
+          format: date-time
     ByComputer:
       type: object
       properties:
@@ -480,28 +395,6 @@ components:
           type: string
         process_version:
           type: string
-    HistoricalListResponseAppUsageAllResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppUsageAllResult'
-    ConcurrentInstances:
-      type: object
-      properties:
-        process_name:
-          type: string
-        process_version:
-          type: string
-        peak_concurrency:
-          type: integer
-          format: int32
-        date_time:
-          type: string
-          format: date-time
     Error:
       type: object
       properties:
@@ -563,6 +456,113 @@ components:
         cpuPercentile:
           type: integer
           format: int64
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    ByUser:
+      type: object
+      properties:
+        user_account:
+          type: string
+        total_instances:
+          type: integer
+          format: int32
+        unique_machines:
+          type: integer
+          format: int32
+        process_name:
+          type: string
+        last_use_time:
+          type: string
+          format: date-time
+        process_version:
+          type: string
+    HistoricalSingleResponseAppUsageSingleResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          $ref: '#/components/schemas/AppUsageSingleResult'
+    AppStatsResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationStatistics'
+    AppUsageSingleResult:
+      type: object
+      properties:
+        computer_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByComputer'
+        user_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByUser'
+        concurrent_instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConcurrentInstances'
+        unique_users:
+          type: integer
+          format: int32
+    HistoricalListResponseAppUsageAllResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppUsageAllResult'
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
   securitySchemes:
     bearer-jwt:
       type: http

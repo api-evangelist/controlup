@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -561,6 +561,74 @@ paths:
       - CookieAuth: []
 components:
   schemas:
+    UpdateOnboardingStepRequest:
+      required:
+      - state
+      type: object
+      properties:
+        state:
+          $ref: '#/components/schemas/OnboardingStepState'
+      additionalProperties: false
+      description: Request to update the current user's state for an onboarding step.
+    OnboardingFlowListDto:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingFlowSummaryDto'
+          description: Onboarding flows available to the current user.
+      additionalProperties: false
+      description: Collection of onboarding flow summaries.
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
     OnboardingDisplayState:
       enum:
       - expanded
@@ -568,6 +636,94 @@ components:
       - dismissed
       type: string
       description: Display state for an onboarding flow.
+    OnboardingStatus:
+      enum:
+      - notStarted
+      - started
+      - complete
+      type: string
+      description: Current user's lifecycle state for an onboarding flow.
+    OnboardingStepDto:
+      required:
+      - deepLinkDestination
+      - description
+      - isConfiguredInOrganization
+      - key
+      - title
+      - userState
+      type: object
+      properties:
+        key:
+          type: string
+          description: Stable step identifier.
+        title:
+          type: string
+          description: Human-readable step title.
+        description:
+          type: string
+          description: Short step description.
+        deepLinkDestination:
+          type: string
+          description: Human-readable deep-link destination.
+        userState:
+          $ref: '#/components/schemas/OnboardingStepState'
+        isConfiguredInOrganization:
+          type: boolean
+          description: Whether the organization already has the related configuration.
+      additionalProperties: false
+      description: Current user's state for an onboarding step.
+    OnboardingFlowSummaryDto:
+      required:
+      - displayState
+      - flow
+      - progressPercent
+      - status
+      - title
+      type: object
+      properties:
+        flow:
+          type: string
+          description: Route-safe flow identifier.
+        title:
+          type: string
+          description: Human-readable flow title.
+        status:
+          $ref: '#/components/schemas/OnboardingStatus'
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the user started this onboarding flow.
+          format: date-time
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        progressPercent:
+          type: number
+          description: Derived user-action progress percentage.
+          format: double
+      additionalProperties: false
+      description: Summary of an onboarding flow for the current user.
+    UpdateOnboardingRequest:
+      required:
+      - displayState
+      type: object
+      properties:
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        activeStep:
+          type:
+          - string
+          - 'null'
+          description: Stable onboarding step key for the active step, if selected.
+      additionalProperties: false
+      description: Request to update onboarding UI state for a flow.
+    OnboardingStepState:
+      enum:
+      - incomplete
+      - completed
+      - skipped
+      type: string
+      description: Current user's interaction state for an onboarding step.
     OnboardingFlowDto:
       required:
       - displayState
@@ -616,162 +772,6 @@ components:
           description: Ordered onboarding steps.
       additionalProperties: false
       description: Detailed onboarding flow state for the current user.
-    UpdateOnboardingRequest:
-      required:
-      - displayState
-      type: object
-      properties:
-        displayState:
-          $ref: '#/components/schemas/OnboardingDisplayState'
-        activeStep:
-          type:
-          - string
-          - 'null'
-          description: Stable onboarding step key for the active step, if selected.
-      additionalProperties: false
-      description: Request to update onboarding UI state for a flow.
-    OnboardingFlowListDto:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OnboardingFlowSummaryDto'
-          description: Onboarding flows available to the current user.
-      additionalProperties: false
-      description: Collection of onboarding flow summaries.
-    UpdateOnboardingStepRequest:
-      required:
-      - state
-      type: object
-      properties:
-        state:
-          $ref: '#/components/schemas/OnboardingStepState'
-      additionalProperties: false
-      description: Request to update the current user's state for an onboarding step.
-    ErrorResponse:
-      required:
-      - status
-      - title
-      - traceId
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the problem type.
-        title:
-          type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          description: The HTTP status code.
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the specific occurrence of the problem.
-        errors:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: 'Dictionary of field-specific validation errors (only present for validation failures).
-
-            Key is the field name, value is an array of error messages for that field.'
-        traceId:
-          type: string
-          description: Request ID (cu-request-id) for tracking and debugging purposes.
-      additionalProperties: false
-      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
-
-        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    OnboardingStepState:
-      enum:
-      - incomplete
-      - completed
-      - skipped
-      type: string
-      description: Current user's interaction state for an onboarding step.
-    OnboardingStepDto:
-      required:
-      - deepLinkDestination
-      - description
-      - isConfiguredInOrganization
-      - key
-      - title
-      - userState
-      type: object
-      properties:
-        key:
-          type: string
-          description: Stable step identifier.
-        title:
-          type: string
-          description: Human-readable step title.
-        description:
-          type: string
-          description: Short step description.
-        deepLinkDestination:
-          type: string
-          description: Human-readable deep-link destination.
-        userState:
-          $ref: '#/components/schemas/OnboardingStepState'
-        isConfiguredInOrganization:
-          type: boolean
-          description: Whether the organization already has the related configuration.
-      additionalProperties: false
-      description: Current user's state for an onboarding step.
-    OnboardingStatus:
-      enum:
-      - notStarted
-      - started
-      - complete
-      type: string
-      description: Current user's lifecycle state for an onboarding flow.
-    OnboardingFlowSummaryDto:
-      required:
-      - displayState
-      - flow
-      - progressPercent
-      - status
-      - title
-      type: object
-      properties:
-        flow:
-          type: string
-          description: Route-safe flow identifier.
-        title:
-          type: string
-          description: Human-readable flow title.
-        status:
-          $ref: '#/components/schemas/OnboardingStatus'
-        startedAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp when the user started this onboarding flow.
-          format: date-time
-        displayState:
-          $ref: '#/components/schemas/OnboardingDisplayState'
-        progressPercent:
-          type: number
-          description: Derived user-action progress percentage.
-          format: double
-      additionalProperties: false
-      description: Summary of an onboarding flow for the current user.
   securitySchemes:
     BearerAuth:
       type: http

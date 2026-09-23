@@ -1,7 +1,11 @@
 openapi: 3.2.0
 info:
   title: ControlUp for Desktops Scripts API
-  description: "This is a working document that details the supported Edge DX API endpoints which can be used by things\n                    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made\n                    to try and prevent breaking changes as the API evolves."
+  description: 'This is a working document that details the supported Edge DX API endpoints which can be used by things
+
+    such as external applications, scripts, or services. If an endpoint is documented, efforts will be made
+
+    to try and prevent breaking changes as the API evolves.'
   version: 2.159.0
 servers:
 - url: https://api.controlup.com/edge/api
@@ -15,7 +19,14 @@ paths:
       summary: List all scripts
       tags:
       - Scripts
-      description: "Returns a list of all scripts.\n\nYou can either:\n  * Use `query` to use an OpenSearch query. Note that you can't create an OpenSearch query using the request builder built into the documentation.\n  * Use the remaining query parameters to query scripts.\n"
+      description: 'Returns a list of all scripts.
+
+
+        You can either:
+
+        * Use `query` to use an OpenSearch query. Note that you can''t create an OpenSearch query using the request builder built into the documentation.
+
+        * Use the remaining query parameters to query scripts.'
       operationId: list-all-scripts
       parameters:
       - in: query
@@ -63,79 +74,6 @@ paths:
         '400':
           description: The provided query is invalid.
 components:
-  parameters:
-    FilterField:
-      name: filters[0][field]
-      in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
-
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    SorterField:
-      name: sorters[0][field]
-      in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
-
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
-    FilterValue:
-      name: filters[0][value]
-      in: query
-      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
-
-        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
-
-        '
-      schema:
-        oneOf:
-        - type: string
-          title: String
-        - type: number
-          title: Number
-        - type: boolean
-          title: Boolean
-    FilterType:
-      name: filters[0][type]
-      in: query
-      description: 'The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>
-
-        `<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>
-
-        `boolean` is used to filter boolean fields.<br>
-
-        `like` is used to filter text fields.
-
-        '
-      schema:
-        type: string
-        example: '>='
-        enum:
-        - <
-        - <=
-        - '='
-        - '!='
-        - '>='
-        - '>'
-        - like
-        - boolean
   schemas:
     script:
       type: object
@@ -335,6 +273,79 @@ components:
           type: boolean
           description: Indicates if the script is a built-in script.
           example: false
+  parameters:
+    FilterType:
+      name: filters[0][type]
+      in: query
+      description: 'The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>
+
+        `<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>
+
+        `boolean` is used to filter boolean fields.<br>
+
+        `like` is used to filter text fields.
+
+        '
+      schema:
+        type: string
+        example: '>='
+        enum:
+        - <
+        - <=
+        - '='
+        - '!='
+        - '>='
+        - '>'
+        - like
+        - boolean
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
   securitySchemes:
     bearerAuth:
       type: http

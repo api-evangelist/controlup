@@ -152,32 +152,93 @@ paths:
       - Region
 components:
   schemas:
-    TableFieldDataContract:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the field
-        header:
-          type: string
-          description: The header or display name of the field
-        description:
-          type: string
-          description: Description of the field
-        type:
-          type: string
-          description: The data type of the field
-    QuerySortDataContract:
+    QueryFieldDescriptorDataContract:
       type: object
       required:
       - field
       properties:
         field:
           type: string
-          description: The field to sort the results by
-        dir:
+          description: The name of the metric or field to return
+        history:
+          type: integer
+          description: Number of historical data points to include for this metric
+        severityLevel:
+          type: boolean
+          description: Include the severity level status for this field
+        includeAvg:
+          type: boolean
+          description: Include the average value aggregation for this field
+        includeMax:
+          type: boolean
+          description: Include the maximum value aggregation for this field
+    TableDataContract:
+      type: object
+      properties:
+        tableName:
           type: string
-          description: Sort direction (e.g., 'Asc' or 'Desc')
+          description: The name of the table
+        description:
+          type: string
+          description: Description of the table
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+              example: Invalid request parameters
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    description: Field name that caused the error
+                  message:
+                    type: string
+                    description: Specific error message for the field
+              description: Detailed error information per field
+          required:
+          - code
+          - message
+      required:
+      - error
+    QueryCounterOptionsDataContract:
+      type: object
+      properties:
+        includeStress:
+          type: boolean
+          description: Include stress level indicators for the counters
+        allSamples:
+          type: boolean
+          description: Include all raw data samples
+        includeAgg:
+          type: boolean
+          description: Include aggregated statistics
+        includeTag:
+          type: boolean
+          description: Include counter tags
+        includeTimestamp:
+          type: boolean
+          description: Include timestamps for counter values
+        aggStats:
+          type: boolean
+          description: Compute and return aggregated statistics for the counters
+        flatAgg:
+          type: boolean
+          description: Flatten the aggregated results into the root data objects
+        returnOnlyValue:
+          type: boolean
+          description: Return only the bare counter values without additional metadata
     QueryOptionsDataContract:
       type: object
       properties:
@@ -211,37 +272,21 @@ components:
         usePartialFolderData:
           type: boolean
           description: Allow returning partial data for folder hierarchies
-    ErrorResponse:
+    TableFieldDataContract:
       type: object
       properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Error code
-              example: VALIDATION_ERROR
-            message:
-              type: string
-              description: Human-readable error message
-              example: Invalid request parameters
-            details:
-              type: array
-              items:
-                type: object
-                properties:
-                  field:
-                    type: string
-                    description: Field name that caused the error
-                  message:
-                    type: string
-                    description: Specific error message for the field
-              description: Detailed error information per field
-          required:
-          - code
-          - message
-      required:
-      - error
+        name:
+          type: string
+          description: The name of the field
+        header:
+          type: string
+          description: The header or display name of the field
+        description:
+          type: string
+          description: Description of the field
+        type:
+          type: string
+          description: The data type of the field
     QueryDataLossOptionsDataContract:
       type: object
       properties:
@@ -251,133 +296,6 @@ components:
         timeout:
           type: integer
           description: Timeout in milliseconds to wait for data recovery
-    QueryCounterOptionsDataContract:
-      type: object
-      properties:
-        includeStress:
-          type: boolean
-          description: Include stress level indicators for the counters
-        allSamples:
-          type: boolean
-          description: Include all raw data samples
-        includeAgg:
-          type: boolean
-          description: Include aggregated statistics
-        includeTag:
-          type: boolean
-          description: Include counter tags
-        includeTimestamp:
-          type: boolean
-          description: Include timestamps for counter values
-        aggStats:
-          type: boolean
-          description: Compute and return aggregated statistics for the counters
-        flatAgg:
-          type: boolean
-          description: Flatten the aggregated results into the root data objects
-        returnOnlyValue:
-          type: boolean
-          description: Return only the bare counter values without additional metadata
-    QueryResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          description: List of dynamic JSON objects containing the queried metric fields
-          items:
-            type: object
-        success:
-          type: boolean
-          description: Indicates whether the query executed successfully
-        error:
-          type: string
-          description: Error message if the query execution failed
-        total:
-          type: integer
-          description: Total number of records matching the query before pagination
-        returned:
-          type: integer
-          description: Number of records returned in the current page
-    TableDataContract:
-      type: object
-      properties:
-        tableName:
-          type: string
-          description: The name of the table
-        description:
-          type: string
-          description: Description of the table
-    QueryMatchDataContract:
-      type: object
-      required:
-      - field
-      - term
-      properties:
-        field:
-          type: string
-          description: The field to match against
-        term:
-          type: string
-          description: The text term to search for
-        regex:
-          type: boolean
-          description: Indicates if the term should be evaluated as a regular expression
-    QueryPageDataContract:
-      type: object
-      properties:
-        offset:
-          type: integer
-          description: Number of items to skip before returning results (0-based)
-        size:
-          type: integer
-          description: Maximum number of items to return in this page
-    QueryConditionDataContract:
-      type: object
-      properties:
-        and:
-          type: array
-          description: List of nested conditions that must all evaluate to true
-          items:
-            $ref: '#/components/schemas/QueryConditionDataContract'
-        or:
-          type: array
-          description: List of nested conditions where at least one must evaluate to true
-          items:
-            $ref: '#/components/schemas/QueryConditionDataContract'
-        not:
-          type: array
-          description: List of nested conditions that must evaluate to false
-          items:
-            $ref: '#/components/schemas/QueryConditionDataContract'
-        field:
-          type: string
-          description: The field to apply the condition operator against
-        op:
-          type: string
-          description: The comparison operator (e.g., 'eq', 'ne', 'gt', 'lt', 'gte', 'lte', 'mask', 'like')
-        value:
-          type: object
-          description: The value to compare against. Can be a string, number, boolean, or array of values.
-    QueryFieldDescriptorDataContract:
-      type: object
-      required:
-      - field
-      properties:
-        field:
-          type: string
-          description: The name of the metric or field to return
-        history:
-          type: integer
-          description: Number of historical data points to include for this metric
-        severityLevel:
-          type: boolean
-          description: Include the severity level status for this field
-        includeAvg:
-          type: boolean
-          description: Include the average value aggregation for this field
-        includeMax:
-          type: boolean
-          description: Include the maximum value aggregation for this field
     QueryRequest:
       type: object
       required:
@@ -413,6 +331,88 @@ components:
         focus:
           type: string
           description: Focus context for the query (e.g. scoping to a specific view)
+    QueryResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          description: List of dynamic JSON objects containing the queried metric fields
+          items:
+            type: object
+        success:
+          type: boolean
+          description: Indicates whether the query executed successfully
+        error:
+          type: string
+          description: Error message if the query execution failed
+        total:
+          type: integer
+          description: Total number of records matching the query before pagination
+        returned:
+          type: integer
+          description: Number of records returned in the current page
+    QuerySortDataContract:
+      type: object
+      required:
+      - field
+      properties:
+        field:
+          type: string
+          description: The field to sort the results by
+        dir:
+          type: string
+          description: Sort direction (e.g., 'Asc' or 'Desc')
+    QueryMatchDataContract:
+      type: object
+      required:
+      - field
+      - term
+      properties:
+        field:
+          type: string
+          description: The field to match against
+        term:
+          type: string
+          description: The text term to search for
+        regex:
+          type: boolean
+          description: Indicates if the term should be evaluated as a regular expression
+    QueryConditionDataContract:
+      type: object
+      properties:
+        and:
+          type: array
+          description: List of nested conditions that must all evaluate to true
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        or:
+          type: array
+          description: List of nested conditions where at least one must evaluate to true
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        not:
+          type: array
+          description: List of nested conditions that must evaluate to false
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        field:
+          type: string
+          description: The field to apply the condition operator against
+        op:
+          type: string
+          description: The comparison operator (e.g., 'eq', 'ne', 'gt', 'lt', 'gte', 'lte', 'mask', 'like')
+        value:
+          type: object
+          description: The value to compare against. Can be a string, number, boolean, or array of values.
+    QueryPageDataContract:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: Number of items to skip before returning results (0-based)
+        size:
+          type: integer
+          description: Maximum number of items to return in this page
   securitySchemes:
     BearerAuth:
       type: http

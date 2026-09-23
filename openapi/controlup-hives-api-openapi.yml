@@ -11,9 +11,7 @@ info:
     Custom Hives allow you to test internal resources from within your network. They must be installed on a computer with access to your network.
 
 
-    Cloud hives allow you to test publicly available resources from locations throughout the world. They are hosted and managed by Scoutbees, and require no configuration.
-
-    '
+    Cloud hives allow you to test publicly available resources from locations throughout the world. They are hosted and managed by Scoutbees, and require no configuration.'
 servers:
 - url: https://api.controlup.com/synthetic-monitoring/v2/
 tags:
@@ -24,9 +22,7 @@ tags:
     Custom Hives allow you to test internal resources from within your network. They must be installed on a computer with access to your network.
 
 
-    Cloud hives allow you to test publicly available resources from locations throughout the world. They are hosted and managed by Scoutbees, and require no configuration.
-
-    '
+    Cloud hives allow you to test publicly available resources from locations throughout the world. They are hosted and managed by Scoutbees, and require no configuration.'
 paths:
   /hives:
     get:
@@ -77,27 +73,54 @@ paths:
 
           '
 components:
+  responses:
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
+    HivesList:
+      description: A list of Custom Hives
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: Information about each Custom Hive.
+                items:
+                  $ref: '#/components/schemas/HiveResponse'
+              success:
+                type: boolean
+                description: Whether the request was successful.
+    CloudHivesList:
+      description: A list of Cloud Hives
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: Information about each Cloud Hive.
+                items:
+                  $ref: '#/components/schemas/CloudHiveResponse'
+              success:
+                type: boolean
+                description: Whether the request was successful.
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
   schemas:
-    CloudHiveResponse:
-      type: object
-      description: Cloud hive properties
-      properties:
-        id:
-          type: integer
-          description: ID of the hive.
-          example: 1
-        slug:
-          type: string
-          description: The hive's slug. This is the region in which the hive is hosted.
-          example: eu-central-1
-        name:
-          type: string
-          description: The hive's name.
-          example: EU (Frankfurt)
-        version:
-          type: integer
-          description: The hive version.
-          example: 1161
     BaseError:
       type: object
       properties:
@@ -145,53 +168,26 @@ components:
           type: integer
           description: The Custom Hive version.
           example: 1124
-  responses:
-    ServerError:
-      description: Server errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Server Error
-    CloudHivesList:
-      description: A list of Cloud Hives
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                description: Information about each Cloud Hive.
-                items:
-                  $ref: '#/components/schemas/CloudHiveResponse'
-              success:
-                type: boolean
-                description: Whether the request was successful.
-    Unauthorized:
-      description: Missing or wrong api key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Unauthorized
-    HivesList:
-      description: A list of Custom Hives
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                description: Information about each Custom Hive.
-                items:
-                  $ref: '#/components/schemas/HiveResponse'
-              success:
-                type: boolean
-                description: Whether the request was successful.
+    CloudHiveResponse:
+      type: object
+      description: Cloud hive properties
+      properties:
+        id:
+          type: integer
+          description: ID of the hive.
+          example: 1
+        slug:
+          type: string
+          description: The hive's slug. This is the region in which the hive is hosted.
+          example: eu-central-1
+        name:
+          type: string
+          description: The hive's name.
+          example: EU (Frankfurt)
+        version:
+          type: integer
+          description: The hive version.
+          example: 1161
   securitySchemes:
     ApiKeyAuth:
       type: http

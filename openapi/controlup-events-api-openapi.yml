@@ -11,15 +11,11 @@ tags:
   description: The System Events log reports important events and alerts in your ControlUp for Desktops environment.
 paths:
   /events:
-    servers:
-    - url: https://api.controlup.com/edge/api
     get:
       summary: Get system events
       tags:
       - Events
-      description: 'Returns entries from the System Events log, which contains alerts, actions, configuration changes, etc. By default, the endpoint returns 10000 events starting with the oldest event. A maximum of 10000 events can be returned per request.
-
-        '
+      description: Returns entries from the System Events log, which contains alerts, actions, configuration changes, etc. By default, the endpoint returns 10000 events starting with the oldest event. A maximum of 10000 events can be returned per request.
       operationId: get-system-events
       parameters:
       - in: query
@@ -62,9 +58,9 @@ paths:
           description: The provided query is invalid.
       security:
       - bearerAuth: []
-  /events/query:
     servers:
     - url: https://api.controlup.com/edge/api
+  /events/query:
     post:
       summary: Get system events with query
       operationId: get-system-events-query
@@ -72,7 +68,7 @@ paths:
         explorer-enabled: false
       tags:
       - Events
-      description: Returns the same data as [GET /events](get-system-events), but lets you send an OpenSearch query in the request body.
+      description: Returns the same data as GET /events, but lets you send an OpenSearch query in the request body.
       requestBody:
         description: OpenSearch query
         content:
@@ -99,9 +95,9 @@ paths:
           description: The provided query is invalid.
       security:
       - bearerAuth: []
-  /events/organizations/{orgId}/events:
     servers:
-    - url: https://api.controlup.com/events/v1
+    - url: https://api.controlup.com/edge/api
+  /events/organizations/{orgId}/events:
     post:
       description: Returns a list of events based on specified time ranges and filtering criteria. This endpoint uses field projection, returning only the specific event attributes requested in the fields parameter.
       operationId: EventsController_getEventsList
@@ -160,9 +156,9 @@ paths:
       - Events
       security:
       - apiKey: []
-  /events/organizations/{orgId}/events/total:
     servers:
     - url: https://api.controlup.com/events/v1
+  /events/organizations/{orgId}/events/total:
     get:
       description: Returns the count of unique values (cardinality) for a specified field within a defined time range. This endpoint allows you to quantify the diversity of your event data such as counting unique users, distinct error types, or total event volume, while applying filters to narrow the scope.
       operationId: EventsController_getTotalEvents
@@ -393,9 +389,9 @@ paths:
       - Events
       security:
       - apiKey: []
-  /events/organizations/{orgId}/events/{eventId}:
     servers:
     - url: https://api.controlup.com/events/v1
+  /events/organizations/{orgId}/events/{eventId}:
     get:
       description: Retrieves the details of a specific event.
       operationId: EventsController_getEventByUUID
@@ -434,56 +430,10 @@ paths:
       - Events
       security:
       - apiKey: []
+    servers:
+    - url: https://api.controlup.com/events/v1
 components:
   parameters:
-    FilterField:
-      name: filters[0][field]
-      in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
-
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    SorterField:
-      name: sorters[0][field]
-      in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
-
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
-    FilterValue:
-      name: filters[0][value]
-      in: query
-      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
-
-        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
-
-        '
-      schema:
-        oneOf:
-        - type: string
-          title: String
-        - type: number
-          title: Number
-        - type: boolean
-          title: Boolean
     FilterType:
       name: filters[0][type]
       in: query
@@ -508,7 +458,121 @@ components:
         - '>'
         - like
         - boolean
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
   schemas:
+    Event:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the event.
+        _created:
+          type: string
+          format: date-time
+          description: Timestamp of when the event was uploaded in the database.
+        _updated:
+          type: string
+          format: date-time
+          description: Timestamp of when the event was last updated.
+        created_local:
+          type: string
+          format: date-time
+          description: Local timestamp of when the event occured. For DEVICE events, this can be different than the `_created` time.
+        title:
+          type: string
+          description: Title of the event.
+        type:
+          type: string
+          description: Type of event.
+          enum:
+          - ALERT
+          - DEVICE
+          - SECURITY
+          - SYSTEM
+        action_type:
+          type:
+          - string
+          - 'null'
+          description: Whether device actions were performed manually by a user or automated by an alert.
+          enum:
+          - MANUAL
+          - AUTOMATED
+        description:
+          type: string
+          description: Detailed description of the event.
+        severity:
+          type: integer
+          description: Severity level of the event.
+        meta:
+          type: string
+          description: Additional metadata for DEVICE events.
+        local_id:
+          type: string
+          description: Local identifier for DEVICE events.
+        associated_id:
+          type: string
+          description: For events associated with a managed device, the device ID.
+        associated_name:
+          type: string
+          description: For events associated with a managed device, the name of the device.
+        action_name:
+          type: string
+          description: For actions performed from ControlUp, this is the name of the action.
+        console_user_upn:
+          type:
+          - string
+          - 'null'
+          description: User Principal Name of the console user involved (if applicable).
+        alert_id:
+          type: string
+          description: ID of the alert that triggered the event. Returned only for alerts.
     EventEntity:
       type: object
       properties:
@@ -881,72 +945,6 @@ components:
       - timeTo
       - fields
       - limit
-    Event:
-      type: object
-      properties:
-        _id:
-          type: string
-          description: Unique identifier for the event.
-        _created:
-          type: string
-          format: date-time
-          description: Timestamp of when the event was uploaded in the database.
-        _updated:
-          type: string
-          format: date-time
-          description: Timestamp of when the event was last updated.
-        created_local:
-          type: string
-          format: date-time
-          description: Local timestamp of when the event occured. For DEVICE events, this can be different than the `_created` time.
-        title:
-          type: string
-          description: Title of the event.
-        type:
-          type: string
-          description: Type of event.
-          enum:
-          - ALERT
-          - DEVICE
-          - SECURITY
-          - SYSTEM
-        action_type:
-          type:
-          - string
-          - 'null'
-          description: Whether device actions were performed manually by a user or automated by an alert.
-          enum:
-          - MANUAL
-          - AUTOMATED
-        description:
-          type: string
-          description: Detailed description of the event.
-        severity:
-          type: integer
-          description: Severity level of the event.
-        meta:
-          type: string
-          description: Additional metadata for DEVICE events.
-        local_id:
-          type: string
-          description: Local identifier for DEVICE events.
-        associated_id:
-          type: string
-          description: For events associated with a managed device, the device ID.
-        associated_name:
-          type: string
-          description: For events associated with a managed device, the name of the device.
-        action_name:
-          type: string
-          description: For actions performed from ControlUp, this is the name of the action.
-        console_user_upn:
-          type:
-          - string
-          - 'null'
-          description: User Principal Name of the console user involved (if applicable).
-        alert_id:
-          type: string
-          description: ID of the alert that triggered the event. Returned only for alerts.
   securitySchemes:
     bearerAuth:
       type: http

@@ -349,248 +349,10 @@ paths:
           $ref: '#/components/schemas/UUID'
 components:
   schemas:
-    APIResponse_SsoGroupPublic_:
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/SsoGroupPublic'
-      required:
-      - data
-      type: object
-    APIResponse_DeletedActionResponse_:
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/DeletedActionResponse'
-      required:
-      - data
-      type: object
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
-      required:
-      - error
-      - metadata
-      type: object
-    Omit_SsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt_:
-      $ref: '#/components/schemas/Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__'
-      description: Construct a type with the properties of T except for those in type K.
-    DeletedActionResponse:
-      properties:
-        affectedRows:
-          type: number
-          format: double
-      required:
-      - affectedRows
-      type: object
-    ErrorCode.NotFound:
-      enum:
-      - 5
-      type: number
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
-      enum:
-      - 500
-      type: number
-    ErrorMessage.Unauthorized:
-      enum:
-      - Unauthorized
-      type: string
-    ErrorCode.Unauthorized:
-      enum:
-      - 3
-      type: number
-    BadRequestErrorMessages:
-      enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
-      type: string
-    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Forbidden'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Forbidden'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    SsoGroupPublic:
-      properties:
-        id:
-          type: string
-          description: ID of the SSO group.
-        externalId:
-          type: string
-          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
-        displayName:
-          type: string
-          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
-        createdAt:
-          type: string
-          format: date-time
-          description: When the SSO group was first created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: When the SSO group was last updated.
-      required:
-      - updatedAt
-      - createdAt
-      - displayName
-      - externalId
-      - id
-      type: object
-      example:
-        id: 6276ff2a-5a23-4067-ae3e-89ff82229472
-        externalId: c90f8b7f-7151-4ea8-a757-a80f997877dc
-        displayName: IT Admins
-        createdAt: '2024-08-08T19:03:03.178Z'
-        updatedAt: '2024-08-08T19:03:03.178Z'
-    HttpStatusCode.UNAUTHORIZED:
-      enum:
-      - 401
-      type: number
-    BadRequestErrorCodes:
-      enum:
-      - 2
-      - 14
-      - 50
-      type: number
-    Partial_CreateSsoGroupRequest_:
-      properties:
-        displayName:
-          type: string
-          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
-        externalId:
-          type: string
-          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
-      type: object
-      description: Make all properties in T optional
-    ErrorResponseMetadata:
-      properties:
-        cuRequestId:
-          type: string
-        orgId:
-          type: string
-        userId:
-          type: string
-        userIp:
-          type: string
-      required:
-      - userIp
-      - userId
-      - orgId
-      - cuRequestId
-      type: object
-    ErrorMessage.InternalServerError:
-      enum:
-      - Internal Server Error
-      type: string
-    ErrorMessage.Forbidden:
-      enum:
-      - Forbidden
-      type: string
-    ErrorMessage.NotFound:
-      enum:
-      - Not Found
-      type: string
-    ErrorCode.InternalServerError:
-      enum:
-      - 6
-      type: number
-    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Unauthorized'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    HttpStatusCode.FORBIDDEN:
-      enum:
-      - 403
-      type: number
     ErrorCode.Forbidden:
       enum:
       - 4
       type: number
-    APIPaginatedResponse_SsoGroupPublic-Array_:
-      allOf:
-      - $ref: '#/components/schemas/APIResponse_SsoGroupPublic-Array_'
-      - properties:
-          metadata:
-            allOf:
-            - $ref: '#/components/schemas/PaginatedResponseMetadata'
-            - additionalProperties: true
-              type: object
-        required:
-        - metadata
-        type: object
-    Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__:
-      properties:
-        displayName:
-          type: string
-          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
-        externalId:
-          type: string
-          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
-      required:
-      - externalId
-      - displayName
-      type: object
-      description: From T, pick a set of properties whose keys are in the union K
-    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
-      required:
-      - error
-      - metadata
-      type: object
-    HttpStatusCode.BAD_REQUEST:
-      enum:
-      - 400
-      type: number
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
-      required:
-      - error
-      - metadata
-      type: object
     APIResponse_SsoGroupPublic-Array_:
       properties:
         data:
@@ -601,38 +363,6 @@ components:
           - 'null'
       required:
       - data
-      type: object
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
-        code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
-        code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
       type: object
     PaginatedResponseMetadata:
       properties:
@@ -669,12 +399,9 @@ components:
         currentPageNumber: 1
         currentPageSize: 10
         remaining: 8
-    NonEmptyString:
-      type: string
-      minLength: 1
-    HttpStatusCode.NOT_FOUND:
+    HttpStatusCode.UNAUTHORIZED:
       enum:
-      - 404
+      - 401
       type: number
     ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
       properties:
@@ -692,6 +419,158 @@ components:
       - code
       - message
       type: object
+    APIResponse_DeletedActionResponse_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/DeletedActionResponse'
+      required:
+      - data
+      type: object
+    Partial_CreateSsoGroupRequest_:
+      properties:
+        displayName:
+          type: string
+          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
+        externalId:
+          type: string
+          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
+      type: object
+      description: Make all properties in T optional
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    APIResponse_SsoGroupPublic_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/SsoGroupPublic'
+      required:
+      - data
+      type: object
+    DeletedActionResponse:
+      properties:
+        affectedRows:
+          type: number
+          format: double
+      required:
+      - affectedRows
+      type: object
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__:
+      properties:
+        displayName:
+          type: string
+          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
+        externalId:
+          type: string
+          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
+      required:
+      - externalId
+      - displayName
+      type: object
+      description: From T, pick a set of properties whose keys are in the union K
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
     ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
       properties:
         metadata:
@@ -702,6 +581,134 @@ components:
       - error
       - metadata
       type: object
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    APIPaginatedResponse_SsoGroupPublic-Array_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_SsoGroupPublic-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
+        type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    NonEmptyString:
+      type: string
+      minLength: 1
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    SsoGroupPublic:
+      properties:
+        id:
+          type: string
+          description: ID of the SSO group.
+        externalId:
+          type: string
+          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
+        displayName:
+          type: string
+          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
+        createdAt:
+          type: string
+          format: date-time
+          description: When the SSO group was first created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the SSO group was last updated.
+      required:
+      - updatedAt
+      - createdAt
+      - displayName
+      - externalId
+      - id
+      type: object
+      example:
+        id: 6276ff2a-5a23-4067-ae3e-89ff82229472
+        externalId: c90f8b7f-7151-4ea8-a757-a80f997877dc
+        displayName: IT Admins
+        createdAt: '2024-08-08T19:03:03.178Z'
+        updatedAt: '2024-08-08T19:03:03.178Z'
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    Omit_SsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt_:
+      $ref: '#/components/schemas/Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__'
+      description: Construct a type with the properties of T except for those in type K.
     GetAllSsoGroupsResponse:
       $ref: '#/components/schemas/APIPaginatedResponse_SsoGroupPublic-Array_'
       example:
@@ -722,13 +729,6 @@ components:
           displayName: Help Desk Employees
           createdAt: '2024-08-05T18:04:22.996Z'
           updatedAt: '2024-08-05T18:04:22.996Z'
-    UUID:
-      type: string
-      format: uuid
-      description: 'Stringified UUIDv4.
-
-        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
-      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
   securitySchemes:
     apiKey:
       type: http

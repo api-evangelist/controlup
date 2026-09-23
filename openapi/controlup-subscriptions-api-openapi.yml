@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -38,7 +38,9 @@ paths:
       tags:
       - Subscriptions
       summary: Verify subscription credentials (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify to verify tenant credentials instead.\n            Verifies cloud provider credentials and permissions synchronously. Check the IsSuccess field to determine if credentials are valid."
+      description: 'DEPRECATED: Use POST /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify to verify tenant credentials instead.
+
+        Verifies cloud provider credentials and permissions synchronously. Check the IsSuccess field to determine if credentials are valid.'
       operationId: VerifySubscriptionCredentials
       parameters:
       - name: id
@@ -128,7 +130,9 @@ paths:
       tags:
       - Subscriptions
       summary: Verify subscription credentials - transcript (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify/transcript instead.\n            Verifies the connection and permissions with formatted output lines. Check IsSuccess field for result."
+      description: 'DEPRECATED: Use POST /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId}/verify/transcript instead.
+
+        Verifies the connection and permissions with formatted output lines. Check IsSuccess field for result.'
       operationId: VerifySubscriptionCredentialsTranscript
       parameters:
       - name: id
@@ -205,7 +209,7 @@ paths:
       tags:
       - Subscriptions
       summary: Verify subscription credentials - streaming (Deprecated)
-      description: "Streams real-time cloud credentials verification progress over a WebSocket connection using structured JSON messages.\nAll messages are serialized as JSON with camelCase property names and inherit from ControlUp.Foundry.Domain.Models.Verification.Messages.VerificationMessage.\n            \n**Message Types (see Domain.Models.Verification.Messages namespace):**\n- ControlUp.Foundry.Domain.Models.Verification.Messages.VerificationStartedMessage: Verification process begins\n  - Properties: `type`, `timestamp`\n            \n- ControlUp.Foundry.Domain.Models.Verification.Messages.StepStartedMessage: A verification step begins\n  - Properties: `type`, `timestamp`, `stepNumber`, `stepName`\n            \n- ControlUp.Foundry.Domain.Models.Verification.Messages.StepCompletedMessage: A verification step completes\n  - Properties: `type`, `timestamp`, `stepNumber`, `stepName`, `status`, `duration`, `detail`\n  - `status` values: \"success\" | \"warning\" | \"failure\"\n            \n- ControlUp.Foundry.Domain.Models.Verification.Messages.VerificationCompletedMessage: Verification process ends\n  - Properties: `type`, `timestamp`, `success`, `duration`, `errorMessage`\n            \n**Usage Flow:**\n1. Client establishes WebSocket connection to `/api/v1/cloud/subscriptions/{id}/credentials/verify/stream`\n2. Server validates subscription exists and user has permission\n3. Server accepts WebSocket connection (HTTP 101 Switching Protocols)\n4. Server sends ControlUp.Foundry.Domain.Models.Verification.Messages.VerificationStartedMessage\n5. For each verification step (provider-specific):\n   - Server sends ControlUp.Foundry.Domain.Models.Verification.Messages.StepStartedMessage\n   - Server performs verification against cloud provider API\n   - Server sends ControlUp.Foundry.Domain.Models.Verification.Messages.StepCompletedMessage with results\n6. Server sends ControlUp.Foundry.Domain.Models.Verification.Messages.VerificationCompletedMessage\n7. Server closes WebSocket with normal closure or error status\n            \n**WebSocket Client Example (JavaScript):**\n```javascript\nconst subscriptionId = '123e4567-e89b-12d3-a456-426614174000';\nconst ws = new WebSocket(`wss://api.example.com/api/v1/cloud/subscriptions/${subscriptionId}/credentials/verify/stream`);\n            \nws.onopen = () => {\n  console.log('WebSocket connected - waiting for verification to start...');\n};\n            \nws.onmessage = (event) => {\n  const message = JSON.parse(event.data);\n            \n  switch(message.type) {\n    case 'verification_started':\n      console.log('Verification started at:', message.timestamp);\n      // Initialize UI for verification progress\n      break;\n            \n    case 'step_started':\n      console.log(`Step ${message.stepNumber}: ${message.stepName} - started`);\n      // Show spinner/progress indicator for this step\n      break;\n            \n    case 'step_completed':\n      console.log(`Step ${message.stepNumber}: ${message.stepName} - ${message.status} in ${message.duration}`);\n      if (message.detail) {\n        console.log(`  Detail: ${message.detail}`);\n      }\n      // Update UI with status icon: ✓ (success), ⚠ (warning), ✗ (failure)\n      break;\n            \n    case 'verification_completed':\n      console.log(`Verification ${message.success ? 'succeeded' : 'failed'} - Duration: ${message.duration}`);\n      if (message.errorMessage) {\n        console.error(`Error: ${message.errorMessage}`);\n      }\n      // Finalize UI with overall result\n      break;\n            \n    default:\n      console.warn('Unknown message type:', message.type);\n  }\n};\n            \nws.onerror = (error) => {\n  console.error('WebSocket error:', error);\n  // Handle connection errors\n};\n            \nws.onclose = (event) => {\n  console.log(`WebSocket closed - Code: ${event.code}, Reason: ${event.reason}`);\n  // Clean up UI and resources\n};\n```\n            \n**Example Message Sequence (Azure Subscription):**\n```json\n{\"type\":\"verification_started\",\"timestamp\":\"2025-10-23T10:30:00.000Z\"}\n{\"type\":\"step_started\",\"stepNumber\":1,\"stepName\":\"Validating Azure credentials format\",\"timestamp\":\"2025-10-23T10:30:00.100Z\"}\n{\"type\":\"step_completed\",\"stepNumber\":1,\"stepName\":\"Validating Azure credentials format\",\"status\":\"success\",\"duration\":\"00:00:00.150\",\"timestamp\":\"2025-10-23T10:30:00.250Z\"}\n{\"type\":\"step_started\",\"stepNumber\":2,\"stepName\":\"Testing connectivity to Azure Resource Manager\",\"timestamp\":\"2025-10-23T10:30:00.300Z\"}\n{\"type\":\"step_completed\",\"stepNumber\":2,\"stepName\":\"Testing connectivity to Azure Resource Manager\",\"status\":\"success\",\"duration\":\"00:00:01.200\",\"detail\":\"Successfully authenticated with tenant ID: abc123\",\"timestamp\":\"2025-10-23T10:30:01.500Z\"}\n{\"type\":\"step_started\",\"stepNumber\":3,\"stepName\":\"Verifying required Azure permissions\",\"timestamp\":\"2025-10-23T10:30:01.550Z\"}\n{\"type\":\"step_completed\",\"stepNumber\":3,\"stepName\":\"Verifying required Azure permissions\",\"status\":\"failure\",\"duration\":\"00:00:00.800\",\"detail\":\"Missing required role: Virtual Machine Contributor\",\"timestamp\":\"2025-10-23T10:30:02.350Z\"}\n{\"type\":\"verification_completed\",\"success\":false,\"duration\":\"00:00:02.500\",\"errorMessage\":\"Verification failed\",\"timestamp\":\"2025-10-23T10:30:02.500Z\"}\n```\n            \n**Notes:**\n- All timestamps are in ISO 8601 UTC format\n- Duration fields are in TimeSpan format (hh:mm:ss.fffffff)\n- Step numbers are sequential, starting from 1\n- The `detail` field in ControlUp.Foundry.Domain.Models.Verification.Messages.StepCompletedMessage is optional (null for success, may contain info for warnings/failures)\n- WebSocket closes automatically after sending ControlUp.Foundry.Domain.Models.Verification.Messages.VerificationCompletedMessage\n- If an error occurs during verification, the server will attempt to close the WebSocket with appropriate status code"
+      description: Streams real-time cloud credentials verification progress over a WebSocket connection using structured JSON messages.
       parameters:
       - name: id
         in: path
@@ -265,6 +269,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: getCloudSubscriptionsByIdCredentialsVerifyStream
+      x-operation-id-source: derived
   /cloud/subscriptions/{id}/credentials/verify/sse:
     post:
       tags:
@@ -330,6 +336,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: postCloudSubscriptionsByIdCredentialsVerifySse
+      x-operation-id-source: derived
   /cloud/subscriptions/{subscriptionId}/metadata/regions:
     get:
       tags:
@@ -587,7 +595,7 @@ paths:
     get:
       tags:
       - Subscriptions
-      summary: Get available VM sizes for a region with filtering, sorting, and pagination support
+      summary: Get available VM sizes for a region with filtering, sorting, and pagination…
       description: 'Returns the VM SKUs offered in a region with full specifications: CPU count, memory, disk limits, IOPS, and capability flags.
 
         Describes what each SKU is capable of, not whether the subscription has quota left to deploy one.
@@ -1066,7 +1074,22 @@ paths:
       tags:
       - Subscriptions
       summary: Get compute quota usage for a region
-      description: "Returns current vCPU quota usage and limits for the subscription in a region, per VM family\n(for example standardDSv3Family) plus the total regional quota.\nAnswers whether there is headroom to deploy, which the VM size catalog cannot; compare against a SKU's family and core count.\nSupports filtering, sorting, and pagination, and is cached server-side for 5 minutes, so very recent deployments may not be reflected.\n            \nUseful filter examples:\n- Families with active usage: filter=gt(currentUsage,0)\n- Specific family lookup: filter=eq(name,standardDSv3Family)\n- Total regional quota: filter=eq(name,cores)"
+      description: 'Returns current vCPU quota usage and limits for the subscription in a region, per VM family
+
+        (for example standardDSv3Family) plus the total regional quota.
+
+        Answers whether there is headroom to deploy, which the VM size catalog cannot; compare against a SKU''s family and core count.
+
+        Supports filtering, sorting, and pagination, and is cached server-side for 5 minutes, so very recent deployments may not be reflected.
+
+
+        Useful filter examples:
+
+        - Families with active usage: filter=gt(currentUsage,0)
+
+        - Specific family lookup: filter=eq(name,standardDSv3Family)
+
+        - Total regional quota: filter=eq(name,cores)'
       operationId: GetComputeQuota
       parameters:
       - name: subscriptionId
@@ -1247,7 +1270,27 @@ paths:
       tags:
       - Subscriptions
       summary: Check host pool create permissions
-      description: "Advisory check that the subscription's service principal can create AVD control-plane\nresources: host pool, application group, and workspace update. Covers the control-plane\nportion of the Create Host Pool wizard (POST host-pool-deployments); when initial session\nhosts will also be created, additionally call the session host create pre-flight.\n            \nEach required permission is evaluated at exactly the scope the create flow exercises it\nagainst (inherited grants from resource group, subscription, or management group count).\n            \nAdvisory only — a failed check never blocks creation. The result carries one of three statuses:\n- granted: all required actions confirmed at their target scopes.\n- missingPermissions: at least one action could not be confirmed; display the returned message as a warning.\n- unknown: the check itself could not run (transient error); do not show a warning."
+      description: 'Advisory check that the subscription''s service principal can create AVD control-plane
+
+        resources: host pool, application group, and workspace update. Covers the control-plane
+
+        portion of the Create Host Pool wizard (POST host-pool-deployments); when initial session
+
+        hosts will also be created, additionally call the session host create pre-flight.
+
+
+        Each required permission is evaluated at exactly the scope the create flow exercises it
+
+        against (inherited grants from resource group, subscription, or management group count).
+
+
+        Advisory only — a failed check never blocks creation. The result carries one of three statuses:
+
+        - granted: all required actions confirmed at their target scopes.
+
+        - missingPermissions: at least one action could not be confirmed; display the returned message as a warning.
+
+        - unknown: the check itself could not run (transient error); do not show a warning.'
       operationId: CheckHostPoolCreatePermissions
       parameters:
       - name: subscriptionId
@@ -1345,7 +1388,29 @@ paths:
       tags:
       - Subscriptions
       summary: Check session host create permissions
-      description: "Advisory check that the subscription's service principal can provision session host VMs:\nVM, NIC, and disk creation, VM extensions, run commands, subnet join, gallery image read,\nand host pool registration-token generation. Covers three flows: initial session hosts at\nhost pool creation (host count greater than zero), POST session-host-deployments, and\nautoscale scale-out.\n            \nEach required permission is evaluated at exactly the scope the provisioning flow exercises\nit against (inherited grants from resource group, subscription, or management group count).\n            \nAdvisory only — a failed check never blocks creation. The result carries one of three statuses:\n- granted: all required actions confirmed at their target scopes.\n- missingPermissions: at least one action could not be confirmed; display the returned message as a warning.\n- unknown: the check itself could not run (transient error); do not show a warning."
+      description: 'Advisory check that the subscription''s service principal can provision session host VMs:
+
+        VM, NIC, and disk creation, VM extensions, run commands, subnet join, gallery image read,
+
+        and host pool registration-token generation. Covers three flows: initial session hosts at
+
+        host pool creation (host count greater than zero), POST session-host-deployments, and
+
+        autoscale scale-out.
+
+
+        Each required permission is evaluated at exactly the scope the provisioning flow exercises
+
+        it against (inherited grants from resource group, subscription, or management group count).
+
+
+        Advisory only — a failed check never blocks creation. The result carries one of three statuses:
+
+        - granted: all required actions confirmed at their target scopes.
+
+        - missingPermissions: at least one action could not be confirmed; display the returned message as a warning.
+
+        - unknown: the check itself could not run (transient error); do not show a warning.'
       operationId: CheckSessionHostCreatePermissions
       parameters:
       - name: subscriptionId
@@ -3070,7 +3135,11 @@ paths:
       tags:
       - Subscriptions
       summary: Discover resources in a subscription (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover to discover resources via tenant instead.\n            Queries the cloud provider to retrieve resource metadata with pagination and sorting support.\n            Supports multiple resource types in a single request. Returns base CloudResourceDto without type-specific properties."
+      description: 'DEPRECATED: Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover to discover resources via tenant instead.
+
+        Queries the cloud provider to retrieve resource metadata with pagination and sorting support.
+
+        Supports multiple resource types in a single request. Returns base CloudResourceDto without type-specific properties.'
       operationId: DiscoverResources
       parameters:
       - name: id
@@ -3232,7 +3301,11 @@ paths:
       tags:
       - Subscriptions
       summary: Discover host pools in a subscription (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover/hostpools to discover host pools via tenant instead.\n            Queries Azure to retrieve host pool metadata with pagination, sorting, and filtering support.\n            Returns type-specific properties including host pool type, load balancer configuration, and session limits."
+      description: 'DEPRECATED: Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover/hostpools to discover host pools via tenant instead.
+
+        Queries Azure to retrieve host pool metadata with pagination, sorting, and filtering support.
+
+        Returns type-specific properties including host pool type, load balancer configuration, and session limits.'
       operationId: DiscoverHostPools
       parameters:
       - name: id
@@ -3413,7 +3486,11 @@ paths:
       tags:
       - Subscriptions
       summary: Discover images in a subscription (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover/images to discover images via tenant instead.\n            Queries Azure to retrieve image metadata with pagination and sorting support.\n            Returns type-specific properties including source type (Managed/SharedImageGallery), OS type, and disk information."
+      description: 'DEPRECATED: Use GET /api/v1/cloud/tenants/{tenantId}/resources/discover/images to discover images via tenant instead.
+
+        Queries Azure to retrieve image metadata with pagination and sorting support.
+
+        Returns type-specific properties including source type (Managed/SharedImageGallery), OS type, and disk information.'
       operationId: DiscoverImages
       parameters:
       - name: id
@@ -3543,7 +3620,11 @@ paths:
       tags:
       - Subscriptions
       summary: Import cloud resources (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants/{tenantId}/resources/import to import resources via tenant instead.\n            Creates a long-running background job to gather and import resource data from cloud providers.\n            Only one import job per subscription can be active at a time. Poll the statusUrl for progress updates."
+      description: 'DEPRECATED: Use POST /api/v1/cloud/tenants/{tenantId}/resources/import to import resources via tenant instead.
+
+        Creates a long-running background job to gather and import resource data from cloud providers.
+
+        Only one import job per subscription can be active at a time. Poll the statusUrl for progress updates.'
       operationId: ImportResources
       parameters:
       - name: id
@@ -3723,7 +3804,9 @@ paths:
       tags:
       - Subscriptions
       summary: Create a subscription (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants to create a tenant with credentials, then link subscriptions.\n            Creates a new cloud subscription with the provided configuration."
+      description: 'DEPRECATED: Use POST /api/v1/cloud/tenants to create a tenant with credentials, then link subscriptions.
+
+        Creates a new cloud subscription with the provided configuration.'
       operationId: CreateSubscription
       requestBody:
         description: The subscription data to create.
@@ -3899,7 +3982,9 @@ paths:
       tags:
       - Subscriptions
       summary: Update a subscription (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use PUT /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId} to update tenant credentials.\n            Updates an existing subscription with the provided configuration. Provider changes are only allowed for subscriptions in Draft state."
+      description: 'DEPRECATED: Use PUT /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId} to update tenant credentials.
+
+        Updates an existing subscription with the provided configuration. Provider changes are only allowed for subscriptions in Draft state.'
       operationId: UpdateSubscription
       parameters:
       - name: id
@@ -3997,7 +4082,9 @@ paths:
       tags:
       - Subscriptions
       summary: Rotate subscription credentials (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use PATCH /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId} to rotate tenant credentials.\n            Rotates the secrets/credentials for an existing subscription."
+      description: 'DEPRECATED: Use PATCH /api/v1/cloud/tenants/{tenantId}/credentials/{credentialId} to rotate tenant credentials.
+
+        Rotates the secrets/credentials for an existing subscription.'
       operationId: PatchSubscription
       parameters:
       - name: id
@@ -4089,7 +4176,9 @@ paths:
       tags:
       - Subscriptions
       summary: Delete a subscription (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use DELETE /api/v1/cloud/tenants/{tenantId} to delete a tenant and its subscriptions.\n            Deletes a cloud subscription and all associated resources."
+      description: 'DEPRECATED: Use DELETE /api/v1/cloud/tenants/{tenantId} to delete a tenant and its subscriptions.
+
+        Deletes a cloud subscription and all associated resources.'
       operationId: DeleteSubscription
       parameters:
       - name: id
@@ -4153,7 +4242,9 @@ paths:
       tags:
       - Subscriptions
       summary: Get subscription status (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use GET /api/v1/cloud/tenants/{tenantId}/status to get tenant status instead.\n            Returns the current status of a subscription including health and verification details."
+      description: 'DEPRECATED: Use GET /api/v1/cloud/tenants/{tenantId}/status to get tenant status instead.
+
+        Returns the current status of a subscription including health and verification details.'
       operationId: GetSubscriptionStatus
       parameters:
       - name: id
@@ -4232,7 +4323,9 @@ paths:
       tags:
       - Subscriptions
       summary: Refresh subscription status (Deprecated)
-      description: "\n<b>DEPRECATED:</b> Use POST /api/v1/cloud/tenants/{tenantId}/status/refresh to refresh tenant status instead.\n            Refreshes the subscription status by verifying its connection and credentials. Check the Status field for the current health."
+      description: 'DEPRECATED: Use POST /api/v1/cloud/tenants/{tenantId}/status/refresh to refresh tenant status instead.
+
+        Refreshes the subscription status by verifying its connection and credentials. Check the Status field for the current health.'
       operationId: RefreshSubscriptionStatus
       parameters:
       - name: id
@@ -4308,14 +4401,190 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    VerificationStepStatus:
+    VerificationTranscriptResponse:
+      required:
+      - isSuccess
+      - output
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          description: Whether the operation was successful.
+          example: true
+        output:
+          type: array
+          items:
+            type: string
+          description: Formatted output lines from the operation.
+      additionalProperties: false
+      description: 'Generic response for operations that produce formatted line-by-line output.
+
+        Can be used for validations, diagnostics, migrations, deployments, or any operation
+
+        that provides step-by-step progress or results as text output.'
+    VerificationStepResponse:
+      required:
+      - durationMs
+      - isSuccess
+      - status
+      - stepName
+      type: object
+      properties:
+        stepName:
+          type: string
+          description: Name or description of the verification step.
+          example: Authenticating with Azure AD
+        status:
+          $ref: '#/components/schemas/VerificationStepStatus'
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional warning or error detail (null for most successes).
+        isSuccess:
+          type: boolean
+          description: Whether this verification step succeeded.
+          readOnly: true
+          example: true
+        durationMs:
+          type: integer
+          description: Duration of this step in milliseconds.
+          format: int64
+          example: 450
+      additionalProperties: false
+      description: 'Response DTO representing a single verification step result.
+
+        Each step contains information about a specific check performed during credential verification.'
+    HostPoolType:
       enum:
-      - success
-      - warning
-      - failure
+      - pooled
+      - personal
       type: string
-      description: Discrete states a verification step can finish in.
-    LookedUpGalleryDtoPagedResultDto:
+      description: Represents the type of Azure Virtual Desktop host pool.
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    PermissionCheckStatus:
+      enum:
+      - granted
+      - missingPermissions
+      - unknown
+      type: string
+      description: 'Outcome of an advisory permission pre-flight check.
+
+        The check never blocks an operation; consumers decide how to surface each status.'
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+    MissingPermissionDto:
+      required:
+      - action
+      - capability
+      - scope
+      type: object
+      properties:
+        action:
+          type: string
+          description: The RBAC action (e.g. `Microsoft.Network/virtualNetworks/subnets/join/action`).
+        scope:
+          type: string
+          description: The ARM scope the action was evaluated at (resource group path or resource ID).
+        capability:
+          $ref: '#/components/schemas/CloudPermissionCapabilityGroup'
+      additionalProperties: false
+      description: 'A required RBAC action the service principal is missing, together with the ARM scope it
+
+        was evaluated at. Each entry is a complete remediation statement: grant the action at the
+
+        scope (or any of its ancestors) to resolve it.'
+    DiscoveredImageDtoPagedResultDto:
       required:
       - count
       - hasMore
@@ -4327,7 +4596,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/LookedUpGalleryDto'
+            $ref: '#/components/schemas/DiscoveredImageDto'
           description: The items in the current page.
         page:
           type: integer
@@ -4360,6 +4629,420 @@ components:
       description: 'Generic paginated response wrapper for API endpoints.
 
         Supports traditional page-based navigation with forward/backward capability.'
+    SubscriptionHealthStatus:
+      enum:
+      - unknown
+      - healthy
+      - warning
+      - error
+      - inProgress
+      type: string
+      description: 'Operational health status of an active cloud subscription.
+
+        Only meaningful when SubscriptionLifecycleState = Active.
+
+        Derived from last verification and inventory sync results.'
+    RegionMetadataDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionMetadataDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    LookedUpGalleryImageVersionDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpGalleryImageVersionDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    CloudSubscriptionDto:
+      required:
+      - authType
+      - createdAt
+      - credentials
+      - healthStatus
+      - id
+      - lastUpdated
+      - lifecycleState
+      - name
+      - provider
+      - providerSubscriptionId
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the subscription.
+          format: uuid
+        name:
+          type: string
+          description: User-friendly name for the subscription.
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        providerSubscriptionId:
+          type: string
+          description: 'Cloud Provider assigned unique identifier for the top-level resource boundary.
+
+            Azure: SubscriptionId, AWS: AccountId, GCP: ProjectId.'
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Gets or sets the credentials used to authenticate with the cloud provider.
+
+            Note: Sensitive credential fields are automatically masked in API responses for security.
+
+            Only non-sensitive metadata fields (e.g., TenantId, ClientId) are shown in clear text.'
+        lifecycleState:
+          $ref: '#/components/schemas/SubscriptionLifecycleState'
+        healthStatus:
+          $ref: '#/components/schemas/SubscriptionHealthStatus'
+        healthStatusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the current subscription health status.
+
+            Examples: "All checks passed", "Invalid credentials", "Secret expires in 21 days".
+
+            Null if status hasn''t been computed yet.
+
+            Use the GET /subscriptions/{id}/status endpoint for detailed verification information.'
+        createdAt:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          description: Timestamp of the last update or validation.
+          format: date-time
+      additionalProperties: false
+      description: Response DTO representing a cloud subscription (Azure Subscription, AWS Account, GCP Project).
+    VmSecurityType:
+      enum:
+      - trustedLaunch
+      - standard
+      - confidentialVM
+      type: string
+      description: Security profile for Azure VMs.
+    CloudSubscriptionStatusDto:
+      required:
+      - credentialsVerificationStatus
+      - inventorySyncStatus
+      - status
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/SubscriptionHealthStatus'
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Human-readable message describing the current status.
+
+            Computed from component status messages.
+
+            Examples: "All checks passed", "Invalid credentials", "Secret expires in 21 days; Inventory sync failed".'
+        credentialsVerificationStatus:
+          $ref: '#/components/schemas/VerificationStatus'
+        lastCredentialsVerificationAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last credentials verification attempt (successful or failed).
+          format: date-time
+        lastSuccessfulCredentialsVerificationAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last successful credentials verification.
+          format: date-time
+        credentialsVerificationStatusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Status message from the last credentials verification.
+
+            Can contain error, warning, or informational messages.'
+        inventorySyncStatus:
+          $ref: '#/components/schemas/VerificationStatus'
+        lastInventorySyncAttemptAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last inventory sync attempt (successful or failed).
+          format: date-time
+        lastSuccessfulInventorySyncAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp of the last successful inventory sync.
+          format: date-time
+        inventorySyncStatusMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Status message from the last inventory sync.
+
+            Can contain error, warning, or informational messages.'
+      additionalProperties: false
+      description: 'Complete status information for a cloud subscription.
+
+        Used when querying subscription status directly (e.g., GET /subscriptions/{id}/status).
+
+        Provides overall status, human-readable message, and granular tracking of verification components.'
+    LookedUpImageDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpImageDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    DiscoverableResourceType:
+      enum:
+      - subscription
+      - resourceGroup
+      - workspace
+      - image
+      - gallery
+      - galleryImage
+      - galleryImageVersion
+      - hostPool
+      - virtualMachine
+      - virtualNetwork
+      type: string
+      description: 'Public API enum for resource types that users can discover/import.
+
+        Only includes high-level resource types exposed to end users.'
+    VmSizeDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/VmSizeDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    CloudPermissionCapabilityGroup:
+      enum:
+      - hostPool
+      - appGroup
+      - workspace
+      - compute
+      - network
+      type: string
+      description: 'Logical grouping of RBAC actions checked by the permission pre-flight,
+
+        so clients can render semantically meaningful warnings per capability
+
+        instead of parsing raw ARM action strings.'
+    ImportCloudResourcesRequest:
+      type: object
+      properties:
+        importAll:
+          type: boolean
+          description: 'Whether to import ALL resources of ALL types.
+
+            When true, the system will discover and import all resources (HostPools, Images, etc.).
+
+            When false, only resources specified in the Resources collection will be imported.'
+          default: false
+        resources:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CloudResourceIdsByTypeDto'
+          description: 'Resources to import organized by type (used when ImportAll is false).
+
+            Each item specifies a resource type and the IDs to import for that type.'
+      additionalProperties: false
+      description: 'Request model for importing cloud resources.
+
+        Supports two modes:
+
+        1. Import ALL resources of ALL types (importAll = true)
+
+        2. Import specific resources by type (importAll = false, with resources collection)'
     ComputeQuotaDtoPagedResultDto:
       required:
       - count
@@ -4405,6 +5088,293 @@ components:
       description: 'Generic paginated response wrapper for API endpoints.
 
         Supports traditional page-based navigation with forward/backward capability.'
+    LookedUpManagedImageDto:
+      required:
+      - id
+      - imageSourceType
+      - isAlreadyManaged
+      - location
+      - name
+      - osType
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
+        galleryId:
+          type:
+          - string
+          - 'null'
+          description: Parent gallery ARM resource ID. Null for managed images.
+        galleryName:
+          type:
+          - string
+          - 'null'
+          description: Parent gallery name. Null for managed images.
+        imageSourceType:
+          $ref: '#/components/schemas/ImageSourceType'
+        hyperVGeneration:
+          type:
+          - string
+          - 'null'
+          description: Hyper-V generation of the image (V1 or V2). Null for managed images.
+        diskControllerTypes:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Disk controller types supported by the image definition, when available.
+        cpuArchitectureType:
+          type:
+          - string
+          - 'null'
+          description: CPU architecture type of the image (e.g., "x64", "Arm64"). Null when Azure omits the architecture property.
+        osType:
+          type: string
+          description: Operating system type (Windows or Linux).
+        osState:
+          type:
+          - string
+          - 'null'
+          description: OS state of the image (Generalized or Specialized).
+        sku:
+          type:
+          - string
+          - 'null'
+          description: Image SKU if from Shared Image Gallery.
+        offer:
+          type:
+          - string
+          - 'null'
+          description: Image offer if from Shared Image Gallery.
+        publisher:
+          type:
+          - string
+          - 'null'
+          description: Image publisher if from Shared Image Gallery.
+        version:
+          type:
+          - string
+          - 'null'
+          description: Image version if from Shared Image Gallery.
+        securityType:
+          $ref: '#/components/schemas/VmSecurityType'
+        recommendedMemoryMinBytes:
+          type:
+          - integer
+          - 'null'
+          description: Recommended minimum memory size in bytes for the image.
+          format: int64
+        recommendedMemoryMaxBytes:
+          type:
+          - integer
+          - 'null'
+          description: Recommended maximum memory size in bytes for the image.
+          format: int64
+        recommendedCoresMin:
+          type:
+          - integer
+          - 'null'
+          description: Recommended minimum core count for the image.
+          format: int32
+        recommendedCoresMax:
+          type:
+          - integer
+          - 'null'
+          description: Recommended maximum core count for the image.
+          format: int32
+        osDiskSizeGiB:
+          type:
+          - integer
+          - 'null'
+          description: OS disk size in GiB. Used by the UI to compute the minimum OS disk size for deployment.
+          format: int32
+      additionalProperties: false
+      description: 'Represents a looked-up Azure Managed Image (Microsoft.Compute/images) for the managed image picker.
+
+        Extends the base image DTO with managed-image-specific properties needed by the UI.'
+    LookedUpResourceGroupDto:
+      required:
+      - id
+      - location
+      - name
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+      additionalProperties: false
+      description: 'Represents a looked-up Azure resource group.
+
+        Resource groups are containers, not resources — they derive from the entity base
+
+        rather than the resource DTO since they don''t belong to a resource group.'
+    DiscoveredCloudResourceDto:
+      required:
+      - id
+      - location
+      - name
+      - properties
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of additional entity properties.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+      additionalProperties: false
+      description: Represents a discovered cloud resource that belongs to a resource group.
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+    CloudResourceIdsByTypeDto:
+      required:
+      - ids
+      - type
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        ids:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Set of specific resource IDs to import for this resource type.
+      additionalProperties: false
+      description: Represents a collection of resource IDs for a specific resource type.
+    LookedUpVirtualNetworkDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpVirtualNetworkDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    CloudProviderAuthType:
+      enum:
+      - azureServicePrincipal
+      - azureServicePrincipalCertificate
+      type: string
+      description: Specifies the supported authentication types for connecting to various cloud providers and services.
     VmSizeDto:
       required:
       - cores
@@ -4594,84 +5564,86 @@ components:
       description: 'Data transfer object representing a virtual machine size/SKU.
 
         Contains specifications and capabilities for capacity planning and provisioning.'
-    CloudProvider:
-      enum:
-      - azure
-      type: string
-      description: Enumeration of supported cloud provider identifiers.
-    VerificationTranscriptResponse:
+    LookedUpVirtualMachineDto:
       required:
-      - isSuccess
-      - output
+      - generation
+      - id
+      - isAlreadyManaged
+      - location
+      - name
+      - osType
+      - powerState
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      - vmSize
       type: object
       properties:
-        isSuccess:
-          type: boolean
-          description: Whether the operation was successful.
-          example: true
-        output:
-          type: array
-          items:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
             type: string
-          description: Formatted output lines from the operation.
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        isAlreadyManaged:
+          type: boolean
+          description: Whether this resource is already managed by the application
+          example: false
+        generation:
+          type: string
+          description: Hyper-V generation ("V1" or "V2").
+        powerState:
+          type: string
+          description: 'Current power state: "PowerState/running", "PowerState/deallocated", "PowerState/stopped",
+
+            "PowerState/starting", or "PowerState/stopping".'
+          example: PowerState/running
+        vmSize:
+          type: string
+          description: Azure VM size (e.g., "Standard_D2s_v5").
+        osType:
+          type: string
+          description: OS type (e.g., "Windows", "Linux").
       additionalProperties: false
-      description: 'Generic response for operations that produce formatted line-by-line output.
-
-        Can be used for validations, diagnostics, migrations, deployments, or any operation
-
-        that provides step-by-step progress or results as text output.'
-    VmSecurityType:
-      enum:
-      - trustedLaunch
-      - standard
-      - confidentialVM
-      type: string
-      description: Security profile for Azure VMs.
-    LookedUpImageDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
+      description: Represents a looked-up virtual machine resource with promoted VM-specific properties.
+    PatchCloudSubscriptionRequest:
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/LookedUpImageDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
+        name:
+          maxLength: 64
+          minLength: 3
           type:
-          - integer
+          - string
           - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
+          description: User-friendly name for the subscription.
+        credentials:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Credentials used to authenticate with the cloud provider.
       additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
+      description: Request model for partial update of an existing subscription.
     VerificationResponse:
       required:
       - completedAt
@@ -4715,74 +5687,93 @@ components:
       description: 'Response containing detailed results of a credential verification operation.
 
         Includes overall success status, individual step results, and timing information.'
-    CloudProviderAuthType:
-      enum:
-      - azureServicePrincipal
-      - azureServicePrincipalCertificate
-      type: string
-      description: Specifies the supported authentication types for connecting to various cloud providers and services.
-    CloudPermissionCapabilityGroup:
-      enum:
-      - hostPool
-      - appGroup
-      - workspace
-      - compute
-      - network
-      type: string
-      description: 'Logical grouping of RBAC actions checked by the permission pre-flight,
-
-        so clients can render semantically meaningful warnings per capability
-
-        instead of parsing raw ARM action strings.'
-    MissingPermissionDto:
+    RegionMetadataDto:
       required:
-      - action
-      - capability
-      - scope
+      - displayName
+      - isPhysical
+      - name
       type: object
       properties:
-        action:
+        name:
           type: string
-          description: The RBAC action (e.g. `Microsoft.Network/virtualNetworks/subnets/join/action`).
-        scope:
+          description: Region code (canonical identifier).
+        displayName:
           type: string
-          description: The ARM scope the action was evaluated at (resource group path or resource ID).
-        capability:
-          $ref: '#/components/schemas/CloudPermissionCapabilityGroup'
+          description: Human-friendly display name.
+        regionalDisplayName:
+          type:
+          - string
+          - 'null'
+          description: Regional display name.
+        geography:
+          type:
+          - string
+          - 'null'
+          description: Geography group.
+        regionCategory:
+          type:
+          - string
+          - 'null'
+          description: 'Provider-specific region category.
+
+            Azure examples: Recommended, Other, Extended.'
+        isPhysical:
+          type: boolean
+          description: Whether the provider classifies this location as a physical region.
+        availableZones:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Availability zone IDs for the region.
+
+            Null when zone data was not requested; empty array when the region has no zones.'
       additionalProperties: false
-      description: 'A required RBAC action the service principal is missing, together with the ARM scope it
+      description: Region metadata for a subscription.
+    LookedUpWorkspaceDto:
+      required:
+      - applicationGroupResourceIds
+      - id
+      - location
+      - name
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
 
-        was evaluated at. Each entry is a complete remediation statement: grant the action at the
-
-        scope (or any of its ancestors) to resolve it.'
-    JobType:
-      enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
-      type: string
-      description: 'Defines the types of background jobs supported by the system.
-
-        Each job type is processed by a specific worker and has its own parameter structure.'
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        applicationGroupResourceIds:
+          type: array
+          items:
+            type: string
+          description: Application group ARM resource IDs registered to the workspace.
+      additionalProperties: false
+      description: Represents a looked-up Azure Virtual Desktop workspace.
     DiscoveredCloudResourceDtoPagedResultDto:
       required:
       - count
@@ -4828,449 +5819,6 @@ components:
       description: 'Generic paginated response wrapper for API endpoints.
 
         Supports traditional page-based navigation with forward/backward capability.'
-    VerificationStatus:
-      enum:
-      - notChecked
-      - inProgress
-      - success
-      - warning
-      - failed
-      type: string
-      description: Represents the status of a verification check (credentials, inventory sync, etc.).
-    DiscoveredHostPoolDto:
-      required:
-      - hostPoolType
-      - id
-      - isAlreadyManaged
-      - location
-      - name
-      - resourceGroup
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-        resourceGroup:
-          type: string
-          description: Resource group name containing this resource.
-        isAlreadyManaged:
-          type: boolean
-          description: Whether this resource is already managed by the application
-          example: false
-        hostPoolType:
-          $ref: '#/components/schemas/HostPoolType'
-      additionalProperties: false
-      description: 'Represents a discovered Azure Virtual Desktop host pool.
-
-        Extends the base CloudResourceDto with host pool-specific properties.'
-    LookedUpGalleryDto:
-      required:
-      - id
-      - location
-      - name
-      - resourceGroup
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-        resourceGroup:
-          type: string
-          description: Resource group name containing this resource.
-      additionalProperties: false
-      description: Represents a looked-up Azure Compute Gallery resource.
-    PermissionCheckStatus:
-      enum:
-      - granted
-      - missingPermissions
-      - unknown
-      type: string
-      description: 'Outcome of an advisory permission pre-flight check.
-
-        The check never blocks an operation; consumers decide how to surface each status.'
-    DiscoverableResourceType:
-      enum:
-      - subscription
-      - resourceGroup
-      - workspace
-      - image
-      - gallery
-      - galleryImage
-      - galleryImageVersion
-      - hostPool
-      - virtualMachine
-      - virtualNetwork
-      type: string
-      description: 'Public API enum for resource types that users can discover/import.
-
-        Only includes high-level resource types exposed to end users.'
-    ErrorResponse:
-      required:
-      - status
-      - title
-      - traceId
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the problem type.
-        title:
-          type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          description: The HTTP status code.
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the specific occurrence of the problem.
-        errors:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: 'Dictionary of field-specific validation errors (only present for validation failures).
-
-            Key is the field name, value is an array of error messages for that field.'
-        traceId:
-          type: string
-          description: Request ID (cu-request-id) for tracking and debugging purposes.
-      additionalProperties: false
-      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
-
-        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    CloudSubscriptionStatusDto:
-      required:
-      - credentialsVerificationStatus
-      - inventorySyncStatus
-      - status
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/SubscriptionHealthStatus'
-        statusMessage:
-          type:
-          - string
-          - 'null'
-          description: 'Human-readable message describing the current status.
-
-            Computed from component status messages.
-
-            Examples: "All checks passed", "Invalid credentials", "Secret expires in 21 days; Inventory sync failed".'
-        credentialsVerificationStatus:
-          $ref: '#/components/schemas/VerificationStatus'
-        lastCredentialsVerificationAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp of the last credentials verification attempt (successful or failed).
-          format: date-time
-        lastSuccessfulCredentialsVerificationAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp of the last successful credentials verification.
-          format: date-time
-        credentialsVerificationStatusMessage:
-          type:
-          - string
-          - 'null'
-          description: 'Status message from the last credentials verification.
-
-            Can contain error, warning, or informational messages.'
-        inventorySyncStatus:
-          $ref: '#/components/schemas/VerificationStatus'
-        lastInventorySyncAttemptAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp of the last inventory sync attempt (successful or failed).
-          format: date-time
-        lastSuccessfulInventorySyncAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp of the last successful inventory sync.
-          format: date-time
-        inventorySyncStatusMessage:
-          type:
-          - string
-          - 'null'
-          description: 'Status message from the last inventory sync.
-
-            Can contain error, warning, or informational messages.'
-      additionalProperties: false
-      description: 'Complete status information for a cloud subscription.
-
-        Used when querying subscription status directly (e.g., GET /subscriptions/{id}/status).
-
-        Provides overall status, human-readable message, and granular tracking of verification components.'
-    DiscoveredImageDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/DiscoveredImageDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
-    RegionMetadataDto:
-      required:
-      - displayName
-      - isPhysical
-      - name
-      type: object
-      properties:
-        name:
-          type: string
-          description: Region code (canonical identifier).
-        displayName:
-          type: string
-          description: Human-friendly display name.
-        regionalDisplayName:
-          type:
-          - string
-          - 'null'
-          description: Regional display name.
-        geography:
-          type:
-          - string
-          - 'null'
-          description: Geography group.
-        regionCategory:
-          type:
-          - string
-          - 'null'
-          description: 'Provider-specific region category.
-
-            Azure examples: Recommended, Other, Extended.'
-        isPhysical:
-          type: boolean
-          description: Whether the provider classifies this location as a physical region.
-        availableZones:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: 'Availability zone IDs for the region.
-
-            Null when zone data was not requested; empty array when the region has no zones.'
-      additionalProperties: false
-      description: Region metadata for a subscription.
-    PatchCloudSubscriptionRequest:
-      type: object
-      properties:
-        name:
-          maxLength: 64
-          minLength: 3
-          type:
-          - string
-          - 'null'
-          description: User-friendly name for the subscription.
-        credentials:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          description: Credentials used to authenticate with the cloud provider.
-      additionalProperties: false
-      description: Request model for partial update of an existing subscription.
-    PermissionPreflightResultDto:
-      required:
-      - missingPermissions
-      - status
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/PermissionCheckStatus'
-        missingPermissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/MissingPermissionDto'
-          description: 'Required actions that could not be confirmed, each with the scope it was evaluated at.
-
-            Empty when ControlUp.Foundry.Api.Dtos.Cloud.PermissionPreflightResultDto.Status is granted or unknown.'
-        message:
-          type:
-          - string
-          - 'null'
-          description: User-facing warning text, present only when ControlUp.Foundry.Api.Dtos.Cloud.PermissionPreflightResultDto.Status is missingPermissions.
-      additionalProperties: false
-      description: 'Result of an advisory service principal permission pre-flight check.
-
-        Advisory-only: a missingPermissions status must never block the operation,
-
-        and unknown (the check itself could not run) must not surface a warning.'
-    LookedUpResourceGroupDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/LookedUpResourceGroupDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
-    VerificationStepResponse:
-      required:
-      - durationMs
-      - isSuccess
-      - status
-      - stepName
-      type: object
-      properties:
-        stepName:
-          type: string
-          description: Name or description of the verification step.
-          example: Authenticating with Azure AD
-        status:
-          $ref: '#/components/schemas/VerificationStepStatus'
-        detail:
-          type:
-          - string
-          - 'null'
-          description: Optional warning or error detail (null for most successes).
-        isSuccess:
-          type: boolean
-          description: Whether this verification step succeeded.
-          readOnly: true
-          example: true
-        durationMs:
-          type: integer
-          description: Duration of this step in milliseconds.
-          format: int64
-          example: 450
-      additionalProperties: false
-      description: 'Response DTO representing a single verification step result.
-
-        Each step contains information about a specific check performed during credential verification.'
     LookedUpImageDto:
       required:
       - hasVersion
@@ -5403,75 +5951,16 @@ components:
           example: true
       additionalProperties: false
       description: Represents a looked-up image resource.
-    DiscoveredCloudResourceDto:
-      required:
-      - id
-      - location
-      - name
-      - properties
-      - resourceGroup
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of additional entity properties.
-        resourceGroup:
-          type: string
-          description: Resource group name containing this resource.
-      additionalProperties: false
-      description: Represents a discovered cloud resource that belongs to a resource group.
-    LookedUpVirtualNetworkSubnetDto:
-      required:
-      - addressPrefixes
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Subnet resource identifier.
-        name:
-          type: string
-          description: Subnet name.
-        addressPrefixes:
-          type: array
-          items:
-            type: string
-          description: Subnet address prefix(es).
-        nsgId:
-          type:
-          - string
-          - 'null'
-          description: Network security group resource identifier, when attached.
-      additionalProperties: false
-      description: Represents a looked-up subnet in a virtual network.
-    VmSizeDtoPagedResultDto:
+    VerificationStatus:
+      enum:
+      - notChecked
+      - inProgress
+      - success
+      - warning
+      - failed
+      type: string
+      description: Represents the status of a verification check (credentials, inventory sync, etc.).
+    LookedUpVirtualMachineDtoPagedResultDto:
       required:
       - count
       - hasMore
@@ -5483,7 +5972,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/VmSizeDto'
+            $ref: '#/components/schemas/LookedUpVirtualMachineDto'
           description: The items in the current page.
         page:
           type: integer
@@ -5516,6 +6005,259 @@ components:
       description: 'Generic paginated response wrapper for API endpoints.
 
         Supports traditional page-based navigation with forward/backward capability.'
+    SubscriptionLifecycleState:
+      enum:
+      - draft
+      - active
+      - deleting
+      - deleted
+      type: string
+      description: 'Lifecycle state of a cloud subscription.
+
+        Represents the subscription''s position in the wizard/management workflow.'
+    LookedUpResourceGroupDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpResourceGroupDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    DiskSizeDto:
+      required:
+      - size
+      - tier
+      - type
+      - typeDisplayName
+      type: object
+      properties:
+        type:
+          type: string
+          description: 'Disk SKU family name (for example: Premium_LRS).'
+        typeDisplayName:
+          type: string
+          description: 'User-friendly display name for disk family (for example: Premium SSD).'
+        size:
+          type: string
+          description: 'Azure disk SKU size code (for example: P10, E20, S30).'
+        tier:
+          type: string
+          description: 'Azure disk SKU tier (for example: Premium, Standard).'
+        minSizeBytes:
+          type:
+          - integer
+          - 'null'
+          description: Minimum supported size in bytes for this SKU option (if provided by provider capabilities).
+          format: int64
+        maxSizeBytes:
+          type:
+          - integer
+          - 'null'
+          description: Maximum supported size in bytes for this SKU option (if provided by provider capabilities).
+          format: int64
+        availableZones:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Zones where this size option is available.
+
+            Null when zone data is unavailable.'
+      additionalProperties: false
+      description: A flat OS disk size option row for VM-size catalog responses.
+    LookedUpManagedImageDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpManagedImageDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    ImageSourceType:
+      enum:
+      - managed
+      - sharedImageGallery
+      type: string
+      description: Represents the source type of a virtual machine image.
+    PermissionPreflightResultDto:
+      required:
+      - missingPermissions
+      - status
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/PermissionCheckStatus'
+        missingPermissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MissingPermissionDto'
+          description: 'Required actions that could not be confirmed, each with the scope it was evaluated at.
+
+            Empty when ControlUp.Foundry.Api.Dtos.Cloud.PermissionPreflightResultDto.Status is granted or unknown.'
+        message:
+          type:
+          - string
+          - 'null'
+          description: User-facing warning text, present only when ControlUp.Foundry.Api.Dtos.Cloud.PermissionPreflightResultDto.Status is missingPermissions.
+      additionalProperties: false
+      description: 'Result of an advisory service principal permission pre-flight check.
+
+        Advisory-only: a missingPermissions status must never block the operation,
+
+        and unknown (the check itself could not run) must not surface a warning.'
+    CreateCloudSubscriptionRequest:
+      required:
+      - authType
+      - credentials
+      - name
+      - provider
+      - providerSubscriptionId
+      type: object
+      properties:
+        name:
+          maxLength: 64
+          minLength: 3
+          type: string
+          description: User-friendly name for the subscription.
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        providerSubscriptionId:
+          minLength: 1
+          type: string
+          description: 'Cloud Provider assigned unique identifier for the top-level resource boundary.
+
+            Azure: SubscriptionId, AWS: AccountId, GCP: ProjectId.'
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Credentials used to authenticate with the cloud provider.
+
+            Provide all required fields for the selected authentication type.
+
+            Sensitive fields will be encrypted and stored securely.'
+      additionalProperties: false
+      description: Request model for creating a new subscription.
+    LookedUpVirtualNetworkDto:
+      required:
+      - id
+      - location
+      - name
+      - resourceGroup
+      - subnets
+      - subscriptionId
+      - tags
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
+
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
+        subnets:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpVirtualNetworkSubnetDto'
+          description: Gets the list of subnets in this virtual network.
+      additionalProperties: false
+      description: Represents a looked-up virtual network resource.
     DiscoveredHostPoolDtoPagedResultDto:
       required:
       - count
@@ -5561,101 +6303,121 @@ components:
       description: 'Generic paginated response wrapper for API endpoints.
 
         Supports traditional page-based navigation with forward/backward capability.'
-    ComputeQuotaDto:
+    DiskSizeDtoPagedResultDto:
       required:
-      - currentUsage
-      - displayName
-      - limit
-      - name
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
       type: object
       properties:
-        name:
-          type: string
-          description: 'Quota name identifier.
-
-            For vCPU family quotas, matches ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.Family (e.g., "standardDSv3Family").
-
-            Special entries: "cores" for total regional vCPUs, "virtualMachines" for VM count.'
-        displayName:
-          type: string
-          description: Human-readable display name (e.g., "Standard DSv3 Family vCPUs", "Total Regional vCPUs").
-        currentUsage:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiskSizeDto'
+          description: The items in the current page.
+        page:
           type: integer
-          description: 'Current usage count for this quota entry.
-
-            Units depend on the quota type (vCPUs for family/core quotas, count for VM/disk quotas).'
-          format: int64
-        limit:
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
           type: integer
-          description: 'Maximum allowed value for this quota entry in the subscription/region.
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
 
-            Deployment will fail if (CurrentUsage + required units) exceeds this value.
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
 
-            Units match CurrentUsage.'
-          format: int64
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
       additionalProperties: false
-      description: "Represents a compute quota usage entry for a subscription region.\nIncludes vCPU family quotas, total regional vCPU quota, and other compute resource quotas\n(e.g., VM count, disk count) as returned by the Azure Compute Usage API.\n            \nFor VM deployment pre-validation, cross-reference vCPU entries with ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto:\nmatch ControlUp.Foundry.Api.Dtos.Cloud.ComputeQuotaDto.Name against ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.Family to check family quota,\nand compare ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.Cores against (ControlUp.Foundry.Api.Dtos.Cloud.ComputeQuotaDto.Limit - ControlUp.Foundry.Api.Dtos.Cloud.ComputeQuotaDto.CurrentUsage)\nto determine if a VM can be deployed. Also check the \"cores\" entry for total regional vCPU quota."
-    LookedUpVirtualMachineDto:
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    LookedUpGalleryDtoPagedResultDto:
       required:
-      - generation
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookedUpGalleryDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    LookedUpVirtualNetworkSubnetDto:
+      required:
+      - addressPrefixes
       - id
-      - isAlreadyManaged
-      - location
       - name
-      - osType
-      - powerState
-      - resourceGroup
-      - subscriptionId
-      - tags
-      - type
-      - vmSize
       type: object
       properties:
         id:
           type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
+          description: Subnet resource identifier.
         name:
           type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
+          description: Subnet name.
+        addressPrefixes:
+          type: array
+          items:
             type: string
-          description: Gets a collection of tags associated with the entity.
-        resourceGroup:
-          type: string
-          description: Resource group name containing this resource.
-        isAlreadyManaged:
-          type: boolean
-          description: Whether this resource is already managed by the application
-          example: false
-        generation:
-          type: string
-          description: Hyper-V generation ("V1" or "V2").
-        powerState:
-          type: string
-          description: 'Current power state: "PowerState/running", "PowerState/deallocated", "PowerState/stopped",
-
-            "PowerState/starting", or "PowerState/stopping".'
-          example: PowerState/running
-        vmSize:
-          type: string
-          description: Azure VM size (e.g., "Standard_D2s_v5").
-        osType:
-          type: string
-          description: OS type (e.g., "Windows", "Linux").
+          description: Subnet address prefix(es).
+        nsgId:
+          type:
+          - string
+          - 'null'
+          description: Network security group resource identifier, when attached.
       additionalProperties: false
-      description: Represents a looked-up virtual machine resource with promoted VM-specific properties.
+      description: Represents a looked-up subnet in a virtual network.
     LookedUpGalleryImageVersionDto:
       required:
       - id
@@ -5737,53 +6499,43 @@ components:
           description: Azure regions where this image version has replicas.
       additionalProperties: false
       description: Represents a looked-up gallery image version resource.
-    SubscriptionHealthStatus:
-      enum:
-      - unknown
-      - healthy
-      - warning
-      - error
-      - inProgress
-      type: string
-      description: 'Operational health status of an active cloud subscription.
-
-        Only meaningful when SubscriptionLifecycleState = Active.
-
-        Derived from last verification and inventory sync results.'
-    ImageSourceType:
-      enum:
-      - managed
-      - sharedImageGallery
-      type: string
-      description: Represents the source type of a virtual machine image.
-    ImportCloudResourcesRequest:
+    LookedUpGalleryDto:
+      required:
+      - id
+      - location
+      - name
+      - resourceGroup
+      - subscriptionId
+      - tags
+      - type
       type: object
       properties:
-        importAll:
-          type: boolean
-          description: 'Whether to import ALL resources of ALL types.
+        id:
+          type: string
+          description: 'Cloud provider resource identifier.
 
-            When true, the system will discover and import all resources (HostPools, Images, etc.).
-
-            When false, only resources specified in the Resources collection will be imported.'
-          default: false
-        resources:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CloudResourceIdsByTypeDto'
-          description: 'Resources to import organized by type (used when ImportAll is false).
-
-            Each item specifies a resource type and the IDs to import for that type.'
+            For Azure, this is the fully qualified resource ID.'
+        subscriptionId:
+          type: string
+          description: Cloud provider subscription ID containing this entity.
+        name:
+          type: string
+          description: User-friendly entity name.
+        type:
+          $ref: '#/components/schemas/DiscoverableResourceType'
+        location:
+          type: string
+          description: Geographic location or region where the entity is deployed.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Gets a collection of tags associated with the entity.
+        resourceGroup:
+          type: string
+          description: Resource group name containing this resource.
       additionalProperties: false
-      description: 'Request model for importing cloud resources.
-
-        Supports two modes:
-
-        1. Import ALL resources of ALL types (importAll = true)
-
-        2. Import specific resources by type (importAll = false, with resources collection)'
+      description: Represents a looked-up Azure Compute Gallery resource.
     DiscoveredImageDto:
       required:
       - id
@@ -5913,380 +6665,6 @@ components:
       description: 'Represents a discovered virtual machine image.
 
         Extends the base CloudResourceDto with image-specific properties.'
-    JobCreatedDto:
-      required:
-      - action
-      - id
-      - jobType
-      - jobUrl
-      - logsUrl
-      - message
-      - statusUrl
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the created job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
-
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
-
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        jobUrl:
-          type: string
-          description: URL to get full job details (includes parameters).
-        statusUrl:
-          type: string
-          description: 'URL to poll for lightweight status updates (no parameters).
-
-            Poll this endpoint every 2-5 seconds while job is running.'
-        logsUrl:
-          type: string
-          description: URL to get job logs in JSON format.
-        message:
-          type: string
-          description: 'Human-readable message about job creation.
-
-            Example: "Import job created successfully. Poll statusUrl for progress updates."'
-      additionalProperties: false
-      description: 'Lightweight response returned when a job is created.
-
-        Contains only essential information needed to track the job.
-
-        Use the statusUrl to poll for updates and jobUrl to get full details.'
-    UpdateCloudSubscriptionRequest:
-      required:
-      - authType
-      - credentials
-      - name
-      - provider
-      - providerSubscriptionId
-      type: object
-      properties:
-        name:
-          maxLength: 64
-          minLength: 3
-          type: string
-          description: User-friendly name for the subscription.
-        provider:
-          $ref: '#/components/schemas/CloudProvider'
-        providerSubscriptionId:
-          minLength: 1
-          type: string
-          description: 'Cloud Provider assigned unique identifier for the top-level resource boundary.
-
-            Azure: SubscriptionId, AWS: AccountId, GCP: ProjectId.'
-        authType:
-          $ref: '#/components/schemas/CloudProviderAuthType'
-        credentials:
-          type: object
-          additionalProperties:
-            type: string
-          description: Credentials used to authenticate with the cloud provider.
-      additionalProperties: false
-      description: Request model for updating an existing subscription.
-    LookedUpVirtualNetworkDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/LookedUpVirtualNetworkDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
-    DiskSizeDto:
-      required:
-      - size
-      - tier
-      - type
-      - typeDisplayName
-      type: object
-      properties:
-        type:
-          type: string
-          description: 'Disk SKU family name (for example: Premium_LRS).'
-        typeDisplayName:
-          type: string
-          description: 'User-friendly display name for disk family (for example: Premium SSD).'
-        size:
-          type: string
-          description: 'Azure disk SKU size code (for example: P10, E20, S30).'
-        tier:
-          type: string
-          description: 'Azure disk SKU tier (for example: Premium, Standard).'
-        minSizeBytes:
-          type:
-          - integer
-          - 'null'
-          description: Minimum supported size in bytes for this SKU option (if provided by provider capabilities).
-          format: int64
-        maxSizeBytes:
-          type:
-          - integer
-          - 'null'
-          description: Maximum supported size in bytes for this SKU option (if provided by provider capabilities).
-          format: int64
-        availableZones:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: 'Zones where this size option is available.
-
-            Null when zone data is unavailable.'
-      additionalProperties: false
-      description: A flat OS disk size option row for VM-size catalog responses.
-    CreateCloudSubscriptionRequest:
-      required:
-      - authType
-      - credentials
-      - name
-      - provider
-      - providerSubscriptionId
-      type: object
-      properties:
-        name:
-          maxLength: 64
-          minLength: 3
-          type: string
-          description: User-friendly name for the subscription.
-        provider:
-          $ref: '#/components/schemas/CloudProvider'
-        providerSubscriptionId:
-          minLength: 1
-          type: string
-          description: 'Cloud Provider assigned unique identifier for the top-level resource boundary.
-
-            Azure: SubscriptionId, AWS: AccountId, GCP: ProjectId.'
-        authType:
-          $ref: '#/components/schemas/CloudProviderAuthType'
-        credentials:
-          type: object
-          additionalProperties:
-            type: string
-          description: 'Credentials used to authenticate with the cloud provider.
-
-            Provide all required fields for the selected authentication type.
-
-            Sensitive fields will be encrypted and stored securely.'
-      additionalProperties: false
-      description: Request model for creating a new subscription.
-    LookedUpGalleryImageVersionDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/LookedUpGalleryImageVersionDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
-    LookedUpVirtualNetworkDto:
-      required:
-      - id
-      - location
-      - name
-      - resourceGroup
-      - subnets
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-        resourceGroup:
-          type: string
-          description: Resource group name containing this resource.
-        subnets:
-          type: array
-          items:
-            $ref: '#/components/schemas/LookedUpVirtualNetworkSubnetDto'
-          description: Gets the list of subnets in this virtual network.
-      additionalProperties: false
-      description: Represents a looked-up virtual network resource.
-    LookedUpResourceGroupDto:
-      required:
-      - id
-      - location
-      - name
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-      additionalProperties: false
-      description: 'Represents a looked-up Azure resource group.
-
-        Resource groups are containers, not resources — they derive from the entity base
-
-        rather than the resource DTO since they don''t belong to a resource group.'
-    HostPoolType:
-      enum:
-      - pooled
-      - personal
-      type: string
-      description: Represents the type of Azure Virtual Desktop host pool.
-    LookedUpWorkspaceDto:
-      required:
-      - applicationGroupResourceIds
-      - id
-      - location
-      - name
-      - resourceGroup
-      - subscriptionId
-      - tags
-      - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'Cloud provider resource identifier.
-
-            For Azure, this is the fully qualified resource ID.'
-        subscriptionId:
-          type: string
-          description: Cloud provider subscription ID containing this entity.
-        name:
-          type: string
-          description: User-friendly entity name.
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        location:
-          type: string
-          description: Geographic location or region where the entity is deployed.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Gets a collection of tags associated with the entity.
-        resourceGroup:
-          type: string
-          description: Resource group name containing this resource.
-        applicationGroupResourceIds:
-          type: array
-          items:
-            type: string
-          description: Application group ARM resource IDs registered to the workspace.
-      additionalProperties: false
-      description: Represents a looked-up Azure Virtual Desktop workspace.
     LookedUpWorkspaceDtoPagedResultDto:
       required:
       - count
@@ -6332,14 +6710,13 @@ components:
       description: 'Generic paginated response wrapper for API endpoints.
 
         Supports traditional page-based navigation with forward/backward capability.'
-    LookedUpManagedImageDto:
+    DiscoveredHostPoolDto:
       required:
+      - hostPoolType
       - id
-      - imageSourceType
       - isAlreadyManaged
       - location
       - name
-      - osType
       - resourceGroup
       - subscriptionId
       - tags
@@ -6374,168 +6751,30 @@ components:
           type: boolean
           description: Whether this resource is already managed by the application
           example: false
-        galleryId:
-          type:
-          - string
-          - 'null'
-          description: Parent gallery ARM resource ID. Null for managed images.
-        galleryName:
-          type:
-          - string
-          - 'null'
-          description: Parent gallery name. Null for managed images.
-        imageSourceType:
-          $ref: '#/components/schemas/ImageSourceType'
-        hyperVGeneration:
-          type:
-          - string
-          - 'null'
-          description: Hyper-V generation of the image (V1 or V2). Null for managed images.
-        diskControllerTypes:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: Disk controller types supported by the image definition, when available.
-        cpuArchitectureType:
-          type:
-          - string
-          - 'null'
-          description: CPU architecture type of the image (e.g., "x64", "Arm64"). Null when Azure omits the architecture property.
-        osType:
-          type: string
-          description: Operating system type (Windows or Linux).
-        osState:
-          type:
-          - string
-          - 'null'
-          description: OS state of the image (Generalized or Specialized).
-        sku:
-          type:
-          - string
-          - 'null'
-          description: Image SKU if from Shared Image Gallery.
-        offer:
-          type:
-          - string
-          - 'null'
-          description: Image offer if from Shared Image Gallery.
-        publisher:
-          type:
-          - string
-          - 'null'
-          description: Image publisher if from Shared Image Gallery.
-        version:
-          type:
-          - string
-          - 'null'
-          description: Image version if from Shared Image Gallery.
-        securityType:
-          $ref: '#/components/schemas/VmSecurityType'
-        recommendedMemoryMinBytes:
-          type:
-          - integer
-          - 'null'
-          description: Recommended minimum memory size in bytes for the image.
-          format: int64
-        recommendedMemoryMaxBytes:
-          type:
-          - integer
-          - 'null'
-          description: Recommended maximum memory size in bytes for the image.
-          format: int64
-        recommendedCoresMin:
-          type:
-          - integer
-          - 'null'
-          description: Recommended minimum core count for the image.
-          format: int32
-        recommendedCoresMax:
-          type:
-          - integer
-          - 'null'
-          description: Recommended maximum core count for the image.
-          format: int32
-        osDiskSizeGiB:
-          type:
-          - integer
-          - 'null'
-          description: OS disk size in GiB. Used by the UI to compute the minimum OS disk size for deployment.
-          format: int32
+        hostPoolType:
+          $ref: '#/components/schemas/HostPoolType'
       additionalProperties: false
-      description: 'Represents a looked-up Azure Managed Image (Microsoft.Compute/images) for the managed image picker.
+      description: 'Represents a discovered Azure Virtual Desktop host pool.
 
-        Extends the base image DTO with managed-image-specific properties needed by the UI.'
-    RegionMetadataDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/RegionMetadataDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
-    CloudSubscriptionDto:
+        Extends the base CloudResourceDto with host pool-specific properties.'
+    UpdateCloudSubscriptionRequest:
       required:
       - authType
-      - createdAt
       - credentials
-      - healthStatus
-      - id
-      - lastUpdated
-      - lifecycleState
       - name
       - provider
       - providerSubscriptionId
       type: object
       properties:
-        id:
-          type: string
-          description: Unique identifier for the subscription.
-          format: uuid
         name:
+          maxLength: 64
+          minLength: 3
           type: string
           description: User-friendly name for the subscription.
         provider:
           $ref: '#/components/schemas/CloudProvider'
         providerSubscriptionId:
+          minLength: 1
           type: string
           description: 'Cloud Provider assigned unique identifier for the top-level resource boundary.
 
@@ -6546,196 +6785,50 @@ components:
           type: object
           additionalProperties:
             type: string
-          description: 'Gets or sets the credentials used to authenticate with the cloud provider.
-
-            Note: Sensitive credential fields are automatically masked in API responses for security.
-
-            Only non-sensitive metadata fields (e.g., TenantId, ClientId) are shown in clear text.'
-        lifecycleState:
-          $ref: '#/components/schemas/SubscriptionLifecycleState'
-        healthStatus:
-          $ref: '#/components/schemas/SubscriptionHealthStatus'
-        healthStatusMessage:
-          type:
-          - string
-          - 'null'
-          description: 'Human-readable message describing the current subscription health status.
-
-            Examples: "All checks passed", "Invalid credentials", "Secret expires in 21 days".
-
-            Null if status hasn''t been computed yet.
-
-            Use the GET /subscriptions/{id}/status endpoint for detailed verification information.'
-        createdAt:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          description: Timestamp of the last update or validation.
-          format: date-time
+          description: Credentials used to authenticate with the cloud provider.
       additionalProperties: false
-      description: Response DTO representing a cloud subscription (Azure Subscription, AWS Account, GCP Project).
-    LookedUpManagedImageDtoPagedResultDto:
+      description: Request model for updating an existing subscription.
+    ComputeQuotaDto:
       required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
+      - currentUsage
+      - displayName
+      - limit
+      - name
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/LookedUpManagedImageDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
+        name:
+          type: string
+          description: 'Quota name identifier.
 
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
+            For vCPU family quotas, matches ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.Family (e.g., "standardDSv3Family").
 
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
+            Special entries: "cores" for total regional vCPUs, "virtualMachines" for VM count.'
+        displayName:
+          type: string
+          description: Human-readable display name (e.g., "Standard DSv3 Family vCPUs", "Total Regional vCPUs").
+        currentUsage:
+          type: integer
+          description: 'Current usage count for this quota entry.
 
-            May be null if the data source does not support total count queries.'
-          format: int32
+            Units depend on the quota type (vCPUs for family/core quotas, count for VM/disk quotas).'
+          format: int64
+        limit:
+          type: integer
+          description: 'Maximum allowed value for this quota entry in the subscription/region.
+
+            Deployment will fail if (CurrentUsage + required units) exceeds this value.
+
+            Units match CurrentUsage.'
+          format: int64
       additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
-    LookedUpVirtualMachineDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/LookedUpVirtualMachineDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
-    SubscriptionLifecycleState:
+      description: "Represents a compute quota usage entry for a subscription region.\nIncludes vCPU family quotas, total regional vCPU quota, and other compute resource quotas\n(e.g., VM count, disk count) as returned by the Azure Compute Usage API.\n            \nFor VM deployment pre-validation, cross-reference vCPU entries with ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto:\nmatch ControlUp.Foundry.Api.Dtos.Cloud.ComputeQuotaDto.Name against ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.Family to check family quota,\nand compare ControlUp.Foundry.Api.Dtos.Cloud.VmSizeDto.Cores against (ControlUp.Foundry.Api.Dtos.Cloud.ComputeQuotaDto.Limit - ControlUp.Foundry.Api.Dtos.Cloud.ComputeQuotaDto.CurrentUsage)\nto determine if a VM can be deployed. Also check the \"cores\" entry for total regional vCPU quota."
+    VerificationStepStatus:
       enum:
-      - draft
-      - active
-      - deleting
-      - deleted
+      - success
+      - warning
+      - failure
       type: string
-      description: 'Lifecycle state of a cloud subscription.
-
-        Represents the subscription''s position in the wizard/management workflow.'
-    CloudResourceIdsByTypeDto:
-      required:
-      - ids
-      - type
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/DiscoverableResourceType'
-        ids:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Set of specific resource IDs to import for this resource type.
-      additionalProperties: false
-      description: Represents a collection of resource IDs for a specific resource type.
-    DiskSizeDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/DiskSizeDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
+      description: Discrete states a verification step can finish in.
   securitySchemes:
     BearerAuth:
       type: http

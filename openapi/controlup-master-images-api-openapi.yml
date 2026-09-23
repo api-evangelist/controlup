@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -1003,6 +1003,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: postCloudMasterImagesDeployFromGallery
+      x-operation-id-source: derived
   /cloud/master-images/deploy-from-marketplace:
     post:
       tags:
@@ -1118,6 +1120,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: postCloudMasterImagesDeployFromMarketplace
+      x-operation-id-source: derived
   /cloud/master-images/deploy-from-managed-image:
     post:
       tags:
@@ -1191,6 +1195,8 @@ paths:
       security:
       - BearerAuth: []
       - CookieAuth: []
+      operationId: postCloudMasterImagesDeployFromManagedImage
+      x-operation-id-source: derived
   /cloud/master-images/{masterImageId}:
     delete:
       tags:
@@ -1997,50 +2003,24 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    MasterImageVersionStatus:
+    OsFamily:
       enum:
-      - replicating
-      - deleting
-      - available
-      - failed
+      - windows10MultiSession
+      - windows10Enterprise
+      - windows11MultiSession
+      - windows11Enterprise
+      - windowsServer2016
+      - windowsServer2019
+      - windowsServer2022
+      - windowsServer2025
       type: string
-      description: Lifecycle status for a published Master Image version
-    MasterImagePublishCleanupPlanDto:
-      required:
-      - masterImageId
-      - masterImageName
-      - masterImageVersionId
-      - resources
-      - versionName
-      - warnings
-      type: object
-      properties:
-        masterImageId:
-          type: string
-          description: Master Image identifier.
-          format: uuid
-        masterImageVersionId:
-          type: string
-          description: Master Image version identifier.
-          format: uuid
-        masterImageName:
-          type: string
-          description: Master Image display name.
-        versionName:
-          type: string
-          description: Version name.
-        resources:
-          type: array
-          items:
-            $ref: '#/components/schemas/MasterImageDecommissionResourceDto'
-          description: Temporary publish artifacts Foundry can clean up.
-        warnings:
-          type: array
-          items:
-            type: string
-          description: Non-fatal warnings encountered while building the plan.
-      additionalProperties: false
-      description: Master Image publish artifact cleanup plan response.
+      description: 'Operating system family for AVD-supported Master Images.
+
+        Used for AVD Agent logic and image classification.
+
+        Only OS families supported by Azure Virtual Desktop are included.
+
+        Reference: https://learn.microsoft.com/en-us/azure/virtual-desktop/prerequisites#operating-systems-and-licenses'
     MasterImageVersionDtoPagedResultDto:
       required:
       - count
@@ -2086,21 +2066,217 @@ components:
       description: 'Generic paginated response wrapper for API endpoints.
 
         Supports traditional page-based navigation with forward/backward capability.'
-    MasterImageVersionOperationStateDto:
+    ErrorResponse:
       required:
-      - actionAvailability
-      - activeOperations
+      - status
+      - title
+      - traceId
       type: object
       properties:
-        activeOperations:
-          type: array
-          items:
-            $ref: '#/components/schemas/MasterImageOperationDto'
-          description: Active operations currently associated with this version.
-        actionAvailability:
-          $ref: '#/components/schemas/MasterImageVersionActionAvailabilityDto'
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
       additionalProperties: false
-      description: Operation state and action availability for a Master Image version.
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    MasterImageDecommissionResourceType:
+      enum:
+      - virtualMachine
+      - networkInterface
+      - managedDisk
+      - galleryImageDefinition
+      - galleryImageVersion
+      - managedImage
+      - marketplaceImage
+      - subnet
+      - virtualNetwork
+      - resourceGroup
+      - gallery
+      - snapshot
+      type: string
+      description: Azure resource category shown in a Master Image decommission plan.
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+    MasterImageSourceType:
+      enum:
+      - promotedVm
+      - deployedFromGallery
+      - deployedFromMarketplace
+      - deployedFromManagedImage
+      type: string
+      description: 'How a Master Image was onboarded into Foundry.
+
+        Determines the original import path used to create this managed image.'
+    DeployFromManagedImageResponse:
+      required:
+      - job
+      - masterImage
+      type: object
+      properties:
+        masterImage:
+          $ref: '#/components/schemas/MasterImageDto'
+        job:
+          $ref: '#/components/schemas/JobCreatedDto'
+      additionalProperties: false
+      description: 'Response returned when a Deploy from Managed Image operation is initiated.
+
+        Contains the created Master Image record and the background job tracking info.'
+    MasterImageActionType:
+      enum:
+      - start
+      - stop
+      type: string
+      description: Types of actions that can be performed on a master image.
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    VmSecurityType:
+      enum:
+      - trustedLaunch
+      - standard
+      - confidentialVM
+      type: string
+      description: Security profile for Azure VMs.
+    MasterImageDecommissionResourceDto:
+      required:
+      - decommissionAction
+      - existenceStatus
+      - ownership
+      - reason
+      - resourceType
+      type: object
+      properties:
+        resourceType:
+          $ref: '#/components/schemas/MasterImageDecommissionResourceType'
+        resourceId:
+          type:
+          - string
+          - 'null'
+          description: ARM resource ID when available.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Display name derived from the resource ID or source metadata.
+        ownership:
+          $ref: '#/components/schemas/MasterImageResourceOwnership'
+        decommissionAction:
+          $ref: '#/components/schemas/MasterImageDecommissionAction'
+        reason:
+          type: string
+          description: Human-readable reason for the action.
+        existenceStatus:
+          $ref: '#/components/schemas/MasterImageResourceExistenceStatus'
+        portalUrl:
+          type:
+          - string
+          - 'null'
+          description: Portal deep link when available.
+      additionalProperties: false
+      description: Resource entry in a Master Image decommission plan.
     MarketplaceImageDto:
       required:
       - diskControllerTypes
@@ -2143,14 +2319,305 @@ components:
           description: Azure Marketplace version.
       additionalProperties: false
       description: Describes a curated Azure Marketplace OS image available for Master Image deployment.
-    VmSecurityType:
+    MasterImageResourceOwnership:
       enum:
-      - trustedLaunch
-      - standard
-      - confidentialVM
+      - foundryCreated
+      - customerOrShared
+      - sourceInput
+      - unknown
       type: string
-      description: Security profile for Azure VMs.
-    DeployFromGalleryResponse:
+      description: Ownership classification for a resource referenced by a Master Image.
+    MasterImageStatus:
+      enum:
+      - importing
+      - ready
+      - publishing
+      - deploying
+      - deprovisioning
+      - error
+      type: string
+      description: 'Lifecycle status of a Foundry-managed Master Image.
+
+        Tracks the image''s current operational state in the management workflow.'
+    MasterImageActionAvailabilityItemDto:
+      required:
+      - isAllowed
+      type: object
+      properties:
+        isAllowed:
+          type: boolean
+          description: Whether the action is currently allowed.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: Human-readable reason when the action is not currently allowed.
+      additionalProperties: false
+      description: Availability of a single Master Image action.
+    MasterImageDecommissionPlanDto:
+      required:
+      - masterImageId
+      - masterImageName
+      - resources
+      - sourceType
+      - warnings
+      type: object
+      properties:
+        masterImageId:
+          type: string
+          description: Master Image identifier.
+          format: uuid
+        masterImageName:
+          type: string
+          description: Master Image display name.
+        sourceType:
+          $ref: '#/components/schemas/MasterImageSourceType'
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageDecommissionResourceDto'
+          description: Resources Foundry will delete, retain, or show as context.
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Non-fatal warnings encountered while building the plan.
+      additionalProperties: false
+      description: Master Image decommission plan response.
+    DeployFromGalleryRequest:
+      required:
+      - adminPassword
+      - adminUsername
+      - galleryImageVersionId
+      - masterName
+      - osDiskType
+      - osFamily
+      - osVersion
+      - subnetId
+      - subscriptionId
+      - vmSize
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          description: Internal subscription ID that owns the source gallery and target resources.
+          format: uuid
+        galleryImageVersionId:
+          minLength: 1
+          type: string
+          description: Source gallery image version to deploy from (full ARM resource ID).
+        region:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure region for the new Master VM deployment.
+        subnetId:
+          minLength: 1
+          type: string
+          description: Target subnet for the new VM (full ARM resource ID, identifies both the VNet and subnet).
+        vmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target VM size.
+        osDiskType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target OS disk storage account type.
+        osDiskSizeGiB:
+          maximum: 4095
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Optional OS disk size in GiB. Defaults to the source image version''s disk size when omitted.
+
+            Cannot be less than the source image disk size.'
+          format: int32
+        galleryResourceId:
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Compute Gallery for the new Image Definition (full ARM resource ID).
+        resourceGroupName:
+          maxLength: 90
+          minLength: 0
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Resource Group for the new VM.
+        masterName:
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
+          type: string
+          description: Name for the new Master VM, display name, and ACG Image Definition name.
+        osFamily:
+          $ref: '#/components/schemas/OsFamily'
+        osVersion:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: OS version/build string.
+        adminUsername:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Local administrator username for the new VM.
+        adminPassword:
+          maxLength: 123
+          minLength: 12
+          type: string
+          description: Local administrator password for the new VM.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the Master Image.
+        publisher:
+          maxLength: 128
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition publisher override.
+        offer:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition offer override.
+        sku:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition SKU override.
+      additionalProperties: false
+      description: Request to deploy a new Master Image VM from an Azure Compute Gallery image version.
+    DeployFromManagedImageRequest:
+      required:
+      - adminPassword
+      - adminUsername
+      - managedImageId
+      - masterName
+      - osDiskType
+      - osFamily
+      - osVersion
+      - subnetId
+      - subscriptionId
+      - vmSize
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          description: Internal subscription ID that owns the source managed image and target resources.
+          format: uuid
+        managedImageId:
+          minLength: 1
+          type: string
+          description: Source Azure Managed Image to deploy from (full ARM resource ID).
+        subnetId:
+          minLength: 1
+          type: string
+          description: Target subnet for the new VM (full ARM resource ID, identifies both the VNet and subnet).
+        vmSize:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target VM size.
+        osDiskType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Target OS disk storage account type.
+        osDiskSizeGiB:
+          maximum: 4095
+          minimum: 128
+          type:
+          - integer
+          - 'null'
+          description: 'Optional OS disk size in GiB.
+
+            The effective minimum is max(128, source image disk size) and is enforced server-side.
+
+            Defaults to max(128, source image disk size) when omitted.'
+          format: int32
+        galleryResourceId:
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Compute Gallery for the new Image Definition (full ARM resource ID).
+        resourceGroupName:
+          maxLength: 90
+          minLength: 0
+          pattern: ^[-\w.()]{0,89}[-\w()]$
+          type:
+          - string
+          - 'null'
+          description: Optional target Azure Resource Group for the new VM.
+        masterName:
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
+          type: string
+          description: Name for the new Master VM, display name, and ACG Image Definition name.
+        osFamily:
+          $ref: '#/components/schemas/OsFamily'
+        osVersion:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: OS version/build string.
+        adminUsername:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: Local administrator username for the new VM.
+        adminPassword:
+          maxLength: 123
+          minLength: 12
+          type: string
+          description: Local administrator password for the new VM.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the Master Image.
+        publisher:
+          maxLength: 128
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition publisher override.
+        offer:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition offer override.
+        sku:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition SKU override.
+      additionalProperties: false
+      description: Request to deploy a new Master Image VM from an Azure Managed Image.
+    DeployFromMarketplaceResponse:
       required:
       - job
       - masterImage
@@ -2161,9 +2628,231 @@ components:
         job:
           $ref: '#/components/schemas/JobCreatedDto'
       additionalProperties: false
-      description: 'Response returned when a Deploy from Gallery operation is initiated.
+      description: 'Response returned when a Deploy from Marketplace operation is initiated.
 
         Contains the created Master Image record and the background job tracking info.'
+    MasterImagePowerState:
+      enum:
+      - unknown
+      - deallocated
+      - stopped
+      - starting
+      - running
+      - stopping
+      - deallocating
+      type: string
+      description: 'Power state of the underlying Azure VM for a Master Image.
+
+        Tracked separately from ControlUp.Foundry.Domain.Enums.Cloud.MasterImageStatus because a Master Image
+
+        can be Status=Ready while PowerState=Running (user is editing via RDP).'
+    MasterImageDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
+    MasterImageOperationDto:
+      required:
+      - action
+      - createdAt
+      - jobId
+      - jobType
+      - status
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Background job identifier for the active operation.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: User-facing action name associated with the job.
+        status:
+          $ref: '#/components/schemas/JobStatus'
+        currentStep:
+          type:
+          - string
+          - 'null'
+          description: Current job step, when reported by the processor.
+        createdAt:
+          type: string
+          description: Timestamp when the job was created (UTC).
+          format: date-time
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the job started processing (UTC), when available.
+          format: date-time
+      additionalProperties: false
+      description: Active operation associated with a Master Image.
+    MasterImageDecommissionAction:
+      enum:
+      - delete
+      - retain
+      - unknown
+      - alreadyMissing
+      type: string
+      description: Action Foundry will take for a resource in a Master Image decommission plan.
+    MasterImagePublishCleanupPlanDto:
+      required:
+      - masterImageId
+      - masterImageName
+      - masterImageVersionId
+      - resources
+      - versionName
+      - warnings
+      type: object
+      properties:
+        masterImageId:
+          type: string
+          description: Master Image identifier.
+          format: uuid
+        masterImageVersionId:
+          type: string
+          description: Master Image version identifier.
+          format: uuid
+        masterImageName:
+          type: string
+          description: Master Image display name.
+        versionName:
+          type: string
+          description: Version name.
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageDecommissionResourceDto'
+          description: Temporary publish artifacts Foundry can clean up.
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Non-fatal warnings encountered while building the plan.
+      additionalProperties: false
+      description: Master Image publish artifact cleanup plan response.
+    MasterImageActionRequest:
+      required:
+      - actionType
+      type: object
+      properties:
+        actionType:
+          $ref: '#/components/schemas/MasterImageActionType'
+      additionalProperties: false
+      description: Request to execute an action on a master image.
+    PublishMasterImageRequest:
+      required:
+      - targetRegions
+      - version
+      type: object
+      properties:
+        version:
+          minLength: 1
+          pattern: ^\d+\.\d+\.\d+$
+          type: string
+          description: 'Semantic version for the new image version (e.g., "1.0.0").
+
+            Must follow major.minor.patch format.'
+        updateAvdAgent:
+          type: boolean
+          description: 'Whether to run the AVD Agent Update script before sysprep.
+
+            When true, stops AVD services, clears registry keys, and removes blocking AppX packages.
+
+            Defaults to true when omitted.'
+          default: true
+        runSxsStackUpdate:
+          type: boolean
+          description: 'Whether to run the SXS Stack Update script before sysprep.
+
+            Defaults to false when omitted.'
+          default: false
+        targetRegions:
+          minItems: 1
+          type: array
+          items:
+            type: string
+          description: 'Target Azure regions for image version replication.
+
+            At least one region must be specified.'
+      additionalProperties: false
+      description: Request DTO for publishing a Master Image (sysprep + capture to ACG).
+    PublishMasterImageResponse:
+      required:
+      - job
+      - version
+      type: object
+      properties:
+        version:
+          $ref: '#/components/schemas/MasterImageVersionDto'
+        job:
+          $ref: '#/components/schemas/JobCreatedDto'
+      additionalProperties: false
+      description: 'Response returned when a Publish operation is initiated.
+
+        Contains the created Master Image version record and the background job tracking info.'
+    MasterImageActionAvailabilityDto:
+      required:
+      - delete
+      - downloadRdp
+      - publish
+      - start
+      - stop
+      type: object
+      properties:
+        start:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        stop:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        publish:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        delete:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        downloadRdp:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+      additionalProperties: false
+      description: Server-computed availability of Master Image actions.
     MasterImageDto:
       required:
       - createdAt
@@ -2343,144 +3032,99 @@ components:
           format: date-time
       additionalProperties: false
       description: Response DTO for a managed Master Image shown in the Image Library.
-    MasterImageDecommissionPlanDto:
-      required:
-      - masterImageId
-      - masterImageName
-      - resources
-      - sourceType
-      - warnings
-      type: object
-      properties:
-        masterImageId:
-          type: string
-          description: Master Image identifier.
-          format: uuid
-        masterImageName:
-          type: string
-          description: Master Image display name.
-        sourceType:
-          $ref: '#/components/schemas/MasterImageSourceType'
-        resources:
-          type: array
-          items:
-            $ref: '#/components/schemas/MasterImageDecommissionResourceDto'
-          description: Resources Foundry will delete, retain, or show as context.
-        warnings:
-          type: array
-          items:
-            type: string
-          description: Non-fatal warnings encountered while building the plan.
-      additionalProperties: false
-      description: Master Image decommission plan response.
-    MasterImageVersionActionAvailabilityDto:
-      required:
-      - cleanupPublishArtifacts
-      - deleteVersion
-      - retryPublish
-      type: object
-      properties:
-        retryPublish:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
-        cleanupPublishArtifacts:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
-        deleteVersion:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
-      additionalProperties: false
-      description: Server-computed availability of Master Image version actions.
-    JobType:
+    MasterImageVersionStatus:
       enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
+      - replicating
+      - deleting
+      - available
+      - failed
       type: string
-      description: 'Defines the types of background jobs supported by the system.
-
-        Each job type is processed by a specific worker and has its own parameter structure.'
-    OsFamilyDto:
+      description: Lifecycle status for a published Master Image version
+    MasterImageOperationStateDto:
       required:
-      - displayName
-      - value
+      - actionAvailability
       type: object
       properties:
-        value:
-          $ref: '#/components/schemas/OsFamily'
-        displayName:
-          type: string
-          description: Human-readable display name for the OS family.
+        activeOperation:
+          $ref: '#/components/schemas/MasterImageOperationDto'
+        actionAvailability:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityDto'
       additionalProperties: false
-      description: Describes a supported OS family for Master Images.
-    MasterImageOperationDto:
+      description: Operation state and action availability for a Master Image.
+    PromoteMasterImageRequest:
       required:
-      - action
-      - createdAt
-      - jobId
-      - jobType
-      - status
+      - name
+      - osFamily
+      - osVersion
+      - subscriptionId
+      - vmResourceId
       type: object
       properties:
-        jobId:
+        subscriptionId:
           type: string
-          description: Background job identifier for the active operation.
+          description: Internal subscription ID that contains the VM.
           format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
+        vmResourceId:
+          minLength: 1
           type: string
-          description: User-facing action name associated with the job.
-        status:
-          $ref: '#/components/schemas/JobStatus'
-        currentStep:
+          description: Full Azure ARM resource ID of the VM to import.
+        galleryResourceId:
           type:
           - string
           - 'null'
-          description: Current job step, when reported by the processor.
-        createdAt:
+          description: Optional ARM resource ID of an existing Azure Compute Gallery.
+        name:
+          maxLength: 128
+          minLength: 1
           type: string
-          description: Timestamp when the job was created (UTC).
-          format: date-time
-        startedAt:
+          description: User-provided name for the Image Library.
+        description:
+          maxLength: 500
+          minLength: 0
           type:
           - string
           - 'null'
-          description: Timestamp when the job started processing (UTC), when available.
-          format: date-time
+          description: Optional description.
+        osFamily:
+          $ref: '#/components/schemas/OsFamily'
+        osVersion:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: OS version/build string (e.g., "23H2", "22H2", "LTSC").
+        publisher:
+          maxLength: 128
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition publisher override. Defaults to "ControlUp".
+        offer:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition offer override. Defaults to slugified OsFamily (e.g., "windows-11-multisession").
+        sku:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional Image Definition SKU override. Defaults to slugified Name.
       additionalProperties: false
-      description: Active operation associated with a Master Image.
-    MasterImagePowerState:
+      description: 'Request to promote (import) an existing Azure VM as a managed Master Image.
+
+        Azure-derived fields (region, generation) are resolved server-side from the VM resource ID.'
+    MasterImageResourceExistenceStatus:
       enum:
       - unknown
-      - deallocated
-      - stopped
-      - starting
-      - running
-      - stopping
-      - deallocating
+      - exists
+      - missing
+      - notChecked
       type: string
-      description: 'Power state of the underlying Azure VM for a Master Image.
-
-        Tracked separately from ControlUp.Foundry.Domain.Enums.Cloud.MasterImageStatus because a Master Image
-
-        can be Status=Ready while PowerState=Running (user is editing via RDP).'
+      description: Azure existence state for a resource shown in a Master Image cleanup or decommission plan.
     DeployFromMarketplaceRequest:
       required:
       - adminPassword
@@ -2595,404 +3239,17 @@ components:
           description: Optional Image Definition SKU override.
       additionalProperties: false
       description: Request to deploy a new Master Image VM from a curated Azure Marketplace OS image.
-    MasterImageDecommissionAction:
+    JobStatus:
       enum:
-      - delete
-      - retain
-      - unknown
-      - alreadyMissing
+      - queued
+      - inProgress
+      - completed
+      - failed
+      - cancelled
       type: string
-      description: Action Foundry will take for a resource in a Master Image decommission plan.
-    PromoteMasterImageRequest:
-      required:
-      - name
-      - osFamily
-      - osVersion
-      - subscriptionId
-      - vmResourceId
-      type: object
-      properties:
-        subscriptionId:
-          type: string
-          description: Internal subscription ID that contains the VM.
-          format: uuid
-        vmResourceId:
-          minLength: 1
-          type: string
-          description: Full Azure ARM resource ID of the VM to import.
-        galleryResourceId:
-          type:
-          - string
-          - 'null'
-          description: Optional ARM resource ID of an existing Azure Compute Gallery.
-        name:
-          maxLength: 128
-          minLength: 1
-          type: string
-          description: User-provided name for the Image Library.
-        description:
-          maxLength: 500
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional description.
-        osFamily:
-          $ref: '#/components/schemas/OsFamily'
-        osVersion:
-          maxLength: 20
-          minLength: 1
-          type: string
-          description: OS version/build string (e.g., "23H2", "22H2", "LTSC").
-        publisher:
-          maxLength: 128
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition publisher override. Defaults to "ControlUp".
-        offer:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition offer override. Defaults to slugified OsFamily (e.g., "windows-11-multisession").
-        sku:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition SKU override. Defaults to slugified Name.
-      additionalProperties: false
-      description: 'Request to promote (import) an existing Azure VM as a managed Master Image.
+      description: 'Generic status enum for all background jobs.
 
-        Azure-derived fields (region, generation) are resolved server-side from the VM resource ID.'
-    ErrorResponse:
-      required:
-      - status
-      - title
-      - traceId
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the problem type.
-        title:
-          type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          description: The HTTP status code.
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the specific occurrence of the problem.
-        errors:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: 'Dictionary of field-specific validation errors (only present for validation failures).
-
-            Key is the field name, value is an array of error messages for that field.'
-        traceId:
-          type: string
-          description: Request ID (cu-request-id) for tracking and debugging purposes.
-      additionalProperties: false
-      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
-
-        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    DeployFromManagedImageResponse:
-      required:
-      - job
-      - masterImage
-      type: object
-      properties:
-        masterImage:
-          $ref: '#/components/schemas/MasterImageDto'
-        job:
-          $ref: '#/components/schemas/JobCreatedDto'
-      additionalProperties: false
-      description: 'Response returned when a Deploy from Managed Image operation is initiated.
-
-        Contains the created Master Image record and the background job tracking info.'
-    PublishMasterImageRequest:
-      required:
-      - targetRegions
-      - version
-      type: object
-      properties:
-        version:
-          minLength: 1
-          pattern: ^\d+\.\d+\.\d+$
-          type: string
-          description: 'Semantic version for the new image version (e.g., "1.0.0").
-
-            Must follow major.minor.patch format.'
-        updateAvdAgent:
-          type: boolean
-          description: 'Whether to run the AVD Agent Update script before sysprep.
-
-            When true, stops AVD services, clears registry keys, and removes blocking AppX packages.
-
-            Defaults to true when omitted.'
-          default: true
-        runSxsStackUpdate:
-          type: boolean
-          description: 'Whether to run the SXS Stack Update script before sysprep.
-
-            Defaults to false when omitted.'
-          default: false
-        targetRegions:
-          minItems: 1
-          type: array
-          items:
-            type: string
-          description: 'Target Azure regions for image version replication.
-
-            At least one region must be specified.'
-      additionalProperties: false
-      description: Request DTO for publishing a Master Image (sysprep + capture to ACG).
-    MasterImageDecommissionResourceType:
-      enum:
-      - virtualMachine
-      - networkInterface
-      - managedDisk
-      - galleryImageDefinition
-      - galleryImageVersion
-      - managedImage
-      - marketplaceImage
-      - subnet
-      - virtualNetwork
-      - resourceGroup
-      - gallery
-      - snapshot
-      type: string
-      description: Azure resource category shown in a Master Image decommission plan.
-    DeployFromManagedImageRequest:
-      required:
-      - adminPassword
-      - adminUsername
-      - managedImageId
-      - masterName
-      - osDiskType
-      - osFamily
-      - osVersion
-      - subnetId
-      - subscriptionId
-      - vmSize
-      type: object
-      properties:
-        subscriptionId:
-          type: string
-          description: Internal subscription ID that owns the source managed image and target resources.
-          format: uuid
-        managedImageId:
-          minLength: 1
-          type: string
-          description: Source Azure Managed Image to deploy from (full ARM resource ID).
-        subnetId:
-          minLength: 1
-          type: string
-          description: Target subnet for the new VM (full ARM resource ID, identifies both the VNet and subnet).
-        vmSize:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Target VM size.
-        osDiskType:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Target OS disk storage account type.
-        osDiskSizeGiB:
-          maximum: 4095
-          minimum: 128
-          type:
-          - integer
-          - 'null'
-          description: 'Optional OS disk size in GiB.
-
-            The effective minimum is max(128, source image disk size) and is enforced server-side.
-
-            Defaults to max(128, source image disk size) when omitted.'
-          format: int32
-        galleryResourceId:
-          type:
-          - string
-          - 'null'
-          description: Optional target Azure Compute Gallery for the new Image Definition (full ARM resource ID).
-        resourceGroupName:
-          maxLength: 90
-          minLength: 0
-          pattern: ^[-\w.()]{0,89}[-\w()]$
-          type:
-          - string
-          - 'null'
-          description: Optional target Azure Resource Group for the new VM.
-        masterName:
-          maxLength: 64
-          minLength: 1
-          pattern: ^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
-          type: string
-          description: Name for the new Master VM, display name, and ACG Image Definition name.
-        osFamily:
-          $ref: '#/components/schemas/OsFamily'
-        osVersion:
-          maxLength: 20
-          minLength: 1
-          type: string
-          description: OS version/build string.
-        adminUsername:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Local administrator username for the new VM.
-        adminPassword:
-          maxLength: 123
-          minLength: 12
-          type: string
-          description: Local administrator password for the new VM.
-        description:
-          maxLength: 500
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional description for the Master Image.
-        publisher:
-          maxLength: 128
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition publisher override.
-        offer:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition offer override.
-        sku:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition SKU override.
-      additionalProperties: false
-      description: Request to deploy a new Master Image VM from an Azure Managed Image.
-    PublishMasterImageResponse:
-      required:
-      - job
-      - version
-      type: object
-      properties:
-        version:
-          $ref: '#/components/schemas/MasterImageVersionDto'
-        job:
-          $ref: '#/components/schemas/JobCreatedDto'
-      additionalProperties: false
-      description: 'Response returned when a Publish operation is initiated.
-
-        Contains the created Master Image version record and the background job tracking info.'
-    MasterImageDecommissionResourceDto:
-      required:
-      - decommissionAction
-      - existenceStatus
-      - ownership
-      - reason
-      - resourceType
-      type: object
-      properties:
-        resourceType:
-          $ref: '#/components/schemas/MasterImageDecommissionResourceType'
-        resourceId:
-          type:
-          - string
-          - 'null'
-          description: ARM resource ID when available.
-        name:
-          type:
-          - string
-          - 'null'
-          description: Display name derived from the resource ID or source metadata.
-        ownership:
-          $ref: '#/components/schemas/MasterImageResourceOwnership'
-        decommissionAction:
-          $ref: '#/components/schemas/MasterImageDecommissionAction'
-        reason:
-          type: string
-          description: Human-readable reason for the action.
-        existenceStatus:
-          $ref: '#/components/schemas/MasterImageResourceExistenceStatus'
-        portalUrl:
-          type:
-          - string
-          - 'null'
-          description: Portal deep link when available.
-      additionalProperties: false
-      description: Resource entry in a Master Image decommission plan.
-    MasterImageDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/MasterImageDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
+        Represents the lifecycle states common to all job types.'
     MasterImageVersionDto:
       required:
       - canRetryPublish
@@ -3048,276 +3305,22 @@ components:
           format: date-time
       additionalProperties: false
       description: Response DTO for a Master Image published version record.
-    JobStatus:
-      enum:
-      - queued
-      - inProgress
-      - completed
-      - failed
-      - cancelled
-      type: string
-      description: 'Generic status enum for all background jobs.
-
-        Represents the lifecycle states common to all job types.'
-    MasterImageResourceExistenceStatus:
-      enum:
-      - unknown
-      - exists
-      - missing
-      - notChecked
-      type: string
-      description: Azure existence state for a resource shown in a Master Image cleanup or decommission plan.
-    MasterImageActionType:
-      enum:
-      - start
-      - stop
-      type: string
-      description: Types of actions that can be performed on a master image.
-    MasterImageActionAvailabilityDto:
-      required:
-      - delete
-      - downloadRdp
-      - publish
-      - start
-      - stop
-      type: object
-      properties:
-        start:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
-        stop:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
-        publish:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
-        delete:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
-        downloadRdp:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
-      additionalProperties: false
-      description: Server-computed availability of Master Image actions.
-    DeployFromGalleryRequest:
-      required:
-      - adminPassword
-      - adminUsername
-      - galleryImageVersionId
-      - masterName
-      - osDiskType
-      - osFamily
-      - osVersion
-      - subnetId
-      - subscriptionId
-      - vmSize
-      type: object
-      properties:
-        subscriptionId:
-          type: string
-          description: Internal subscription ID that owns the source gallery and target resources.
-          format: uuid
-        galleryImageVersionId:
-          minLength: 1
-          type: string
-          description: Source gallery image version to deploy from (full ARM resource ID).
-        region:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional target Azure region for the new Master VM deployment.
-        subnetId:
-          minLength: 1
-          type: string
-          description: Target subnet for the new VM (full ARM resource ID, identifies both the VNet and subnet).
-        vmSize:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Target VM size.
-        osDiskType:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Target OS disk storage account type.
-        osDiskSizeGiB:
-          maximum: 4095
-          minimum: 1
-          type:
-          - integer
-          - 'null'
-          description: 'Optional OS disk size in GiB. Defaults to the source image version''s disk size when omitted.
-
-            Cannot be less than the source image disk size.'
-          format: int32
-        galleryResourceId:
-          type:
-          - string
-          - 'null'
-          description: Optional target Azure Compute Gallery for the new Image Definition (full ARM resource ID).
-        resourceGroupName:
-          maxLength: 90
-          minLength: 0
-          pattern: ^[-\w.()]{0,89}[-\w()]$
-          type:
-          - string
-          - 'null'
-          description: Optional target Azure Resource Group for the new VM.
-        masterName:
-          maxLength: 64
-          minLength: 1
-          pattern: ^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$
-          type: string
-          description: Name for the new Master VM, display name, and ACG Image Definition name.
-        osFamily:
-          $ref: '#/components/schemas/OsFamily'
-        osVersion:
-          maxLength: 20
-          minLength: 1
-          type: string
-          description: OS version/build string.
-        adminUsername:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Local administrator username for the new VM.
-        adminPassword:
-          maxLength: 123
-          minLength: 12
-          type: string
-          description: Local administrator password for the new VM.
-        description:
-          maxLength: 500
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional description for the Master Image.
-        publisher:
-          maxLength: 128
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition publisher override.
-        offer:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition offer override.
-        sku:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional Image Definition SKU override.
-      additionalProperties: false
-      description: Request to deploy a new Master Image VM from an Azure Compute Gallery image version.
-    JobCreatedDto:
-      required:
-      - action
-      - id
-      - jobType
-      - jobUrl
-      - logsUrl
-      - message
-      - statusUrl
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the created job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
-
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
-
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        jobUrl:
-          type: string
-          description: URL to get full job details (includes parameters).
-        statusUrl:
-          type: string
-          description: 'URL to poll for lightweight status updates (no parameters).
-
-            Poll this endpoint every 2-5 seconds while job is running.'
-        logsUrl:
-          type: string
-          description: URL to get job logs in JSON format.
-        message:
-          type: string
-          description: 'Human-readable message about job creation.
-
-            Example: "Import job created successfully. Poll statusUrl for progress updates."'
-      additionalProperties: false
-      description: 'Lightweight response returned when a job is created.
-
-        Contains only essential information needed to track the job.
-
-        Use the statusUrl to poll for updates and jobUrl to get full details.'
-    MasterImageStatus:
-      enum:
-      - importing
-      - ready
-      - publishing
-      - deploying
-      - deprovisioning
-      - error
-      type: string
-      description: 'Lifecycle status of a Foundry-managed Master Image.
-
-        Tracks the image''s current operational state in the management workflow.'
-    MasterImageOperationStateDto:
+    MasterImageVersionOperationStateDto:
       required:
       - actionAvailability
+      - activeOperations
       type: object
       properties:
-        activeOperation:
-          $ref: '#/components/schemas/MasterImageOperationDto'
+        activeOperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/MasterImageOperationDto'
+          description: Active operations currently associated with this version.
         actionAvailability:
-          $ref: '#/components/schemas/MasterImageActionAvailabilityDto'
+          $ref: '#/components/schemas/MasterImageVersionActionAvailabilityDto'
       additionalProperties: false
-      description: Operation state and action availability for a Master Image.
-    OsFamily:
-      enum:
-      - windows10MultiSession
-      - windows10Enterprise
-      - windows11MultiSession
-      - windows11Enterprise
-      - windowsServer2016
-      - windowsServer2019
-      - windowsServer2022
-      - windowsServer2025
-      type: string
-      description: 'Operating system family for AVD-supported Master Images.
-
-        Used for AVD Agent logic and image classification.
-
-        Only OS families supported by Azure Virtual Desktop are included.
-
-        Reference: https://learn.microsoft.com/en-us/azure/virtual-desktop/prerequisites#operating-systems-and-licenses'
-    MasterImageActionRequest:
-      required:
-      - actionType
-      type: object
-      properties:
-        actionType:
-          $ref: '#/components/schemas/MasterImageActionType'
-      additionalProperties: false
-      description: Request to execute an action on a master image.
-    MasterImageResourceOwnership:
-      enum:
-      - foundryCreated
-      - customerOrShared
-      - sourceInput
-      - unknown
-      type: string
-      description: Ownership classification for a resource referenced by a Master Image.
-    DeployFromMarketplaceResponse:
+      description: Operation state and action availability for a Master Image version.
+    DeployFromGalleryResponse:
       required:
       - job
       - masterImage
@@ -3328,34 +3331,37 @@ components:
         job:
           $ref: '#/components/schemas/JobCreatedDto'
       additionalProperties: false
-      description: 'Response returned when a Deploy from Marketplace operation is initiated.
+      description: 'Response returned when a Deploy from Gallery operation is initiated.
 
         Contains the created Master Image record and the background job tracking info.'
-    MasterImageActionAvailabilityItemDto:
+    MasterImageVersionActionAvailabilityDto:
       required:
-      - isAllowed
+      - cleanupPublishArtifacts
+      - deleteVersion
+      - retryPublish
       type: object
       properties:
-        isAllowed:
-          type: boolean
-          description: Whether the action is currently allowed.
-        reason:
-          type:
-          - string
-          - 'null'
-          description: Human-readable reason when the action is not currently allowed.
+        retryPublish:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        cleanupPublishArtifacts:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
+        deleteVersion:
+          $ref: '#/components/schemas/MasterImageActionAvailabilityItemDto'
       additionalProperties: false
-      description: Availability of a single Master Image action.
-    MasterImageSourceType:
-      enum:
-      - promotedVm
-      - deployedFromGallery
-      - deployedFromMarketplace
-      - deployedFromManagedImage
-      type: string
-      description: 'How a Master Image was onboarded into Foundry.
-
-        Determines the original import path used to create this managed image.'
+      description: Server-computed availability of Master Image version actions.
+    OsFamilyDto:
+      required:
+      - displayName
+      - value
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/OsFamily'
+        displayName:
+          type: string
+          description: Human-readable display name for the OS family.
+      additionalProperties: false
+      description: Describes a supported OS family for Master Images.
   securitySchemes:
     BearerAuth:
       type: http

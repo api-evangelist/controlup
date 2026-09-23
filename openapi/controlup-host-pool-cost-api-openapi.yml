@@ -12,7 +12,7 @@ info:
 
     **1. API Key (Bearer Token)** - Recommended for programmatic access
 
-    - Create an API key at [API Key Management](https://support.controlup.com/docs/create-an-api-key)
+    - Create an API key at API Key Management
 
     - Include in requests: `Authorization: Bearer YOUR_API_KEY`
 
@@ -540,6 +540,39 @@ components:
       description: 'Per-session-host cost breakdown within a host pool for a date range.
 
         Includes disk tier optimization flags for Premium SSD waste detection.'
+    SavingsDataPoint:
+      required:
+      - actualComputeCost
+      - actualTotalCost
+      - computeSavings
+      - date
+      - projectedComputeCost
+      type: object
+      properties:
+        date:
+          type: string
+          description: Date of the savings record.
+          format: date-time
+        projectedComputeCost:
+          type: number
+          description: Projected compute cost for this date (maxHosts x effectiveRate x 24).
+          format: double
+        actualComputeCost:
+          type: number
+          description: Actual compute cost for this date (excludes disk and network).
+          format: double
+        actualTotalCost:
+          type: number
+          description: Actual total cost for this date (compute + disk + network).
+          format: double
+        computeSavings:
+          type: number
+          description: 'Compute savings for this date: projectedComputeCost - actualComputeCost.'
+          format: double
+      additionalProperties: false
+      description: 'Single data point in a savings time series.
+
+        All savings fields compare compute costs only (disk/network are unaffected by autoscale).'
     ErrorResponse:
       required:
       - status
@@ -587,230 +620,6 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    CostDataPoint:
-      required:
-      - computeCost
-      - date
-      - diskCost
-      - networkCost
-      - otherCost
-      - totalCost
-      type: object
-      properties:
-        date:
-          type: string
-          description: Date of the cost record.
-          format: date-time
-        totalCost:
-          type: number
-          description: Total cost for this date in USD.
-          format: double
-        computeCost:
-          type: number
-          description: Compute cost for this date in USD.
-          format: double
-        diskCost:
-          type: number
-          description: Disk cost for this date in USD.
-          format: double
-        networkCost:
-          type: number
-          description: Network cost for this date in USD.
-          format: double
-        otherCost:
-          type: number
-          description: Unmapped meter category cost for this date in USD. Clamped to zero.
-          format: double
-      additionalProperties: false
-      description: Single data point in a cost time series.
-    SessionHostCostResultPagedResult:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionHostCostResult'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: The current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
-
-        Supports traditional page-based pagination with skip/take semantics.'
-    HostPoolCostResult:
-      required:
-      - activeUsers
-      - computeCost
-      - diskCost
-      - networkCost
-      - otherCost
-      - periodEnd
-      - periodStart
-      - premiumTierSessionHosts
-      - totalCost
-      - totalSessionHosts
-      - trend
-      type: object
-      properties:
-        totalCost:
-          type: number
-          description: Total cost in USD for the requested period.
-          format: double
-        computeCost:
-          type: number
-          description: Compute (VM) cost in USD for the period.
-          format: double
-        diskCost:
-          type: number
-          description: OS disk storage cost in USD for the period.
-          format: double
-        networkCost:
-          type: number
-          description: Network cost in USD for the period.
-          format: double
-        otherCost:
-          type: number
-          description: 'Cost from unmapped Azure meter categories (e.g., Bandwidth) not classified as Compute/Disk/Network.
-
-            Derived: max(0, totalCost - computeCost - diskCost - networkCost). Clamped to zero
-
-            because rounding differences between Azure''s daily totals and category breakdown queries
-
-            can produce small negative residuals.'
-          format: double
-        totalSessionHosts:
-          type: integer
-          description: Number of distinct session hosts with cost data in the period.
-          format: int32
-        premiumTierSessionHosts:
-          type: integer
-          description: 'Number of session hosts using Premium SSD OS disks.
-
-            Based on the latest OsDiskType recorded in cost data for the period.'
-          format: int32
-        diskCostPerSessionHost:
-          type:
-          - number
-          - 'null'
-          description: 'OS disk cost per session host: diskCost / totalSessionHosts.
-
-            Null when no session hosts have cost data in the period.'
-          format: double
-        activeUsers:
-          type: integer
-          description: Number of unique users with at least one session during the period.
-          format: int32
-        costPerActiveUser:
-          type:
-          - number
-          - 'null'
-          description: 'Average cost per active user: totalCost / activeUsers.
-
-            Null when no active users exist in the period.'
-          format: double
-        periodStart:
-          type: string
-          description: Start of the cost period (inclusive).
-          format: date-time
-        periodEnd:
-          type: string
-          description: End of the cost period (inclusive).
-          format: date-time
-        previousPeriodTotalCost:
-          type:
-          - number
-          - 'null'
-          description: 'Total cost for the equivalent previous period (for comparison).
-
-            Null when no previous period data exists.'
-          format: double
-        costChangePercent:
-          type:
-          - number
-          - 'null'
-          description: 'Percentage change vs the previous equivalent period.
-
-            Positive = cost increased; negative = cost decreased.'
-          format: double
-        trend:
-          type: array
-          items:
-            $ref: '#/components/schemas/CostDataPoint'
-          description: Cost data points over time at the requested granularity.
-      additionalProperties: false
-      description: 'Cost breakdown and trend for a host pool over a date range.
-
-        Includes Compute/Disk/Network split, cost-per-user, and period comparison.'
-    SavingsDataPoint:
-      required:
-      - actualComputeCost
-      - actualTotalCost
-      - computeSavings
-      - date
-      - projectedComputeCost
-      type: object
-      properties:
-        date:
-          type: string
-          description: Date of the savings record.
-          format: date-time
-        projectedComputeCost:
-          type: number
-          description: Projected compute cost for this date (maxHosts x effectiveRate x 24).
-          format: double
-        actualComputeCost:
-          type: number
-          description: Actual compute cost for this date (excludes disk and network).
-          format: double
-        actualTotalCost:
-          type: number
-          description: Actual total cost for this date (compute + disk + network).
-          format: double
-        computeSavings:
-          type: number
-          description: 'Compute savings for this date: projectedComputeCost - actualComputeCost.'
-          format: double
-      additionalProperties: false
-      description: 'Single data point in a savings time series.
-
-        All savings fields compare compute costs only (disk/network are unaffected by autoscale).'
-    CostGranularity:
-      enum:
-      - daily
-      - monthly
-      type: string
-      description: Granularity for cost data aggregation in API responses.
     HostPoolSavingsResult:
       required:
       - actualComputeCost
@@ -921,6 +730,197 @@ components:
           description: Daily savings trend data points.
       additionalProperties: false
       description: 'Autoscale savings comparison: projected always-on compute cost vs actual spend.'
+    HostPoolCostResult:
+      required:
+      - activeUsers
+      - computeCost
+      - diskCost
+      - networkCost
+      - otherCost
+      - periodEnd
+      - periodStart
+      - premiumTierSessionHosts
+      - totalCost
+      - totalSessionHosts
+      - trend
+      type: object
+      properties:
+        totalCost:
+          type: number
+          description: Total cost in USD for the requested period.
+          format: double
+        computeCost:
+          type: number
+          description: Compute (VM) cost in USD for the period.
+          format: double
+        diskCost:
+          type: number
+          description: OS disk storage cost in USD for the period.
+          format: double
+        networkCost:
+          type: number
+          description: Network cost in USD for the period.
+          format: double
+        otherCost:
+          type: number
+          description: 'Cost from unmapped Azure meter categories (e.g., Bandwidth) not classified as Compute/Disk/Network.
+
+            Derived: max(0, totalCost - computeCost - diskCost - networkCost). Clamped to zero
+
+            because rounding differences between Azure''s daily totals and category breakdown queries
+
+            can produce small negative residuals.'
+          format: double
+        totalSessionHosts:
+          type: integer
+          description: Number of distinct session hosts with cost data in the period.
+          format: int32
+        premiumTierSessionHosts:
+          type: integer
+          description: 'Number of session hosts using Premium SSD OS disks.
+
+            Based on the latest OsDiskType recorded in cost data for the period.'
+          format: int32
+        diskCostPerSessionHost:
+          type:
+          - number
+          - 'null'
+          description: 'OS disk cost per session host: diskCost / totalSessionHosts.
+
+            Null when no session hosts have cost data in the period.'
+          format: double
+        activeUsers:
+          type: integer
+          description: Number of unique users with at least one session during the period.
+          format: int32
+        costPerActiveUser:
+          type:
+          - number
+          - 'null'
+          description: 'Average cost per active user: totalCost / activeUsers.
+
+            Null when no active users exist in the period.'
+          format: double
+        periodStart:
+          type: string
+          description: Start of the cost period (inclusive).
+          format: date-time
+        periodEnd:
+          type: string
+          description: End of the cost period (inclusive).
+          format: date-time
+        previousPeriodTotalCost:
+          type:
+          - number
+          - 'null'
+          description: 'Total cost for the equivalent previous period (for comparison).
+
+            Null when no previous period data exists.'
+          format: double
+        costChangePercent:
+          type:
+          - number
+          - 'null'
+          description: 'Percentage change vs the previous equivalent period.
+
+            Positive = cost increased; negative = cost decreased.'
+          format: double
+        trend:
+          type: array
+          items:
+            $ref: '#/components/schemas/CostDataPoint'
+          description: Cost data points over time at the requested granularity.
+      additionalProperties: false
+      description: 'Cost breakdown and trend for a host pool over a date range.
+
+        Includes Compute/Disk/Network split, cost-per-user, and period comparison.'
+    CostGranularity:
+      enum:
+      - daily
+      - monthly
+      type: string
+      description: Granularity for cost data aggregation in API responses.
+    SessionHostCostResultPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionHostCostResult'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    CostDataPoint:
+      required:
+      - computeCost
+      - date
+      - diskCost
+      - networkCost
+      - otherCost
+      - totalCost
+      type: object
+      properties:
+        date:
+          type: string
+          description: Date of the cost record.
+          format: date-time
+        totalCost:
+          type: number
+          description: Total cost for this date in USD.
+          format: double
+        computeCost:
+          type: number
+          description: Compute cost for this date in USD.
+          format: double
+        diskCost:
+          type: number
+          description: Disk cost for this date in USD.
+          format: double
+        networkCost:
+          type: number
+          description: Network cost for this date in USD.
+          format: double
+        otherCost:
+          type: number
+          description: Unmapped meter category cost for this date in USD. Clamped to zero.
+          format: double
+      additionalProperties: false
+      description: Single data point in a cost time series.
   securitySchemes:
     BearerAuth:
       type: http

@@ -18,7 +18,7 @@ paths:
       tags:
       - Machine
       summary: Get machine statistics
-      description: Returns historical information about machine resource consumption. Visit the <a href='https://support.controlup.com/docs/computer-statistics-report' target='_blank'>Machine Statistics Report</a> documentation for column descriptions and more details.
+      description: Returns historical information about machine resource consumption. Visit the Machine Statistics Report documentation for column descriptions and more details.
       operationId: getMachineStatsByMachine
       parameters:
       - name: grouping
@@ -163,7 +163,7 @@ paths:
       tags:
       - Machine
       summary: Get sizing recommendations for virtual environments
-      description: Returns sizing recommendations to optimize resource allocation for machines based on historical information. Visit the <a href='https://support.controlup.com/docs/sizing-recommendations-report' target='_blank'>Sizing Recommendations Report</a> documentation for more details.
+      description: Returns sizing recommendations to optimize resource allocation for machines based on historical information. Visit the Sizing Recommendations Report documentation for more details.
       operationId: getRecommendationVirtualization
       parameters:
       - name: activeSessionSizing
@@ -266,7 +266,7 @@ paths:
       tags:
       - Machine
       summary: Get sizing recommendation for machine for Azure environment
-      description: Returns sizing recommendations to optimize resource allocation for machines based on historical information. Visit the <a href='https://support.controlup.com/docs/sizing-recommendations-report' target='_blank'>Sizing Recommendations Report</a> documentation for more details.
+      description: Returns sizing recommendations to optimize resource allocation for machines based on historical information. Visit the Sizing Recommendations Report documentation for more details.
       operationId: getRecommendationAzure
       parameters:
       - name: license
@@ -553,7 +553,7 @@ paths:
       tags:
       - Machine
       summary: Get aggregated machine statistics
-      description: Returns aggregated machine metrics (avg/min/max/count) grouped by a single machine dimension such as folder, operating system, hypervisor platform, Azure region/VM size, or GPU architecture/model. Always returns machine_count (COUNT(DISTINCT computer_id)) plus one column per <metric>_<aggregation> combination. Visit the <a href='https://support.controlup.com/docs/computer-statistics-report' target='_blank'>Machine Statistics Report</a> documentation for column descriptions and more details.
+      description: Returns aggregated machine metrics (avg/min/max/count) grouped by a single machine dimension such as folder, operating system, hypervisor platform, Azure region/VM size, or GPU architecture/model. Always returns machine_count (COUNT(DISTINCT computer_id)) plus one column per _ combination. Visit the Machine Statistics Report documentation for column descriptions and more details.
       operationId: getMachinesAggregated
       parameters:
       - name: groupBy
@@ -790,112 +790,39 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
-    SizingRecommendationAzure:
+    SizingRecommendationVirtualization:
       type: object
       properties:
-        computerId:
+        computer_id:
           type: string
-        computerName:
+        computer_name:
           type: string
-        cpuAssigned:
+        cpu_assigned:
           type: integer
           format: int64
-        cpuSuggested:
+        cpu_suggested:
           type: integer
           format: int64
-        cpuRecommendation:
+        cpu_recommendation:
           type: integer
           format: int64
-        memoryAssigned:
+        cpu_recommendation_status:
           type: integer
           format: int64
-        memorySuggested:
+        memory_assigned:
           type: integer
           format: int64
-        memoryRecommendation:
+        memory_suggested:
           type: integer
           format: int64
-        azVmSizeAssigned:
-          type: string
-        azVmSizeSuggested:
-          type: string
-        azOsDiskSizeAssigned:
-          type: string
-        azOsDiskSizeSuggested:
-          type: string
-        totalCost:
-          type: string
-        totalSavingPercentage:
+        memory_recommendation:
           type: integer
           format: int64
-        totalPaygCost:
-          type: string
-        totalPaygSaving:
+        memory_recommendation_status:
           type: integer
           format: int64
-        totalSpotCost:
+        start_time:
           type: string
-        totalSpotSaving:
-          type: integer
-          format: int64
-        total1yCost:
-          type: string
-        total1ySaving:
-          type: integer
-          format: int64
-        total3yCost:
-          type: string
-        total3ySaving:
-          type: integer
-          format: int64
-        currency:
-          type: string
-    UserMetadata:
-      type: object
-      properties:
-        orgId:
-          type: string
-        infraGuid:
-          type: string
-        region:
-          type: string
-        userId:
-          type: string
-        total:
-          type: integer
-          format: int64
-        limitPerPage:
-          type: integer
-          format: int32
-        currentPageNumber:
-          type: integer
-          format: int32
-        currentPageSize:
-          type: integer
-          format: int32
-        remaining:
-          type: integer
-          format: int64
-        userEmail:
-          type: string
-        truncated:
-          type: boolean
-        truncationLimit:
-          type: integer
-          format: int32
-        timeFrom:
-          type: string
-        timeTo:
-          type: string
-    SizingRecommendationVirtualizationResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SizingRecommendationVirtualization'
     MachineAggregatedResponse:
       type: object
       properties:
@@ -905,7 +832,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MachineAggregatedResult'
-    MachineStatisticsByFolderResponse:
+    SizingRecommendationAzureResponse:
       type: object
       properties:
         metadata:
@@ -913,7 +840,193 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/MachineStatisticsByFolderResult'
+            $ref: '#/components/schemas/SizingRecommendationAzure'
+    MachineStatisticsByHostResult:
+      type: object
+      description: Machine statistics with grouping by host
+      properties:
+        organization_id:
+          type: integer
+          format: int64
+        entity_id:
+          type: string
+        host_name:
+          type: string
+        update_time:
+          type: string
+        cpu_count:
+          type: integer
+          format: int64
+        cpu_cores:
+          type: integer
+          format: int64
+        cpu_speed:
+          type: integer
+          format: int64
+        total_ram:
+          type: integer
+          format: int64
+        hypervisor_platform:
+          type: string
+        az_region:
+          type: string
+        az_subscription_id:
+          type: string
+        az_os_disk_sku_size:
+          type: string
+        az_disks_count:
+          type: integer
+          format: int64
+        az_total_disks_size_gb:
+          type: integer
+          format: int64
+        az_os_disk_size_gb:
+          type: string
+        uptime_in_sec:
+          type: integer
+          format: int64
+        cpu_avg:
+          type: integer
+          format: int64
+        memory_in_use_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_total_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        system_drive_free_space_avg:
+          type: integer
+          format: int64
+        disk_reads_per_sec_avg:
+          type: integer
+          format: int64
+        disk_writes_per_sec_avg:
+          type: integer
+          format: int64
+        disk_transfers_per_sec_avg:
+          type: integer
+          format: int64
+        network_received_mbit_per_sec_avg:
+          type: integer
+          format: int64
+        network_sent_mbit_per_sec_avg:
+          type: integer
+          format: int64
+        app_load_time_avg:
+          type: integer
+          format: int64
+        non_zero_avg_user_input_delay_avg:
+          type: integer
+          format: int64
+        non_zero_max_user_input_delay_avg:
+          type: integer
+          format: int64
+        avg_disk_queue_avg:
+          type: integer
+          format: int64
+        logon_duration_avg:
+          type: integer
+          format: int64
+        page_faults_per_sec_avg:
+          type: integer
+          format: int64
+        processes_count_avg:
+          type: integer
+          format: int64
+        avg_processor_queue_length_avg:
+          type: integer
+          format: int64
+        gpu_number_of_cores:
+          type: integer
+          format: int64
+        gpu_utilization_avg:
+          type: integer
+          format: int64
+        gpu_available_memory_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_size_avg:
+          type: integer
+          format: int64
+        gpu_frame_buffer_memory_utilization_avg:
+          type: integer
+          format: int64
+        gpu_memory_usage_avg:
+          type: integer
+          format: int64
+        gpu_decoder_usage_avg:
+          type: integer
+          format: int64
+        gpu_encoder_usage_avg:
+          type: integer
+          format: int64
+        pvs_device_free_space_on_write_cache_drive_avg:
+          type: integer
+          format: int64
+        pvs_ram_cache_usage_avg:
+          type: integer
+          format: int64
+        pvs_target_device_health:
+          type: integer
+          format: int64
+        pvs_device_write_cache_volume_size:
+          type: integer
+          format: int64
+        pvs_device_boot_retry_count_last:
+          type: integer
+          format: int64
+        pvs_device_boot_time_sec_last:
+          type: integer
+          format: int64
+        pvs_device_disk_type:
+          type: string
+        pvs_device_server_reconnect_count_last:
+          type: integer
+          format: int64
+        pvs_device_udp_retry_count_last:
+          type: integer
+          format: int64
+        total_sessions_avg:
+          type: integer
+          format: int64
+        active_sessions_avg:
+          type: integer
+          format: int64
+        user_sessions_count_avg:
+          type: integer
+          format: int64
+        idle_sessions_count_avg:
+          type: integer
+          format: int64
+        disconnected_sessions_avg:
+          type: integer
+          format: int64
+        other_sessions_count_avg:
+          type: integer
+          format: int64
+        ica_sessions_count_avg:
+          type: integer
+          format: int64
+        session_disconnect_rate_avg:
+          type: integer
+          format: int64
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
     MachineStatisticsByFolderResult:
       type: object
       description: Machine statistics with grouping by folder
@@ -1094,7 +1207,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Error'
-    SizingRecommendationAzureResponse:
+    MachineStatisticsByFolderResponse:
       type: object
       properties:
         metadata:
@@ -1102,244 +1215,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/SizingRecommendationAzure'
-    SizingRecommendationVirtualization:
-      type: object
-      properties:
-        computer_id:
-          type: string
-        computer_name:
-          type: string
-        cpu_assigned:
-          type: integer
-          format: int64
-        cpu_suggested:
-          type: integer
-          format: int64
-        cpu_recommendation:
-          type: integer
-          format: int64
-        cpu_recommendation_status:
-          type: integer
-          format: int64
-        memory_assigned:
-          type: integer
-          format: int64
-        memory_suggested:
-          type: integer
-          format: int64
-        memory_recommendation:
-          type: integer
-          format: int64
-        memory_recommendation_status:
-          type: integer
-          format: int64
-        start_time:
-          type: string
-    MachineStatisticsByHostResult:
-      type: object
-      description: Machine statistics with grouping by host
-      properties:
-        organization_id:
-          type: integer
-          format: int64
-        entity_id:
-          type: string
-        host_name:
-          type: string
-        update_time:
-          type: string
-        cpu_count:
-          type: integer
-          format: int64
-        cpu_cores:
-          type: integer
-          format: int64
-        cpu_speed:
-          type: integer
-          format: int64
-        total_ram:
-          type: integer
-          format: int64
-        hypervisor_platform:
-          type: string
-        az_region:
-          type: string
-        az_subscription_id:
-          type: string
-        az_os_disk_sku_size:
-          type: string
-        az_disks_count:
-          type: integer
-          format: int64
-        az_total_disks_size_gb:
-          type: integer
-          format: int64
-        az_os_disk_size_gb:
-          type: string
-        uptime_in_sec:
-          type: integer
-          format: int64
-        cpu_avg:
-          type: integer
-          format: int64
-        memory_in_use_avg:
-          type: integer
-          format: int64
-        disk_read_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        disk_write_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        disk_total_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        system_drive_free_space_avg:
-          type: integer
-          format: int64
-        disk_reads_per_sec_avg:
-          type: integer
-          format: int64
-        disk_writes_per_sec_avg:
-          type: integer
-          format: int64
-        disk_transfers_per_sec_avg:
-          type: integer
-          format: int64
-        network_received_mbit_per_sec_avg:
-          type: integer
-          format: int64
-        network_sent_mbit_per_sec_avg:
-          type: integer
-          format: int64
-        app_load_time_avg:
-          type: integer
-          format: int64
-        non_zero_avg_user_input_delay_avg:
-          type: integer
-          format: int64
-        non_zero_max_user_input_delay_avg:
-          type: integer
-          format: int64
-        avg_disk_queue_avg:
-          type: integer
-          format: int64
-        logon_duration_avg:
-          type: integer
-          format: int64
-        page_faults_per_sec_avg:
-          type: integer
-          format: int64
-        processes_count_avg:
-          type: integer
-          format: int64
-        avg_processor_queue_length_avg:
-          type: integer
-          format: int64
-        gpu_number_of_cores:
-          type: integer
-          format: int64
-        gpu_utilization_avg:
-          type: integer
-          format: int64
-        gpu_available_memory_avg:
-          type: integer
-          format: int64
-        gpu_frame_buffer_size_avg:
-          type: integer
-          format: int64
-        gpu_frame_buffer_memory_utilization_avg:
-          type: integer
-          format: int64
-        gpu_memory_usage_avg:
-          type: integer
-          format: int64
-        gpu_decoder_usage_avg:
-          type: integer
-          format: int64
-        gpu_encoder_usage_avg:
-          type: integer
-          format: int64
-        pvs_device_free_space_on_write_cache_drive_avg:
-          type: integer
-          format: int64
-        pvs_ram_cache_usage_avg:
-          type: integer
-          format: int64
-        pvs_target_device_health:
-          type: integer
-          format: int64
-        pvs_device_write_cache_volume_size:
-          type: integer
-          format: int64
-        pvs_device_boot_retry_count_last:
-          type: integer
-          format: int64
-        pvs_device_boot_time_sec_last:
-          type: integer
-          format: int64
-        pvs_device_disk_type:
-          type: string
-        pvs_device_server_reconnect_count_last:
-          type: integer
-          format: int64
-        pvs_device_udp_retry_count_last:
-          type: integer
-          format: int64
-        total_sessions_avg:
-          type: integer
-          format: int64
-        active_sessions_avg:
-          type: integer
-          format: int64
-        user_sessions_count_avg:
-          type: integer
-          format: int64
-        idle_sessions_count_avg:
-          type: integer
-          format: int64
-        disconnected_sessions_avg:
-          type: integer
-          format: int64
-        other_sessions_count_avg:
-          type: integer
-          format: int64
-        ica_sessions_count_avg:
-          type: integer
-          format: int64
-        session_disconnect_rate_avg:
-          type: integer
-          format: int64
-    MachineStatisticsByMachineResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MachineStatisticsByMachineResult'
-    MachineStatisticsByHostResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MachineStatisticsByHostResult'
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
+            $ref: '#/components/schemas/MachineStatisticsByFolderResult'
     MachineStatisticsByMachineResult:
       type: object
       description: Machine statistics with grouping by machine
@@ -1555,6 +1431,84 @@ components:
         session_disconnect_rate_avg:
           type: integer
           format: int64
+    SizingRecommendationVirtualizationResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SizingRecommendationVirtualization'
+    MachineStatisticsByHostResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineStatisticsByHostResult'
+    SizingRecommendationAzure:
+      type: object
+      properties:
+        computerId:
+          type: string
+        computerName:
+          type: string
+        cpuAssigned:
+          type: integer
+          format: int64
+        cpuSuggested:
+          type: integer
+          format: int64
+        cpuRecommendation:
+          type: integer
+          format: int64
+        memoryAssigned:
+          type: integer
+          format: int64
+        memorySuggested:
+          type: integer
+          format: int64
+        memoryRecommendation:
+          type: integer
+          format: int64
+        azVmSizeAssigned:
+          type: string
+        azVmSizeSuggested:
+          type: string
+        azOsDiskSizeAssigned:
+          type: string
+        azOsDiskSizeSuggested:
+          type: string
+        totalCost:
+          type: string
+        totalSavingPercentage:
+          type: integer
+          format: int64
+        totalPaygCost:
+          type: string
+        totalPaygSaving:
+          type: integer
+          format: int64
+        totalSpotCost:
+          type: string
+        totalSpotSaving:
+          type: integer
+          format: int64
+        total1yCost:
+          type: string
+        total1ySaving:
+          type: integer
+          format: int64
+        total3yCost:
+          type: string
+        total3ySaving:
+          type: integer
+          format: int64
+        currency:
+          type: string
     MachineAggregatedResult:
       type: object
       description: Aggregated machine statistics row. The exact set of fields returned depends on the requested groupBy, metrics and aggregations. Each request returns the group field, machine_count, and one column per <metric>_<aggregation> combination.
@@ -2081,6 +2035,52 @@ components:
         session_disconnect_rate_avg_count:
           type: integer
           format: int64
+    MachineStatisticsByMachineResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MachineStatisticsByMachineResult'
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
   securitySchemes:
     bearer-jwt:
       type: http
