@@ -351,35 +351,24 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
-    AppUsageAllResult:
+    AppUsageSingleResult:
       type: object
       properties:
-        application_name:
-          type: string
-        application_version:
-          type: string
-        peak_concurrency:
+        computer_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByComputer'
+        user_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByUser'
+        concurrent_instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConcurrentInstances'
+        unique_users:
           type: integer
           format: int32
-        unique_user_count:
-          type: integer
-          format: int32
-        update_time:
-          type: string
-          format: date-time
-    ConcurrentInstances:
-      type: object
-      properties:
-        process_name:
-          type: string
-        process_version:
-          type: string
-        peak_concurrency:
-          type: integer
-          format: int32
-        date_time:
-          type: string
-          format: date-time
     ByComputer:
       type: object
       properties:
@@ -395,17 +384,43 @@ components:
           type: string
         process_version:
           type: string
-    Error:
+    UserMetadata:
       type: object
       properties:
-        message:
+        orgId:
           type: string
-        errorCode:
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
           type: integer
           format: int32
-        statusCode:
+        currentPageNumber:
           type: integer
           format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
     ApplicationStatistics:
       type: object
       properties:
@@ -456,15 +471,6 @@ components:
         cpuPercentile:
           type: integer
           format: int64
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     ByUser:
       type: object
       properties:
@@ -483,40 +489,6 @@ components:
           format: date-time
         process_version:
           type: string
-    HistoricalSingleResponseAppUsageSingleResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          $ref: '#/components/schemas/AppUsageSingleResult'
-    AppStatsResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApplicationStatistics'
-    AppUsageSingleResult:
-      type: object
-      properties:
-        computer_grouping:
-          type: array
-          items:
-            $ref: '#/components/schemas/ByComputer'
-        user_grouping:
-          type: array
-          items:
-            $ref: '#/components/schemas/ByUser'
-        concurrent_instances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConcurrentInstances'
-        unique_users:
-          type: integer
-          format: int32
     HistoricalListResponseAppUsageAllResult:
       type: object
       properties:
@@ -526,43 +498,71 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AppUsageAllResult'
-    UserMetadata:
+    ConcurrentInstances:
       type: object
       properties:
-        orgId:
+        process_name:
           type: string
-        infraGuid:
+        process_version:
           type: string
-        region:
-          type: string
-        userId:
-          type: string
-        total:
-          type: integer
-          format: int64
-        limitPerPage:
+        peak_concurrency:
           type: integer
           format: int32
-        currentPageNumber:
+        date_time:
+          type: string
+          format: date-time
+    AppStatsResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationStatistics'
+    AppUsageAllResult:
+      type: object
+      properties:
+        application_name:
+          type: string
+        application_version:
+          type: string
+        peak_concurrency:
           type: integer
           format: int32
-        currentPageSize:
+        unique_user_count:
           type: integer
           format: int32
-        remaining:
-          type: integer
-          format: int64
-        userEmail:
+        update_time:
           type: string
-        truncated:
-          type: boolean
-        truncationLimit:
+          format: date-time
+    HistoricalSingleResponseAppUsageSingleResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          $ref: '#/components/schemas/AppUsageSingleResult'
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
           type: integer
           format: int32
-        timeFrom:
-          type: string
-        timeTo:
-          type: string
+        statusCode:
+          type: integer
+          format: int32
   securitySchemes:
     bearer-jwt:
       type: http

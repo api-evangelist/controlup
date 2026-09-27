@@ -329,164 +329,18 @@ paths:
           $ref: '#/components/responses/500'
 components:
   schemas:
-    recurringSurvey:
-      title: Recurring
-      allOf:
-      - $ref: '#/components/schemas/nameAndTemplateId'
-      - type: object
-        properties:
-          type:
-            description: The type of survey to publish.
-            type: string
-            enum:
-            - Recurring
-          status:
-            description: Set to `Scheduled` to publish the survey. Set to `Draft` to save the survey as a draft.
-            type: string
-            enum:
-            - Scheduled
-            - Draft
-          recurring_rule:
-            type: string
-            description: 'An [iCalendar Recurrence Rule (RRULE)](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) string determining how often the survey repeats and when it ends.
-
-
-              * Example of recurring survey with no end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO`
-
-              * Example of recurring survey with specified end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;UNTIL=2025-01-31T03:30:00.000Z`
-
-              * Example of recurring survey ending after a specific number of occurences: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=5`
-
-              '
-            example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO
-          retries_days_count:
-            description: The number of days after which a user will stop being reminded to complete the survey. You can set this from 0 to the number of days set in the `instance_duration_days` parameter.
-            type: integer
-          retries_interval:
-            description: The number of hours after a user dismisses the survey until they receive they receive another survey notification.
-            type: integer
-            minimum: 1
-            maximum: 24
-          instance_duration_days:
-            type: integer
-            description: Set how long the survey lasts and can be completed after each time it occurs. If the frequency specified in the `recurring_rule` is weekly, `instance_duration_days` can be from 1-6 days. If the frequency specified in the `recurring_rule` is monthly, `instance_duration` can be from 1-21 days.
-          start_date:
-            description: The starting date and time of the survey in ISO string format.
-            example: '2023-11-01T04:00:00.000Z'
-            type: string
-        required:
-        - type
-        - status
-        - recurring_rule
-        - retries_days_count
-        - retries_interval
-        - start_date
-        - instance_duration_days
-      - $ref: '#/components/schemas/commonToSingleAndRecurring'
-    commonToSingleAndRecurring:
+    nameAndTemplateId:
       type: object
       properties:
-        dates_type:
-          description: Sets whether the survey scheduling is based on each device's local time zone, or UTC. For example, if you want the survey to appear for each device at 9AM in each time zone, set to `Local`. If you want the survey to appear simultaneously for all devices regardless of their time zones, set to `UTC`.
+        name:
           type: string
-          enum:
-          - Local
-          - UTC
-        targeting_type:
-          description: "Sets how survey participants are targeted.\n * If you target `Users`, the survey appears for all users that sign in on a devices. **You must use `included_users` to specify which users to target**. By default the survey appears for the same user multiple times if they sign in from more than one device (you can change this with the `once_per_user` parameter). You might want to target users if more than one employee uses the same device.\n * If you target `Devices`, the survey appears only once for each device. **You must use `included_devices` to specify which devices to target**.\n"
+          description: Name of the survey
+        template_id:
           type: string
-          enum:
-          - Devices
-          - Users
-        once_per_user:
-          type: boolean
-          default: false
-          description: If `targeting_type` is set to `Users`, you can set this to `true` so that the survey can be completed by a certain user only once, even if they sign in from multiple devices.
-        targets_percentage:
-          description: The percentage of targeted users/devices to receive the survey. For example, if you set to 50, then 50% of all users/devices that meet your inclusion and exclusion rules receive the survey (randomly selected).
-          type: integer
-          minimum: 5
-          maximum: 100
-          default: 100
-        included_users:
-          description: Applicable and required only if `targeting_type` is set to `Users`. To target all users, set `all` to `true`. Otherwise, set `all` to `false` and use the `directory_services_groups` to target AD groups.
-          type: object
-          properties:
-            all:
-              description: Sets whether to target all users.
-              type: boolean
-            directory_services_groups:
-              description: An array of Active Directory groups to target.
-              type: array
-              items:
-                type: string
-        included_devices:
-          description: Applicable and required only if `targeting_type` is set to `Devices`. To target all devices, set `all` to `true`. Otherwise, set `all` to `false` and use the other parameters to specify device targets.
-          type: object
-          properties:
-            all:
-              description: Sets whether to target all devices.
-              type: boolean
-            directory_service_groups:
-              description: An array of Active Directory groups to target.
-              type: array
-              items:
-                type: string
-            devices:
-              description: Only applicable if `targeting_type` is set to `Devices`. An array of device names to target.
-              type: array
-              items:
-                type: string
-            groups:
-              description: An array of device groups to target.
-              type: array
-              items:
-                type: string
-            tags:
-              description: An array of device tags to target,
-              type: array
-              items:
-                type: string
-        excluded_devices:
-          description: Devices to exclude from receiving the survey.
-          type: object
-          properties:
-            directory_services_groups:
-              description: An array of Active Directory groups.
-              type: array
-              items:
-                type: string
-            devices:
-              description: An array of device names.
-              type: array
-              items:
-                type: string
-            groups:
-              description: An array of device groups.
-              type: array
-              items:
-                type: string
-            tags:
-              description: An array of device tags.
-              type: array
-              items:
-                type: string
-        excluded_users:
-          description: Users to exclude from receiving the survey.
-          type: object
-          properties:
-            directory_services_groups:
-              description: An array of Active Directory groups.
-              type: array
-              items:
-                type: string
-        is_identified:
-          description: Sets whether survey participant identities are recorded (non-anonymous).
-          type: boolean
-          default: false
+          description: ID of the template from which to create the survey.
       required:
-      - dates_type
-      - targeting_type
+      - name
+      - template_id
     SurveyResult:
       type: object
       properties:
@@ -719,6 +573,60 @@ components:
         _score:
           type: integer
           description: For internal use only.
+    recurringSurvey:
+      title: Recurring
+      allOf:
+      - $ref: '#/components/schemas/nameAndTemplateId'
+      - type: object
+        properties:
+          type:
+            description: The type of survey to publish.
+            type: string
+            enum:
+            - Recurring
+          status:
+            description: Set to `Scheduled` to publish the survey. Set to `Draft` to save the survey as a draft.
+            type: string
+            enum:
+            - Scheduled
+            - Draft
+          recurring_rule:
+            type: string
+            description: 'An [iCalendar Recurrence Rule (RRULE)](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) string determining how often the survey repeats and when it ends.
+
+
+              * Example of recurring survey with no end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO`
+
+              * Example of recurring survey with specified end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;UNTIL=2025-01-31T03:30:00.000Z`
+
+              * Example of recurring survey ending after a specific number of occurences: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=5`
+
+              '
+            example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO
+          retries_days_count:
+            description: The number of days after which a user will stop being reminded to complete the survey. You can set this from 0 to the number of days set in the `instance_duration_days` parameter.
+            type: integer
+          retries_interval:
+            description: The number of hours after a user dismisses the survey until they receive they receive another survey notification.
+            type: integer
+            minimum: 1
+            maximum: 24
+          instance_duration_days:
+            type: integer
+            description: Set how long the survey lasts and can be completed after each time it occurs. If the frequency specified in the `recurring_rule` is weekly, `instance_duration_days` can be from 1-6 days. If the frequency specified in the `recurring_rule` is monthly, `instance_duration` can be from 1-21 days.
+          start_date:
+            description: The starting date and time of the survey in ISO string format.
+            example: '2023-11-01T04:00:00.000Z'
+            type: string
+        required:
+        - type
+        - status
+        - recurring_rule
+        - retries_days_count
+        - retries_interval
+        - start_date
+        - instance_duration_days
+      - $ref: '#/components/schemas/commonToSingleAndRecurring'
     singleSurvey:
       title: Single
       allOf:
@@ -756,18 +664,110 @@ components:
         - start_date
         - expiration_date
       - $ref: '#/components/schemas/commonToSingleAndRecurring'
-    nameAndTemplateId:
+    commonToSingleAndRecurring:
       type: object
       properties:
-        name:
+        dates_type:
+          description: Sets whether the survey scheduling is based on each device's local time zone, or UTC. For example, if you want the survey to appear for each device at 9AM in each time zone, set to `Local`. If you want the survey to appear simultaneously for all devices regardless of their time zones, set to `UTC`.
           type: string
-          description: Name of the survey
-        template_id:
+          enum:
+          - Local
+          - UTC
+        targeting_type:
+          description: "Sets how survey participants are targeted.\n * If you target `Users`, the survey appears for all users that sign in on a devices. **You must use `included_users` to specify which users to target**. By default the survey appears for the same user multiple times if they sign in from more than one device (you can change this with the `once_per_user` parameter). You might want to target users if more than one employee uses the same device.\n * If you target `Devices`, the survey appears only once for each device. **You must use `included_devices` to specify which devices to target**.\n"
           type: string
-          description: ID of the template from which to create the survey.
+          enum:
+          - Devices
+          - Users
+        once_per_user:
+          type: boolean
+          default: false
+          description: If `targeting_type` is set to `Users`, you can set this to `true` so that the survey can be completed by a certain user only once, even if they sign in from multiple devices.
+        targets_percentage:
+          description: The percentage of targeted users/devices to receive the survey. For example, if you set to 50, then 50% of all users/devices that meet your inclusion and exclusion rules receive the survey (randomly selected).
+          type: integer
+          minimum: 5
+          maximum: 100
+          default: 100
+        included_users:
+          description: Applicable and required only if `targeting_type` is set to `Users`. To target all users, set `all` to `true`. Otherwise, set `all` to `false` and use the `directory_services_groups` to target AD groups.
+          type: object
+          properties:
+            all:
+              description: Sets whether to target all users.
+              type: boolean
+            directory_services_groups:
+              description: An array of Active Directory groups to target.
+              type: array
+              items:
+                type: string
+        included_devices:
+          description: Applicable and required only if `targeting_type` is set to `Devices`. To target all devices, set `all` to `true`. Otherwise, set `all` to `false` and use the other parameters to specify device targets.
+          type: object
+          properties:
+            all:
+              description: Sets whether to target all devices.
+              type: boolean
+            directory_service_groups:
+              description: An array of Active Directory groups to target.
+              type: array
+              items:
+                type: string
+            devices:
+              description: Only applicable if `targeting_type` is set to `Devices`. An array of device names to target.
+              type: array
+              items:
+                type: string
+            groups:
+              description: An array of device groups to target.
+              type: array
+              items:
+                type: string
+            tags:
+              description: An array of device tags to target,
+              type: array
+              items:
+                type: string
+        excluded_devices:
+          description: Devices to exclude from receiving the survey.
+          type: object
+          properties:
+            directory_services_groups:
+              description: An array of Active Directory groups.
+              type: array
+              items:
+                type: string
+            devices:
+              description: An array of device names.
+              type: array
+              items:
+                type: string
+            groups:
+              description: An array of device groups.
+              type: array
+              items:
+                type: string
+            tags:
+              description: An array of device tags.
+              type: array
+              items:
+                type: string
+        excluded_users:
+          description: Users to exclude from receiving the survey.
+          type: object
+          properties:
+            directory_services_groups:
+              description: An array of Active Directory groups.
+              type: array
+              items:
+                type: string
+        is_identified:
+          description: Sets whether survey participant identities are recorded (non-anonymous).
+          type: boolean
+          default: false
       required:
-      - name
-      - template_id
+      - dates_type
+      - targeting_type
   parameters:
     SorterField:
       name: sorters[0][field]

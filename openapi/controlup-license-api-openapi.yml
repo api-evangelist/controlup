@@ -100,6 +100,58 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    CapacityState:
+      enum:
+      - normal
+      - warning
+      - gracePeriod
+      - overCapacity
+      type: string
+      description: 'Represents the capacity utilization state of an organization
+
+        relative to its licensed concurrent user amount.'
+    LicenseDto:
+      required:
+      - capacityState
+      - expirationDate
+      - features
+      - licensedAmount
+      - startDate
+      - status
+      - type
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/LicenseStatus'
+        type:
+          $ref: '#/components/schemas/LicenseType'
+        startDate:
+          type: string
+          description: The license start date.
+          format: date-time
+        expirationDate:
+          type: string
+          description: The license expiration date.
+          format: date-time
+        features:
+          type: array
+          items:
+            type: string
+          description: Available features included in this license.
+        licensedAmount:
+          type: integer
+          description: Maximum number of concurrent users allowed by this license.
+          format: int32
+        currentUsage:
+          type:
+          - integer
+          - 'null'
+          description: 'Current usage: the rolling maximum of daily peak concurrent sessions.'
+          format: int32
+        capacityState:
+          $ref: '#/components/schemas/CapacityState'
+      additionalProperties: false
+      description: Data Transfer Object for license information.
     ErrorResponse:
       required:
       - status
@@ -147,6 +199,12 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    LicenseStatus:
+      enum:
+      - unknown
+      - active
+      type: string
+      description: Represents the status of a license.
     LicenseType:
       enum:
       - unknown
@@ -154,64 +212,6 @@ components:
       - trial
       type: string
       description: Represents the type of license an organization holds.
-    LicenseStatus:
-      enum:
-      - unknown
-      - active
-      type: string
-      description: Represents the status of a license.
-    LicenseDto:
-      required:
-      - capacityState
-      - expirationDate
-      - features
-      - licensedAmount
-      - startDate
-      - status
-      - type
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/LicenseStatus'
-        type:
-          $ref: '#/components/schemas/LicenseType'
-        startDate:
-          type: string
-          description: The license start date.
-          format: date-time
-        expirationDate:
-          type: string
-          description: The license expiration date.
-          format: date-time
-        features:
-          type: array
-          items:
-            type: string
-          description: Available features included in this license.
-        licensedAmount:
-          type: integer
-          description: Maximum number of concurrent users allowed by this license.
-          format: int32
-        currentUsage:
-          type:
-          - integer
-          - 'null'
-          description: 'Current usage: the rolling maximum of daily peak concurrent sessions.'
-          format: int32
-        capacityState:
-          $ref: '#/components/schemas/CapacityState'
-      additionalProperties: false
-      description: Data Transfer Object for license information.
-    CapacityState:
-      enum:
-      - normal
-      - warning
-      - gracePeriod
-      - overCapacity
-      type: string
-      description: 'Represents the capacity utilization state of an organization
-
-        relative to its licensed concurrent user amount.'
   securitySchemes:
     BearerAuth:
       type: http

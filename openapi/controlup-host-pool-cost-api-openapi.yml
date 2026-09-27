@@ -446,180 +446,42 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    SessionHostCostResult:
+    CostDataPoint:
       required:
       - computeCost
+      - date
       - diskCost
-      - diskTier
-      - hostName
-      - isDeleted
       - networkCost
       - otherCost
-      - premiumSsdFlag
-      - resourceId
-      - sessionHostId
       - totalCost
-      - vmSku
-      type: object
-      properties:
-        sessionHostId:
-          type: string
-          description: Foundry session host identifier (FK to session host entity).
-          format: uuid
-        resourceId:
-          type: string
-          description: Azure session host ARM resource ID (path containing /sessionHosts/).
-        costRowOsDiskType:
-          type:
-          - string
-          - 'null'
-          description: 'Raw OS disk storage account type from persisted cost rows (e.g. Premium_LRS).
-
-            Used for enrichment; cleared before serialization so it is omitted from API output when null.'
-        hostName:
-          type: string
-          description: Display name of the session host.
-        isDeleted:
-          type: boolean
-          description: 'True when there is no matching row in `az_session_host` under the org-scoped live-inventory view
-
-            (session hosts removed in Azure carry `is_deleted` and are filtered out). Historical cost rows still appear.'
-        powerState:
-          type:
-          - string
-          - 'null'
-          description: Current VM power state. Null for deleted hosts.
-        vmSku:
-          type: string
-          description: Azure VM SKU (e.g., Standard_D4s_v5).
-        diskTier:
-          type: string
-          description: 'OS disk tier: StandardHDD, StandardSSD, or PremiumSSD.
-
-            Last known value for deleted hosts.'
-        computeCost:
-          type: number
-          description: Compute cost for the period in USD.
-          format: double
-        diskCost:
-          type: number
-          description: OS disk cost for the period in USD.
-          format: double
-        networkCost:
-          type: number
-          description: Network cost for the period in USD.
-          format: double
-        totalCost:
-          type: number
-          description: Total cost for the period in USD.
-          format: double
-        otherCost:
-          type: number
-          description: 'Cost from unmapped Azure meter categories not classified as Compute/Disk/Network.
-
-            Derived: max(0, totalCost - computeCost - diskCost - networkCost). Clamped to zero.'
-          format: double
-        premiumSsdFlag:
-          type: boolean
-          description: 'Optimization flag: host is deallocated >= 3 consecutive days on Premium SSD.'
-        consecutiveDaysDeallocated:
-          type:
-          - integer
-          - 'null'
-          description: Number of consecutive days the host has been deallocated. Null for deleted hosts.
-          format: int32
-        savingEstimate:
-          type:
-          - number
-          - 'null'
-          description: 'Estimated monthly saving from downgrading disk tier.
-
-            Only populated when PremiumSsdFlag is true.'
-          format: double
-      additionalProperties: false
-      description: 'Per-session-host cost breakdown within a host pool for a date range.
-
-        Includes disk tier optimization flags for Premium SSD waste detection.'
-    SavingsDataPoint:
-      required:
-      - actualComputeCost
-      - actualTotalCost
-      - computeSavings
-      - date
-      - projectedComputeCost
       type: object
       properties:
         date:
           type: string
-          description: Date of the savings record.
+          description: Date of the cost record.
           format: date-time
-        projectedComputeCost:
+        totalCost:
           type: number
-          description: Projected compute cost for this date (maxHosts x effectiveRate x 24).
+          description: Total cost for this date in USD.
           format: double
-        actualComputeCost:
+        computeCost:
           type: number
-          description: Actual compute cost for this date (excludes disk and network).
+          description: Compute cost for this date in USD.
           format: double
-        actualTotalCost:
+        diskCost:
           type: number
-          description: Actual total cost for this date (compute + disk + network).
+          description: Disk cost for this date in USD.
           format: double
-        computeSavings:
+        networkCost:
           type: number
-          description: 'Compute savings for this date: projectedComputeCost - actualComputeCost.'
+          description: Network cost for this date in USD.
+          format: double
+        otherCost:
+          type: number
+          description: Unmapped meter category cost for this date in USD. Clamped to zero.
           format: double
       additionalProperties: false
-      description: 'Single data point in a savings time series.
-
-        All savings fields compare compute costs only (disk/network are unaffected by autoscale).'
-    ErrorResponse:
-      required:
-      - status
-      - title
-      - traceId
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the problem type.
-        title:
-          type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          description: The HTTP status code.
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the specific occurrence of the problem.
-        errors:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: 'Dictionary of field-specific validation errors (only present for validation failures).
-
-            Key is the field name, value is an array of error messages for that field.'
-        traceId:
-          type: string
-          description: Request ID (cu-request-id) for tracking and debugging purposes.
-      additionalProperties: false
-      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
-
-        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+      description: Single data point in a cost time series.
     HostPoolSavingsResult:
       required:
       - actualComputeCost
@@ -834,12 +696,6 @@ components:
       description: 'Cost breakdown and trend for a host pool over a date range.
 
         Includes Compute/Disk/Network split, cost-per-user, and period comparison.'
-    CostGranularity:
-      enum:
-      - daily
-      - monthly
-      type: string
-      description: Granularity for cost data aggregation in API responses.
     SessionHostCostResultPagedResult:
       required:
       - count
@@ -885,42 +741,186 @@ components:
       description: 'Represents a paginated result set with metadata for navigation.
 
         Supports traditional page-based pagination with skip/take semantics.'
-    CostDataPoint:
+    SavingsDataPoint:
       required:
-      - computeCost
+      - actualComputeCost
+      - actualTotalCost
+      - computeSavings
       - date
-      - diskCost
-      - networkCost
-      - otherCost
-      - totalCost
+      - projectedComputeCost
       type: object
       properties:
         date:
           type: string
-          description: Date of the cost record.
+          description: Date of the savings record.
           format: date-time
-        totalCost:
+        projectedComputeCost:
           type: number
-          description: Total cost for this date in USD.
+          description: Projected compute cost for this date (maxHosts x effectiveRate x 24).
           format: double
+        actualComputeCost:
+          type: number
+          description: Actual compute cost for this date (excludes disk and network).
+          format: double
+        actualTotalCost:
+          type: number
+          description: Actual total cost for this date (compute + disk + network).
+          format: double
+        computeSavings:
+          type: number
+          description: 'Compute savings for this date: projectedComputeCost - actualComputeCost.'
+          format: double
+      additionalProperties: false
+      description: 'Single data point in a savings time series.
+
+        All savings fields compare compute costs only (disk/network are unaffected by autoscale).'
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    SessionHostCostResult:
+      required:
+      - computeCost
+      - diskCost
+      - diskTier
+      - hostName
+      - isDeleted
+      - networkCost
+      - otherCost
+      - premiumSsdFlag
+      - resourceId
+      - sessionHostId
+      - totalCost
+      - vmSku
+      type: object
+      properties:
+        sessionHostId:
+          type: string
+          description: Foundry session host identifier (FK to session host entity).
+          format: uuid
+        resourceId:
+          type: string
+          description: Azure session host ARM resource ID (path containing /sessionHosts/).
+        costRowOsDiskType:
+          type:
+          - string
+          - 'null'
+          description: 'Raw OS disk storage account type from persisted cost rows (e.g. Premium_LRS).
+
+            Used for enrichment; cleared before serialization so it is omitted from API output when null.'
+        hostName:
+          type: string
+          description: Display name of the session host.
+        isDeleted:
+          type: boolean
+          description: 'True when there is no matching row in `az_session_host` under the org-scoped live-inventory view
+
+            (session hosts removed in Azure carry `is_deleted` and are filtered out). Historical cost rows still appear.'
+        powerState:
+          type:
+          - string
+          - 'null'
+          description: Current VM power state. Null for deleted hosts.
+        vmSku:
+          type: string
+          description: Azure VM SKU (e.g., Standard_D4s_v5).
+        diskTier:
+          type: string
+          description: 'OS disk tier: StandardHDD, StandardSSD, or PremiumSSD.
+
+            Last known value for deleted hosts.'
         computeCost:
           type: number
-          description: Compute cost for this date in USD.
+          description: Compute cost for the period in USD.
           format: double
         diskCost:
           type: number
-          description: Disk cost for this date in USD.
+          description: OS disk cost for the period in USD.
           format: double
         networkCost:
           type: number
-          description: Network cost for this date in USD.
+          description: Network cost for the period in USD.
+          format: double
+        totalCost:
+          type: number
+          description: Total cost for the period in USD.
           format: double
         otherCost:
           type: number
-          description: Unmapped meter category cost for this date in USD. Clamped to zero.
+          description: 'Cost from unmapped Azure meter categories not classified as Compute/Disk/Network.
+
+            Derived: max(0, totalCost - computeCost - diskCost - networkCost). Clamped to zero.'
+          format: double
+        premiumSsdFlag:
+          type: boolean
+          description: 'Optimization flag: host is deallocated >= 3 consecutive days on Premium SSD.'
+        consecutiveDaysDeallocated:
+          type:
+          - integer
+          - 'null'
+          description: Number of consecutive days the host has been deallocated. Null for deleted hosts.
+          format: int32
+        savingEstimate:
+          type:
+          - number
+          - 'null'
+          description: 'Estimated monthly saving from downgrading disk tier.
+
+            Only populated when PremiumSsdFlag is true.'
           format: double
       additionalProperties: false
-      description: Single data point in a cost time series.
+      description: 'Per-session-host cost breakdown within a host pool for a date range.
+
+        Includes disk tier optimization flags for Premium SSD waste detection.'
+    CostGranularity:
+      enum:
+      - daily
+      - monthly
+      type: string
+      description: Granularity for cost data aggregation in API responses.
   securitySchemes:
     BearerAuth:
       type: http

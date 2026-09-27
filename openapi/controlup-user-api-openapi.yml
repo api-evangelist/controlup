@@ -136,59 +136,6 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
-    UserActivityResult:
-      type: object
-      properties:
-        user_name:
-          type: string
-        user_account:
-          type: string
-        user_id:
-          type: string
-        activity_statuses:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActivityStatus'
-    ActivityStatus:
-      type: object
-      properties:
-        start:
-          type: string
-          format: date-time
-        end:
-          type: string
-          format: date-time
-        activity_status:
-          type: string
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    HistoricalListResponseUserActivityResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserActivityResult'
     UserMetadata:
       type: object
       properties:
@@ -226,6 +173,59 @@ components:
           type: string
         timeTo:
           type: string
+    HistoricalListResponseUserActivityResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserActivityResult'
+    UserActivityResult:
+      type: object
+      properties:
+        user_name:
+          type: string
+        user_account:
+          type: string
+        user_id:
+          type: string
+        activity_statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityStatus'
+    ActivityStatus:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        activity_status:
+          type: string
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
   securitySchemes:
     bearer-jwt:
       type: http

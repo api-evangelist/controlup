@@ -374,43 +374,6 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    StaticConfigDto:
-      required:
-      - createAdditionalHostsIfNeeded
-      - hostsToPowerOn
-      type: object
-      properties:
-        hostsToPowerOn:
-          maximum: 2147483647
-          minimum: 0
-          type: integer
-          description: Number of hosts to keep powered on.
-          format: int32
-        createAdditionalHostsIfNeeded:
-          type: boolean
-          description: Whether to create additional hosts if not enough exist in the pool.
-      additionalProperties: false
-      description: Static provisioning configuration.
-    DayOfWeek:
-      enum:
-      - sunday
-      - monday
-      - tuesday
-      - wednesday
-      - thursday
-      - friday
-      - saturday
-      type: string
-      description: Day of the week, Sunday through Saturday.
-    UserExperienceDto:
-      required:
-      - notifications
-      type: object
-      properties:
-        notifications:
-          $ref: '#/components/schemas/NotificationSettingsDto'
-      additionalProperties: false
-      description: User experience settings for scaling operations.
     ElasticConfigDto:
       required:
       - burstBatchSize
@@ -444,6 +407,29 @@ components:
           $ref: '#/components/schemas/ElasticPerformanceDto'
       additionalProperties: false
       description: Elastic provisioning configuration.
+    ScalingStrategyDto:
+      required:
+      - provisioningMode
+      - smartMinimums
+      type: object
+      properties:
+        provisioningMode:
+          $ref: '#/components/schemas/ProvisioningMode'
+        staticConfig:
+          $ref: '#/components/schemas/StaticConfigDto'
+        elasticConfig:
+          $ref: '#/components/schemas/ElasticConfigDto'
+        smartMinimums:
+          $ref: '#/components/schemas/SmartMinimumsDto'
+      additionalProperties: false
+      description: Scaling strategy including provisioning mode and mode-specific configuration.
+    ScalingAggressiveness:
+      enum:
+      - gentle
+      - balanced
+      - aggressive
+      type: string
+      description: Defines the aggressiveness level for scaling operations.
     SmartMinimumsDto:
       required:
       - enabled
@@ -478,71 +464,203 @@ components:
           format: int32
       additionalProperties: false
       description: Smart minimums configuration to prevent scaling down during low utilization.
-    ElasticPerformanceDto:
+    WeeklyScheduleDto:
       required:
-      - aggressiveness
-      - scaleInTriggers
-      - scaleOutTriggers
-      - stabilizationWindowMinutes
+      - schedules
+      - timeZoneId
       type: object
       properties:
-        scaleOutTriggers:
-          $ref: '#/components/schemas/ScaleTriggersDto'
-        scaleInTriggers:
-          $ref: '#/components/schemas/ScaleTriggersDto'
-        aggressiveness:
-          $ref: '#/components/schemas/ScalingAggressiveness'
-        stabilizationWindowMinutes:
-          maximum: 60
-          minimum: 1
-          type: integer
-          description: Stabilization window in minutes before evaluating scaling actions.
-          format: int32
+        timeZoneId:
+          minLength: 1
+          type: string
+          description: The IANA timezone identifier (e.g., "America/New_York", "Europe/London").
+        defaultScalingProfileId:
+          type:
+          - string
+          - 'null'
+          description: 'Optional off-hours scaling profile ID. When set, stored as a priority-0 24/7 schedule
+
+            that applies whenever no higher-priority schedule block is active.
+
+            Must differ from every ControlUp.Foundry.Api.Dtos.Cloud.WeeklyScheduleDto.Schedules block profile.
+
+            Omit for no scaling outside configured schedule blocks.'
+          format: uuid
+        schedules:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/WeeklyScheduleBlockDto'
+          description: Collection of scheduled time blocks with their associated scaling profiles.
+        scaleInRestrictions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScaleInRestrictionBlockDto'
+          description: 'Collection of scale-in restriction time blocks.
+
+            When any restriction block is active, scale-in actions are suppressed for the host pool.'
       additionalProperties: false
-      description: Performance settings for elastic provisioning.
-    ScalingAggressiveness:
-      enum:
-      - gentle
-      - balanced
-      - aggressive
-      type: string
-      description: Defines the aggressiveness level for scaling operations.
-    NotificationSettingsDto:
+      description: Represents a weekly scaling schedule for a host pool.
+    ScalingProfileResponseDto:
       required:
-      - allowSnooze
-      - gracePeriodMinutes
-      - maximumSnoozes
-      - notificationMessage
-      - notificationTitle
+      - color
+      - experience
+      - id
+      - name
+      - strategy
       type: object
       properties:
-        gracePeriodMinutes:
-          maximum: 2147483647
-          minimum: 1
-          type: integer
-          description: Grace period in minutes before users are logged off after notification.
-          format: int32
-        notificationTitle:
-          maxLength: 200
+        name:
+          maxLength: 100
+          minLength: 3
+          type: string
+          description: User-friendly name for the scaling profile.
+        description:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Optional description for the scaling profile.
+        color:
+          maxLength: 50
           minLength: 1
           type: string
-          description: Notification title displayed to users.
-        notificationMessage:
-          maxLength: 2000
-          minLength: 1
+          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
+
+            Examples: "blue", "primary-1", "accent-red", etc.'
+        strategy:
+          $ref: '#/components/schemas/ScalingStrategyDto'
+        experience:
+          $ref: '#/components/schemas/UserExperienceDto'
+        id:
           type: string
-          description: Notification message displayed to users.
-        allowSnooze:
-          type: boolean
-          description: Whether users are allowed to snooze the notification.
-        maximumSnoozes:
+          description: Unique identifier for the scaling profile.
+          format: uuid
+      additionalProperties: false
+      description: 'Full scaling profile response including all configuration details.
+
+        Returned when fetching a specific scaling profile by ID.'
+    StaticConfigDto:
+      required:
+      - createAdditionalHostsIfNeeded
+      - hostsToPowerOn
+      type: object
+      properties:
+        hostsToPowerOn:
           maximum: 2147483647
           minimum: 0
           type: integer
-          description: Maximum number of times users can snooze notifications.
+          description: Number of hosts to keep powered on.
+          format: int32
+        createAdditionalHostsIfNeeded:
+          type: boolean
+          description: Whether to create additional hosts if not enough exist in the pool.
+      additionalProperties: false
+      description: Static provisioning configuration.
+    ElasticScalingMode:
+      enum:
+      - powerManagementOnly
+      - dynamicHosts
+      type: string
+      description: Defines the elastic scaling mode for host pool capacity management.
+    ProvisioningMode:
+      enum:
+      - static
+      - elastic
+      type: string
+      description: Defines the provisioning and scaling mode for host pools.
+    UserExperienceDto:
+      required:
+      - notifications
+      type: object
+      properties:
+        notifications:
+          $ref: '#/components/schemas/NotificationSettingsDto'
+      additionalProperties: false
+      description: User experience settings for scaling operations.
+    WeeklyScheduleBlockDto:
+      required:
+      - daysOfWeek
+      - endTime
+      - scalingProfileId
+      - startTime
+      type: object
+      properties:
+        daysOfWeek:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+          description: Days of the week when this schedule block is active.
+        startTime:
+          type: string
+          description: Start time of the day (HH:mm format, e.g., "09:30").
+          format: time
+        endTime:
+          type: string
+          description: 'End time of the day (HH:mm format, e.g., "17:30").
+
+            Must be different from StartTime to define a valid time range.'
+          format: time
+        scalingProfileId:
+          type: string
+          description: The scaling profile ID to apply during this time block.
+          format: uuid
+        priority:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'Priority for overlapping schedule blocks (higher values take precedence).
+
+            Optional; defaults to 100 if not provided. Must be at least 1 when specified
+
+            (priority 0 is reserved for the default profile).'
           format: int32
       additionalProperties: false
-      description: User notification settings when sessions are about to be ended.
+      description: Represents a single time block within a weekly scaling schedule.
+    DayOfWeek:
+      enum:
+      - sunday
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      type: string
+      description: Day of the week, Sunday through Saturday.
+    ScaleInRestrictionBlockDto:
+      required:
+      - daysOfWeek
+      - endTime
+      - startTime
+      type: object
+      properties:
+        daysOfWeek:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+          description: Days of the week when this restriction is active.
+        startTime:
+          type: string
+          description: Start time of the restriction window (HH:mm format, e.g., "08:30").
+          format: time
+        endTime:
+          type: string
+          description: 'End time of the restriction window (HH:mm format, e.g., "09:30").
+
+            Midnight crossing is supported (endTime < startTime means crosses midnight).'
+          format: time
+      additionalProperties: false
+      description: 'Represents a single scale-in restriction time block within a weekly scaling schedule.
+
+        When any restriction block is active, scale-in actions are suppressed for the host pool.'
     ErrorResponse:
       required:
       - status
@@ -590,52 +708,28 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    ProvisioningMode:
-      enum:
-      - static
-      - elastic
-      type: string
-      description: Defines the provisioning and scaling mode for host pools.
-    ScalingProfileResponseDto:
+    ElasticPerformanceDto:
       required:
-      - color
-      - experience
-      - id
-      - name
-      - strategy
+      - aggressiveness
+      - scaleInTriggers
+      - scaleOutTriggers
+      - stabilizationWindowMinutes
       type: object
       properties:
-        name:
-          maxLength: 100
-          minLength: 3
-          type: string
-          description: User-friendly name for the scaling profile.
-        description:
-          maxLength: 500
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: Optional description for the scaling profile.
-        color:
-          maxLength: 50
-          minLength: 1
-          type: string
-          description: 'Color identifier for this scaling profile. The UI defines available color IDs and their visual representation.
-
-            Examples: "blue", "primary-1", "accent-red", etc.'
-        strategy:
-          $ref: '#/components/schemas/ScalingStrategyDto'
-        experience:
-          $ref: '#/components/schemas/UserExperienceDto'
-        id:
-          type: string
-          description: Unique identifier for the scaling profile.
-          format: uuid
+        scaleOutTriggers:
+          $ref: '#/components/schemas/ScaleTriggersDto'
+        scaleInTriggers:
+          $ref: '#/components/schemas/ScaleTriggersDto'
+        aggressiveness:
+          $ref: '#/components/schemas/ScalingAggressiveness'
+        stabilizationWindowMinutes:
+          maximum: 60
+          minimum: 1
+          type: integer
+          description: Stabilization window in minutes before evaluating scaling actions.
+          format: int32
       additionalProperties: false
-      description: 'Full scaling profile response including all configuration details.
-
-        Returned when fetching a specific scaling profile by ID.'
+      description: Performance settings for elastic provisioning.
     ScaleTriggersDto:
       required:
       - freeSessionsThreshold
@@ -665,136 +759,42 @@ components:
           format: int32
       additionalProperties: false
       description: Performance thresholds that trigger scaling actions.
-    ScaleInRestrictionBlockDto:
+    NotificationSettingsDto:
       required:
-      - daysOfWeek
-      - endTime
-      - startTime
+      - allowSnooze
+      - gracePeriodMinutes
+      - maximumSnoozes
+      - notificationMessage
+      - notificationTitle
       type: object
       properties:
-        daysOfWeek:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/DayOfWeek'
-          description: Days of the week when this restriction is active.
-        startTime:
-          type: string
-          description: Start time of the restriction window (HH:mm format, e.g., "08:30").
-          format: time
-        endTime:
-          type: string
-          description: 'End time of the restriction window (HH:mm format, e.g., "09:30").
-
-            Midnight crossing is supported (endTime < startTime means crosses midnight).'
-          format: time
-      additionalProperties: false
-      description: 'Represents a single scale-in restriction time block within a weekly scaling schedule.
-
-        When any restriction block is active, scale-in actions are suppressed for the host pool.'
-    ElasticScalingMode:
-      enum:
-      - powerManagementOnly
-      - dynamicHosts
-      type: string
-      description: Defines the elastic scaling mode for host pool capacity management.
-    WeeklyScheduleDto:
-      required:
-      - schedules
-      - timeZoneId
-      type: object
-      properties:
-        timeZoneId:
-          minLength: 1
-          type: string
-          description: The IANA timezone identifier (e.g., "America/New_York", "Europe/London").
-        defaultScalingProfileId:
-          type:
-          - string
-          - 'null'
-          description: 'Optional off-hours scaling profile ID. When set, stored as a priority-0 24/7 schedule
-
-            that applies whenever no higher-priority schedule block is active.
-
-            Must differ from every ControlUp.Foundry.Api.Dtos.Cloud.WeeklyScheduleDto.Schedules block profile.
-
-            Omit for no scaling outside configured schedule blocks.'
-          format: uuid
-        schedules:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/WeeklyScheduleBlockDto'
-          description: Collection of scheduled time blocks with their associated scaling profiles.
-        scaleInRestrictions:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ScaleInRestrictionBlockDto'
-          description: 'Collection of scale-in restriction time blocks.
-
-            When any restriction block is active, scale-in actions are suppressed for the host pool.'
-      additionalProperties: false
-      description: Represents a weekly scaling schedule for a host pool.
-    WeeklyScheduleBlockDto:
-      required:
-      - daysOfWeek
-      - endTime
-      - scalingProfileId
-      - startTime
-      type: object
-      properties:
-        daysOfWeek:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/DayOfWeek'
-          description: Days of the week when this schedule block is active.
-        startTime:
-          type: string
-          description: Start time of the day (HH:mm format, e.g., "09:30").
-          format: time
-        endTime:
-          type: string
-          description: 'End time of the day (HH:mm format, e.g., "17:30").
-
-            Must be different from StartTime to define a valid time range.'
-          format: time
-        scalingProfileId:
-          type: string
-          description: The scaling profile ID to apply during this time block.
-          format: uuid
-        priority:
+        gracePeriodMinutes:
           maximum: 2147483647
           minimum: 1
-          type:
-          - integer
-          - 'null'
-          description: 'Priority for overlapping schedule blocks (higher values take precedence).
-
-            Optional; defaults to 100 if not provided. Must be at least 1 when specified
-
-            (priority 0 is reserved for the default profile).'
+          type: integer
+          description: Grace period in minutes before users are logged off after notification.
+          format: int32
+        notificationTitle:
+          maxLength: 200
+          minLength: 1
+          type: string
+          description: Notification title displayed to users.
+        notificationMessage:
+          maxLength: 2000
+          minLength: 1
+          type: string
+          description: Notification message displayed to users.
+        allowSnooze:
+          type: boolean
+          description: Whether users are allowed to snooze the notification.
+        maximumSnoozes:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: Maximum number of times users can snooze notifications.
           format: int32
       additionalProperties: false
-      description: Represents a single time block within a weekly scaling schedule.
-    ScalingStrategyDto:
-      required:
-      - provisioningMode
-      - smartMinimums
-      type: object
-      properties:
-        provisioningMode:
-          $ref: '#/components/schemas/ProvisioningMode'
-        staticConfig:
-          $ref: '#/components/schemas/StaticConfigDto'
-        elasticConfig:
-          $ref: '#/components/schemas/ElasticConfigDto'
-        smartMinimums:
-          $ref: '#/components/schemas/SmartMinimumsDto'
-      additionalProperties: false
-      description: Scaling strategy including provisioning mode and mode-specific configuration.
+      description: User notification settings when sessions are about to be ended.
   securitySchemes:
     BearerAuth:
       type: http

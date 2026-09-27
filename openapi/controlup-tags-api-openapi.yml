@@ -431,12 +431,114 @@ paths:
           $ref: '#/components/schemas/UUID'
 components:
   schemas:
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
     ISOString:
       type: string
       example: '2022-12-22T18:43:55.483Z'
       format: ISO String YYYY-MM-DDTHH:mm:ss.sssZ
       description: Valid ISO string
       pattern: ^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.\d{3})?Z$
+    APIPaginatedResponse_TagPublic-Array_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_TagPublic-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
+        type: object
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    GetTagsResponse:
+      $ref: '#/components/schemas/APIPaginatedResponse_TagPublic-Array_'
+      example:
+        metadata:
+          total: 2
+          limitPerPage: 10
+          currentPageNumber: 1
+          currentPageSize: 2
+          remaining: 0
+        data:
+        - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          key: environment
+          description: Deployment environment
+          updatedAt: '2024-08-05T18:40:22.244Z'
+          values:
+          - id: v1b2c3d4-e5f6-7890-abcd-ef1234567890
+            label: production
+            color: '#FF0000'
+          - id: v2b2c3d4-e5f6-7890-abcd-ef1234567890
+            label: staging
+            color: '#FFFF00'
+    DeletedActionResponse:
+      properties:
+        affectedRows:
+          type: number
+          format: double
+      required:
+      - affectedRows
+      type: object
+    APIResponse_TagPublic-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TagPublic'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
     UpdateTagRequest:
       properties:
         key:
@@ -467,18 +569,43 @@ components:
           type: array
           description: Updated set of values. Values with an `id` are updated; values without an `id` are created; existing values omitted here are deleted.
       type: object
-    ErrorCode.Forbidden:
-      enum:
-      - 4
-      type: number
-    APIResponse_TagPublic_:
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
       properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
         data:
-          allOf:
-          - $ref: '#/components/schemas/TagPublic'
+          additionalProperties: true
+          type: object
       required:
-      - data
+      - status
+      - code
+      - message
       type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
     PaginatedResponseMetadata:
       properties:
         total:
@@ -514,18 +641,14 @@ components:
         currentPageNumber: 1
         currentPageSize: 10
         remaining: 8
-    HttpStatusCode.UNAUTHORIZED:
-      enum:
-      - 401
-      type: number
-    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
       properties:
         message:
-          $ref: '#/components/schemas/BadRequestErrorMessages'
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
         code:
-          $ref: '#/components/schemas/BadRequestErrorCodes'
+          $ref: '#/components/schemas/ErrorCode.NotFound'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
         data:
           additionalProperties: true
           type: object
@@ -534,63 +657,23 @@ components:
       - code
       - message
       type: object
-    APIResponse_DeletedActionResponse_:
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
       properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/DeletedActionResponse'
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
       required:
-      - data
+      - error
+      - metadata
       type: object
-    HttpStatusCode.BAD_REQUEST:
-      enum:
-      - 400
-      type: number
-    APIResponse_TagPublic-Array_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/TagPublic'
-          type:
-          - array
-          - 'null'
-      required:
-      - data
-      type: object
-    DeletedActionResponse:
-      properties:
-        affectedRows:
-          type: number
-          format: double
-      required:
-      - affectedRows
-      type: object
-    APIPaginatedResponse_TagPublic-Array_:
-      allOf:
-      - $ref: '#/components/schemas/APIResponse_TagPublic-Array_'
-      - properties:
-          metadata:
-            allOf:
-            - $ref: '#/components/schemas/PaginatedResponseMetadata'
-            - additionalProperties: true
-              type: object
-        required:
-        - metadata
-        type: object
-    HttpStatusCode.NOT_FOUND:
-      enum:
-      - 404
-      type: number
-    ErrorMessage.Forbidden:
-      enum:
-      - Forbidden
+    TagFilterOperator:
       type: string
-    BadRequestErrorCodes:
       enum:
-      - 2
-      - 14
-      - 50
-      type: number
+      - equals
+      - not_equals
+      - contains
+      - not_contains
     CreateTagRequest:
       properties:
         key:
@@ -620,59 +703,6 @@ components:
       required:
       - key
       type: object
-    ErrorCode.InternalServerError:
-      enum:
-      - 6
-      type: number
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
-      required:
-      - error
-      - metadata
-      type: object
-    UUID:
-      type: string
-      format: uuid
-      description: 'Stringified UUIDv4.
-
-        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
-      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
-    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Unauthorized'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
-        code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
     ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
       properties:
         metadata:
@@ -683,15 +713,9 @@ components:
       - error
       - metadata
       type: object
-    HttpStatusCode.FORBIDDEN:
+    ErrorMessage.Forbidden:
       enum:
-      - 403
-      type: number
-    BadRequestErrorMessages:
-      enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
+      - Forbidden
       type: string
     TagPublic:
       properties:
@@ -720,37 +744,21 @@ components:
       - key
       - id
       type: object
-    GetTagsResponse:
-      $ref: '#/components/schemas/APIPaginatedResponse_TagPublic-Array_'
-      example:
-        metadata:
-          total: 2
-          limitPerPage: 10
-          currentPageNumber: 1
-          currentPageSize: 2
-          remaining: 0
-        data:
-        - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-          key: environment
-          description: Deployment environment
-          updatedAt: '2024-08-05T18:40:22.244Z'
-          values:
-          - id: v1b2c3d4-e5f6-7890-abcd-ef1234567890
-            label: production
-            color: '#FF0000'
-          - id: v2b2c3d4-e5f6-7890-abcd-ef1234567890
-            label: staging
-            color: '#FFFF00'
-    TagFilterOperator:
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
       type: string
+    APIResponse_DeletedActionResponse_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/DeletedActionResponse'
+      required:
+      - data
+      type: object
+    HttpStatusCode.NOT_FOUND:
       enum:
-      - equals
-      - not_equals
-      - contains
-      - not_contains
-    ErrorCode.Unauthorized:
-      enum:
-      - 3
+      - 404
       type: number
     ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
       properties:
@@ -762,20 +770,42 @@ components:
       - error
       - metadata
       type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+    ErrorResponseMetadata:
       properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
       required:
-      - error
-      - metadata
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
       type: object
-    ErrorCode.NotFound:
+    ErrorMessage.InternalServerError:
       enum:
-      - 5
-      type: number
+      - Internal Server Error
+      type: string
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
     ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
       properties:
         message:
@@ -792,10 +822,6 @@ components:
       - code
       - message
       type: object
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
-      enum:
-      - 500
-      type: number
     TagValuePublic:
       properties:
         id:
@@ -814,14 +840,14 @@ components:
       - label
       - id
       type: object
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
       properties:
         message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
+          $ref: '#/components/schemas/BadRequestErrorMessages'
         code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
+          $ref: '#/components/schemas/BadRequestErrorCodes'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
         data:
           additionalProperties: true
           type: object
@@ -830,43 +856,17 @@ components:
       - code
       - message
       type: object
-    ErrorMessage.NotFound:
+    ErrorCode.NotFound:
       enum:
-      - Not Found
-      type: string
-    ErrorMessage.InternalServerError:
-      enum:
-      - Internal Server Error
-      type: string
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      - 5
+      type: number
+    APIResponse_TagPublic_:
       properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/TagPublic'
       required:
-      - error
-      - metadata
-      type: object
-    ErrorMessage.Unauthorized:
-      enum:
-      - Unauthorized
-      type: string
-    ErrorResponseMetadata:
-      properties:
-        cuRequestId:
-          type: string
-        orgId:
-          type: string
-        userId:
-          type: string
-        userIp:
-          type: string
-      required:
-      - userIp
-      - userId
-      - orgId
-      - cuRequestId
+      - data
       type: object
   securitySchemes:
     apiKey:

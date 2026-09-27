@@ -561,6 +561,92 @@ paths:
       - CookieAuth: []
 components:
   schemas:
+    OnboardingStatus:
+      enum:
+      - notStarted
+      - started
+      - complete
+      type: string
+      description: Current user's lifecycle state for an onboarding flow.
+    OnboardingFlowSummaryDto:
+      required:
+      - displayState
+      - flow
+      - progressPercent
+      - status
+      - title
+      type: object
+      properties:
+        flow:
+          type: string
+          description: Route-safe flow identifier.
+        title:
+          type: string
+          description: Human-readable flow title.
+        status:
+          $ref: '#/components/schemas/OnboardingStatus'
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the user started this onboarding flow.
+          format: date-time
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        progressPercent:
+          type: number
+          description: Derived user-action progress percentage.
+          format: double
+      additionalProperties: false
+      description: Summary of an onboarding flow for the current user.
+    OnboardingFlowDto:
+      required:
+      - displayState
+      - flow
+      - progressPercent
+      - status
+      - steps
+      - title
+      type: object
+      properties:
+        flow:
+          type: string
+          description: Route-safe flow identifier.
+        title:
+          type: string
+          description: Human-readable flow title.
+        status:
+          $ref: '#/components/schemas/OnboardingStatus'
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the user started this onboarding flow.
+          format: date-time
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        dismissedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when onboarding was permanently dismissed.
+          format: date-time
+        activeStep:
+          type:
+          - string
+          - 'null'
+          description: Stable onboarding step key for the active step, if selected.
+        progressPercent:
+          type: number
+          description: Derived user-action progress percentage.
+          format: double
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingStepDto'
+          description: Ordered onboarding steps.
+      additionalProperties: false
+      description: Detailed onboarding flow state for the current user.
     UpdateOnboardingStepRequest:
       required:
       - state
@@ -570,18 +656,6 @@ components:
           $ref: '#/components/schemas/OnboardingStepState'
       additionalProperties: false
       description: Request to update the current user's state for an onboarding step.
-    OnboardingFlowListDto:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OnboardingFlowSummaryDto'
-          description: Onboarding flows available to the current user.
-      additionalProperties: false
-      description: Collection of onboarding flow summaries.
     ErrorResponse:
       required:
       - status
@@ -636,13 +710,39 @@ components:
       - dismissed
       type: string
       description: Display state for an onboarding flow.
-    OnboardingStatus:
+    UpdateOnboardingRequest:
+      required:
+      - displayState
+      type: object
+      properties:
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        activeStep:
+          type:
+          - string
+          - 'null'
+          description: Stable onboarding step key for the active step, if selected.
+      additionalProperties: false
+      description: Request to update onboarding UI state for a flow.
+    OnboardingFlowListDto:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingFlowSummaryDto'
+          description: Onboarding flows available to the current user.
+      additionalProperties: false
+      description: Collection of onboarding flow summaries.
+    OnboardingStepState:
       enum:
-      - notStarted
-      - started
-      - complete
+      - incomplete
+      - completed
+      - skipped
       type: string
-      description: Current user's lifecycle state for an onboarding flow.
+      description: Current user's interaction state for an onboarding step.
     OnboardingStepDto:
       required:
       - deepLinkDestination
@@ -672,106 +772,6 @@ components:
           description: Whether the organization already has the related configuration.
       additionalProperties: false
       description: Current user's state for an onboarding step.
-    OnboardingFlowSummaryDto:
-      required:
-      - displayState
-      - flow
-      - progressPercent
-      - status
-      - title
-      type: object
-      properties:
-        flow:
-          type: string
-          description: Route-safe flow identifier.
-        title:
-          type: string
-          description: Human-readable flow title.
-        status:
-          $ref: '#/components/schemas/OnboardingStatus'
-        startedAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp when the user started this onboarding flow.
-          format: date-time
-        displayState:
-          $ref: '#/components/schemas/OnboardingDisplayState'
-        progressPercent:
-          type: number
-          description: Derived user-action progress percentage.
-          format: double
-      additionalProperties: false
-      description: Summary of an onboarding flow for the current user.
-    UpdateOnboardingRequest:
-      required:
-      - displayState
-      type: object
-      properties:
-        displayState:
-          $ref: '#/components/schemas/OnboardingDisplayState'
-        activeStep:
-          type:
-          - string
-          - 'null'
-          description: Stable onboarding step key for the active step, if selected.
-      additionalProperties: false
-      description: Request to update onboarding UI state for a flow.
-    OnboardingStepState:
-      enum:
-      - incomplete
-      - completed
-      - skipped
-      type: string
-      description: Current user's interaction state for an onboarding step.
-    OnboardingFlowDto:
-      required:
-      - displayState
-      - flow
-      - progressPercent
-      - status
-      - steps
-      - title
-      type: object
-      properties:
-        flow:
-          type: string
-          description: Route-safe flow identifier.
-        title:
-          type: string
-          description: Human-readable flow title.
-        status:
-          $ref: '#/components/schemas/OnboardingStatus'
-        startedAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp when the user started this onboarding flow.
-          format: date-time
-        displayState:
-          $ref: '#/components/schemas/OnboardingDisplayState'
-        dismissedAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp when onboarding was permanently dismissed.
-          format: date-time
-        activeStep:
-          type:
-          - string
-          - 'null'
-          description: Stable onboarding step key for the active step, if selected.
-        progressPercent:
-          type: number
-          description: Derived user-action progress percentage.
-          format: double
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/OnboardingStepDto'
-          description: Ordered onboarding steps.
-      additionalProperties: false
-      description: Detailed onboarding flow state for the current user.
   securitySchemes:
     BearerAuth:
       type: http

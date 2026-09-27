@@ -936,15 +936,33 @@ paths:
       - BearerAuth: []
 components:
   schemas:
-    FlowEnableDisableRequest:
+    HTTPValidationError:
       properties:
-        isActive:
-          type: boolean
-          title: Isactive
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - isActive
-      title: FlowEnableDisableRequest
+      title: HTTPValidationError
+    FormSortBy:
+      type: string
+      enum:
+      - name
+      - createdDate
+      - createdAt
+      - updatedAt
+      - lastRun
+      title: FormSortBy
+    FlowScheduleType:
+      type: string
+      enum:
+      - manual
+      - api
+      - listener
+      - Form
+      - time
+      title: FlowScheduleType
     ValidationError:
       properties:
         loc:
@@ -966,39 +984,6 @@ components:
       - msg
       - type
       title: ValidationError
-    FlowScheduleType:
-      type: string
-      enum:
-      - manual
-      - api
-      - listener
-      - Form
-      - time
-      title: FlowScheduleType
-    SortOrder:
-      type: string
-      enum:
-      - asc
-      - desc
-      title: SortOrder
-    FormSortBy:
-      type: string
-      enum:
-      - name
-      - createdDate
-      - createdAt
-      - updatedAt
-      - lastRun
-      title: FormSortBy
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     IntegrationSortBy:
       type: string
       enum:
@@ -1007,19 +992,15 @@ components:
       - createdAt
       - updatedAt
       title: IntegrationSortBy
-    FlowRunStatus:
-      type: string
-      enum:
-      - unspecified
-      - running
-      - completed
-      - failed
-      - canceled
-      - terminated
-      - continued as new
-      - time out
-      - waiting for action
-      title: FlowRunStatus
+    FlowEnableDisableRequest:
+      properties:
+        isActive:
+          type: boolean
+          title: Isactive
+      type: object
+      required:
+      - isActive
+      title: FlowEnableDisableRequest
     FlowSortBy:
       type: string
       enum:
@@ -1033,6 +1014,25 @@ components:
       - creator
       - lastEditor
       title: FlowSortBy
+    FlowRunStatus:
+      type: string
+      enum:
+      - unspecified
+      - running
+      - completed
+      - failed
+      - canceled
+      - terminated
+      - continued as new
+      - time out
+      - waiting for action
+      title: FlowRunStatus
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      title: SortOrder
   securitySchemes:
     BearerAuth:
       type: http

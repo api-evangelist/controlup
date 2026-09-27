@@ -117,6 +117,38 @@ paths:
       - CookieAuth: []
 components:
   schemas:
+    UserSessionActionRequest:
+      required:
+      - actionType
+      type: object
+      properties:
+        actionType:
+          $ref: '#/components/schemas/UserSessionActionType'
+        messageTitle:
+          maxLength: 256
+          type:
+          - string
+          - 'null'
+          description: 'The title of the message to send to the user.
+
+            Required for SendMessage action.'
+        messageBody:
+          maxLength: 1024
+          type:
+          - string
+          - 'null'
+          description: 'The body of the message to send to the user.
+
+            Required for SendMessage action.'
+      additionalProperties: false
+      description: Request to execute an action on a user session.
+    UserSessionActionType:
+      enum:
+      - sendMessage
+      - signOut
+      - disconnect
+      type: string
+      description: Types of actions that can be performed on a user session.
     ErrorResponse:
       required:
       - status
@@ -238,38 +270,6 @@ components:
       description: 'Defines the types of background jobs supported by the system.
 
         Each job type is processed by a specific worker and has its own parameter structure.'
-    UserSessionActionType:
-      enum:
-      - sendMessage
-      - signOut
-      - disconnect
-      type: string
-      description: Types of actions that can be performed on a user session.
-    UserSessionActionRequest:
-      required:
-      - actionType
-      type: object
-      properties:
-        actionType:
-          $ref: '#/components/schemas/UserSessionActionType'
-        messageTitle:
-          maxLength: 256
-          type:
-          - string
-          - 'null'
-          description: 'The title of the message to send to the user.
-
-            Required for SendMessage action.'
-        messageBody:
-          maxLength: 1024
-          type:
-          - string
-          - 'null'
-          description: 'The body of the message to send to the user.
-
-            Required for SendMessage action.'
-      additionalProperties: false
-      description: Request to execute an action on a user session.
   securitySchemes:
     BearerAuth:
       type: http

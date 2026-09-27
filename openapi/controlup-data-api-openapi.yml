@@ -269,92 +269,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/CustomReportDetails'
 components:
-  schemas:
-    IndexMappings:
-      type: object
-      properties:
-        index:
-          type: string
-        name:
-          description: The name of the field.
-          type: string
-          example: _created
-        type:
-          description: The data type of the field.
-          type: string
-    CustomReportDetails:
-      type: object
-      properties:
-        _id:
-          description: ID of the custom report.
-          type: string
-          example: ByRWs4IBOEdS79OieyLo
-        _created:
-          description: The UTC date and time that the custom report was created.
-          type: string
-          format: date-time
-          example: '2022-08-18T23:42:45.544Z'
-        _updated:
-          description: The UTC date and time that the custom report was last updated.
-          type: string
-          format: date-time
-          example: '2022-08-18T23:42:45.544Z'
-        _associated_id:
-          description: ID of the user who created the custom report.
-          type: string
-          example: lJTSkoIOBFdS691iFJzH
-        index:
-          description: The name of the index that contains the data for the custom report.
-          type: string
-          example: activities
-        name:
-          description: The name of the custom report.
-          type: string
-          example: sample-report-name
-        is_public:
-          description: If true, the custom report is available to all users in your organization. If false, it is only available to the user who created it.
-          type: boolean
-          example: true
-        config_data:
-          description: Placeholder.
-          type: string
-    DataIndexContents:
-      type: object
-      properties:
-        rows:
-          description: An array of the rows (documents) in the data index. Each entry in the array is a different document. The data in each document depends on the index being retrieved.
-          type: array
-          example:
-          - _id: lchs9wH4h2EKvgTVv8rd
-            _created: '2022-01-03T16:47:53.391Z'
-            favourite_website: www.controlup.com
-            phone_type: iPhone 3
-            name: John Doe
-        rows_available:
-          description: The total number of rows that are stored in the data index.
-          type: integer
-          example: 200
-        page_size:
-          description: The number of rows that are able to be displayed per page of results.
-          type: integer
-          example: 100
-        aggregations:
-          description: Placeholder
-          type: array
-        start_row:
-          description: The first row that can be returned on the current page.
-          type: integer
-          example: 1
-        end_row:
-          description: The last row that can be returned on the current page.
-          type: integer
-          example: 100
-        mappings:
-          description: Information about the fields (columns) in the index. Each entry in the array represents a different field.
-          type: array
-          items:
-            $ref: '#/components/schemas/IndexMappings'
   parameters:
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
     FilterType:
       name: filters[0][type]
       in: query
@@ -416,17 +342,91 @@ components:
         enum:
         - asc
         - desc
-    SorterField:
-      name: sorters[0][field]
-      in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
-
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
+  schemas:
+    DataIndexContents:
+      type: object
+      properties:
+        rows:
+          description: An array of the rows (documents) in the data index. Each entry in the array is a different document. The data in each document depends on the index being retrieved.
+          type: array
+          example:
+          - _id: lchs9wH4h2EKvgTVv8rd
+            _created: '2022-01-03T16:47:53.391Z'
+            favourite_website: www.controlup.com
+            phone_type: iPhone 3
+            name: John Doe
+        rows_available:
+          description: The total number of rows that are stored in the data index.
+          type: integer
+          example: 200
+        page_size:
+          description: The number of rows that are able to be displayed per page of results.
+          type: integer
+          example: 100
+        aggregations:
+          description: Placeholder
+          type: array
+        start_row:
+          description: The first row that can be returned on the current page.
+          type: integer
+          example: 1
+        end_row:
+          description: The last row that can be returned on the current page.
+          type: integer
+          example: 100
+        mappings:
+          description: Information about the fields (columns) in the index. Each entry in the array represents a different field.
+          type: array
+          items:
+            $ref: '#/components/schemas/IndexMappings'
+    CustomReportDetails:
+      type: object
+      properties:
+        _id:
+          description: ID of the custom report.
+          type: string
+          example: ByRWs4IBOEdS79OieyLo
+        _created:
+          description: The UTC date and time that the custom report was created.
+          type: string
+          format: date-time
+          example: '2022-08-18T23:42:45.544Z'
+        _updated:
+          description: The UTC date and time that the custom report was last updated.
+          type: string
+          format: date-time
+          example: '2022-08-18T23:42:45.544Z'
+        _associated_id:
+          description: ID of the user who created the custom report.
+          type: string
+          example: lJTSkoIOBFdS691iFJzH
+        index:
+          description: The name of the index that contains the data for the custom report.
+          type: string
+          example: activities
+        name:
+          description: The name of the custom report.
+          type: string
+          example: sample-report-name
+        is_public:
+          description: If true, the custom report is available to all users in your organization. If false, it is only available to the user who created it.
+          type: boolean
+          example: true
+        config_data:
+          description: Placeholder.
+          type: string
+    IndexMappings:
+      type: object
+      properties:
+        index:
+          type: string
+        name:
+          description: The name of the field.
+          type: string
+          example: _created
+        type:
+          description: The data type of the field.
+          type: string
   securitySchemes:
     bearerAuth:
       type: http
