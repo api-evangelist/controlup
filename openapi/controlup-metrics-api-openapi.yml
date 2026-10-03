@@ -152,42 +152,97 @@ paths:
       - Region
 components:
   schemas:
-    QueryDataLossOptionsDataContract:
+    TableDataContract:
       type: object
       properties:
-        threshold:
-          type: integer
-          description: Threshold limit for acceptable data loss before failing the query
-        timeout:
-          type: integer
-          description: Timeout in milliseconds to wait for data recovery
-    QueryConditionDataContract:
+        tableName:
+          type: string
+          description: The name of the table
+        description:
+          type: string
+          description: Description of the table
+    QueryMatchDataContract:
       type: object
+      required:
+      - field
+      - term
       properties:
-        and:
-          type: array
-          description: List of nested conditions that must all evaluate to true
-          items:
-            $ref: '#/components/schemas/QueryConditionDataContract'
-        or:
-          type: array
-          description: List of nested conditions where at least one must evaluate to true
-          items:
-            $ref: '#/components/schemas/QueryConditionDataContract'
-        not:
-          type: array
-          description: List of nested conditions that must evaluate to false
-          items:
-            $ref: '#/components/schemas/QueryConditionDataContract'
         field:
           type: string
-          description: The field to apply the condition operator against
-        op:
+          description: The field to match against
+        term:
           type: string
-          description: The comparison operator (e.g., 'eq', 'ne', 'gt', 'lt', 'gte', 'lte', 'mask', 'like')
-        value:
-          type: object
-          description: The value to compare against. Can be a string, number, boolean, or array of values.
+          description: The text term to search for
+        regex:
+          type: boolean
+          description: Indicates if the term should be evaluated as a regular expression
+    QueryCounterOptionsDataContract:
+      type: object
+      properties:
+        includeStress:
+          type: boolean
+          description: Include stress level indicators for the counters
+        allSamples:
+          type: boolean
+          description: Include all raw data samples
+        includeAgg:
+          type: boolean
+          description: Include aggregated statistics
+        includeTag:
+          type: boolean
+          description: Include counter tags
+        includeTimestamp:
+          type: boolean
+          description: Include timestamps for counter values
+        aggStats:
+          type: boolean
+          description: Compute and return aggregated statistics for the counters
+        flatAgg:
+          type: boolean
+          description: Flatten the aggregated results into the root data objects
+        returnOnlyValue:
+          type: boolean
+          description: Return only the bare counter values without additional metadata
+    QueryPageDataContract:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: Number of items to skip before returning results (0-based)
+        size:
+          type: integer
+          description: Maximum number of items to return in this page
+    QuerySortDataContract:
+      type: object
+      required:
+      - field
+      properties:
+        field:
+          type: string
+          description: The field to sort the results by
+        dir:
+          type: string
+          description: Sort direction (e.g., 'Asc' or 'Desc')
+    QueryFieldDescriptorDataContract:
+      type: object
+      required:
+      - field
+      properties:
+        field:
+          type: string
+          description: The name of the metric or field to return
+        history:
+          type: integer
+          description: Number of historical data points to include for this metric
+        severityLevel:
+          type: boolean
+          description: Include the severity level status for this field
+        includeAvg:
+          type: boolean
+          description: Include the average value aggregation for this field
+        includeMax:
+          type: boolean
+          description: Include the maximum value aggregation for this field
     QueryOptionsDataContract:
       type: object
       properties:
@@ -221,6 +276,21 @@ components:
         usePartialFolderData:
           type: boolean
           description: Allow returning partial data for folder hierarchies
+    TableFieldDataContract:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the field
+        header:
+          type: string
+          description: The header or display name of the field
+        description:
+          type: string
+          description: Description of the field
+        type:
+          type: string
+          description: The data type of the field
     ErrorResponse:
       type: object
       properties:
@@ -252,32 +322,15 @@ components:
           - message
       required:
       - error
-    TableFieldDataContract:
+    QueryDataLossOptionsDataContract:
       type: object
       properties:
-        name:
-          type: string
-          description: The name of the field
-        header:
-          type: string
-          description: The header or display name of the field
-        description:
-          type: string
-          description: Description of the field
-        type:
-          type: string
-          description: The data type of the field
-    QuerySortDataContract:
-      type: object
-      required:
-      - field
-      properties:
-        field:
-          type: string
-          description: The field to sort the results by
-        dir:
-          type: string
-          description: Sort direction (e.g., 'Asc' or 'Desc')
+        threshold:
+          type: integer
+          description: Threshold limit for acceptable data loss before failing the query
+        timeout:
+          type: integer
+          description: Timeout in milliseconds to wait for data recovery
     QueryResponse:
       type: object
       properties:
@@ -298,86 +351,6 @@ components:
         returned:
           type: integer
           description: Number of records returned in the current page
-    QueryPageDataContract:
-      type: object
-      properties:
-        offset:
-          type: integer
-          description: Number of items to skip before returning results (0-based)
-        size:
-          type: integer
-          description: Maximum number of items to return in this page
-    QueryFieldDescriptorDataContract:
-      type: object
-      required:
-      - field
-      properties:
-        field:
-          type: string
-          description: The name of the metric or field to return
-        history:
-          type: integer
-          description: Number of historical data points to include for this metric
-        severityLevel:
-          type: boolean
-          description: Include the severity level status for this field
-        includeAvg:
-          type: boolean
-          description: Include the average value aggregation for this field
-        includeMax:
-          type: boolean
-          description: Include the maximum value aggregation for this field
-    QueryCounterOptionsDataContract:
-      type: object
-      properties:
-        includeStress:
-          type: boolean
-          description: Include stress level indicators for the counters
-        allSamples:
-          type: boolean
-          description: Include all raw data samples
-        includeAgg:
-          type: boolean
-          description: Include aggregated statistics
-        includeTag:
-          type: boolean
-          description: Include counter tags
-        includeTimestamp:
-          type: boolean
-          description: Include timestamps for counter values
-        aggStats:
-          type: boolean
-          description: Compute and return aggregated statistics for the counters
-        flatAgg:
-          type: boolean
-          description: Flatten the aggregated results into the root data objects
-        returnOnlyValue:
-          type: boolean
-          description: Return only the bare counter values without additional metadata
-    QueryMatchDataContract:
-      type: object
-      required:
-      - field
-      - term
-      properties:
-        field:
-          type: string
-          description: The field to match against
-        term:
-          type: string
-          description: The text term to search for
-        regex:
-          type: boolean
-          description: Indicates if the term should be evaluated as a regular expression
-    TableDataContract:
-      type: object
-      properties:
-        tableName:
-          type: string
-          description: The name of the table
-        description:
-          type: string
-          description: Description of the table
     QueryRequest:
       type: object
       required:
@@ -413,6 +386,33 @@ components:
         focus:
           type: string
           description: Focus context for the query (e.g. scoping to a specific view)
+    QueryConditionDataContract:
+      type: object
+      properties:
+        and:
+          type: array
+          description: List of nested conditions that must all evaluate to true
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        or:
+          type: array
+          description: List of nested conditions where at least one must evaluate to true
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        not:
+          type: array
+          description: List of nested conditions that must evaluate to false
+          items:
+            $ref: '#/components/schemas/QueryConditionDataContract'
+        field:
+          type: string
+          description: The field to apply the condition operator against
+        op:
+          type: string
+          description: The comparison operator (e.g., 'eq', 'ne', 'gt', 'lt', 'gte', 'lte', 'mask', 'like')
+        value:
+          type: object
+          description: The value to compare against. Can be a string, number, boolean, or array of values.
   securitySchemes:
     BearerAuth:
       type: http

@@ -272,6 +272,51 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
+    ProcessUsageSingleResult:
+      type: object
+      properties:
+        computer_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByComputer'
+        user_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByUser'
+        concurrent_instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConcurrentInstances'
+        unique_users:
+          type: integer
+          format: int32
+    HistoricalSingleResponseProcessUsageSingleResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          $ref: '#/components/schemas/ProcessUsageSingleResult'
+    HistoricalListResponseProcessUsageAllResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcessUsageAllResult'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
     ByComputer:
       type: object
       properties:
@@ -287,6 +332,35 @@ components:
           type: string
         process_version:
           type: string
+    ConcurrentInstances:
+      type: object
+      properties:
+        process_name:
+          type: string
+        process_version:
+          type: string
+        peak_concurrency:
+          type: integer
+          format: int32
+        date_time:
+          type: string
+          format: date-time
+    ProcessUsageAllResult:
+      type: object
+      properties:
+        process_name:
+          type: string
+        process_version:
+          type: string
+        peak_concurrency:
+          type: integer
+          format: int32
+        unique_user_count:
+          type: integer
+          format: int32
+        update_time:
+          type: string
+          format: date-time
     UserMetadata:
       type: object
       properties:
@@ -324,15 +398,15 @@ components:
           type: string
         timeTo:
           type: string
-    HistoricalListResponseProcessUsageAllResult:
+    HistoricalErrorResponse:
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/UserMetadata'
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/ProcessUsageAllResult'
+            $ref: '#/components/schemas/Error'
     ByUser:
       type: object
       properties:
@@ -351,80 +425,6 @@ components:
           format: date-time
         process_version:
           type: string
-    ProcessUsageSingleResult:
-      type: object
-      properties:
-        computer_grouping:
-          type: array
-          items:
-            $ref: '#/components/schemas/ByComputer'
-        user_grouping:
-          type: array
-          items:
-            $ref: '#/components/schemas/ByUser'
-        concurrent_instances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConcurrentInstances'
-        unique_users:
-          type: integer
-          format: int32
-    ConcurrentInstances:
-      type: object
-      properties:
-        process_name:
-          type: string
-        process_version:
-          type: string
-        peak_concurrency:
-          type: integer
-          format: int32
-        date_time:
-          type: string
-          format: date-time
-    HistoricalSingleResponseProcessUsageSingleResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          $ref: '#/components/schemas/ProcessUsageSingleResult'
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    ProcessUsageAllResult:
-      type: object
-      properties:
-        process_name:
-          type: string
-        process_version:
-          type: string
-        peak_concurrency:
-          type: integer
-          format: int32
-        unique_user_count:
-          type: integer
-          format: int32
-        update_time:
-          type: string
-          format: date-time
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
   securitySchemes:
     bearer-jwt:
       type: http

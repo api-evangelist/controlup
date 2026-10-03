@@ -270,17 +270,6 @@ paths:
                 $ref: '#/components/schemas/CustomReportDetails'
 components:
   parameters:
-    SorterField:
-      name: sorters[0][field]
-      in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
-
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
     FilterType:
       name: filters[0][type]
       in: query
@@ -305,6 +294,27 @@ components:
         - '>'
         - like
         - boolean
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
     FilterValue:
       name: filters[0][value]
       in: query
@@ -321,28 +331,30 @@ components:
           title: Number
         - type: boolean
           title: Boolean
-    FilterField:
-      name: filters[0][field]
+    SorterField:
+      name: sorters[0][field]
       in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
 
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
 
         '
       schema:
         type: string
         example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
   schemas:
+    IndexMappings:
+      type: object
+      properties:
+        index:
+          type: string
+        name:
+          description: The name of the field.
+          type: string
+          example: _created
+        type:
+          description: The data type of the field.
+          type: string
     DataIndexContents:
       type: object
       properties:
@@ -414,18 +426,6 @@ components:
           example: true
         config_data:
           description: Placeholder.
-          type: string
-    IndexMappings:
-      type: object
-      properties:
-        index:
-          type: string
-        name:
-          description: The name of the field.
-          type: string
-          example: _created
-        type:
-          description: The data type of the field.
           type: string
   securitySchemes:
     bearerAuth:

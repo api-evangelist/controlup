@@ -482,6 +482,12 @@ components:
           format: double
       additionalProperties: false
       description: Single data point in a cost time series.
+    CostGranularity:
+      enum:
+      - daily
+      - monthly
+      type: string
+      description: Granularity for cost data aggregation in API responses.
     HostPoolSavingsResult:
       required:
       - actualComputeCost
@@ -696,51 +702,6 @@ components:
       description: 'Cost breakdown and trend for a host pool over a date range.
 
         Includes Compute/Disk/Network split, cost-per-user, and period comparison.'
-    SessionHostCostResultPagedResult:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionHostCostResult'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: The current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
-
-        Supports traditional page-based pagination with skip/take semantics.'
     SavingsDataPoint:
       required:
       - actualComputeCost
@@ -821,6 +782,51 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    SessionHostCostResultPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionHostCostResult'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
     SessionHostCostResult:
       required:
       - computeCost
@@ -915,12 +921,6 @@ components:
       description: 'Per-session-host cost breakdown within a host pool for a date range.
 
         Includes disk tier optimization flags for Premium SSD waste detection.'
-    CostGranularity:
-      enum:
-      - daily
-      - monthly
-      type: string
-      description: Granularity for cost data aggregation in API responses.
   securitySchemes:
     BearerAuth:
       type: http

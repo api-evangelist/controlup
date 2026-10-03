@@ -2003,283 +2003,45 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    OverviewUserSessionResultPagedResult:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OverviewUserSessionResult'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: The current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
-
-        Supports traditional page-based pagination with skip/take semantics.'
-    WorkspaceOverviewPagedResult:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkspaceOverview'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: The current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
-
-        Supports traditional page-based pagination with skip/take semantics.'
-    ResourceGroupOverview:
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
+    SubscriptionOverview:
       required:
       - avgCpu
       - avgMem
       - costMonthToDate
       - hostPoolsCount
-      - regionId
-      - regionName
       - regionsCount
-      - resourceGroupId
-      - resourceGroupName
-      - runningHostsCount
-      - stoppedHostsCount
-      - subscriptionId
-      - subscriptionName
-      - totalSessionsCount
-      type: object
-      properties:
-        resourceGroupId:
-          type: string
-          description: Internal Foundry resource group ID.
-          format: uuid
-        resourceGroupName:
-          type: string
-          description: Resource group name.
-        subscriptionId:
-          type: string
-          description: Parent subscription ID.
-          format: uuid
-        subscriptionName:
-          type: string
-          description: Parent subscription display name.
-        regionId:
-          type: string
-          description: Region code where this resource group is located.
-        regionName:
-          type: string
-          description: Region display name.
-        regionsCount:
-          type: integer
-          description: Number of distinct regions used by resources in this resource group.
-          format: int32
-        hostPoolsCount:
-          type: integer
-          description: Number of host pools in this resource group.
-          format: int32
-        runningHostsCount:
-          type: integer
-          description: Number of running session hosts.
-          format: int32
-        stoppedHostsCount:
-          type: integer
-          description: Number of stopped session hosts.
-          format: int32
-        totalSessionsCount:
-          type: integer
-          description: Total number of active user sessions.
-          format: int32
-        costMonthToDate:
-          type: number
-          description: Month-to-date cost in USD.
-          format: double
-        avgCpu:
-          type: number
-          description: Average CPU percentage across all hosts.
-          format: double
-        avgMem:
-          type: number
-          description: Average memory percentage across all hosts.
-          format: double
-      additionalProperties: false
-      description: Resource group summary with aggregated metrics for the overview page.
-    MasterImageOverview:
-      required:
-      - createdAt
-      - lastUpdated
-      - masterImageId
-      - masterImageName
-      - osFamily
-      - osVersion
-      - powerState
-      - publishedVersionCount
-      - regionId
-      - regionName
-      - sourceType
-      - status
-      - subscriptionId
-      - subscriptionName
-      type: object
-      properties:
-        masterImageId:
-          type: string
-          description: Master image primary key.
-          format: uuid
-        masterImageName:
-          type: string
-          description: User-provided display name.
-        subscriptionId:
-          type: string
-          description: Internal Foundry subscription ID (az_subscription.id).
-          format: uuid
-        subscriptionName:
-          type: string
-          description: Subscription display name (cloud_subscription.name).
-        regionId:
-          type: string
-          description: Azure region code (e.g., "eastus").
-        regionName:
-          type: string
-          description: Region display name joined from az_region.
-        resourceGroupId:
-          type:
-          - string
-          - 'null'
-          description: Foundry resource group ID (az_resource_group.id). Null when the master image's resource group has not been imported yet.
-          format: uuid
-        resourceGroupName:
-          type:
-          - string
-          - 'null'
-          description: Resource group name (master_image.resource_group).
-        osFamily:
-          type: string
-          description: OS family stored as its enum name (e.g., "Windows11MultiSession").
-        osVersion:
-          type: string
-          description: OS version/build string (e.g., "23H2").
-        status:
-          type: string
-          description: Lifecycle status stored as its enum name (e.g., "Ready", "Error").
-        powerState:
-          type: string
-          description: VM power state stored as its enum name (e.g., "Running", "Deallocated").
-        sourceType:
-          type: string
-          description: How the image was onboarded (e.g., "PromotedVm", "DeployedFromGallery").
-        latestVersion:
-          type:
-          - string
-          - 'null'
-          description: Latest published semantic version. Null until first successful publish.
-        publishedVersionCount:
-          type: integer
-          description: Total count of published image versions (master_image_version rows).
-          format: int32
-        createdAt:
-          type: string
-          description: When the master image was created.
-          format: date-time
-        lastUpdated:
-          type: string
-          description: When the master image was last updated.
-          format: date-time
-      additionalProperties: false
-      description: Read-only overview projection for a Foundry-managed master image.
-    RegionOverview:
-      required:
-      - avgCpu
-      - avgMem
-      - costMonthToDate
-      - hostPoolsCount
-      - regionId
-      - regionName
       - resourceGroupsCount
       - runningHostsCount
+      - status
       - stoppedHostsCount
-      - subscriptionsCount
+      - subscriptionId
+      - subscriptionName
       - totalSessionsCount
       type: object
       properties:
-        regionId:
+        subscriptionId:
           type: string
-          description: Azure region code (e.g., 'eastus', 'westeurope').
-        regionName:
+          description: Internal Foundry subscription ID.
+          format: uuid
+        subscriptionName:
           type: string
-          description: Region display name (e.g., 'East US', 'West Europe').
-        subscriptionsCount:
-          type: integer
-          description: Number of subscriptions with resources in this region.
-          format: int32
+          description: Subscription display name.
         resourceGroupsCount:
           type: integer
-          description: Number of resource groups in this region.
+          description: Number of resource groups in this subscription.
+          format: int32
+        regionsCount:
+          type: integer
+          description: Number of distinct regions used by resources in this subscription.
           format: int32
         hostPoolsCount:
           type: integer
-          description: Number of host pools in this region.
+          description: Number of host pools in this subscription.
           format: int32
         runningHostsCount:
           type: integer
@@ -2305,238 +2067,60 @@ components:
           type: number
           description: Average memory percentage across all hosts.
           format: double
+        status:
+          type: string
+          description: 'Subscription health status: ''Unknown'', ''Healthy'', ''Warning'', ''Error'', or ''InProgress''.
+
+            ''Unknown'' also covers subscriptions whose health has not been computed yet.'
       additionalProperties: false
-      description: Region summary with aggregated metrics for the overview page.
-    OverviewGraphData:
+      description: Subscription summary with aggregated metrics for the overview page.
+    ErrorResponse:
       required:
-      - entityType
+      - status
+      - title
+      - traceId
       type: object
       properties:
-        entityType:
-          type: string
-          description: 'Entity type identifier matching the graph item key.
-
-            Values: ''subscriptions'', ''regions'', ''resourceGroups'', ''hostPools'', ''hosts'', ''images'', ''sessions''.'
-        count:
-          type:
-          - integer
-          - 'null'
-          description: Count of entities at this level. Null if filtered to a single item.
-          format: int32
-        itemName:
+        type:
           type:
           - string
           - 'null'
-          description: Name of the single selected item when filtered. Null if showing count.
-      additionalProperties: false
-      description: 'Graph node data for the cloud integrations overview visualization.
-
-        Each instance represents a count of entities at a specific level in the hierarchy.'
-    RegionOverviewPagedResult:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/RegionOverview'
-          description: The items in the current page.
-        page:
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
           type: integer
-          description: The current page number (1-based).
+          description: The HTTP status code.
           format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
+        detail:
           type:
-          - integer
+          - string
           - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
-
-        Supports traditional page-based pagination with skip/take semantics.'
-    HostPoolOverviewPagedResult:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/HostPoolOverview'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: The current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
           type:
-          - integer
+          - string
           - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
-
-        Supports traditional page-based pagination with skip/take semantics.'
-    WorkspaceOverview:
-      required:
-      - applicationGroupsCount
-      - hostPoolsCount
-      - regionId
-      - regionName
-      - resourceGroupId
-      - resourceGroupName
-      - runningHostsCount
-      - stoppedHostsCount
-      - subscriptionId
-      - subscriptionName
-      - totalSessionsCount
-      - workspaceId
-      - workspaceName
-      type: object
-      properties:
-        workspaceId:
-          type: string
-          description: Internal Foundry workspace ID.
-          format: uuid
-        workspaceName:
-          type: string
-          description: Workspace friendly name.
-        subscriptionId:
-          type: string
-          description: Parent subscription ID.
-          format: uuid
-        subscriptionName:
-          type: string
-          description: Parent subscription display name.
-        regionId:
-          type: string
-          description: Region code.
-        regionName:
-          type: string
-          description: Region display name.
-        resourceGroupId:
-          type: string
-          description: Resource group ID.
-          format: uuid
-        resourceGroupName:
-          type: string
-          description: Resource group name.
-        applicationGroupsCount:
-          type: integer
-          description: Number of application groups associated with this workspace.
-          format: int32
-        hostPoolsCount:
-          type: integer
-          description: Number of host pools associated through application groups.
-          format: int32
-        runningHostsCount:
-          type: integer
-          description: Total number of running session hosts across associated host pools.
-          format: int32
-        stoppedHostsCount:
-          type: integer
-          description: Total number of stopped session hosts across associated host pools.
-          format: int32
-        totalSessionsCount:
-          type: integer
-          description: Total number of active user sessions.
-          format: int32
-      additionalProperties: false
-      description: 'Workspace summary with metrics for the overview page.
-
-        Workspaces represent the top-level user experience in Azure Virtual Desktop.
-
-        They group Application Groups that users see in their Remote Desktop client.'
-    MasterImageOverviewPagedResult:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/MasterImageOverview'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: The current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
           type:
-          - integer
+          - object
           - 'null'
-          description: 'Total count of items across all pages (if available).
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
 
-            May be null if the data source does not support total count queries.'
-          format: int32
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
       additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
-        Supports traditional page-based pagination with skip/take semantics.'
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
     HostPoolOverview:
       required:
       - avgCpu
@@ -2618,73 +2202,30 @@ components:
           format: double
       additionalProperties: false
       description: Host pool summary with detailed metrics for the overview page.
-    SubscriptionOverviewPagedResult:
+    WorkspaceOverview:
       required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubscriptionOverview'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: The current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: The number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'The actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            Typically true if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a paginated result set with metadata for navigation.
-
-        Supports traditional page-based pagination with skip/take semantics.'
-    ImageOverview:
-      required:
-      - hostPoolsUsingCount
-      - hostsBasedOnCount
-      - imageId
-      - imageName
-      - lastUpdated
+      - applicationGroupsCount
+      - hostPoolsCount
       - regionId
       - regionName
-      - status
+      - resourceGroupId
+      - resourceGroupName
+      - runningHostsCount
+      - stoppedHostsCount
       - subscriptionId
       - subscriptionName
-      - version
+      - totalSessionsCount
+      - workspaceId
+      - workspaceName
       type: object
       properties:
-        imageId:
+        workspaceId:
           type: string
-          description: Internal Foundry image ID.
+          description: Internal Foundry workspace ID.
           format: uuid
-        imageName:
+        workspaceName:
           type: string
-          description: Image friendly name.
+          description: Workspace friendly name.
         subscriptionId:
           type: string
           description: Parent subscription ID.
@@ -2698,139 +2239,39 @@ components:
         regionName:
           type: string
           description: Region display name.
-        version:
+        resourceGroupId:
           type: string
-          description: Image version.
-        status:
-          type: string
-          description: Image status. Always 'Active'; no other status is currently returned.
-        lastUpdated:
-          type: string
-          description: Last update timestamp.
-          format: date-time
-        hostPoolsUsingCount:
-          type: integer
-          description: Number of host pools using this image.
-          format: int32
-        hostsBasedOnCount:
-          type: integer
-          description: Number of hosts based on this image.
-          format: int32
-      additionalProperties: false
-      description: Image summary with usage statistics for the overview page.
-    ErrorResponse:
-      required:
-      - status
-      - title
-      - traceId
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the problem type.
-        title:
-          type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          description: The HTTP status code.
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the specific occurrence of the problem.
-        errors:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: 'Dictionary of field-specific validation errors (only present for validation failures).
-
-            Key is the field name, value is an array of error messages for that field.'
-        traceId:
-          type: string
-          description: Request ID (cu-request-id) for tracking and debugging purposes.
-      additionalProperties: false
-      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
-
-        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    SubscriptionOverview:
-      required:
-      - avgCpu
-      - avgMem
-      - costMonthToDate
-      - hostPoolsCount
-      - regionsCount
-      - resourceGroupsCount
-      - runningHostsCount
-      - status
-      - stoppedHostsCount
-      - subscriptionId
-      - subscriptionName
-      - totalSessionsCount
-      type: object
-      properties:
-        subscriptionId:
-          type: string
-          description: Internal Foundry subscription ID.
+          description: Resource group ID.
           format: uuid
-        subscriptionName:
+        resourceGroupName:
           type: string
-          description: Subscription display name.
-        resourceGroupsCount:
+          description: Resource group name.
+        applicationGroupsCount:
           type: integer
-          description: Number of resource groups in this subscription.
-          format: int32
-        regionsCount:
-          type: integer
-          description: Number of distinct regions used by resources in this subscription.
+          description: Number of application groups associated with this workspace.
           format: int32
         hostPoolsCount:
           type: integer
-          description: Number of host pools in this subscription.
+          description: Number of host pools associated through application groups.
           format: int32
         runningHostsCount:
           type: integer
-          description: Number of running session hosts.
+          description: Total number of running session hosts across associated host pools.
           format: int32
         stoppedHostsCount:
           type: integer
-          description: Number of stopped session hosts.
+          description: Total number of stopped session hosts across associated host pools.
           format: int32
         totalSessionsCount:
           type: integer
           description: Total number of active user sessions.
           format: int32
-        costMonthToDate:
-          type: number
-          description: Month-to-date cost in USD.
-          format: double
-        avgCpu:
-          type: number
-          description: Average CPU percentage across all hosts.
-          format: double
-        avgMem:
-          type: number
-          description: Average memory percentage across all hosts.
-          format: double
-        status:
-          type: string
-          description: 'Subscription health status: ''Unknown'', ''Healthy'', ''Warning'', ''Error'', or ''InProgress''.
-
-            ''Unknown'' also covers subscriptions whose health has not been computed yet.'
       additionalProperties: false
-      description: Subscription summary with aggregated metrics for the overview page.
+      description: 'Workspace summary with metrics for the overview page.
+
+        Workspaces represent the top-level user experience in Azure Virtual Desktop.
+
+        They group Application Groups that users see in their Remote Desktop client.'
     ApplicationGroupOverview:
       required:
       - applicationGroupId
@@ -2920,7 +2361,7 @@ components:
       description: 'Application group summary with metrics for the overview page.
 
         Application Groups are collections of RemoteApp programs or Desktops published to users.'
-    ResourceGroupOverviewPagedResult:
+    MasterImageOverviewPagedResult:
       required:
       - count
       - hasMore
@@ -2932,7 +2373,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/ResourceGroupOverview'
+            $ref: '#/components/schemas/MasterImageOverview'
           description: The items in the current page.
         page:
           type: integer
@@ -2965,11 +2406,51 @@ components:
       description: 'Represents a paginated result set with metadata for navigation.
 
         Supports traditional page-based pagination with skip/take semantics.'
-    CloudProvider:
-      enum:
-      - azure
-      type: string
-      description: Enumeration of supported cloud provider identifiers.
+    SubscriptionOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
     SessionHostOverview:
       required:
       - costMonthToDate
@@ -3077,7 +2558,32 @@ components:
           description: Full provider resource ID of the subnet.
       additionalProperties: false
       description: Session host summary with metrics for the overview page.
-    SessionHostOverviewPagedResult:
+    OverviewGraphData:
+      required:
+      - entityType
+      type: object
+      properties:
+        entityType:
+          type: string
+          description: 'Entity type identifier matching the graph item key.
+
+            Values: ''subscriptions'', ''regions'', ''resourceGroups'', ''hostPools'', ''hosts'', ''images'', ''sessions''.'
+        count:
+          type:
+          - integer
+          - 'null'
+          description: Count of entities at this level. Null if filtered to a single item.
+          format: int32
+        itemName:
+          type:
+          - string
+          - 'null'
+          description: Name of the single selected item when filtered. Null if showing count.
+      additionalProperties: false
+      description: 'Graph node data for the cloud integrations overview visualization.
+
+        Each instance represents a count of entities at a specific level in the hierarchy.'
+    WorkspaceOverviewPagedResult:
       required:
       - count
       - hasMore
@@ -3089,7 +2595,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/SessionHostOverview'
+            $ref: '#/components/schemas/WorkspaceOverview'
           description: The items in the current page.
         page:
           type: integer
@@ -3122,7 +2628,7 @@ components:
       description: 'Represents a paginated result set with metadata for navigation.
 
         Supports traditional page-based pagination with skip/take semantics.'
-    ImageOverviewPagedResult:
+    ResourceGroupOverviewPagedResult:
       required:
       - count
       - hasMore
@@ -3134,7 +2640,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/ImageOverview'
+            $ref: '#/components/schemas/ResourceGroupOverview'
           description: The items in the current page.
         page:
           type: integer
@@ -3167,6 +2673,227 @@ components:
       description: 'Represents a paginated result set with metadata for navigation.
 
         Supports traditional page-based pagination with skip/take semantics.'
+    HostPoolOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostPoolOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    ResourceGroupOverview:
+      required:
+      - avgCpu
+      - avgMem
+      - costMonthToDate
+      - hostPoolsCount
+      - regionId
+      - regionName
+      - regionsCount
+      - resourceGroupId
+      - resourceGroupName
+      - runningHostsCount
+      - stoppedHostsCount
+      - subscriptionId
+      - subscriptionName
+      - totalSessionsCount
+      type: object
+      properties:
+        resourceGroupId:
+          type: string
+          description: Internal Foundry resource group ID.
+          format: uuid
+        resourceGroupName:
+          type: string
+          description: Resource group name.
+        subscriptionId:
+          type: string
+          description: Parent subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Parent subscription display name.
+        regionId:
+          type: string
+          description: Region code where this resource group is located.
+        regionName:
+          type: string
+          description: Region display name.
+        regionsCount:
+          type: integer
+          description: Number of distinct regions used by resources in this resource group.
+          format: int32
+        hostPoolsCount:
+          type: integer
+          description: Number of host pools in this resource group.
+          format: int32
+        runningHostsCount:
+          type: integer
+          description: Number of running session hosts.
+          format: int32
+        stoppedHostsCount:
+          type: integer
+          description: Number of stopped session hosts.
+          format: int32
+        totalSessionsCount:
+          type: integer
+          description: Total number of active user sessions.
+          format: int32
+        costMonthToDate:
+          type: number
+          description: Month-to-date cost in USD.
+          format: double
+        avgCpu:
+          type: number
+          description: Average CPU percentage across all hosts.
+          format: double
+        avgMem:
+          type: number
+          description: Average memory percentage across all hosts.
+          format: double
+      additionalProperties: false
+      description: Resource group summary with aggregated metrics for the overview page.
+    RegionOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    RegionOverview:
+      required:
+      - avgCpu
+      - avgMem
+      - costMonthToDate
+      - hostPoolsCount
+      - regionId
+      - regionName
+      - resourceGroupsCount
+      - runningHostsCount
+      - stoppedHostsCount
+      - subscriptionsCount
+      - totalSessionsCount
+      type: object
+      properties:
+        regionId:
+          type: string
+          description: Azure region code (e.g., 'eastus', 'westeurope').
+        regionName:
+          type: string
+          description: Region display name (e.g., 'East US', 'West Europe').
+        subscriptionsCount:
+          type: integer
+          description: Number of subscriptions with resources in this region.
+          format: int32
+        resourceGroupsCount:
+          type: integer
+          description: Number of resource groups in this region.
+          format: int32
+        hostPoolsCount:
+          type: integer
+          description: Number of host pools in this region.
+          format: int32
+        runningHostsCount:
+          type: integer
+          description: Number of running session hosts.
+          format: int32
+        stoppedHostsCount:
+          type: integer
+          description: Number of stopped session hosts.
+          format: int32
+        totalSessionsCount:
+          type: integer
+          description: Total number of active user sessions.
+          format: int32
+        costMonthToDate:
+          type: number
+          description: Month-to-date cost in USD.
+          format: double
+        avgCpu:
+          type: number
+          description: Average CPU percentage across all hosts.
+          format: double
+        avgMem:
+          type: number
+          description: Average memory percentage across all hosts.
+          format: double
+      additionalProperties: false
+      description: Region summary with aggregated metrics for the overview page.
     OverviewUserSessionResult:
       required:
       - currentStateDuration
@@ -3277,6 +3004,144 @@ components:
       description: 'Extended user session result for overview display.
 
         Includes denormalized host pool, subscription, and region information.'
+    ImageOverview:
+      required:
+      - hostPoolsUsingCount
+      - hostsBasedOnCount
+      - imageId
+      - imageName
+      - lastUpdated
+      - regionId
+      - regionName
+      - status
+      - subscriptionId
+      - subscriptionName
+      - version
+      type: object
+      properties:
+        imageId:
+          type: string
+          description: Internal Foundry image ID.
+          format: uuid
+        imageName:
+          type: string
+          description: Image friendly name.
+        subscriptionId:
+          type: string
+          description: Parent subscription ID.
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Parent subscription display name.
+        regionId:
+          type: string
+          description: Region code.
+        regionName:
+          type: string
+          description: Region display name.
+        version:
+          type: string
+          description: Image version.
+        status:
+          type: string
+          description: Image status. Always 'Active'; no other status is currently returned.
+        lastUpdated:
+          type: string
+          description: Last update timestamp.
+          format: date-time
+        hostPoolsUsingCount:
+          type: integer
+          description: Number of host pools using this image.
+          format: int32
+        hostsBasedOnCount:
+          type: integer
+          description: Number of hosts based on this image.
+          format: int32
+      additionalProperties: false
+      description: Image summary with usage statistics for the overview page.
+    MasterImageOverview:
+      required:
+      - createdAt
+      - lastUpdated
+      - masterImageId
+      - masterImageName
+      - osFamily
+      - osVersion
+      - powerState
+      - publishedVersionCount
+      - regionId
+      - regionName
+      - sourceType
+      - status
+      - subscriptionId
+      - subscriptionName
+      type: object
+      properties:
+        masterImageId:
+          type: string
+          description: Master image primary key.
+          format: uuid
+        masterImageName:
+          type: string
+          description: User-provided display name.
+        subscriptionId:
+          type: string
+          description: Internal Foundry subscription ID (az_subscription.id).
+          format: uuid
+        subscriptionName:
+          type: string
+          description: Subscription display name (cloud_subscription.name).
+        regionId:
+          type: string
+          description: Azure region code (e.g., "eastus").
+        regionName:
+          type: string
+          description: Region display name joined from az_region.
+        resourceGroupId:
+          type:
+          - string
+          - 'null'
+          description: Foundry resource group ID (az_resource_group.id). Null when the master image's resource group has not been imported yet.
+          format: uuid
+        resourceGroupName:
+          type:
+          - string
+          - 'null'
+          description: Resource group name (master_image.resource_group).
+        osFamily:
+          type: string
+          description: OS family stored as its enum name (e.g., "Windows11MultiSession").
+        osVersion:
+          type: string
+          description: OS version/build string (e.g., "23H2").
+        status:
+          type: string
+          description: Lifecycle status stored as its enum name (e.g., "Ready", "Error").
+        powerState:
+          type: string
+          description: VM power state stored as its enum name (e.g., "Running", "Deallocated").
+        sourceType:
+          type: string
+          description: How the image was onboarded (e.g., "PromotedVm", "DeployedFromGallery").
+        latestVersion:
+          type:
+          - string
+          - 'null'
+          description: Latest published semantic version. Null until first successful publish.
+        publishedVersionCount:
+          type: integer
+          description: Total count of published image versions (master_image_version rows).
+          format: int32
+        createdAt:
+          type: string
+          description: When the master image was created.
+          format: date-time
+        lastUpdated:
+          type: string
+          description: When the master image was last updated.
+          format: date-time
+      additionalProperties: false
+      description: Read-only overview projection for a Foundry-managed master image.
     ApplicationGroupOverviewPagedResult:
       required:
       - count
@@ -3290,6 +3155,141 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ApplicationGroupOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    OverviewUserSessionResultPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverviewUserSessionResult'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    ImageOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageOverview'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: The current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'The actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            Typically true if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a paginated result set with metadata for navigation.
+
+        Supports traditional page-based pagination with skip/take semantics.'
+    SessionHostOverviewPagedResult:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionHostOverview'
           description: The items in the current page.
         page:
           type: integer

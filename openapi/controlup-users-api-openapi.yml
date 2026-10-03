@@ -664,33 +664,136 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    HttpStatusCode.FORBIDDEN:
-      enum:
-      - 403
-      type: number
-    BadRequestErrorCodes:
-      enum:
-      - 2
-      - 14
-      - 50
-      type: number
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
         metadata:
           $ref: '#/components/schemas/ErrorResponseMetadata'
         error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
       required:
       - error
       - metadata
       type: object
-    HttpStatusCode.UNAUTHORIZED:
+    UserStatusPublic:
       enum:
-      - 401
-      type: number
+      - active
+      - disabled
+      - pending
+      type: string
     ErrorCode.InternalServerError:
       enum:
       - 6
+      type: number
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    Pick_OrgUserSettings.Exclude_keyofOrgUserSettings.roleIds__:
+      properties:
+        vdiDaasLdapLogin:
+          type:
+          - boolean
+          - 'null'
+          description: 'Whether VDI & DaaS LDAP authentication is enabled for the user.
+
+            If LDAP authentication is enabled globally for your organization, it is possible to override the global setting and disable LDAP authentication for a specific user.'
+        loginMethods:
+          items:
+            $ref: '#/components/schemas/LoginMethod'
+          type: array
+          description: 'The user’s allowed login methods.
+
+            If a login method is allowed globally for your organization, it is possible to override the global login methods and remove an allowed login method for a specific user.'
+        mfaType:
+          allOf:
+          - $ref: '#/components/schemas/MFAType'
+          description: 'The user’s MFA method.
+
+            The MFA method must be one of the allowed methods for your organization.'
+        status:
+          $ref: '#/components/schemas/UserStatusPublic'
+          description: 'The user’s status.
+
+            A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
+      required:
+      - status
+      - mfaType
+      - loginMethods
+      type: object
+      description: From T, pick a set of properties whose keys are in the union K
+    UpdateUserStatusPublic:
+      enum:
+      - active
+      - disabled
+      type: string
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    Partial_Omit_OrgUserSettings.roleIds__:
+      properties:
+        vdiDaasLdapLogin:
+          type:
+          - boolean
+          - 'null'
+          description: 'Whether VDI & DaaS LDAP authentication is enabled for the user.
+
+            If LDAP authentication is enabled globally for your organization, it is possible to override the global setting and disable LDAP authentication for a specific user.'
+        loginMethods:
+          items:
+            $ref: '#/components/schemas/LoginMethod'
+          type: array
+          description: 'The user’s allowed login methods.
+
+            If a login method is allowed globally for your organization, it is possible to override the global login methods and remove an allowed login method for a specific user.'
+        mfaType:
+          allOf:
+          - $ref: '#/components/schemas/MFAType'
+          description: 'The user’s MFA method.
+
+            The MFA method must be one of the allowed methods for your organization.'
+        status:
+          $ref: '#/components/schemas/UserStatusPublic'
+          description: 'The user’s status.
+
+            A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
+      type: object
+      description: Make all properties in T optional
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
       type: number
     Partial_Omit_OrgUserSettings.status__:
       properties:
@@ -738,10 +841,83 @@ components:
           minimum: 1
       type: object
       description: Make all properties in T optional
-    ErrorCode.Forbidden:
+    RolePublicIncluded:
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: ID of the role.
+          minimum: 1
+        name:
+          type: string
+          description: The role’s name.
+        description:
+          type: string
+          description: The role’s description.
+        isDefault:
+          type: boolean
+          description: Whether the role is one of the default roles configured by ControlUp.
+      required:
+      - isDefault
+      - description
+      - name
+      - id
+      type: object
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
       enum:
-      - 4
+      - 500
       type: number
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    PaginatedResponseMetadata:
+      properties:
+        total:
+          type: number
+          format: double
+          description: The total number of results across all pages.
+        limitPerPage:
+          type: number
+          format: double
+          description: The maximum number of results returned per page (set by the `_limit` parameter).
+        currentPageNumber:
+          type: number
+          format: double
+          description: The page of result returned (set by the `_page` parameter).
+        currentPageSize:
+          type: number
+          format: double
+          description: The number of results on the current page.
+        remaining:
+          type: number
+          format: double
+          description: The total number of results on all pages higher than the current page.
+      required:
+      - remaining
+      - currentPageSize
+      - currentPageNumber
+      - limitPerPage
+      - total
+      type: object
+      example:
+        total: 18
+        limitPerPage: 10
+        currentPageNumber: 1
+        currentPageSize: 10
+        remaining: 8
     DeletedActionResponse:
       properties:
         affectedRows:
@@ -750,55 +926,49 @@ components:
       required:
       - affectedRows
       type: object
-    ErrorMessage.NotFound:
+    APIResponse_UserAndSettings_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/UserAndSettings'
+      required:
+      - data
+      type: object
+    MFAType:
       enum:
-      - Not Found
+      - sms
+      - google_totp
+      - microsoft_totp
       type: string
-    UpdateUserStatusPublic:
-      enum:
-      - active
-      - disabled
-      type: string
-    GetUserResponse:
-      $ref: '#/components/schemas/APIResponse_UserAndSettings_'
-      example:
-        id: d1cb6131-7361-4e39-84c7-049e06921a18
-        email: john.doe@controlup.com
-        fullName: John Doe
-        firstName: John
-        lastName: Doe
-        avatar: https://lh3.googleusercontent.com/a/ACg8ocKGQE1KJ6fQFhWdQZQKucAHzKfnoM_xx_gQ-SQhDQJ7MFoijA=s96-c
-        phone: '+972546666666'
-        region: us
-        eulaVersion: '1'
-        createdAt: '2024-08-01T13:26:31.282Z'
-        updatedAt: '2024-08-01T14:50:34.605Z'
-        roles:
-        - id: 1
-          name: Admin
-          description: null
-          isDefault: true
-        settings:
-          loginMethods: null
-          mfaType: null
-          status: active
-          vdiDaasLdapLogin: null
-    BadRequestErrorMessages:
-      enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
-      type: string
-    Region:
-      enum:
-      - us
-      - eu
-      - canadacentral
-      type: string
-    ErrorCode.Unauthorized:
-      enum:
-      - 3
-      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    APIResponse_UserPublic-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/UserPublic'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    UserAndSettings:
+      allOf:
+      - $ref: '#/components/schemas/UserPublic'
+      - properties:
+          settings:
+            $ref: '#/components/schemas/Partial_Omit_OrgUserSettings.roleIds__'
+            description: User settings.
+        type: object
     GetUsersResponse:
       $ref: '#/components/schemas/APIPaginatedResponse_UserPublic-Array_'
       example:
@@ -859,49 +1029,18 @@ components:
             vdiDaasLdapLogin: null
             mfaType: null
             status: pending
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
-      enum:
-      - 500
-      type: number
-    UserAndSettings:
+    APIPaginatedResponse_UserPublic-Array_:
       allOf:
-      - $ref: '#/components/schemas/UserPublic'
+      - $ref: '#/components/schemas/APIResponse_UserPublic-Array_'
       - properties:
-          settings:
-            $ref: '#/components/schemas/Partial_Omit_OrgUserSettings.roleIds__'
-            description: User settings.
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
         type: object
-    APIResponse_UserAndSettings_:
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/UserAndSettings'
-      required:
-      - data
-      type: object
-    UUID:
-      type: string
-      format: uuid
-      description: 'Stringified UUIDv4.
-
-        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
-      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
-        code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
     UserPublic:
       properties:
         id:
@@ -948,179 +1087,10 @@ components:
       required:
       - id
       type: object
-    UserStatusPublic:
+    ErrorCode.Forbidden:
       enum:
-      - active
-      - disabled
-      - pending
-      type: string
-    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
-      required:
-      - error
-      - metadata
-      type: object
-    HttpStatusCode.BAD_REQUEST:
-      enum:
-      - 400
+      - 4
       type: number
-    PaginatedResponseMetadata:
-      properties:
-        total:
-          type: number
-          format: double
-          description: The total number of results across all pages.
-        limitPerPage:
-          type: number
-          format: double
-          description: The maximum number of results returned per page (set by the `_limit` parameter).
-        currentPageNumber:
-          type: number
-          format: double
-          description: The page of result returned (set by the `_page` parameter).
-        currentPageSize:
-          type: number
-          format: double
-          description: The number of results on the current page.
-        remaining:
-          type: number
-          format: double
-          description: The total number of results on all pages higher than the current page.
-      required:
-      - remaining
-      - currentPageSize
-      - currentPageNumber
-      - limitPerPage
-      - total
-      type: object
-      example:
-        total: 18
-        limitPerPage: 10
-        currentPageNumber: 1
-        currentPageSize: 10
-        remaining: 8
-    MFAType:
-      enum:
-      - sms
-      - google_totp
-      - microsoft_totp
-      type: string
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
-        code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
-      required:
-      - error
-      - metadata
-      type: object
-    APIResponse_UserPublic-Array_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/UserPublic'
-          type:
-          - array
-          - 'null'
-      required:
-      - data
-      type: object
-    Omit_OrgUserSettings.roleIds_:
-      $ref: '#/components/schemas/Pick_OrgUserSettings.Exclude_keyofOrgUserSettings.roleIds__'
-      description: Construct a type with the properties of T except for those in type K.
-    NonEmptyString:
-      type: string
-      minLength: 1
-    ErrorMessage.Forbidden:
-      enum:
-      - Forbidden
-      type: string
-    Pick_OrgUserSettings.Exclude_keyofOrgUserSettings.roleIds__:
-      properties:
-        vdiDaasLdapLogin:
-          type:
-          - boolean
-          - 'null'
-          description: 'Whether VDI & DaaS LDAP authentication is enabled for the user.
-
-            If LDAP authentication is enabled globally for your organization, it is possible to override the global setting and disable LDAP authentication for a specific user.'
-        loginMethods:
-          items:
-            $ref: '#/components/schemas/LoginMethod'
-          type: array
-          description: 'The user’s allowed login methods.
-
-            If a login method is allowed globally for your organization, it is possible to override the global login methods and remove an allowed login method for a specific user.'
-        mfaType:
-          allOf:
-          - $ref: '#/components/schemas/MFAType'
-          description: 'The user’s MFA method.
-
-            The MFA method must be one of the allowed methods for your organization.'
-        status:
-          $ref: '#/components/schemas/UserStatusPublic'
-          description: 'The user’s status.
-
-            A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
-      required:
-      - status
-      - mfaType
-      - loginMethods
-      type: object
-      description: From T, pick a set of properties whose keys are in the union K
-    LoginMethod:
-      enum:
-      - manual
-      - azure
-      - google
-      - saml
-      - drill_down
-      type: string
-    UpdateOrgUserSettings:
-      allOf:
-      - $ref: '#/components/schemas/Partial_Omit_OrgUserSettings.status__'
-      - properties:
-          status:
-            $ref: '#/components/schemas/UpdateUserStatusPublic'
-            description: 'The user’s status.
-
-              A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
-        type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorMessage.Unauthorized:
-      enum:
-      - Unauthorized
-      type: string
     APIResponse_DeletedActionResponse_:
       properties:
         data:
@@ -1128,156 +1098,6 @@ components:
           - $ref: '#/components/schemas/DeletedActionResponse'
       required:
       - data
-      type: object
-    UserIncludes:
-      enum:
-      - roles
-      - settings
-      type: string
-    HttpStatusCode.NOT_FOUND:
-      enum:
-      - 404
-      type: number
-    APIPaginatedResponse_UserPublic-Array_:
-      allOf:
-      - $ref: '#/components/schemas/APIResponse_UserPublic-Array_'
-      - properties:
-          metadata:
-            allOf:
-            - $ref: '#/components/schemas/PaginatedResponseMetadata'
-            - additionalProperties: true
-              type: object
-        required:
-        - metadata
-        type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
-      required:
-      - error
-      - metadata
-      type: object
-    Partial_Omit_OrgUserSettings.roleIds__:
-      properties:
-        vdiDaasLdapLogin:
-          type:
-          - boolean
-          - 'null'
-          description: 'Whether VDI & DaaS LDAP authentication is enabled for the user.
-
-            If LDAP authentication is enabled globally for your organization, it is possible to override the global setting and disable LDAP authentication for a specific user.'
-        loginMethods:
-          items:
-            $ref: '#/components/schemas/LoginMethod'
-          type: array
-          description: 'The user’s allowed login methods.
-
-            If a login method is allowed globally for your organization, it is possible to override the global login methods and remove an allowed login method for a specific user.'
-        mfaType:
-          allOf:
-          - $ref: '#/components/schemas/MFAType'
-          description: 'The user’s MFA method.
-
-            The MFA method must be one of the allowed methods for your organization.'
-        status:
-          $ref: '#/components/schemas/UserStatusPublic'
-          description: 'The user’s status.
-
-            A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
-      type: object
-      description: Make all properties in T optional
-    ErrorResponseMetadata:
-      properties:
-        cuRequestId:
-          type: string
-        orgId:
-          type: string
-        userId:
-          type: string
-        userIp:
-          type: string
-      required:
-      - userIp
-      - userId
-      - orgId
-      - cuRequestId
-      type: object
-    ErrorMessage.InternalServerError:
-      enum:
-      - Internal Server Error
-      type: string
-    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Unauthorized'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    RolePublicIncluded:
-      properties:
-        id:
-          type: integer
-          format: int32
-          description: ID of the role.
-          minimum: 1
-        name:
-          type: string
-          description: The role’s name.
-        description:
-          type: string
-          description: The role’s description.
-        isDefault:
-          type: boolean
-          description: Whether the role is one of the default roles configured by ControlUp.
-      required:
-      - isDefault
-      - description
-      - name
-      - id
-      type: object
-    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Forbidden'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Forbidden'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
-      properties:
-        message:
-          $ref: '#/components/schemas/BadRequestErrorMessages'
-        code:
-          $ref: '#/components/schemas/BadRequestErrorCodes'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
       type: object
     UpdateUserResponse:
       $ref: '#/components/schemas/APIResponse_UserAndSettings_'
@@ -1307,6 +1127,186 @@ components:
       enum:
       - 5
       type: number
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    Omit_OrgUserSettings.roleIds_:
+      $ref: '#/components/schemas/Pick_OrgUserSettings.Exclude_keyofOrgUserSettings.roleIds__'
+      description: Construct a type with the properties of T except for those in type K.
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    GetUserResponse:
+      $ref: '#/components/schemas/APIResponse_UserAndSettings_'
+      example:
+        id: d1cb6131-7361-4e39-84c7-049e06921a18
+        email: john.doe@controlup.com
+        fullName: John Doe
+        firstName: John
+        lastName: Doe
+        avatar: https://lh3.googleusercontent.com/a/ACg8ocKGQE1KJ6fQFhWdQZQKucAHzKfnoM_xx_gQ-SQhDQJ7MFoijA=s96-c
+        phone: '+972546666666'
+        region: us
+        eulaVersion: '1'
+        createdAt: '2024-08-01T13:26:31.282Z'
+        updatedAt: '2024-08-01T14:50:34.605Z'
+        roles:
+        - id: 1
+          name: Admin
+          description: null
+          isDefault: true
+        settings:
+          loginMethods: null
+          mfaType: null
+          status: active
+          vdiDaasLdapLogin: null
+    UserIncludes:
+      enum:
+      - roles
+      - settings
+      type: string
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+    UpdateOrgUserSettings:
+      allOf:
+      - $ref: '#/components/schemas/Partial_Omit_OrgUserSettings.status__'
+      - properties:
+          status:
+            $ref: '#/components/schemas/UpdateUserStatusPublic'
+            description: 'The user’s status.
+
+              A user can sign in only if their status is active. A user’s status is pending if they are invited but haven’t accepted the invitation.'
+        type: object
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    LoginMethod:
+      enum:
+      - manual
+      - azure
+      - google
+      - saml
+      - drill_down
+      type: string
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    NonEmptyString:
+      type: string
+      minLength: 1
+    Region:
+      enum:
+      - us
+      - eu
+      - canadacentral
+      type: string
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
   securitySchemes:
     BearerAuth:
       type: http

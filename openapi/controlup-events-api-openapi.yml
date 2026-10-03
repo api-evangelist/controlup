@@ -434,6 +434,43 @@ paths:
     - url: https://api.controlup.com/events/v1
 components:
   parameters:
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
     SorterField:
       name: sorters[0][field]
       in: query
@@ -469,43 +506,6 @@ components:
         - '>'
         - like
         - boolean
-    FilterValue:
-      name: filters[0][value]
-      in: query
-      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
-
-        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
-
-        '
-      schema:
-        oneOf:
-        - type: string
-          title: String
-        - type: number
-          title: Number
-        - type: boolean
-          title: Boolean
-    FilterField:
-      name: filters[0][field]
-      in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
-
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
   schemas:
     Event:
       type: object
@@ -573,140 +573,6 @@ components:
         alert_id:
           type: string
           description: ID of the alert that triggered the event. Returned only for alerts.
-    EventEntity:
-      type: object
-      properties:
-        groups:
-          description: A list of groups the source product belongs to.
-          type: array
-          items:
-            type: string
-        tags:
-          description: A list of tags associated with the source product.
-          type: array
-          items:
-            type: string
-        actionUrlParams:
-          type: object
-          description: For internal use only.
-        actionUrlNames:
-          description: For internal use only.
-          type: array
-          items:
-            type: string
-        fieldsUrlParams:
-          type: object
-          description: For internal use only.
-        fieldsUrlNames:
-          description: For internal use only.
-          type: array
-          items:
-            type: string
-        groupId:
-          type: string
-          description: Identifier for grouping related events together. Events with the same groupId are part of the same logical group or incident.
-          example: group-456-def
-        alertId:
-          type: string
-          description: Identifier of the alert rule that triggered this event. Links the event to its source alert definition.
-          example: alert-123-abc
-        sourceType:
-          type: string
-          description: Additional source type classification. Provides more granular detail about the source.
-          example: agent
-        severity:
-          type: string
-          description: 'The severity level of the event: Informational, Low, Medium, High, or Critical.'
-          example: High
-          enum:
-          - Informational
-          - Low
-          - Medium
-          - High
-          - Critical
-        uuid:
-          type: string
-          description: Unique identifier (UUID) for this event. Primary key used to retrieve the event.
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        utcOffsetSeconds:
-          type: number
-          description: The UTC offset in seconds for the timezone where the event originated. Used to calculate local time at the source.
-          example: 0
-        userName:
-          type: string
-          description: The username of the employee associated with this event.
-          example: john.doe
-        type:
-          type: string
-          description: The category or type of the event. Used to classify events into logical groups.
-          example: Performance
-        triggerCondition:
-          type: string
-          description: A human-readable description of the conditions that triggered this event. Enriched by AI to provide a clear explanation of thresholds/rules met.
-          example: The trigger activates if the CPU load is 90% or more for at least 60 seconds.
-        timestampUtcMs:
-          type: number
-          description: The timestamp when the event occurred, as Unix epoch time in milliseconds (UTC).
-          example: 1705057200000
-        sourceName:
-          type: string
-          enum:
-          - SOURCE_NAME_UNSPECIFIED
-          - SOURCE_NAME_VDI
-          - SOURCE_NAME_DESKTOP
-          - SOURCE_NAME_SYNTHETIC
-          description: The ControlUp product/value stream that generated the event. SOURCE_NAME_VDI = VDI, SOURCE_NAME_DESKTOP = Devices, SOURCE_NAME_SYNTHETIC = Synthetic Monitoring.
-          example: SOURCE_NAME_DESKTOP
-        remoteVirtualSession:
-          type: string
-          description: For VDI environments, the identifier or name of the virtual session associated with this event.
-          example: session-123
-        remoteSessionClientIp:
-          type: string
-          description: For remote sessions (VDI/RDP), the IP address of the client machine connecting to the session.
-          example: 10.0.0.50
-        publicIpAddress:
-          type: string
-          description: The public-facing IP address of the device where the event occurred.
-          example: 203.0.113.1
-        ipAddress:
-          type: string
-          description: The private/internal IP address of the device where the event occurred.
-          example: 192.168.1.100
-        name:
-          type: string
-          description: The name/title of the event. Human-readable identifier for what occurred.
-          example: High CPU Load Detected
-        hostName:
-          type: string
-          description: The hostname of the machine where the event occurred. For VDI, this is the host server name.
-          example: host-1.example.com
-        guestName:
-          type: string
-          description: The name of the source device - guest machine/VM or device name where the event originated.
-          example: DESKTOP-ABC123
-        folderPath:
-          type: string
-          description: The file system path relevant to the event.
-          example: C:\Users\user1\Documents
-        applicationName:
-          type: string
-          description: The name of the application associated with the event.
-          example: chrome.exe
-        additionalData:
-          type: object
-          description: A flexible key-value map containing extra event data. May include device_id, os_version, app_version, or custom metrics.
-          example:
-            device_id: 00:1A:2B:3C:4D:0E
-            os_version: Windows 10 Pro
-      required:
-      - name
-      - sourceName
-      - timestampUtcMs
-      - utcOffsetSeconds
-      - uuid
-      - tags
-      - groups
     GridQueryDTO:
       type: object
       properties:
@@ -945,6 +811,140 @@ components:
       - timeTo
       - fields
       - limit
+    EventEntity:
+      type: object
+      properties:
+        groups:
+          description: A list of groups the source product belongs to.
+          type: array
+          items:
+            type: string
+        tags:
+          description: A list of tags associated with the source product.
+          type: array
+          items:
+            type: string
+        actionUrlParams:
+          type: object
+          description: For internal use only.
+        actionUrlNames:
+          description: For internal use only.
+          type: array
+          items:
+            type: string
+        fieldsUrlParams:
+          type: object
+          description: For internal use only.
+        fieldsUrlNames:
+          description: For internal use only.
+          type: array
+          items:
+            type: string
+        groupId:
+          type: string
+          description: Identifier for grouping related events together. Events with the same groupId are part of the same logical group or incident.
+          example: group-456-def
+        alertId:
+          type: string
+          description: Identifier of the alert rule that triggered this event. Links the event to its source alert definition.
+          example: alert-123-abc
+        sourceType:
+          type: string
+          description: Additional source type classification. Provides more granular detail about the source.
+          example: agent
+        severity:
+          type: string
+          description: 'The severity level of the event: Informational, Low, Medium, High, or Critical.'
+          example: High
+          enum:
+          - Informational
+          - Low
+          - Medium
+          - High
+          - Critical
+        uuid:
+          type: string
+          description: Unique identifier (UUID) for this event. Primary key used to retrieve the event.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        utcOffsetSeconds:
+          type: number
+          description: The UTC offset in seconds for the timezone where the event originated. Used to calculate local time at the source.
+          example: 0
+        userName:
+          type: string
+          description: The username of the employee associated with this event.
+          example: john.doe
+        type:
+          type: string
+          description: The category or type of the event. Used to classify events into logical groups.
+          example: Performance
+        triggerCondition:
+          type: string
+          description: A human-readable description of the conditions that triggered this event. Enriched by AI to provide a clear explanation of thresholds/rules met.
+          example: The trigger activates if the CPU load is 90% or more for at least 60 seconds.
+        timestampUtcMs:
+          type: number
+          description: The timestamp when the event occurred, as Unix epoch time in milliseconds (UTC).
+          example: 1705057200000
+        sourceName:
+          type: string
+          enum:
+          - SOURCE_NAME_UNSPECIFIED
+          - SOURCE_NAME_VDI
+          - SOURCE_NAME_DESKTOP
+          - SOURCE_NAME_SYNTHETIC
+          description: The ControlUp product/value stream that generated the event. SOURCE_NAME_VDI = VDI, SOURCE_NAME_DESKTOP = Devices, SOURCE_NAME_SYNTHETIC = Synthetic Monitoring.
+          example: SOURCE_NAME_DESKTOP
+        remoteVirtualSession:
+          type: string
+          description: For VDI environments, the identifier or name of the virtual session associated with this event.
+          example: session-123
+        remoteSessionClientIp:
+          type: string
+          description: For remote sessions (VDI/RDP), the IP address of the client machine connecting to the session.
+          example: 10.0.0.50
+        publicIpAddress:
+          type: string
+          description: The public-facing IP address of the device where the event occurred.
+          example: 203.0.113.1
+        ipAddress:
+          type: string
+          description: The private/internal IP address of the device where the event occurred.
+          example: 192.168.1.100
+        name:
+          type: string
+          description: The name/title of the event. Human-readable identifier for what occurred.
+          example: High CPU Load Detected
+        hostName:
+          type: string
+          description: The hostname of the machine where the event occurred. For VDI, this is the host server name.
+          example: host-1.example.com
+        guestName:
+          type: string
+          description: The name of the source device - guest machine/VM or device name where the event originated.
+          example: DESKTOP-ABC123
+        folderPath:
+          type: string
+          description: The file system path relevant to the event.
+          example: C:\Users\user1\Documents
+        applicationName:
+          type: string
+          description: The name of the application associated with the event.
+          example: chrome.exe
+        additionalData:
+          type: object
+          description: A flexible key-value map containing extra event data. May include device_id, os_version, app_version, or custom metrics.
+          example:
+            device_id: 00:1A:2B:3C:4D:0E
+            os_version: Windows 10 Pro
+      required:
+      - name
+      - sourceName
+      - timestampUtcMs
+      - utcOffsetSeconds
+      - uuid
+      - tags
+      - groups
   securitySchemes:
     bearerAuth:
       type: http

@@ -74,6 +74,15 @@ paths:
           '
 components:
   responses:
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
     HivesList:
       description: A list of Custom Hives
       content:
@@ -88,15 +97,15 @@ components:
               success:
                 type: boolean
                 description: Whether the request was successful.
-    Unauthorized:
-      description: Missing or wrong api key
+    ServerError:
+      description: Server errors
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/BaseError'
           example:
             success: false
-            errors: Unauthorized
+            errors: Server Error
     CloudHivesList:
       description: A list of Cloud Hives
       content:
@@ -111,43 +120,7 @@ components:
               success:
                 type: boolean
                 description: Whether the request was successful.
-    ServerError:
-      description: Server errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Server Error
   schemas:
-    CloudHiveResponse:
-      type: object
-      description: Cloud hive properties
-      properties:
-        id:
-          type: integer
-          description: ID of the hive.
-          example: 1
-        slug:
-          type: string
-          description: The hive's slug. This is the region in which the hive is hosted.
-          example: eu-central-1
-        name:
-          type: string
-          description: The hive's name.
-          example: EU (Frankfurt)
-        version:
-          type: integer
-          description: The hive version.
-          example: 1161
-    BaseError:
-      type: object
-      properties:
-        errors:
-          type: string
-      required:
-      - errors
     HiveResponse:
       type: object
       description: Hive's properties
@@ -188,6 +161,33 @@ components:
           type: integer
           description: The Custom Hive version.
           example: 1124
+    CloudHiveResponse:
+      type: object
+      description: Cloud hive properties
+      properties:
+        id:
+          type: integer
+          description: ID of the hive.
+          example: 1
+        slug:
+          type: string
+          description: The hive's slug. This is the region in which the hive is hosted.
+          example: eu-central-1
+        name:
+          type: string
+          description: The hive's name.
+          example: EU (Frankfurt)
+        version:
+          type: integer
+          description: The hive version.
+          example: 1161
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
   securitySchemes:
     ApiKeyAuth:
       type: http

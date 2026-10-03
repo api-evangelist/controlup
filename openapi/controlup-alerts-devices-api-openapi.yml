@@ -255,41 +255,112 @@ paths:
               description: Desktop alert configuration details
 components:
   schemas:
-    HttpStatusCode.FORBIDDEN:
-      enum:
-      - 403
-      type: number
-    BadRequestErrorCodes:
-      enum:
-      - 2
-      - 14
-      - 50
-      type: number
-    Omit_DesktopAlertConfigDTO.sourceName-or-id_:
-      $ref: '#/components/schemas/Pick_DesktopAlertConfigDTO.Exclude_keyofDesktopAlertConfigDTO.sourceName-or-id__'
-      description: Construct a type with the properties of T except for those in type K.
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
         metadata:
           $ref: '#/components/schemas/ErrorResponseMetadata'
         error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
       required:
       - error
       - metadata
       type: object
-    HttpStatusCode.UNAUTHORIZED:
-      enum:
-      - 401
-      type: number
     ErrorCode.InternalServerError:
       enum:
       - 6
       type: number
-    ErrorCode.Forbidden:
+    HttpStatusCode.NOT_FOUND:
       enum:
-      - 4
+      - 404
       type: number
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    DesktopAlertMetric:
+      properties:
+        metric:
+          type: string
+          description: 'The name of the metric (field) to use for the condition.
+
+            You must enter the name of the field as it appears in the data index.'
+        condition:
+          $ref: '#/components/schemas/DesktopAlertMetricCondition'
+          description: Type of comparison. Note that a condition based on a string field must use the `like` condition.
+        value:
+          type: string
+          description: Value to compare against. Numbers can be passed as strings.
+      required:
+      - value
+      - condition
+      - metric
+      type: object
+    DesktopAlertMetricCondition:
+      type: string
+      enum:
+      - '='
+      - '!='
+      - '>='
+      - '>'
+      - <=
+      - <
+      - like
     DeletedActionResponse:
       properties:
         affectedRows:
@@ -298,11 +369,7 @@ components:
       required:
       - affectedRows
       type: object
-    ErrorMessage.NotFound:
-      enum:
-      - Not Found
-      type: string
-    Pick_DesktopAlertConfigDTO.Exclude_keyofDesktopAlertConfigDTO.sourceName-or-id__:
+    Partial_CreateDesktopAlertDTO_:
       properties:
         integrations:
           properties:
@@ -473,142 +540,8 @@ components:
         name:
           type: string
           description: The alert's name.
-      required:
-      - name
-      - severity
-      - enabled
-      - platform
-      - index
-      - metrics
-      - hitsNumber
-      - hitsTimeWindowSeconds
-      - retriggerIntervalSeconds
       type: object
-      description: From T, pick a set of properties whose keys are in the union K
-    BadRequestErrorMessages:
-      enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
-      type: string
-    ErrorCode.Unauthorized:
-      enum:
-      - 3
-      type: number
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
-      enum:
-      - 500
-      type: number
-    UUID:
-      type: string
-      format: uuid
-      description: 'Stringified UUIDv4.
-
-        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
-      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
-        code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    DesktopAlertMetric:
-      properties:
-        metric:
-          type: string
-          description: 'The name of the metric (field) to use for the condition.
-
-            You must enter the name of the field as it appears in the data index.'
-        condition:
-          $ref: '#/components/schemas/DesktopAlertMetricCondition'
-          description: Type of comparison. Note that a condition based on a string field must use the `like` condition.
-        value:
-          type: string
-          description: Value to compare against. Numbers can be passed as strings.
-      required:
-      - value
-      - condition
-      - metric
-      type: object
-    Email:
-      type: string
-      format: email
-      description: Valid email address.
-      pattern: ^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
-    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
-      required:
-      - error
-      - metadata
-      type: object
-    HttpStatusCode.BAD_REQUEST:
-      enum:
-      - 400
-      type: number
-    DesktopAlertMetricCondition:
-      type: string
-      enum:
-      - '='
-      - '!='
-      - '>='
-      - '>'
-      - <=
-      - <
-      - like
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
-        code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    URI:
-      type: string
-      example: http://example.com
-      format: uri
-      description: Valid URI.
-      pattern: ^(http(s)?:\/\/.)?(www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6})|(localhost)\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
-      required:
-      - error
-      - metadata
-      type: object
-    Severity:
-      enum:
-      - informational
-      - low
-      - medium
-      - high
-      - critical
-      type: string
+      description: Make all properties in T optional
     ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
       properties:
         metadata:
@@ -619,83 +552,45 @@ components:
       - error
       - metadata
       type: object
-    ErrorMessage.Forbidden:
+    ErrorCode.Forbidden:
       enum:
-      - Forbidden
-      type: string
-    ErrorMessage.Unauthorized:
-      enum:
-      - Unauthorized
-      type: string
-    HttpStatusCode.NOT_FOUND:
-      enum:
-      - 404
-      type: number
-    DesktopPlatform:
-      enum:
-      - 0
-      - 1
-      - 2
-      - 3
       - 4
       type: number
-    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
       properties:
         metadata:
           $ref: '#/components/schemas/ErrorResponseMetadata'
         error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
       required:
       - error
       - metadata
       type: object
+    Omit_DesktopAlertConfigDTO.sourceName-or-id_:
+      $ref: '#/components/schemas/Pick_DesktopAlertConfigDTO.Exclude_keyofDesktopAlertConfigDTO.sourceName-or-id__'
+      description: Construct a type with the properties of T except for those in type K.
     ServiceNowCustomFields:
       description: Custom fields dictionary type for ServiceNow integration.
       properties: {}
       type: object
       additionalProperties:
         type: string
-    ErrorResponseMetadata:
-      properties:
-        cuRequestId:
-          type: string
-        orgId:
-          type: string
-        userId:
-          type: string
-        userIp:
-          type: string
-      required:
-      - userIp
-      - userId
-      - orgId
-      - cuRequestId
-      type: object
-    ServiceNowTicketType:
-      enum:
-      - 1
-      - 2
-      type: number
-    ErrorMessage.InternalServerError:
-      enum:
-      - Internal Server Error
-      type: string
-    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Unauthorized'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
     DesktopAlertConfigDTO:
       properties:
         integrations:
@@ -883,14 +778,31 @@ components:
       - retriggerIntervalSeconds
       type: object
       additionalProperties: true
-    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+    Email:
+      type: string
+      format: email
+      description: Valid email address.
+      pattern: ^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
+    DesktopPlatform:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      type: number
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
       properties:
         message:
-          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
         code:
-          $ref: '#/components/schemas/ErrorCode.Forbidden'
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
         data:
           additionalProperties: true
           type: object
@@ -899,7 +811,71 @@ components:
       - code
       - message
       type: object
-    Partial_CreateDesktopAlertDTO_:
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    URI:
+      type: string
+      example: http://example.com
+      format: uri
+      description: Valid URI.
+      pattern: ^(http(s)?:\/\/.)?(www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6})|(localhost)\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
+    ServiceNowTicketType:
+      enum:
+      - 1
+      - 2
+      type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    Pick_DesktopAlertConfigDTO.Exclude_keyofDesktopAlertConfigDTO.sourceName-or-id__:
       properties:
         integrations:
           properties:
@@ -1070,16 +1046,38 @@ components:
         name:
           type: string
           description: The alert's name.
+      required:
+      - name
+      - severity
+      - enabled
+      - platform
+      - index
+      - metrics
+      - hitsNumber
+      - hitsTimeWindowSeconds
+      - retriggerIntervalSeconds
       type: object
-      description: Make all properties in T optional
-    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      description: From T, pick a set of properties whose keys are in the union K
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    Severity:
+      enum:
+      - informational
+      - low
+      - medium
+      - high
+      - critical
+      type: string
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
       properties:
         message:
-          $ref: '#/components/schemas/BadRequestErrorMessages'
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
         code:
-          $ref: '#/components/schemas/BadRequestErrorCodes'
+          $ref: '#/components/schemas/ErrorCode.NotFound'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
         data:
           additionalProperties: true
           type: object
@@ -1088,10 +1086,12 @@ components:
       - code
       - message
       type: object
-    ErrorCode.NotFound:
+    BadRequestErrorMessages:
       enum:
-      - 5
-      type: number
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
   securitySchemes:
     apiKey:
       type: http

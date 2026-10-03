@@ -867,29 +867,15 @@ paths:
     - url: https://api.controlup.com/edge/api
 components:
   parameters:
-    _search:
+    _limit:
       in: query
-      name: _search
+      name: _limit
       required: false
-      description: 'Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:
-
-        * **Comma-separated string**. For example, `?_search=server,windows`.
-
-        * **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.
-
-        '
+      description: The number of rows returned per page.
       schema:
-        oneOf:
-        - type: array
-          items:
-            type: string
-          example:
-          - server
-          - windows
-        - type: string
-          example: server,windows
-      style: form
-      explode: true
+        type: integer
+        default: 10
+        maximum: 100
     _filterby:
       in: query
       name: _filterby
@@ -925,22 +911,6 @@ components:
       schema:
         type: string
         example: device_name contains server
-    _page:
-      in: query
-      name: _page
-      required: false
-      description: The page returned. Pages are 1-based.
-      schema:
-        type: integer
-    _limit:
-      in: query
-      name: _limit
-      required: false
-      description: The number of rows returned per page.
-      schema:
-        type: integer
-        default: 10
-        maximum: 100
     _orderby:
       in: query
       name: _orderby
@@ -1024,6 +994,36 @@ components:
       schema:
         type: string
         example: '{"field":"score","op":"gte","value":90}'
+    _page:
+      in: query
+      name: _page
+      required: false
+      description: The page returned. Pages are 1-based.
+      schema:
+        type: integer
+    _search:
+      in: query
+      name: _search
+      required: false
+      description: 'Free-text search across all text fields. If you add multiple values, they are ANDed together. You can submit multiple values using one of two supported formats:
+
+        * **Comma-separated string**. For example, `?_search=server,windows`.
+
+        * **Repeated key** (exploded array). An array of strings, serialized by repeating the parameter key. For example, `?_search=server&_search=windows`.
+
+        '
+      schema:
+        oneOf:
+        - type: array
+          items:
+            type: string
+          example:
+          - server
+          - windows
+        - type: string
+          example: server,windows
+      style: form
+      explode: true
     _sort:
       name: _sort
       in: query
@@ -1066,27 +1066,17 @@ components:
           title: Number
         - type: boolean
           title: Boolean
-    FilterField:
-      name: filters[0][field]
+    SorterField:
+      name: sorters[0][field]
       in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
 
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
 
         '
       schema:
         type: string
         example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
     FilterType:
       name: filters[0][type]
       in: query
@@ -1111,18 +1101,290 @@ components:
         - '>'
         - like
         - boolean
-    SorterField:
-      name: sorters[0][field]
+    SorterDir:
+      name: sorters[0][dir]
       in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
 
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
 
         '
       schema:
         type: string
         example: _created
   schemas:
+    VulnerabilitiesData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: CVE identifier.
+          example: CVE-2025-0144
+        spm_id:
+          type: string
+          description: Internal identifier.
+          example: 559a7df4-0be9-a32e-487b-e62b3fa8471d
+        type:
+          type: string
+          description: The issue category.
+          enum:
+          - vulnerability
+          example: vulnerability
+        title:
+          type: string
+          description: CVE identifier.
+          example: CVE-2025-0144
+        description:
+          type: string
+          description: Issue description.
+        severity:
+          type: string
+          description: The severity level of the issue.
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+          example: LOW
+        status:
+          type: string
+          description: Issue status on the device.
+          example: vulnerable
+        origin:
+          type: string
+          description: '''builtin'' means that the issue is part of ControlUp''s default issue catalog.
+
+            ''custom'' means that the issue was added by a ControlUp user.
+
+            '
+          example: builtin
+        remediation_status:
+          type: string
+          description: Indicates whether a remediation is available for the issue.
+          enum:
+          - Available
+          - Unavailable
+          example: Available
+        min_report:
+          type: string
+          description: The first time the issue was detected on this device.
+          format: date-time
+          example: '2025-02-06T15:49:15.010Z'
+        max_report:
+          type: string
+          description: The latest time the issue was detected on this device.
+          format: date-time
+          example: '2025-08-27T15:52:44.388Z'
+        cve_2_0:
+          type:
+          - number
+          - 'null'
+          description: CVSS v2 score.
+          format: float
+          example: 3.1
+        cve_3_0:
+          type:
+          - number
+          - 'null'
+          description: CVSS v3 score.
+          format: float
+          example: 3.1
+        epss:
+          type:
+          - number
+          - 'null'
+          description: EPSS score.
+          format: float
+          example: 1.6
+        published_epoch:
+          type: string
+          description: Time and date when the CVE was published.
+          format: date-time
+          example: '2025-01-15T06:53:11.000Z'
+        app_name:
+          type: string
+          description: The name of the affected application.
+          example: Zoom
+        is_os:
+          type: boolean
+          description: Indicates if the vulnerability affects the operating system.
+          example: false
+        last_remediation_status:
+          type:
+          - string
+          - 'null'
+          description: The latest remediation status. For details, read [Remediation Status](https://support.controlup.com/docs/remediation-status).
+          example: null
+        device_action_id:
+          type:
+          - string
+          - 'null'
+          description: Unknown???.
+          format: uuid
+          example: null
+        remediation_availability:
+          type: string
+          description: Whether ControlUp can remediate the issue.
+          example: Available
+        remediation_state:
+          type:
+          - string
+          - 'null'
+          description: The current remediation state. Possible values?
+          example: null
+        last_event_action:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_status:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_metadata:
+          type:
+          - object
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_created_at:
+          type:
+          - string
+          - 'null'
+          description: Unknown
+          format: date-time
+          example: null
+    MisconfigData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Issue ID.
+          example: 5hea82cd-8144-445d-9778-bb4d6f52f03e
+        type:
+          type: string
+          description: The issue category.
+          enum:
+          - misconfig
+          example: misconfig
+        title:
+          type: string
+          description: Issue title.
+          example: Disable Solicited Remote Assistance
+        description:
+          type: string
+          description: Issue description.
+          example: 'Remote assistance allows another user to view or take control of the local session of a user.
+
+            Solicited assistance is help that is specifically requested by the local user.
+
+            '
+        severity:
+          type: string
+          description: The severity level of the issue.
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+          example: LOW
+        status:
+          type: string
+          description: Issue status on the device.
+          example: vulnerable
+        origin:
+          type: string
+          description: '''builtin'' means that the issue is part of ControlUp''s default issue catalog.
+
+            ''custom'' means that the issue was added by a ControlUp user.
+
+            '
+          example: builtin
+        remediation_status:
+          type: string
+          description: Indicates whether a remediation is available for the issue.
+          enum:
+          - Available
+          - Unavailable
+          example: Available
+        min_report:
+          type: string
+          description: The first time the issue was detected on this device.
+          format: date-time
+          example: '2025-02-06T15:49:15.010Z'
+        max_report:
+          type: string
+          description: The latest time the vulnerability was detected on this device.
+          format: date-time
+          example: '2025-08-27T15:52:44.388Z'
+        potential_risk:
+          type: string
+          description: A description of the potential risk from the issue.
+        score:
+          type: string
+          description: The issue score.
+          example: 7
+        last_remediation_status:
+          type:
+          - string
+          - 'null'
+          description: The latest remediation status. For details, read [Remediation Status](https://support.controlup.com/docs/remediation-status).
+          example: null
+        device_action_id:
+          type:
+          - string
+          - 'null'
+          description: Unknown???.
+          format: uuid
+          example: null
+        remediation_availability:
+          type: string
+          description: Whether ControlUp can remediate the issue.
+          example: Available
+        remediation_state:
+          type:
+          - string
+          - 'null'
+          description: The current remediation state. Possible values?
+          example: null
+        last_event_action:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_status:
+          type:
+          - string
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_metadata:
+          type:
+          - object
+          - 'null'
+          description: Unknown?
+          example: null
+        last_event_created_at:
+          type:
+          - string
+          - 'null'
+          description: Unknown
+          format: date-time
+          example: null
     PatchesData:
       type: object
       properties:
@@ -1351,150 +1613,6 @@ components:
                   example: C:\Program Files\WinRAR\uninstall.exe
         services:
           description: Related services.
-    VulnerabilitiesData:
-      type: object
-      properties:
-        id:
-          type: string
-          description: CVE identifier.
-          example: CVE-2025-0144
-        spm_id:
-          type: string
-          description: Internal identifier.
-          example: 559a7df4-0be9-a32e-487b-e62b3fa8471d
-        type:
-          type: string
-          description: The issue category.
-          enum:
-          - vulnerability
-          example: vulnerability
-        title:
-          type: string
-          description: CVE identifier.
-          example: CVE-2025-0144
-        description:
-          type: string
-          description: Issue description.
-        severity:
-          type: string
-          description: The severity level of the issue.
-          enum:
-          - LOW
-          - MEDIUM
-          - HIGH
-          - CRITICAL
-          example: LOW
-        status:
-          type: string
-          description: Issue status on the device.
-          example: vulnerable
-        origin:
-          type: string
-          description: '''builtin'' means that the issue is part of ControlUp''s default issue catalog.
-
-            ''custom'' means that the issue was added by a ControlUp user.
-
-            '
-          example: builtin
-        remediation_status:
-          type: string
-          description: Indicates whether a remediation is available for the issue.
-          enum:
-          - Available
-          - Unavailable
-          example: Available
-        min_report:
-          type: string
-          description: The first time the issue was detected on this device.
-          format: date-time
-          example: '2025-02-06T15:49:15.010Z'
-        max_report:
-          type: string
-          description: The latest time the issue was detected on this device.
-          format: date-time
-          example: '2025-08-27T15:52:44.388Z'
-        cve_2_0:
-          type:
-          - number
-          - 'null'
-          description: CVSS v2 score.
-          format: float
-          example: 3.1
-        cve_3_0:
-          type:
-          - number
-          - 'null'
-          description: CVSS v3 score.
-          format: float
-          example: 3.1
-        epss:
-          type:
-          - number
-          - 'null'
-          description: EPSS score.
-          format: float
-          example: 1.6
-        published_epoch:
-          type: string
-          description: Time and date when the CVE was published.
-          format: date-time
-          example: '2025-01-15T06:53:11.000Z'
-        app_name:
-          type: string
-          description: The name of the affected application.
-          example: Zoom
-        is_os:
-          type: boolean
-          description: Indicates if the vulnerability affects the operating system.
-          example: false
-        last_remediation_status:
-          type:
-          - string
-          - 'null'
-          description: The latest remediation status. For details, read [Remediation Status](https://support.controlup.com/docs/remediation-status).
-          example: null
-        device_action_id:
-          type:
-          - string
-          - 'null'
-          description: Unknown???.
-          format: uuid
-          example: null
-        remediation_availability:
-          type: string
-          description: Whether ControlUp can remediate the issue.
-          example: Available
-        remediation_state:
-          type:
-          - string
-          - 'null'
-          description: The current remediation state. Possible values?
-          example: null
-        last_event_action:
-          type:
-          - string
-          - 'null'
-          description: Unknown?
-          example: null
-        last_event_status:
-          type:
-          - string
-          - 'null'
-          description: Unknown?
-          example: null
-        last_event_metadata:
-          type:
-          - object
-          - 'null'
-          description: Unknown?
-          example: null
-        last_event_created_at:
-          type:
-          - string
-          - 'null'
-          description: Unknown
-          format: date-time
-          example: null
     Device:
       type: object
       description: Detailed information about a single device.
@@ -1605,6 +1723,25 @@ components:
           type: string
           description: Version of the ControlUp for Compliance Agent installed on the device.
           example: 1.5.2510.08
+    PaginationMetadata:
+      type: object
+      description: Extra metadata for paginated responses.
+      properties:
+        total:
+          type: integer
+          description: Total number of records available.
+        limitPerPage:
+          type: integer
+          description: Maximum number of records requested per page.
+        currentPageNumber:
+          type: integer
+          description: The number of the current page.
+        currentPageSize:
+          type: integer
+          description: Actual number of records returned in the current page.
+        remaining:
+          type: integer
+          description: Number of records remaining after the current page.
     Metadata:
       type: object
       description: Pagination and request-specific metadata.
@@ -1738,143 +1875,33 @@ components:
           format: date-time
           description: The creation time of the last recorded event.
           example: null
-    PaginationMetadata:
-      type: object
-      description: Extra metadata for paginated responses.
-      properties:
-        total:
-          type: integer
-          description: Total number of records available.
-        limitPerPage:
-          type: integer
-          description: Maximum number of records requested per page.
-        currentPageNumber:
-          type: integer
-          description: The number of the current page.
-        currentPageSize:
-          type: integer
-          description: Actual number of records returned in the current page.
-        remaining:
-          type: integer
-          description: Number of records remaining after the current page.
-    MisconfigData:
+    deviceIds:
+      type: array
+      description: An array of device IDs on which to perform the action. You can use [GET /devices](list-devices) to get device IDs.
+      items:
+        type: string
+      example:
+      - rTIBRoIBOFdS29Oi1ATq
+      - b47LRkQIB8BdS21Oi1TYh
+    sendmessageallusers-multidevice:
+      title: Send message to all users
       type: object
       properties:
-        id:
-          type: string
-          description: Issue ID.
-          example: 5hea82cd-8144-445d-9778-bb4d6f52f03e
-        type:
-          type: string
-          description: The issue category.
-          enum:
-          - misconfig
-          example: misconfig
-        title:
-          type: string
-          description: Issue title.
-          example: Disable Solicited Remote Assistance
-        description:
-          type: string
-          description: Issue description.
-          example: 'Remote assistance allows another user to view or take control of the local session of a user.
-
-            Solicited assistance is help that is specifically requested by the local user.
-
-            '
-        severity:
-          type: string
-          description: The severity level of the issue.
-          enum:
-          - LOW
-          - MEDIUM
-          - HIGH
-          - CRITICAL
-          example: LOW
-        status:
-          type: string
-          description: Issue status on the device.
-          example: vulnerable
-        origin:
-          type: string
-          description: '''builtin'' means that the issue is part of ControlUp''s default issue catalog.
-
-            ''custom'' means that the issue was added by a ControlUp user.
-
-            '
-          example: builtin
-        remediation_status:
-          type: string
-          description: Indicates whether a remediation is available for the issue.
-          enum:
-          - Available
-          - Unavailable
-          example: Available
-        min_report:
-          type: string
-          description: The first time the issue was detected on this device.
-          format: date-time
-          example: '2025-02-06T15:49:15.010Z'
-        max_report:
-          type: string
-          description: The latest time the vulnerability was detected on this device.
-          format: date-time
-          example: '2025-08-27T15:52:44.388Z'
-        potential_risk:
-          type: string
-          description: A description of the potential risk from the issue.
-        score:
-          type: string
-          description: The issue score.
-          example: 7
-        last_remediation_status:
-          type:
-          - string
-          - 'null'
-          description: The latest remediation status. For details, read [Remediation Status](https://support.controlup.com/docs/remediation-status).
-          example: null
-        device_action_id:
-          type:
-          - string
-          - 'null'
-          description: Unknown???.
-          format: uuid
-          example: null
-        remediation_availability:
-          type: string
-          description: Whether ControlUp can remediate the issue.
-          example: Available
-        remediation_state:
-          type:
-          - string
-          - 'null'
-          description: The current remediation state. Possible values?
-          example: null
-        last_event_action:
-          type:
-          - string
-          - 'null'
-          description: Unknown?
-          example: null
-        last_event_status:
-          type:
-          - string
-          - 'null'
-          description: Unknown?
-          example: null
-        last_event_metadata:
-          type:
-          - object
-          - 'null'
-          description: Unknown?
-          example: null
-        last_event_created_at:
-          type:
-          - string
-          - 'null'
-          description: Unknown
-          format: date-time
-          example: null
+        action_data:
+          description: Details about the action to perform.
+          type: object
+          properties:
+            type:
+              description: The type of action to perform. To send a message to all users on all selected devices, enter `DEV_CONSOLEMSG`.
+              type: string
+              enum:
+              - DEV_CONSOLEMSG
+            data:
+              description: The message to send.
+              type: string
+              example: Hello! This is a test message.
+        device_ids:
+          $ref: '#/components/schemas/deviceIds'
     termiateprocess:
       title: Terminate process
       type: object
@@ -1889,6 +1916,15 @@ components:
           type: integer
           format: int64
           example: 18740
+    reboot:
+      title: Reboot device
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To reboot the device, enter `DEV_REBOOT`.
+          type: string
+          enum:
+          - DEV_REBOOT
     runcmd-multidevice:
       title: Run command as System/Root
       type: object
@@ -1907,19 +1943,25 @@ components:
               example: whoami
         device_ids:
           $ref: '#/components/schemas/deviceIds'
-    sendmessageallusers-singledevice:
-      title: Send message to all users
+    sendmessagesingleuser-multidevice:
+      title: Send message to a single user
       type: object
       properties:
-        type:
-          description: The type of action to run. To send a message to all users on the device, enter `DEV_CONSOLEMSG`.
-          type: string
-          enum:
-          - DEV_CONSOLEMSG
-        data:
-          description: The message to send.
-          type: string
-          example: Hello! This is a test message.
+        action_data:
+          description: Details about the action to perform.
+          type: object
+          properties:
+            type:
+              description: The type of action to perform. To send a message to a single user on the device, enter `DEV_USERMSG`. This option is available only if `device_ids` contains a single device ID.
+              type: string
+              enum:
+              - DEV_USERMSG
+            data:
+              description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n  `message_text`: The message to send.\n"
+              example: '{"session_id":"1","message_text":"Hello! This is a test message."}'
+              type: string
+        device_ids:
+          $ref: '#/components/schemas/deviceIds'
     runscript-singledevice:
       title: Run script
       type: object
@@ -1933,19 +1975,6 @@ components:
           description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `script_id`: The ID of the script to run. You can use [GET /scripts](list-all-scripts) to get script IDs. Note that the type of script (user vs. system) determines how you can set the rest of the parameters below.\n  `run_as_user`: To run a user script as a single user, set to true. Otherwise, set to false.\n  `run_all_users`: To run a user script as all users, set to true. Otherwise, set to false.\n  `run_as_system`: To run a system script, set to true. Otherwise, set to false.\n  `session_id`: If you set run_as_user to true, enter the ID of the user session to run the script. If you set run_all_users to true, enter 0. If you set run_as_system to true, set to -1.\n  The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
           type: string
           example: '{"script_id": "GtajEowBeWR8QD22lr98C","run_as_user": false,"session_id": -1,"run_all_users": false,"run_as_system": true}'
-    sendmessagesingleuser-singledevice:
-      title: Send message to a single user
-      type: object
-      properties:
-        type:
-          description: The type of action to run. To send a message to a single user on the device, enter `DEV_USERMSG`.
-          type: string
-          enum:
-          - DEV_USERMSG
-        data:
-          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n  `message_text`: The message to send.\n"
-          example: '{"session_id":"1","message_text":"Test message"}'
-          type: string
     IndexMappings:
       type: object
       properties:
@@ -1958,14 +1987,58 @@ components:
         type:
           description: The data type of the field.
           type: string
-    deviceIds:
-      type: array
-      description: An array of device IDs on which to perform the action. You can use [GET /devices](list-devices) to get device IDs.
-      items:
-        type: string
-      example:
-      - rTIBRoIBOFdS29Oi1ATq
-      - b47LRkQIB8BdS21Oi1TYh
+    runcmduser-singledevice:
+      title: Run command as user
+      type: object
+      properties:
+        type:
+          description: The type of action to perform. To run a command as a user session, enter `DEV_RUNCMD_USER`. Running a user command is not available on Linux or ChromeOS devices.
+          type: string
+          enum:
+          - DEV_RUNCMD_USER
+        data:
+          type: string
+          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n    `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n    `command_line`: The command to run.\n    `show_window`: Sets whether to display a window on the device. For example, if you run \"notepad.exe\" with show_window=true, then notepad\n    will open in a window. If you run \"notepad.exe\" with show_window=false, then notepad will run in the background without displaying a window.\n"
+          example: '{"session_id":"1","command_line":"whoami","show_window":false}'
+    disconnectuser:
+      title: Disconnect user
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To disconnect a user, enter `DEV_DISCONNECT_USER`.
+          type: string
+          enum:
+          - DEV_DISCONNECT_USER
+        data:
+          type: string
+          description: "A JSON-formatted string containing the following information (see sample request payload).\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
+          example: '{"session_id":"1"}'
+    runcmd-singledevice:
+      title: Run command as System/Root
+      type: object
+      properties:
+        type:
+          description: The type of action to perform. To run a command as System/Root, enter `DEV_RUNCMD`.
+          type: string
+          enum:
+          - DEV_RUNCMD
+        data:
+          description: The command to run.
+          type: string
+          example: whoami
+    logoffuser:
+      title: Logoff user
+      type: object
+      properties:
+        type:
+          description: The type of action to run. To logoff a user, enter `DEV_LOGOFF_USER`.
+          type: string
+          enum:
+          - DEV_LOGOFF_USER
+        data:
+          type: string
+          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
+          example: '{"session_id":"1"}'
     runscript-multidevice:
       title: Run script
       type: object
@@ -2004,105 +2077,32 @@ components:
               example: '{"all_users":true,"command_line":"whoami","show_window":false}'
         device_ids:
           $ref: '#/components/schemas/deviceIds'
-    runcmduser-singledevice:
-      title: Run command as user
-      type: object
-      properties:
-        type:
-          description: The type of action to perform. To run a command as a user session, enter `DEV_RUNCMD_USER`. Running a user command is not available on Linux or ChromeOS devices.
-          type: string
-          enum:
-          - DEV_RUNCMD_USER
-        data:
-          type: string
-          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n    `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n    `command_line`: The command to run.\n    `show_window`: Sets whether to display a window on the device. For example, if you run \"notepad.exe\" with show_window=true, then notepad\n    will open in a window. If you run \"notepad.exe\" with show_window=false, then notepad will run in the background without displaying a window.\n"
-          example: '{"session_id":"1","command_line":"whoami","show_window":false}'
-    reboot:
-      title: Reboot device
-      type: object
-      properties:
-        type:
-          description: The type of action to run. To reboot the device, enter `DEV_REBOOT`.
-          type: string
-          enum:
-          - DEV_REBOOT
-    sendmessageallusers-multidevice:
+    sendmessageallusers-singledevice:
       title: Send message to all users
       type: object
       properties:
-        action_data:
-          description: Details about the action to perform.
-          type: object
-          properties:
-            type:
-              description: The type of action to perform. To send a message to all users on all selected devices, enter `DEV_CONSOLEMSG`.
-              type: string
-              enum:
-              - DEV_CONSOLEMSG
-            data:
-              description: The message to send.
-              type: string
-              example: Hello! This is a test message.
-        device_ids:
-          $ref: '#/components/schemas/deviceIds'
-    logoffuser:
-      title: Logoff user
-      type: object
-      properties:
         type:
-          description: The type of action to run. To logoff a user, enter `DEV_LOGOFF_USER`.
+          description: The type of action to run. To send a message to all users on the device, enter `DEV_CONSOLEMSG`.
           type: string
           enum:
-          - DEV_LOGOFF_USER
+          - DEV_CONSOLEMSG
         data:
+          description: The message to send.
           type: string
-          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
-          example: '{"session_id":"1"}'
-    sendmessagesingleuser-multidevice:
+          example: Hello! This is a test message.
+    sendmessagesingleuser-singledevice:
       title: Send message to a single user
       type: object
       properties:
-        action_data:
-          description: Details about the action to perform.
-          type: object
-          properties:
-            type:
-              description: The type of action to perform. To send a message to a single user on the device, enter `DEV_USERMSG`. This option is available only if `device_ids` contains a single device ID.
-              type: string
-              enum:
-              - DEV_USERMSG
-            data:
-              description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n  `message_text`: The message to send.\n"
-              example: '{"session_id":"1","message_text":"Hello! This is a test message."}'
-              type: string
-        device_ids:
-          $ref: '#/components/schemas/deviceIds'
-    runcmd-singledevice:
-      title: Run command as System/Root
-      type: object
-      properties:
         type:
-          description: The type of action to perform. To run a command as System/Root, enter `DEV_RUNCMD`.
+          description: The type of action to run. To send a message to a single user on the device, enter `DEV_USERMSG`.
           type: string
           enum:
-          - DEV_RUNCMD
+          - DEV_USERMSG
         data:
-          description: The command to run.
+          description: "A JSON-formatted string containing the following information (see sample request payload):\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n  `message_text`: The message to send.\n"
+          example: '{"session_id":"1","message_text":"Test message"}'
           type: string
-          example: whoami
-    disconnectuser:
-      title: Disconnect user
-      type: object
-      properties:
-        type:
-          description: The type of action to run. To disconnect a user, enter `DEV_DISCONNECT_USER`.
-          type: string
-          enum:
-          - DEV_DISCONNECT_USER
-        data:
-          type: string
-          description: "A JSON-formatted string containing the following information (see sample request payload).\n\n  `session_id`: ID of the user session. The \"active_users\" field in the \"_devices\" data index contains a list of active users and their session IDs. See [GET /data/{index_name}](get-data-index) for details.\n"
-          example: '{"session_id":"1"}'
   responses:
     '500':
       description: Something went wrong at the API service.

@@ -211,17 +211,6 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    CloudProvider:
-      enum:
-      - azure
-      type: string
-      description: Enumeration of supported cloud provider identifiers.
-    CloudProviderAuthType:
-      enum:
-      - azureServicePrincipal
-      - azureServicePrincipalCertificate
-      type: string
-      description: Specifies the supported authentication types for connecting to various cloud providers and services.
     CloudProviderAuthTypeDto:
       required:
       - authType
@@ -242,6 +231,24 @@ components:
           description: Detailed description of this authentication type.
       additionalProperties: false
       description: Data Transfer Object for cloud provider authentication type information.
+    CloudProviderDto:
+      required:
+      - displayName
+      - provider
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        displayName:
+          type: string
+          description: Human-readable display name for the cloud provider.
+      additionalProperties: false
+      description: Data Transfer Object for cloud provider information.
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
     ErrorResponse:
       required:
       - status
@@ -289,19 +296,12 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    CloudProviderDto:
-      required:
-      - displayName
-      - provider
-      type: object
-      properties:
-        provider:
-          $ref: '#/components/schemas/CloudProvider'
-        displayName:
-          type: string
-          description: Human-readable display name for the cloud provider.
-      additionalProperties: false
-      description: Data Transfer Object for cloud provider information.
+    CloudProviderAuthType:
+      enum:
+      - azureServicePrincipal
+      - azureServicePrincipalCertificate
+      type: string
+      description: Specifies the supported authentication types for connecting to various cloud providers and services.
   securitySchemes:
     BearerAuth:
       type: http

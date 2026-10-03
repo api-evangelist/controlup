@@ -43,6 +43,14 @@ paths:
 
           '
 components:
+  schemas:
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
   responses:
     ServerError:
       description: Server errors
@@ -53,6 +61,15 @@ components:
           example:
             success: false
             errors: Server Error
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
     MFAList:
       description: A list of MFA users
       content:
@@ -82,23 +99,6 @@ components:
               phone: 12345678901
             - username: atelerix
               phone: 23456789012
-    Unauthorized:
-      description: Missing or wrong api key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Unauthorized
-  schemas:
-    BaseError:
-      type: object
-      properties:
-        errors:
-          type: string
-      required:
-      - errors
   securitySchemes:
     ApiKeyAuth:
       type: http

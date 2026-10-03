@@ -169,140 +169,13 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    V1ScopeFolderDto:
+    V1DumpToDiskSettingsDto:
       type: object
       properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the unique identifier of the folder.
-        name:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the display name of the folder.
         path:
           type:
           - string
           - 'null'
-          description: Gets or sets the full path of the folder.
-      additionalProperties: false
-      description: Folder resolved from a scope query.
-    V1ResendBehaviorDto:
-      type: object
-      properties:
-        interval:
-          type:
-          - string
-          - 'null'
-        maxRepetitions:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    V1ActionSettingsDto:
-      type: object
-      properties:
-        cloudEmail:
-          $ref: '#/components/schemas/V1CloudEmailSettingsDto'
-        smtpEmail:
-          $ref: '#/components/schemas/V1SmtpEmailSettingsDto'
-        dumpToDisk:
-          $ref: '#/components/schemas/V1DumpToDiskSettingsDto'
-        recordEventLog:
-          $ref: '#/components/schemas/V1RecordEventLogSettingsDto'
-        playSound:
-          $ref: '#/components/schemas/V1PlaySoundSettingsDto'
-        scriptAction:
-          $ref: '#/components/schemas/V1ScriptActionSettingsDto'
-        webHook:
-          $ref: '#/components/schemas/V1WebHookSettingsDto'
-      additionalProperties: false
-    V1CloudEmailSettingsDto:
-      type: object
-      properties:
-        to:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        subject:
-          type:
-          - string
-          - 'null'
-        body:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    V1ScriptActionSettingsDto:
-      type: object
-      properties:
-        scriptId:
-          type:
-          - string
-          - 'null'
-        parameters:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      additionalProperties: false
-    V1ScopeMachineDto:
-      type: object
-      properties:
-        fqdn:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the fully-qualified domain name of the machine.
-        hostname:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the short hostname of the machine.
-        folderPath:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the folder path where the machine resides.
-      additionalProperties: false
-      description: Machine resolved from a scope query.
-    V1TriggerActionDto:
-      type: object
-      properties:
-        triggerActionId:
-          type:
-          - string
-          - 'null'
-        triggerActionType:
-          type:
-          - string
-          - 'null'
-        templateId:
-          type:
-          - string
-          - 'null'
-        friendlyName:
-          type:
-          - string
-          - 'null'
-        addObjectNameToSubject:
-          type:
-          - boolean
-          - 'null'
-        addTriggerNameToSubject:
-          type:
-          - boolean
-          - 'null'
-        resendBehavior:
-          $ref: '#/components/schemas/V1ResendBehaviorDto'
-        settings:
-          $ref: '#/components/schemas/V1ActionSettingsDto'
       additionalProperties: false
     V1GetTriggerDetailResponse:
       type: object
@@ -334,105 +207,36 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    TriggerErrorResponseDto:
+    V1ActionSettingsDto:
       type: object
       properties:
-        errorCode:
+        cloudEmail:
+          $ref: '#/components/schemas/V1CloudEmailSettingsDto'
+        smtpEmail:
+          $ref: '#/components/schemas/V1SmtpEmailSettingsDto'
+        dumpToDisk:
+          $ref: '#/components/schemas/V1DumpToDiskSettingsDto'
+        recordEventLog:
+          $ref: '#/components/schemas/V1RecordEventLogSettingsDto'
+        playSound:
+          $ref: '#/components/schemas/V1PlaySoundSettingsDto'
+        scriptAction:
+          $ref: '#/components/schemas/V1ScriptActionSettingsDto'
+        webHook:
+          $ref: '#/components/schemas/V1WebHookSettingsDto'
+      additionalProperties: false
+    V1ResendBehaviorDto:
+      type: object
+      properties:
+        interval:
           type:
           - string
           - 'null'
-          description: 'Gets or sets the machine-readable error code. Possible values: scope_params_conflict, scope_params_required, machine_not_found, folder_not_found, scope_resolution_too_broad, scope_params_invalid.'
-        message:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the human-readable error message.
-        resolvedCount:
+        maxRepetitions:
           type:
           - integer
           - 'null'
-          description: Gets or sets the number of machines resolved by the scope query. Present only for scope_resolution_too_broad errors.
           format: int32
-        limit:
-          type:
-          - integer
-          - 'null'
-          description: Gets or sets the maximum allowed number of resolved machines. Present only for scope_resolution_too_broad errors.
-          format: int32
-      additionalProperties: false
-      description: Error response body returned by trigger endpoints.
-    V1FilterNodeDto:
-      type: object
-      properties:
-        logicalOperator:
-          type:
-          - string
-          - 'null'
-        isNegation:
-          type:
-          - boolean
-          - 'null'
-        nodes:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/V1FilterNodeDto'
-        expression:
-          $ref: '#/components/schemas/V1FilterExpressionDto'
-      additionalProperties: false
-    V1DumpToDiskSettingsDto:
-      type: object
-      properties:
-        path:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    V1TriggersScopeDto:
-      type: object
-      properties:
-        kind:
-          type:
-          - string
-          - 'null'
-          description: 'Gets or sets the scope kind. One of: machine, folder.'
-        input:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the raw input value used to resolve the scope (FQDN, hostname, or folder path).
-        resolvedMachines:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/V1ScopeMachineDto'
-          description: Gets or sets the list of machines resolved from the scope. Present only when include=resolvedMachines is requested.
-        resolvedFolders:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/V1ScopeFolderDto'
-          description: Gets or sets the list of folders resolved from the scope. Present only when include=resolvedFolders is requested.
-      additionalProperties: false
-      description: Scope filter information applied to the triggers query.
-    V1TriggerDetailMetadataDto:
-      type: object
-      properties:
-        orgId:
-          type:
-          - string
-          - 'null'
-        region:
-          type:
-          - string
-          - 'null'
-        userId:
-          type:
-          - string
-          - 'null'
       additionalProperties: false
     V1TriggerItemDto:
       type: object
@@ -495,6 +299,110 @@ components:
           format: date-time
       additionalProperties: false
       description: Trigger list item.
+    V1TriggerDetailScopeDto:
+      type: object
+      properties:
+        includedFolders:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        excludedFolders:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+    V1ScriptActionSettingsDto:
+      type: object
+      properties:
+        scriptId:
+          type:
+          - string
+          - 'null'
+        parameters:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+    V1TriggersScopeDto:
+      type: object
+      properties:
+        kind:
+          type:
+          - string
+          - 'null'
+          description: 'Gets or sets the scope kind. One of: machine, folder.'
+        input:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the raw input value used to resolve the scope (FQDN, hostname, or folder path).
+        resolvedMachines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/V1ScopeMachineDto'
+          description: Gets or sets the list of machines resolved from the scope. Present only when include=resolvedMachines is requested.
+        resolvedFolders:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/V1ScopeFolderDto'
+          description: Gets or sets the list of folders resolved from the scope. Present only when include=resolvedFolders is requested.
+      additionalProperties: false
+      description: Scope filter information applied to the triggers query.
+    V1ScopeFolderDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the unique identifier of the folder.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the display name of the folder.
+        path:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the full path of the folder.
+      additionalProperties: false
+      description: Folder resolved from a scope query.
+    V1WebHookSettingsDto:
+      type: object
+      properties:
+        url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        method:
+          type:
+          - string
+          - 'null'
+        headers:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+        body:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     V1TriggerDetailDto:
       type: object
       properties:
@@ -564,6 +472,178 @@ components:
         typeSettings:
           $ref: '#/components/schemas/V1TriggerTypeSettingsDto'
       additionalProperties: false
+    GetTriggersResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/V1TriggersMetadataDto'
+        summary:
+          $ref: '#/components/schemas/V1TriggersSummaryDto'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/V1TriggerItemDto'
+          description: Gets or sets the list of triggers matching the query.
+      additionalProperties: false
+      description: Paginated list of triggers.
+    V1TriggerDetailMetadataDto:
+      type: object
+      properties:
+        orgId:
+          type:
+          - string
+          - 'null'
+        region:
+          type:
+          - string
+          - 'null'
+        userId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    V1FilterExpressionDto:
+      type: object
+      properties:
+        column:
+          type:
+          - string
+          - 'null'
+        comparisonOperator:
+          type:
+          - string
+          - 'null'
+        value:
+          type:
+          - string
+          - 'null'
+        isRegex:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    V1TriggerActionDto:
+      type: object
+      properties:
+        triggerActionId:
+          type:
+          - string
+          - 'null'
+        triggerActionType:
+          type:
+          - string
+          - 'null'
+        templateId:
+          type:
+          - string
+          - 'null'
+        friendlyName:
+          type:
+          - string
+          - 'null'
+        addObjectNameToSubject:
+          type:
+          - boolean
+          - 'null'
+        addTriggerNameToSubject:
+          type:
+          - boolean
+          - 'null'
+        resendBehavior:
+          $ref: '#/components/schemas/V1ResendBehaviorDto'
+        settings:
+          $ref: '#/components/schemas/V1ActionSettingsDto'
+      additionalProperties: false
+    V1RecordEventLogSettingsDto:
+      type: object
+      properties:
+        eventId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    V1TriggersSummaryDto:
+      type: object
+      properties:
+        enabled:
+          type: integer
+          description: Gets or sets the count of enabled triggers.
+          format: int32
+        disabled:
+          type: integer
+          description: Gets or sets the count of disabled triggers.
+          format: int32
+        common:
+          type: integer
+          description: Gets or sets the count of built-in (common) triggers.
+          format: int32
+        custom:
+          type: integer
+          description: Gets or sets the count of custom (user-created) triggers.
+          format: int32
+        byType:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: integer
+            format: int32
+          description: Gets or sets the count of triggers per type.
+      additionalProperties: false
+      description: Aggregate counts across all triggers matching the query filters (not limited to the current page).
+    V1CloudEmailSettingsDto:
+      type: object
+      properties:
+        to:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        subject:
+          type:
+          - string
+          - 'null'
+        body:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    V1ScopeMachineDto:
+      type: object
+      properties:
+        fqdn:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the fully-qualified domain name of the machine.
+        hostname:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the short hostname of the machine.
+        folderPath:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the folder path where the machine resides.
+      additionalProperties: false
+      description: Machine resolved from a scope query.
+    V1PlaySoundSettingsDto:
+      type: object
+      properties:
+        soundFile:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     V1TriggersMetadataDto:
       type: object
       properties:
@@ -601,22 +681,6 @@ components:
           $ref: '#/components/schemas/V1TriggersScopeDto'
       additionalProperties: false
       description: Pagination and organizational metadata for a triggers list response.
-    V1TriggerDetailScopeDto:
-      type: object
-      properties:
-        includedFolders:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        excludedFolders:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      additionalProperties: false
     V1TriggerTypeSettingsDto:
       type: object
       properties:
@@ -630,130 +694,53 @@ components:
         scheduled: {}
         advanced: {}
       additionalProperties: false
-    V1TriggersSummaryDto:
+    V1FilterNodeDto:
       type: object
       properties:
-        enabled:
-          type: integer
-          description: Gets or sets the count of enabled triggers.
-          format: int32
-        disabled:
-          type: integer
-          description: Gets or sets the count of disabled triggers.
-          format: int32
-        common:
-          type: integer
-          description: Gets or sets the count of built-in (common) triggers.
-          format: int32
-        custom:
-          type: integer
-          description: Gets or sets the count of custom (user-created) triggers.
-          format: int32
-        byType:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: integer
-            format: int32
-          description: Gets or sets the count of triggers per type.
-      additionalProperties: false
-      description: Aggregate counts across all triggers matching the query filters (not limited to the current page).
-    V1PlaySoundSettingsDto:
-      type: object
-      properties:
-        soundFile:
+        logicalOperator:
           type:
           - string
           - 'null'
-      additionalProperties: false
-    GetTriggersResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/V1TriggersMetadataDto'
-        summary:
-          $ref: '#/components/schemas/V1TriggersSummaryDto'
-        data:
+        isNegation:
+          type:
+          - boolean
+          - 'null'
+        nodes:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/V1TriggerItemDto'
-          description: Gets or sets the list of triggers matching the query.
+            $ref: '#/components/schemas/V1FilterNodeDto'
+        expression:
+          $ref: '#/components/schemas/V1FilterExpressionDto'
       additionalProperties: false
-      description: Paginated list of triggers.
-    V1WebHookSettingsDto:
+    TriggerErrorResponseDto:
       type: object
       properties:
-        url:
+        errorCode:
           type:
           - string
           - 'null'
-          format: uri
-        method:
-          type:
-          - string
-          - 'null'
-        headers:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type:
-            - string
-            - 'null'
-        body:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    V1TriggerScopeSummaryDto:
-      type: object
-      properties:
-        includedCount:
-          type: integer
-          description: Gets or sets the number of entities explicitly included in the trigger scope.
-          format: int32
-        excludedCount:
-          type: integer
-          description: Gets or sets the number of entities explicitly excluded from the trigger scope.
-          format: int32
-      additionalProperties: false
-      description: Summary of the trigger's scope configuration.
-    V1RecordEventLogSettingsDto:
-      type: object
-      properties:
-        eventId:
-          type:
-          - integer
-          - 'null'
-          format: int32
+          description: 'Gets or sets the machine-readable error code. Possible values: scope_params_conflict, scope_params_required, machine_not_found, folder_not_found, scope_resolution_too_broad, scope_params_invalid.'
         message:
           type:
           - string
           - 'null'
+          description: Gets or sets the human-readable error message.
+        resolvedCount:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the number of machines resolved by the scope query. Present only for scope_resolution_too_broad errors.
+          format: int32
+        limit:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the maximum allowed number of resolved machines. Present only for scope_resolution_too_broad errors.
+          format: int32
       additionalProperties: false
-    V1FilterExpressionDto:
-      type: object
-      properties:
-        column:
-          type:
-          - string
-          - 'null'
-        comparisonOperator:
-          type:
-          - string
-          - 'null'
-        value:
-          type:
-          - string
-          - 'null'
-        isRegex:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
+      description: Error response body returned by trigger endpoints.
     V1TriggerScopeMatchDto:
       type: object
       properties:
@@ -769,4 +756,17 @@ components:
           description: Gets or sets the FQDN of the machine that was matched.
       additionalProperties: false
       description: Scope match result for a trigger against a queried machine or folder.
+    V1TriggerScopeSummaryDto:
+      type: object
+      properties:
+        includedCount:
+          type: integer
+          description: Gets or sets the number of entities explicitly included in the trigger scope.
+          format: int32
+        excludedCount:
+          type: integer
+          description: Gets or sets the number of entities explicitly excluded from the trigger scope.
+          format: int32
+      additionalProperties: false
+      description: Summary of the trigger's scope configuration.
 x-readme: {}

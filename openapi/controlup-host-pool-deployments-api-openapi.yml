@@ -141,12 +141,109 @@ paths:
       - CookieAuth: []
 components:
   schemas:
+    HostPoolType:
+      enum:
+      - pooled
+      - personal
+      type: string
+      description: Represents the type of Azure Virtual Desktop host pool.
     HostPoolAppGroupType:
       enum:
       - desktop
       - remoteApp
       type: string
       description: Azure Virtual Desktop application group type for host pools.
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
+    HostPoolVmImageSource:
+      enum:
+      - gallery
+      - existingVm
+      type: string
+      description: Image source selection for host pool VM settings.
+    HostPoolAssignmentType:
+      enum:
+      - automatic
+      - direct
+      type: string
+      description: Assignment strategy for personal Azure Virtual Desktop host pools.
+    HostPoolVmNetworkSecurityGroup:
+      enum:
+      - basic
+      type: string
+      description: Network security group preset for host pool VM settings.
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
     SaveHostPoolVmSettingsRequest:
       required:
       - availabilityZones
@@ -315,12 +412,6 @@ components:
           description: Optional domain join password used when AD join is selected.
       additionalProperties: false
       description: Full request payload for creating or replacing VM settings for a host pool.
-    HostPoolVmJoinType:
-      enum:
-      - ad
-      - entraId
-      type: string
-      description: Directory join strategy for session host VMs.
     ErrorResponse:
       required:
       - status
@@ -368,12 +459,19 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    HostPoolType:
+    VmSecurityType:
       enum:
-      - pooled
-      - personal
+      - trustedLaunch
+      - standard
+      - confidentialVM
       type: string
-      description: Represents the type of Azure Virtual Desktop host pool.
+      description: Security profile for Azure VMs.
+    HostPoolLoadBalancingAlgorithm:
+      enum:
+      - depthFirst
+      - breadthFirst
+      type: string
+      description: Azure Virtual Desktop load balancing algorithm for host pool session distribution.
     CreateHostPoolDeploymentRequest:
       required:
       - appGroupType
@@ -448,110 +546,12 @@ components:
           description: Azure tags to apply to created control-plane resources.
       additionalProperties: false
       description: Request to create an Azure Virtual Desktop host pool shell deployment.
-    VmSecurityType:
+    HostPoolVmJoinType:
       enum:
-      - trustedLaunch
-      - standard
-      - confidentialVM
+      - ad
+      - entraId
       type: string
-      description: Security profile for Azure VMs.
-    HostPoolVmImageSource:
-      enum:
-      - gallery
-      - existingVm
-      type: string
-      description: Image source selection for host pool VM settings.
-    JobCreatedDto:
-      required:
-      - action
-      - id
-      - jobType
-      - jobUrl
-      - logsUrl
-      - message
-      - statusUrl
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the created job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
-
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
-
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        jobUrl:
-          type: string
-          description: URL to get full job details (includes parameters).
-        statusUrl:
-          type: string
-          description: 'URL to poll for lightweight status updates (no parameters).
-
-            Poll this endpoint every 2-5 seconds while job is running.'
-        logsUrl:
-          type: string
-          description: URL to get job logs in JSON format.
-        message:
-          type: string
-          description: 'Human-readable message about job creation.
-
-            Example: "Import job created successfully. Poll statusUrl for progress updates."'
-      additionalProperties: false
-      description: 'Lightweight response returned when a job is created.
-
-        Contains only essential information needed to track the job.
-
-        Use the statusUrl to poll for updates and jobUrl to get full details.'
-    HostPoolLoadBalancingAlgorithm:
-      enum:
-      - depthFirst
-      - breadthFirst
-      type: string
-      description: Azure Virtual Desktop load balancing algorithm for host pool session distribution.
-    HostPoolVmNetworkSecurityGroup:
-      enum:
-      - basic
-      type: string
-      description: Network security group preset for host pool VM settings.
-    HostPoolAssignmentType:
-      enum:
-      - automatic
-      - direct
-      type: string
-      description: Assignment strategy for personal Azure Virtual Desktop host pools.
-    JobType:
-      enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
-      type: string
-      description: 'Defines the types of background jobs supported by the system.
-
-        Each job type is processed by a specific worker and has its own parameter structure.'
+      description: Directory join strategy for session host VMs.
   securitySchemes:
     BearerAuth:
       type: http

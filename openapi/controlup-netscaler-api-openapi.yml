@@ -699,43 +699,6 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
-    UserMetadata:
-      type: object
-      properties:
-        orgId:
-          type: string
-        infraGuid:
-          type: string
-        region:
-          type: string
-        userId:
-          type: string
-        total:
-          type: integer
-          format: int64
-        limitPerPage:
-          type: integer
-          format: int32
-        currentPageNumber:
-          type: integer
-          format: int32
-        currentPageSize:
-          type: integer
-          format: int32
-        remaining:
-          type: integer
-          format: int64
-        userEmail:
-          type: string
-        truncated:
-          type: boolean
-        truncationLimit:
-          type: integer
-          format: int32
-        timeFrom:
-          type: string
-        timeTo:
-          type: string
     GatewayResult:
       type: object
       properties:
@@ -773,41 +736,17 @@ components:
           type: string
         certificate_expiration_date:
           type: string
-    NetscalerWithTimeSeriesResult:
+    Error:
       type: object
       properties:
-        ns_name:
+        message:
           type: string
-        management_ip_bin:
-          type: string
-        lb_up_pct_avg:
+        errorCode:
           type: integer
-          format: int64
-        gw_up_pct_avg:
+          format: int32
+        statusCode:
           type: integer
-          format: int64
-        ns_version:
-          type: string
-        ns_build:
-          type: string
-        lb_total_avg:
-          type: integer
-          format: int64
-        gw_total_avg:
-          type: integer
-          format: int64
-        ha_heartbeats_receive_rate_avg:
-          type: integer
-          format: int64
-        ha_heartbeats_send_rate_avg:
-          type: integer
-          format: int64
-        update_time:
-          type: string
-        timeseries:
-          type: array
-          items:
-            $ref: '#/components/schemas/NetscalerTimeSeries'
+          format: int32
     LoadbalancerWithTimeSeriesResult:
       type: object
       properties:
@@ -845,6 +784,48 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LoadBalancerTimeSeries'
+    GatewayTimeSeries:
+      type: object
+      properties:
+        traffic_in_mbps_avg:
+          type: integer
+          format: int64
+        traffic_out_mbps_avg:
+          type: integer
+          format: int64
+        current_users_avg:
+          type: integer
+          format: int64
+        requests_per_sec_avg:
+          type: integer
+          format: int64
+        responses_per_sec_avg:
+          type: integer
+          format: int64
+        sampletime:
+          type: string
+    GatewayWithTimeSeriesResult:
+      type: object
+      properties:
+        name_gw:
+          type: string
+        ns_name:
+          type: string
+        ip_address_binary:
+          type: string
+        primary_port:
+          type: integer
+          format: int64
+        certificate_name:
+          type: string
+        certificate_expiration_date:
+          type: string
+        update_time:
+          type: string
+        timeseries:
+          type: array
+          items:
+            $ref: '#/components/schemas/GatewayTimeSeries'
     NetscalerResult:
       type: object
       properties:
@@ -904,35 +885,46 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LoadbalancerResult'
-    GatewayTimeSeries:
+    LoadBalancerTimeSeries:
       type: object
       properties:
+        connections_avg:
+          type: integer
+          format: int64
         traffic_in_mbps_avg:
           type: integer
           format: int64
         traffic_out_mbps_avg:
           type: integer
           format: int64
-        current_users_avg:
-          type: integer
-          format: int64
-        requests_per_sec_avg:
-          type: integer
-          format: int64
-        responses_per_sec_avg:
+        vserver_health_pct_avg:
           type: integer
           format: int64
         sampletime:
           type: string
-    NetscalerResponse:
+    NetscalerTimeSeries:
       type: object
       properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/NetscalerResult'
+        packet_cpu_pct_avg:
+          type: integer
+          format: int64
+        memory_used_pct_avg:
+          type: integer
+          format: int64
+        traffic_in_mbps_avg:
+          type: integer
+          format: int64
+        traffic_out_mbps_avg:
+          type: integer
+          format: int64
+        hdx_sessions_avg:
+          type: integer
+          format: int64
+        management_cpu_pct_avg:
+          type: integer
+          format: int64
+        sampletime:
+          type: string
     LoadbalancerResult:
       type: object
       properties:
@@ -976,46 +968,43 @@ components:
           format: int64
         lb_method:
           type: string
-    LoadbalancerResponseTimeSeries:
+    UserMetadata:
       type: object
       properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/LoadbalancerWithTimeSeriesResult'
-    GatewayWithTimeSeriesResult:
-      type: object
-      properties:
-        name_gw:
+        orgId:
           type: string
-        ns_name:
+        infraGuid:
           type: string
-        ip_address_binary:
+        region:
           type: string
-        primary_port:
+        userId:
+          type: string
+        total:
           type: integer
           format: int64
-        certificate_name:
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
           type: string
-        certificate_expiration_date:
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
           type: string
-        update_time:
+        timeTo:
           type: string
-        timeseries:
-          type: array
-          items:
-            $ref: '#/components/schemas/GatewayTimeSeries'
-    NetscalerTimeSeriesResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/NetscalerWithTimeSeriesResult'
     HistoricalErrorResponse:
       type: object
       properties:
@@ -1025,58 +1014,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Error'
-    NetscalerTimeSeries:
-      type: object
-      properties:
-        packet_cpu_pct_avg:
-          type: integer
-          format: int64
-        memory_used_pct_avg:
-          type: integer
-          format: int64
-        traffic_in_mbps_avg:
-          type: integer
-          format: int64
-        traffic_out_mbps_avg:
-          type: integer
-          format: int64
-        hdx_sessions_avg:
-          type: integer
-          format: int64
-        management_cpu_pct_avg:
-          type: integer
-          format: int64
-        sampletime:
-          type: string
-    LoadBalancerTimeSeries:
-      type: object
-      properties:
-        connections_avg:
-          type: integer
-          format: int64
-        traffic_in_mbps_avg:
-          type: integer
-          format: int64
-        traffic_out_mbps_avg:
-          type: integer
-          format: int64
-        vserver_health_pct_avg:
-          type: integer
-          format: int64
-        sampletime:
-          type: string
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
-    GatewayTimeSeriesResponse:
+    NetscalerResponse:
       type: object
       properties:
         metadata:
@@ -1084,7 +1022,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/GatewayWithTimeSeriesResult'
+            $ref: '#/components/schemas/NetscalerResult'
     GatewayResponse:
       type: object
       properties:
@@ -1094,6 +1032,68 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GatewayResult'
+    NetscalerTimeSeriesResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetscalerWithTimeSeriesResult'
+    GatewayTimeSeriesResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GatewayWithTimeSeriesResult'
+    LoadbalancerResponseTimeSeries:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoadbalancerWithTimeSeriesResult'
+    NetscalerWithTimeSeriesResult:
+      type: object
+      properties:
+        ns_name:
+          type: string
+        management_ip_bin:
+          type: string
+        lb_up_pct_avg:
+          type: integer
+          format: int64
+        gw_up_pct_avg:
+          type: integer
+          format: int64
+        ns_version:
+          type: string
+        ns_build:
+          type: string
+        lb_total_avg:
+          type: integer
+          format: int64
+        gw_total_avg:
+          type: integer
+          format: int64
+        ha_heartbeats_receive_rate_avg:
+          type: integer
+          format: int64
+        ha_heartbeats_send_rate_avg:
+          type: integer
+          format: int64
+        update_time:
+          type: string
+        timeseries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetscalerTimeSeries'
   securitySchemes:
     bearer-jwt:
       type: http

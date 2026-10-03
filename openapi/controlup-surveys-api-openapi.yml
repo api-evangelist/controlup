@@ -329,18 +329,60 @@ paths:
           $ref: '#/components/responses/500'
 components:
   schemas:
-    nameAndTemplateId:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the survey
-        template_id:
-          type: string
-          description: ID of the template from which to create the survey.
-      required:
-      - name
-      - template_id
+    recurringSurvey:
+      title: Recurring
+      allOf:
+      - $ref: '#/components/schemas/nameAndTemplateId'
+      - type: object
+        properties:
+          type:
+            description: The type of survey to publish.
+            type: string
+            enum:
+            - Recurring
+          status:
+            description: Set to `Scheduled` to publish the survey. Set to `Draft` to save the survey as a draft.
+            type: string
+            enum:
+            - Scheduled
+            - Draft
+          recurring_rule:
+            type: string
+            description: 'An [iCalendar Recurrence Rule (RRULE)](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) string determining how often the survey repeats and when it ends.
+
+
+              * Example of recurring survey with no end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO`
+
+              * Example of recurring survey with specified end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;UNTIL=2025-01-31T03:30:00.000Z`
+
+              * Example of recurring survey ending after a specific number of occurences: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=5`
+
+              '
+            example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO
+          retries_days_count:
+            description: The number of days after which a user will stop being reminded to complete the survey. You can set this from 0 to the number of days set in the `instance_duration_days` parameter.
+            type: integer
+          retries_interval:
+            description: The number of hours after a user dismisses the survey until they receive they receive another survey notification.
+            type: integer
+            minimum: 1
+            maximum: 24
+          instance_duration_days:
+            type: integer
+            description: Set how long the survey lasts and can be completed after each time it occurs. If the frequency specified in the `recurring_rule` is weekly, `instance_duration_days` can be from 1-6 days. If the frequency specified in the `recurring_rule` is monthly, `instance_duration` can be from 1-21 days.
+          start_date:
+            description: The starting date and time of the survey in ISO string format.
+            example: '2023-11-01T04:00:00.000Z'
+            type: string
+        required:
+        - type
+        - status
+        - recurring_rule
+        - retries_days_count
+        - retries_interval
+        - start_date
+        - instance_duration_days
+      - $ref: '#/components/schemas/commonToSingleAndRecurring'
     SurveyResult:
       type: object
       properties:
@@ -448,185 +490,6 @@ components:
         score_raw:
           type: number
           description: For survey completions (type=Result), the average this is the average score of all Net Promoter Score questions with the Global Net Promoter Score option enabled.
-    SurveyResultAnswers:
-      type: object
-      properties:
-        links:
-          type: object
-          properties:
-            survey:
-              type: string
-              format: uri
-              description: Link to the survey.
-            survey-results:
-              type: string
-              format: uri
-              description: Link to the survey results.
-        created:
-          type: string
-          format: date-time
-          description: When the record was created. This isn't necessarily the time that the survey was completed because there might have been a delay in sending the survey data to the server.
-        updated:
-          type: string
-          format: date-time
-          description: When the record was last updated. This isn't relevant for survey answers.
-        date:
-          type: string
-          format: date-time
-          description: For internal use only.
-        survey_id:
-          type: string
-          description: Survey ID.
-        survey_version:
-          type: string
-          description: The version of the Employee Sentiment feature for the survey. For surveys created after April 2024, this is always version 2.
-        survey_type:
-          type: string
-          description: Survey type. This can be `Single`, `Recurring`, or `Custom Action`.
-        survey_start_date:
-          type: string
-          format: date-time
-          description: The start date of the survey.
-        survey_dates_type:
-          type: string
-          description: Whether the survey activates according to each device's local time zone (`Local`) or according to UTC (`UTC`). This is relevant only if the survey type is Single or Recurring.
-        is_identified:
-          type: boolean
-          description: Indicates if the surveys responses are identified (non-anonymous).
-        category:
-          type: string
-          description: Survey template category.
-        instance_id:
-          type:
-          - string
-          - 'null'
-          description: For recurring surveys, this is the date and time of the survey instance.
-        result_id:
-          type: string
-          description: Result ID. All answers to a survey from a unique user and device have the same result ID.
-        device_id:
-          type: string
-          description: ID of the device used to complete the survey. Returned only for identified surveys.
-        device_name:
-          type: string
-          description: Name of the device used to complete the survey. Returned only for identified surveys.
-        device_tags:
-          type: array
-          items:
-            type: string
-          description: Tags of the device used to complete the survey. Returned only for identified surveys.
-        device_groups:
-          type: array
-          items:
-            type: string
-          description: Group of the device used to complete the survey. Returned only for identified surveys.
-        device_ds_groups:
-          type: array
-          items:
-            type: string
-          description: AD groups of the device used to complete the survey. Returned only for identified surveys.
-        upn:
-          type: string
-          description: The survey responder's UPN. Returned only for identified surveys.
-        username:
-          type: string
-          description: The survey responder's username.
-        user:
-          type: string
-          description: For internal use only.
-        user_ds_groups:
-          type: array
-          items:
-            type: string
-          description: The survey responder's AD groups. Returned only for identified surveys.
-        result_started_at:
-          type: string
-          format: date-time
-          description: When the user started the survey.
-        result_completed_at:
-          type: string
-          format: date-time
-          description: When the user completed the survey.
-        type:
-          type: string
-          description: The type of question. This can be `Free Text`, `Single Selection`, `Multiple Selection`, or `Net Promoter Score`.
-        question_id:
-          type: string
-          format: uuid
-          description: Question ID. You can use this if you want to find all answers from all users to a specific question. To see more details about the question, you can use GET [/user-sentiment/surveys](get-survey).
-        time_taken:
-          type: integer
-          description: Time taken to answer the question in milliseconds.
-        selection:
-          type: string
-          format: uuid
-          description: For single selection, multiple selection, or net promoter score questions, this is the ID or IDs of the selected answers. To see which answers correspond to each ID, you can use GET [/user-sentiment/surveys](get-survey).
-        text:
-          type: string
-          description: For free text questions, this is the user's response to the question.
-        is_global:
-          type: boolean
-          description: For net promoter score questions, whether the result from this question contributes to the overall net promoter score for the survey.
-        _id:
-          type: string
-          description: ID of the answer.
-        _score:
-          type: integer
-          description: For internal use only.
-    recurringSurvey:
-      title: Recurring
-      allOf:
-      - $ref: '#/components/schemas/nameAndTemplateId'
-      - type: object
-        properties:
-          type:
-            description: The type of survey to publish.
-            type: string
-            enum:
-            - Recurring
-          status:
-            description: Set to `Scheduled` to publish the survey. Set to `Draft` to save the survey as a draft.
-            type: string
-            enum:
-            - Scheduled
-            - Draft
-          recurring_rule:
-            type: string
-            description: 'An [iCalendar Recurrence Rule (RRULE)](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) string determining how often the survey repeats and when it ends.
-
-
-              * Example of recurring survey with no end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO`
-
-              * Example of recurring survey with specified end date: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;UNTIL=2025-01-31T03:30:00.000Z`
-
-              * Example of recurring survey ending after a specific number of occurences: `RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=5`
-
-              '
-            example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO
-          retries_days_count:
-            description: The number of days after which a user will stop being reminded to complete the survey. You can set this from 0 to the number of days set in the `instance_duration_days` parameter.
-            type: integer
-          retries_interval:
-            description: The number of hours after a user dismisses the survey until they receive they receive another survey notification.
-            type: integer
-            minimum: 1
-            maximum: 24
-          instance_duration_days:
-            type: integer
-            description: Set how long the survey lasts and can be completed after each time it occurs. If the frequency specified in the `recurring_rule` is weekly, `instance_duration_days` can be from 1-6 days. If the frequency specified in the `recurring_rule` is monthly, `instance_duration` can be from 1-21 days.
-          start_date:
-            description: The starting date and time of the survey in ISO string format.
-            example: '2023-11-01T04:00:00.000Z'
-            type: string
-        required:
-        - type
-        - status
-        - recurring_rule
-        - retries_days_count
-        - retries_interval
-        - start_date
-        - instance_duration_days
-      - $ref: '#/components/schemas/commonToSingleAndRecurring'
     singleSurvey:
       title: Single
       allOf:
@@ -768,7 +631,181 @@ components:
       required:
       - dates_type
       - targeting_type
+    nameAndTemplateId:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the survey
+        template_id:
+          type: string
+          description: ID of the template from which to create the survey.
+      required:
+      - name
+      - template_id
+    SurveyResultAnswers:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            survey:
+              type: string
+              format: uri
+              description: Link to the survey.
+            survey-results:
+              type: string
+              format: uri
+              description: Link to the survey results.
+        created:
+          type: string
+          format: date-time
+          description: When the record was created. This isn't necessarily the time that the survey was completed because there might have been a delay in sending the survey data to the server.
+        updated:
+          type: string
+          format: date-time
+          description: When the record was last updated. This isn't relevant for survey answers.
+        date:
+          type: string
+          format: date-time
+          description: For internal use only.
+        survey_id:
+          type: string
+          description: Survey ID.
+        survey_version:
+          type: string
+          description: The version of the Employee Sentiment feature for the survey. For surveys created after April 2024, this is always version 2.
+        survey_type:
+          type: string
+          description: Survey type. This can be `Single`, `Recurring`, or `Custom Action`.
+        survey_start_date:
+          type: string
+          format: date-time
+          description: The start date of the survey.
+        survey_dates_type:
+          type: string
+          description: Whether the survey activates according to each device's local time zone (`Local`) or according to UTC (`UTC`). This is relevant only if the survey type is Single or Recurring.
+        is_identified:
+          type: boolean
+          description: Indicates if the surveys responses are identified (non-anonymous).
+        category:
+          type: string
+          description: Survey template category.
+        instance_id:
+          type:
+          - string
+          - 'null'
+          description: For recurring surveys, this is the date and time of the survey instance.
+        result_id:
+          type: string
+          description: Result ID. All answers to a survey from a unique user and device have the same result ID.
+        device_id:
+          type: string
+          description: ID of the device used to complete the survey. Returned only for identified surveys.
+        device_name:
+          type: string
+          description: Name of the device used to complete the survey. Returned only for identified surveys.
+        device_tags:
+          type: array
+          items:
+            type: string
+          description: Tags of the device used to complete the survey. Returned only for identified surveys.
+        device_groups:
+          type: array
+          items:
+            type: string
+          description: Group of the device used to complete the survey. Returned only for identified surveys.
+        device_ds_groups:
+          type: array
+          items:
+            type: string
+          description: AD groups of the device used to complete the survey. Returned only for identified surveys.
+        upn:
+          type: string
+          description: The survey responder's UPN. Returned only for identified surveys.
+        username:
+          type: string
+          description: The survey responder's username.
+        user:
+          type: string
+          description: For internal use only.
+        user_ds_groups:
+          type: array
+          items:
+            type: string
+          description: The survey responder's AD groups. Returned only for identified surveys.
+        result_started_at:
+          type: string
+          format: date-time
+          description: When the user started the survey.
+        result_completed_at:
+          type: string
+          format: date-time
+          description: When the user completed the survey.
+        type:
+          type: string
+          description: The type of question. This can be `Free Text`, `Single Selection`, `Multiple Selection`, or `Net Promoter Score`.
+        question_id:
+          type: string
+          format: uuid
+          description: Question ID. You can use this if you want to find all answers from all users to a specific question. To see more details about the question, you can use GET [/user-sentiment/surveys](get-survey).
+        time_taken:
+          type: integer
+          description: Time taken to answer the question in milliseconds.
+        selection:
+          type: string
+          format: uuid
+          description: For single selection, multiple selection, or net promoter score questions, this is the ID or IDs of the selected answers. To see which answers correspond to each ID, you can use GET [/user-sentiment/surveys](get-survey).
+        text:
+          type: string
+          description: For free text questions, this is the user's response to the question.
+        is_global:
+          type: boolean
+          description: For net promoter score questions, whether the result from this question contributes to the overall net promoter score for the survey.
+        _id:
+          type: string
+          description: ID of the answer.
+        _score:
+          type: integer
+          description: For internal use only.
   parameters:
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
     SorterField:
       name: sorters[0][field]
       in: query
@@ -804,43 +841,6 @@ components:
         - '>'
         - like
         - boolean
-    FilterValue:
-      name: filters[0][value]
-      in: query
-      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
-
-        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
-
-        '
-      schema:
-        oneOf:
-        - type: string
-          title: String
-        - type: number
-          title: Number
-        - type: boolean
-          title: Boolean
-    FilterField:
-      name: filters[0][field]
-      in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
-
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
   responses:
     '500':
       description: Something went wrong at the API service.

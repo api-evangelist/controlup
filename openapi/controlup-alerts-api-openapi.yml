@@ -844,90 +844,6 @@ components:
           type: string
           description: A semicolon-separated list of email addresses to receive an email when the alert triggers.
           example: firstemail@gmail.com;secondemail@gmail.com
-    HttpStatusCode.FORBIDDEN:
-      enum:
-      - 403
-      type: number
-    BadRequestErrorCodes:
-      enum:
-      - 2
-      - 14
-      - 50
-      type: number
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
-      required:
-      - error
-      - metadata
-      type: object
-    HttpStatusCode.UNAUTHORIZED:
-      enum:
-      - 401
-      type: number
-    ErrorCode.InternalServerError:
-      enum:
-      - 6
-      type: number
-    APIResponse_AlertMetadataDTO-Array_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/AlertMetadataDTO'
-          type:
-          - array
-          - 'null'
-      required:
-      - data
-      type: object
-    ErrorCode.Forbidden:
-      enum:
-      - 4
-      type: number
-    ErrorMessage.NotFound:
-      enum:
-      - Not Found
-      type: string
-    BadRequestErrorMessages:
-      enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
-      type: string
-    ErrorCode.Unauthorized:
-      enum:
-      - 3
-      type: number
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
-      enum:
-      - 500
-      type: number
-    AlertConfigBaseDTO:
-      properties:
-        sourceName:
-          $ref: '#/components/schemas/SourceName'
-          description: The ControlUp product area related to the alert.
-        name:
-          type: string
-          description: The alert's name.
-        description:
-          type: string
-          description: The alert's description.
-        severity:
-          $ref: '#/components/schemas/Severity'
-          description: The alert's severity level.
-        enabled:
-          type: boolean
-          description: Whether the alert is enabled.
-      required:
-      - enabled
-      - severity
-      - name
-      - sourceName
-      type: object
     AlertMetadataDTO:
       allOf:
       - $ref: '#/components/schemas/AlertConfigBaseDTO'
@@ -952,21 +868,48 @@ components:
         - lastModifiedBy
         - id
         type: object
-    UUID:
-      type: string
-      format: uuid
-      description: 'Stringified UUIDv4.
-
-        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
-      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
       properties:
         message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
         code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
         data:
           additionalProperties: true
           type: object
@@ -975,20 +918,61 @@ components:
       - code
       - message
       type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
-      required:
-      - error
-      - metadata
-      type: object
-    HttpStatusCode.BAD_REQUEST:
+    ErrorMessage.Forbidden:
       enum:
-      - 400
+      - Forbidden
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
       type: number
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    AlertConfigBaseDTO:
+      properties:
+        sourceName:
+          $ref: '#/components/schemas/SourceName'
+          description: The ControlUp product area related to the alert.
+        name:
+          type: string
+          description: The alert's name.
+        description:
+          type: string
+          description: The alert's description.
+        severity:
+          $ref: '#/components/schemas/Severity'
+          description: The alert's severity level.
+        enabled:
+          type: boolean
+          description: Whether the alert is enabled.
+      required:
+      - enabled
+      - severity
+      - name
+      - sourceName
+      type: object
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    SourceName:
+      enum:
+      - desktop
+      type: string
     PaginatedResponseMetadata:
       properties:
         total:
@@ -1024,40 +1008,6 @@ components:
         currentPageNumber: 1
         currentPageSize: 10
         remaining: 8
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
-        code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
-      required:
-      - error
-      - metadata
-      type: object
-    Severity:
-      enum:
-      - informational
-      - low
-      - medium
-      - high
-      - critical
-      type: string
     ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
       properties:
         metadata:
@@ -1068,10 +1018,67 @@ components:
       - error
       - metadata
       type: object
-    ErrorMessage.Forbidden:
+    ErrorCode.Forbidden:
       enum:
-      - Forbidden
+      - 4
+      type: number
+    APIResponse_AlertMetadataDTO-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/AlertMetadataDTO'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
       type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
     APIPaginatedResponse_AlertMetadataDTO-Array_:
       allOf:
       - $ref: '#/components/schemas/APIResponse_AlertMetadataDTO-Array_'
@@ -1084,14 +1091,20 @@ components:
         required:
         - metadata
         type: object
-    ErrorMessage.Unauthorized:
+    HttpStatusCode.FORBIDDEN:
       enum:
-      - Unauthorized
-      type: string
-    HttpStatusCode.NOT_FOUND:
-      enum:
-      - 404
+      - 403
       type: number
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
     ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
       properties:
         metadata:
@@ -1102,62 +1115,13 @@ components:
       - error
       - metadata
       type: object
-    ErrorResponseMetadata:
-      properties:
-        cuRequestId:
-          type: string
-        orgId:
-          type: string
-        userId:
-          type: string
-        userIp:
-          type: string
-      required:
-      - userIp
-      - userId
-      - orgId
-      - cuRequestId
-      type: object
-    SourceName:
-      enum:
-      - desktop
+    UUID:
       type: string
-    ErrorMessage.InternalServerError:
-      enum:
-      - Internal Server Error
-      type: string
-    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Unauthorized'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Forbidden'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Forbidden'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
     ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
       properties:
         message:
@@ -1174,12 +1138,443 @@ components:
       - code
       - message
       type: object
-    ErrorCode.NotFound:
+    BadRequestErrorCodes:
       enum:
-      - 5
+      - 2
+      - 14
+      - 50
       type: number
-    AlertConditionObjectCitrixCloud:
-      title: Citrix Cloud
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    Severity:
+      enum:
+      - informational
+      - low
+      - medium
+      - high
+      - critical
+      type: string
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    AlertTerminalRuleWebTransactions:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | dest | Destination. | string |
+
+            | totalDuration | Total Duration (ms). | number (float) |
+
+            | stepsDuration | Steps Duration (ms). | number (float) |
+
+            | duration | Page Load - Duration (ms). | number (float) |
+
+            | firstPaint | Page Load - First Paint (ms). | number (float) |
+
+            | contentfulPaint | Page Load - Contentful Paint (ms). | number (integer) |
+
+            | domainLookup | Page Load - Domain Lookup (ms). | number (float) |
+
+            | domInteractive | Page Load - DOM Interactive (ms). | number (float) |
+
+            | downloadSize | Download Size (bytes). | number (integer) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - dest
+          - totalDuration
+          - stepsDuration
+          - duration
+          - firstPaint
+          - contentfulPaint
+          - domainLookup
+          - domInteractive
+          - downloadSize
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertItem:
+      title: Alert data
+      description: Details of the Scout's alert configuration and each time the alert was triggered.
+      allOf:
+      - $ref: '#/components/schemas/SubType'
+      - type: object
+        properties:
+          conditions:
+            type: array
+            description: The alert policy conditions for the Scout. These conditions must be met for the Scout to trigger an alert.
+            items:
+              oneOf:
+              - type: object
+                title: Single condition
+                properties:
+                  conditionType:
+                    type: string
+                    description: How the test result `property` must relate to the `value` for the alert to trigger.
+                    enum:
+                    - ==
+                    - '!='
+                    - '>'
+                    - '>='
+                    - <
+                    - <=
+                    - contains
+                    - not_contains
+                  property:
+                    description: The test result property used for the alert condition.
+                    type: string
+                    example: status
+                  value:
+                    description: The reference value used for the alert condition.
+                    type: string
+                    example: success
+              - type: object
+                title: Multiple conditions with AND/OR operators
+                properties:
+                  conds:
+                    description: An array containing the alert conditions for the Scout. The array contains additional 'conds' arrays if there are nested alert conditions (for example, X AND (Y OR Z)).
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        conditionType:
+                          type: string
+                          description: How the test result `property` must relate to the `value` for the alert to trigger.
+                          enum:
+                          - ==
+                          - '!='
+                          - '>'
+                          - '>='
+                          - <
+                          - <=
+                          - contains
+                          - not_contains
+                        property:
+                          description: The test result property used for the alert condition.
+                          type: string
+                          example: status
+                        value:
+                          description: The reference value used for the alert condition.
+                          type: string
+                          example: success
+                  operator:
+                    description: AND or OR operator for the alert conditions in the `conds` array.
+                    type: string
+                    enum:
+                    - AND
+                    - OR
+          scoutId:
+            description: The Scout's ID.
+            type: integer
+          triggers:
+            type: array
+            description: 'An array containing an entry for each time an alert is triggered, or is no longer triggered and returns to a normal status.
+
+
+              In addition to the documented properties below, each entry also contains the test result values that caused the trigger to activate or return to a normal status. The names of these properties are dynamic and depend on the alert configuration.
+
+              '
+            items:
+              type: object
+              description: Additionally will contain properties that define in conditions under name `prop`
+              properties:
+                alertLevel:
+                  description: The Scout's alert status. The status is "TRIGGERED" for each time the alert is triggered, which can be multiple times in a row. The status is "OK" only when the alert policy is no longer triggered and the Scout returns to a normal status.
+                  type: string
+                  enum:
+                  - OK
+                  - TRIGGERED
+                cloudHive:
+                  type: integer
+                  description: ID of the Cloud Hive running the Scout that triggered the alert.
+                hiveId:
+                  type: integer
+                  description: ID of the Custom Hive running the Scout that triggered the alert.
+                stateCount:
+                  description: A counter that increases by 1 for each subsequent time the alert status is "TRIGGERED". `stateCount` starts at -1, and returns to -1 when the alert status is "OK".
+                  type: integer
+                time:
+                  type: string
+                  format: date-time
+                  description: The date and time of the alert.
+                  example: '2021-01-01 13:21:55'
+    AlertConditionGroupAvd:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectAvd'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
+    AlertDetails:
+      title: Alert Details
+      description: Detailed information about an alert policy for a Scout.
+      allOf:
+      - $ref: '#/components/schemas/AlertSummary'
+      - type: object
+        properties:
+          settings:
+            $ref: '#/components/schemas/AlertTriggerSettings'
+            description: Settings that control when and how the alert is triggered.
+          notifications:
+            type: array
+            description: Settings that control notifications that are sent when the alert is triggered.
+            items:
+              $ref: '#/components/schemas/AlertNotification'
+            default: []
+          status:
+            type: string
+            description: Current status of the alert.
+            nullable: true
+            example: active
+          createdAt:
+            type: string
+            format: date-time
+            description: Date and time when the alert policy was created.
+            example: '2023-09-26 08:00:00'
+          disabled:
+            type: boolean
+            description: Indicates whether the alert policy is enabled or disabled.
+            example: false
+    AlertTerminalRuleCitrixCloud:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | imgAnomalyScore | Image Anomaly Score. | number (float) |
+
+            | authPhase | Authentication Duration (seconds). | number (float) |
+
+            | connPhase | Connecting to Session Duration (seconds). | number (float) |
+
+            | durationReady | Total Time to Session Ready (seconds). | number (float) |
+
+            | enumTime | Resources Enumeration Duration (seconds). | number (integer) |
+
+            | ready | Session Handoff (Ready) Duration (seconds). | number (float) |
+
+            | sess | Session Initialization Duration (seconds). | number (integer) |
+
+            | loginAttempts | Login Attempts. | number (integer) |
+
+            | icaTime | ICA Download Duration (seconds). | number (float) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - imgAnomalyScore
+          - authPhase
+          - connPhase
+          - durationReady
+          - enumTime
+          - ready
+          - sess
+          - loginAttempts
+          - icaTime
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertConditionGroupHttp:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectHttp'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertCreateRequest:
+      title: Alert Create Request
+      description: Request schema for creating a new alert for a Scout
+      type: object
+      required:
+      - conditions
+      properties:
+        conditions:
+          $ref: '#/components/schemas/AlertConditions'
+        settings:
+          $ref: '#/components/schemas/AlertTriggerSettings'
+        notifications:
+          type: array
+          description: 'Notification configurations for when alerts are triggered. This field is optional.
+
+
+            If no notifications are configured, you can still get information about each time the alert has triggered using the alerts API endpoints.
+
+            '
+          items:
+            $ref: '#/components/schemas/AlertNotification'
+    AlertConditionObjectShell:
+      title: Shell
       description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
 
 
@@ -1189,9 +1584,23 @@ components:
 
         '
       oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleCitrixCloud'
-      - $ref: '#/components/schemas/AlertConditionGroupCitrixCloud'
-    AlertConditionGroupAzureAd:
+      - $ref: '#/components/schemas/AlertTerminalRuleShell'
+      - $ref: '#/components/schemas/AlertConditionGroupShell'
+    AlertIntegrationNotification:
+      title: Integration Notification
+      type: object
+      required:
+      - type
+      - integrationId
+      properties:
+        type:
+          type: string
+          const: INTEGRATION
+          description: Notification type identifier.
+        integrationId:
+          type: integer
+          description: Integration ID. You can get the ID of your integrations by inspecting the integrations page in your browser, or by asking ControlUp Support.
+    AlertConditionGroupTeams:
       title: Condition Group
       description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
 
@@ -1214,7 +1623,7 @@ components:
           minItems: 1
           maxItems: 5
           items:
-            $ref: '#/components/schemas/AlertConditionObjectAzureAd'
+            $ref: '#/components/schemas/AlertConditionObjectTeams'
           example:
           - field: status
             operator: ==
@@ -1227,7 +1636,7 @@ components:
             - field: packetLoss
               operator: '>'
               value: 90
-    AlertConditionGroupCitrixStorefront:
+    AlertConditionGroupShell:
       title: Condition Group
       description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
 
@@ -1250,7 +1659,7 @@ components:
           minItems: 1
           maxItems: 5
           items:
-            $ref: '#/components/schemas/AlertConditionObjectCitrixStorefront'
+            $ref: '#/components/schemas/AlertConditionObjectShell'
           example:
           - field: status
             operator: ==
@@ -1263,6 +1672,93 @@ components:
             - field: packetLoss
               operator: '>'
               value: 90
+    AlertTerminalRuleAvd:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | imgAnomalyScore | Image Anomaly Score. | number (float) |
+
+            | authPhase | Authentication Duration (seconds). | number (float) |
+
+            | connPhase | Connecting to Session Duration (seconds). | number (float) |
+
+            | durationReady | Total Time to Session Ready (seconds). | number (float) |
+
+            | enumTime | Resources Enumeration Duration (seconds). | number (integer) |
+
+            | ready | Session Handoff (Ready) Duration (seconds). | number (float) |
+
+            | sess | Session Initialization Duration (seconds). | number (integer) |
+
+            | loginAttempts | Login Attempts. | number (integer) |
+
+            | serverName | Server Name. | string |
+
+            '
+          enum:
+          - status
+          - failReason
+          - imgAnomalyScore
+          - authPhase
+          - connPhase
+          - durationReady
+          - enumTime
+          - ready
+          - sess
+          - loginAttempts
+          - serverName
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertNotification:
+      title: Alert Notification
+      description: "Notifications sent when the Scout triggers the alert. If no notifications are selected, you can still view \neach time the alert has triggered using the API endpoints.\n"
+      oneOf:
+      - $ref: '#/components/schemas/AlertEmailNotification'
+      - $ref: '#/components/schemas/AlertWebhookNotification'
+      - $ref: '#/components/schemas/AlertIntegrationNotification'
     AlertTerminalRuleTeams:
       title: Condition
       description: A single alert condition that evaluates a test result property.
@@ -1367,6 +1863,1321 @@ components:
           - type: number
           - type: boolean
           example: failure
+    AlertConditionObjectExchange:
+      title: Microsoft Exchange Online
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleExchange'
+      - $ref: '#/components/schemas/AlertConditionGroupExchange'
+    AlertTerminalRuleHttp:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | dest | Destination. | string |
+
+            | statusCode | Status Code. | number (integer) |
+
+            | latency | Total Duration (ms). | number (float) |
+
+            | namelookupTime | Name Lookup Time (ms). | number (float) |
+
+            | connectTime | Connect Time (ms). | number (float) |
+
+            | tlsHandshakeTime | TLS Handshake Time (ms). | number (float) |
+
+            | responseTime | Response Time (ms). | number (float) |
+
+            | ttfb | Time to First Byte (ms). | number (float) |
+
+            | redirectTime | Redirects Time (ms). | number (float) |
+
+            | redirectCount | Redirects. | number (integer) |
+
+            | certExpDays | Certificate Expiration Days. | number (integer) |
+
+            | totalBytes | Response Size (bytes). | number (integer) |
+
+            | bodySize | Response Body Size (bytes). | number (integer) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - dest
+          - statusCode
+          - latency
+          - namelookupTime
+          - connectTime
+          - tlsHandshakeTime
+          - responseTime
+          - ttfb
+          - redirectTime
+          - redirectCount
+          - certExpDays
+          - totalBytes
+          - bodySize
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    JsonApiError:
+      type: object
+      description: Error object
+      properties:
+        status:
+          type: string
+          description: HTTP status code as a string
+        code:
+          type: string
+          description: Application-specific error code
+        title:
+          type: string
+          description: Short, human-readable summary of the error
+        detail:
+          type: string
+          description: Detailed explanation of the error
+        source:
+          type: object
+          description: Object containing references to the source of the error
+          properties:
+            pointer:
+              type: string
+              description: JSON Pointer to the field that caused the error
+        meta:
+          type: object
+          description: Non-standard meta-information about the error
+          additionalProperties: true
+      required:
+      - status
+      - code
+      - title
+      - detail
+    AlertTerminalRuleExchange:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | avgRtt | Avg. Response Time (ms). | number (float) |
+
+            | minRtt | Min Response Time (ms). | number (float) |
+
+            | maxRtt | Max Response Time (ms). | number (float) |
+
+            | jitter | Jitter (ms). | number (float) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - avgRtt
+          - minRtt
+          - maxRtt
+          - jitter
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertConditionObjectPing:
+      title: Ping
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRulePing'
+      - $ref: '#/components/schemas/AlertConditionGroupPing'
+    AlertEmailNotification:
+      title: Email Notification
+      type: object
+      required:
+      - type
+      - targets
+      properties:
+        type:
+          type: string
+          description: Notification type identifier.
+          enum:
+          - EMAIL
+        targets:
+          type: array
+          description: List of email addresses.
+          items:
+            type: string
+            format: email
+    AlertTerminalRuleTraceroute:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | avgRtt | Avg. Latency (ms). | number (float) |
+
+            | hops | Number of hops. | number (integer) |
+
+            | dest | Destination. | string |
+
+            | minRtt | Min Latency (ms). | number (float) |
+
+            | maxRtt | Max Latency (ms). | number (float) |
+
+            | lastAvgRtt | Last Hop''s Latency (ms). | number (float) |
+
+            | avgJitter | Avg Jitter (ms). | number (float) |
+
+            | minJitter | Min Jitter (ms). | number (float) |
+
+            | maxJitter | Max Jitter (ms). | number (float) |
+
+            | lastJitter | Last Hop''s Jitter (ms). | number (float) |
+
+            | avgPacketLoss | Avg packet loss percentage across all hops. | number (integer) |
+
+            | minPacketLoss | Min packet loss percentage for individual hop. | number (integer) |
+
+            | maxPacketLoss | Max packet loss percentage for indivudal hop. | number (integer) |
+
+            | lastLoss | Last hop''s packet loss percentage. | number (integer) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - avgRtt
+          - hops
+          - dest
+          - minRtt
+          - maxRtt
+          - lastAvgRtt
+          - avgJitter
+          - minJitter
+          - maxJitter
+          - lastJitter
+          - avgPacketLoss
+          - minPacketLoss
+          - maxPacketLoss
+          - lastLoss
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertConditionObjectCitrixStorefront:
+      title: Citrix Storefront
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleCitrixStorefront'
+      - $ref: '#/components/schemas/AlertConditionGroupCitrixStorefront'
+    AlertConditionGroupWebTransactions:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectWebTransactions'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertTerminalRuleResponse:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+            '
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            '
+          example: ==
+        value:
+          description: 'Value to compare against.
+
+            '
+          example: failure
+    AlertTriggerSettings:
+      title: Alert Trigger Settings
+      description: 'Settings that control when and how alerts are triggered.
+
+        '
+      type: object
+      properties:
+        sendOnStatusChange:
+          type: boolean
+          description: 'If `true`, notifications are sent only when the alert status changes, to prevent excessive notifications. This means that if the Scout
+
+            triggers the alert 10 times in a row, you''ll receive one notification when the Scout first triggers the alert, and another notification
+
+            when the Scout recovers.
+
+
+            If `false`, notifications are sent every time the alert triggers. This means that if something goes wrong and the Scout
+
+            starts triggering the alert, you''ll receive a notification every time the Scout runs.
+
+            '
+          default: true
+          example: true
+        consecutiveMatchCount:
+          type: integer
+          description: "Number of consecutive test results that must match the alert conditions before \nthe alert is triggered. This helps prevent false positives from temporary issues.\n"
+          minimum: 1
+          default: 1
+          example: 2
+        attachOutput:
+          type: boolean
+          description: "Relevant for Shell Scouts only. Attach the test output to alert notifications. When enabled, the notification \npayload will include additional details about the test result that triggered the alert.\n"
+          nullable: true
+          example: true
+        evaluationScope:
+          type: string
+          description: "Scope for evaluating consecutive matches.\n\n- `GLOBAL`: Evaluate consecutive matches across all specified hives (or all hives if targetHives is not specified).\n  The alert triggers when the required consecutive count is met across any combination of the target hives.\n- `PER_HIVE`: Evaluate consecutive matches separately for each hive. \n  The alert triggers when any single hive meets the required consecutive count.\n"
+          enum:
+          - GLOBAL
+          - PER_HIVE
+          default: GLOBAL
+          example: GLOBAL
+        targetHives:
+          title: Target Hives
+          description: "Sets which hives to include in the consecutive match evaluation.\nThis is only used when `evaluationScope` is set to `GLOBAL`. \nIf not specified when evaluationScope is GLOBAL, all hives are evaluated.\n"
+          type: object
+          properties:
+            cloudHiveIds:
+              type: array
+              description: List of Cloud Hive IDs to include in alert evaluation
+              items:
+                type: integer
+                format: int32
+                minimum: 1
+              default: []
+            customHiveIds:
+              type: array
+              description: List of Custom Hive IDs to include in alert evaluation
+              items:
+                type: integer
+                format: int32
+                minimum: 1
+              default: []
+              example:
+                cloudHiveIds:
+                - 1
+                - 2
+                - 3
+                customHiveIds:
+                - 4
+                - 5
+    SubType:
+      type: object
+      title: List of sub types of the
+      properties:
+        subType:
+          description: The Scout's sub-type.
+          type: string
+          enum:
+          - citrix
+          - citrix_cloud
+          - storefront
+          - euc_avd
+          - vmware
+          - vmware_cloud
+          - vmware_ws_one
+          - vmware_sec_server
+          - net_ping
+          - net_traceroute
+          - net_dns
+          - net_http
+          - net_siteload
+          - app_shell
+          - app_azure_ad
+          - app_ms_exchange
+          - app_ms_teams
+          - app_web_transactions
+    AlertConditionGroupVmware:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectVmware'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertConditionObjectCitrix:
+      title: Citrix
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleCitrix'
+      - $ref: '#/components/schemas/AlertConditionGroupCitrix'
+    AlertConditionGroupCitrixStorefront:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectCitrixStorefront'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertConditionObjectTraceroute:
+      title: Traceroute
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleTraceroute'
+      - $ref: '#/components/schemas/AlertConditionGroupTraceroute'
+    AlertTerminalRuleDns:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | result | Result. | string |
+
+            | runtime | Response Time (ms). | number (float) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - result
+          - runtime
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertConditionGroupSiteload:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectSiteload'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertConditions:
+      title: Alert Conditions
+      description: 'Defines the test results that trigger an alert. Select your Scout type to see how to create conditions for that Scout type.
+
+        '
+      oneOf:
+      - title: EUC Scouts
+        oneOf:
+        - $ref: '#/components/schemas/AlertConditionObjectCitrix'
+        - $ref: '#/components/schemas/AlertConditionObjectCitrixCloud'
+        - $ref: '#/components/schemas/AlertConditionObjectCitrixStorefront'
+        - $ref: '#/components/schemas/AlertConditionObjectVmware'
+        - $ref: '#/components/schemas/AlertConditionObjectAvd'
+      - title: Infrastructure Scouts
+        oneOf:
+        - $ref: '#/components/schemas/AlertConditionObjectHttp'
+        - $ref: '#/components/schemas/AlertConditionObjectDns'
+        - $ref: '#/components/schemas/AlertConditionObjectTraceroute'
+        - $ref: '#/components/schemas/AlertConditionObjectPing'
+        - $ref: '#/components/schemas/AlertConditionObjectShell'
+        - $ref: '#/components/schemas/AlertConditionObjectAzureAd'
+      - title: Application Scouts
+        oneOf:
+        - $ref: '#/components/schemas/AlertConditionObjectExchange'
+        - $ref: '#/components/schemas/AlertConditionObjectTeams'
+        - $ref: '#/components/schemas/AlertConditionObjectSiteload'
+        - $ref: '#/components/schemas/AlertConditionObjectWebTransactions'
+    AlertConditionObjectDns:
+      title: DNS
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleDns'
+      - $ref: '#/components/schemas/AlertConditionGroupDns'
+    AlertTerminalRuleCitrix:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Property Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | imgAnomalyScore | Image Anomaly Score. | number (float) |
+
+            | authPhase | Authentication Duration (seconds). | number (float) |
+
+            | connPhase | Connecting to Session Duration (seconds). | number (float) |
+
+            | durationReady | Total Time to Session Ready (secconds). | number (float) |
+
+            | enumTime | Resources Enumeration Duration (seconds). | number (integer) |
+
+            | ready | Session Handoff (Ready) Duration (seconds). | number (float) |
+
+            | sess | Session Initialization Duration (seconds). | number (integer) |
+
+            | loginAttempts | Login Attempts. | number (integer) |
+
+            | icaTime | ICA Download Duration (seconds). | number (integer) |
+
+            | serverName | Server Name. | string |
+
+            '
+          enum:
+          - status
+          - failReason
+          - imgAnomalyScore
+          - authPhase
+          - connPhase
+          - durationReady
+          - enumTime
+          - ready
+          - sess
+          - loginAttempts
+          - icaTime
+          - serverName
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertSummary:
+      title: Alert Summary
+      description: Summary information about an alert policy for a Scout.
+      type: object
+      properties:
+        alertId:
+          type: integer
+          description: ID of the alert policy.
+          example: 123
+        scoutId:
+          type: integer
+          description: ID of the Scout.
+          example: 7852
+        subType:
+          type: string
+          description: Scout platform/subtype.
+          enum:
+          - citrix_gateway
+          - citrix_cloud
+          - citrix_storefront
+          - avd
+          - vmware_horizon
+          - vmware_cloud
+          - vmware_w1
+          - vmware_secsrv
+          - net_ping
+          - net_traceroute
+          - net_dns
+          - net_http
+          - siteload
+          - shell
+          - entra_id
+          - ms_exchange
+          - ms_teams
+          - web_transactions
+          example: net_http
+        conditions:
+          $ref: '#/components/schemas/AlertTerminalRuleResponse'
+          description: "Alert conditions that must be met for the alert to trigger. \n\nThe response structure can vary as an alert policy can have multiple nested conditions in condition groups with AND/OR operators. \nSee the [POST /scouts/{scoutId}/alerts](appcreate_scout_alert) request body for more detailed information about the conditions object.\n"
+        readableConditions:
+          type: string
+          description: Human-readable representation of the alert conditions.
+          example: status == failure
+      required:
+      - alertId
+      - scoutId
+      - subType
+      - conditions
+    AlertTerminalRuleAzureAd:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | userQueryDuration | User Query Duration (seconds). | number (float) |
+
+            | queryDuration | Organization Query Duration (seconds). | number (float) |
+
+            | onPremisesSyncEnabled | Sync Enabled. | boolean |
+
+            | onPremisesLastSyncDateTime | Last Sync Date Difference (minutes). | number (integer) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - userQueryDuration
+          - queryDuration
+          - onPremisesSyncEnabled
+          - onPremisesLastSyncDateTime
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertConditionGroupAzureAd:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectAzureAd'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertConditionGroupCitrix:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectCitrix'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertConditionObjectWebTransactions:
+      title: Web Transactions
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleWebTransactions'
+      - $ref: '#/components/schemas/AlertConditionGroupWebTransactions'
+    AlertTerminalRuleShell:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | runtime | Avg. Response Time (ms). | number (float) |
+
+            | errorCode | Exit Code. | number (integer) |
+
+            | stdoutLen | STDOUT Length. | number (integer) |
+
+            | stderrLen | STDERR Length. | number (integer) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - runtime
+          - errorCode
+          - stdoutLen
+          - stderrLen
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
+    AlertConditionObjectSiteload:
+      title: Site load
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleSiteload'
+      - $ref: '#/components/schemas/AlertConditionGroupSiteload'
+    AlertConditionObjectAzureAd:
+      title: Microsoft Entra ID
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleAzureAd'
+      - $ref: '#/components/schemas/AlertConditionGroupAzureAd'
+    AlertConditionObjectCitrixCloud:
+      title: Citrix Cloud
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleCitrixCloud'
+      - $ref: '#/components/schemas/AlertConditionGroupCitrixCloud'
+    MarshmallowError:
+      type: object
+      properties:
+        errors:
+          type: object
+          items:
+            type: array
+            items:
+              type: string
+      example:
+        errors:
+          name:
+          - Missing required data.
+          period:
+          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
+    AlertConditionObjectVmware:
+      title: Horizon
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleVmware'
+      - $ref: '#/components/schemas/AlertConditionGroupVmware'
+    AlertConditionGroupTraceroute:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectTraceroute'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertConditionGroupDns:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectDns'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertUpdateRequest:
+      title: Alert Update Request
+      description: Request schema for updating an alert for a Scout
+      type: object
+      properties:
+        disabled:
+          type: boolean
+          description: Indicates whether the alert is enabled or disabled.
+        conditions:
+          $ref: '#/components/schemas/AlertConditions'
+        settings:
+          $ref: '#/components/schemas/AlertTriggerSettings'
+        notifications:
+          type: array
+          description: 'Notification configuration.
+
+            '
+          items:
+            $ref: '#/components/schemas/AlertNotification'
+    AlertWebhookNotification:
+      title: Webhook Notification
+      type: object
+      required:
+      - type
+      - url
+      properties:
+        type:
+          type: string
+          const: WEBHOOK
+          description: Notification type identifier.
+        url:
+          type: string
+          format: uri
+          description: Webhook URL where alert notifications will be sent.
+        authentication:
+          title: Webhook Authentication
+          description: Authentication configuration for the webhook request. If not provided, no authentication will be used.
+          oneOf:
+          - type: object
+            title: Basic Authentication
+            required:
+            - type
+            - username
+            - password
+            properties:
+              type:
+                type: string
+                enum:
+                - BASIC
+              username:
+                type: string
+                description: Username for basic authentication.
+              password:
+                type: string
+                description: Password for basic authentication.
+          - type: object
+            title: Token Authentication
+            required:
+            - type
+            - token
+            properties:
+              type:
+                type: string
+                enum:
+                - TOKEN
+              token:
+                type: string
+                description: Token for authentication.
+        headers:
+          type: array
+          nullable: true
+          description: Custom HTTP headers to include in the webhook request.
+          items:
+            title: Webhook Header
+            type: object
+            required:
+            - name
+            - value
+            properties:
+              name:
+                type: string
+                description: Header name.
+              value:
+                type: string
+                description: Header value.
+        fields:
+          type: array
+          nullable: true
+          description: Custom fields to include in the webhook payload.
+          items:
+            title: Webhook Field
+            type: object
+            required:
+            - name
+            - value
+            properties:
+              name:
+                type: string
+                description: Field name.
+              value:
+                type: string
+                description: Field value.
     AlertConditionObjectAvd:
       title: Microsoft AVD
       description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
@@ -1380,6 +3191,107 @@ components:
       oneOf:
       - $ref: '#/components/schemas/AlertTerminalRuleAvd'
       - $ref: '#/components/schemas/AlertConditionGroupAvd'
+    AlertConditionGroupPing:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectPing'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertTerminalRulePing:
+      title: Condition
+      description: A single alert condition that evaluates a test result property.
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The test result property to compare against.
+
+
+            | Field Name | Description | Type |
+
+            | :--- | :--- | :--- |
+
+            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
+
+            | failReason | The reason that the test failed. | string |
+
+            | avgRtt | Avg. Response Time (ms). | number (float) |
+
+            | minRtt | Min Response Time (ms). | number (float) |
+
+            | maxRtt | Max Response Time (ms). | number (float) |
+
+            | jitter | Jitter (ms). | number (float) |
+
+            '
+          enum:
+          - status
+          - failReason
+          - avgRtt
+          - minRtt
+          - maxRtt
+          - jitter
+        operator:
+          type: string
+          description: 'Comparison operator for evaluating the condition.
+
+            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
+
+            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
+
+            * For boolean fields, use `==`, `!=`.
+
+            '
+          enum:
+          - '>'
+          - <
+          - '>='
+          - <=
+          - ==
+          - '!='
+          - contains
+          - not_contains
+          example: ==
+        value:
+          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+
+            '
+          oneOf:
+          - type: string
+          - type: integer
+          - type: number
+          - type: boolean
+          example: failure
     AlertTerminalRuleSiteload:
       title: Condition
       description: A single alert condition that evaluates a test result property.
@@ -1487,223 +3399,104 @@ components:
           - type: number
           - type: boolean
           example: failure
-    JsonApiError:
+    AlertConditionGroupCitrixCloud:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
       type: object
-      description: Error object
-      properties:
-        status:
-          type: string
-          description: HTTP status code as a string
-        code:
-          type: string
-          description: Application-specific error code
-        title:
-          type: string
-          description: Short, human-readable summary of the error
-        detail:
-          type: string
-          description: Detailed explanation of the error
-        source:
-          type: object
-          description: Object containing references to the source of the error
-          properties:
-            pointer:
-              type: string
-              description: JSON Pointer to the field that caused the error
-        meta:
-          type: object
-          description: Non-standard meta-information about the error
-          additionalProperties: true
       required:
-      - status
-      - code
-      - title
-      - detail
-    AlertItem:
-      title: Alert data
-      description: Details of the Scout's alert configuration and each time the alert was triggered.
-      allOf:
-      - $ref: '#/components/schemas/SubType'
-      - type: object
-        properties:
-          conditions:
-            type: array
-            description: The alert policy conditions for the Scout. These conditions must be met for the Scout to trigger an alert.
-            items:
-              oneOf:
-              - type: object
-                title: Single condition
-                properties:
-                  conditionType:
-                    type: string
-                    description: How the test result `property` must relate to the `value` for the alert to trigger.
-                    enum:
-                    - ==
-                    - '!='
-                    - '>'
-                    - '>='
-                    - <
-                    - <=
-                    - contains
-                    - not_contains
-                  property:
-                    description: The test result property used for the alert condition.
-                    type: string
-                    example: status
-                  value:
-                    description: The reference value used for the alert condition.
-                    type: string
-                    example: success
-              - type: object
-                title: Multiple conditions with AND/OR operators
-                properties:
-                  conds:
-                    description: An array containing the alert conditions for the Scout. The array contains additional 'conds' arrays if there are nested alert conditions (for example, X AND (Y OR Z)).
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        conditionType:
-                          type: string
-                          description: How the test result `property` must relate to the `value` for the alert to trigger.
-                          enum:
-                          - ==
-                          - '!='
-                          - '>'
-                          - '>='
-                          - <
-                          - <=
-                          - contains
-                          - not_contains
-                        property:
-                          description: The test result property used for the alert condition.
-                          type: string
-                          example: status
-                        value:
-                          description: The reference value used for the alert condition.
-                          type: string
-                          example: success
-                  operator:
-                    description: AND or OR operator for the alert conditions in the `conds` array.
-                    type: string
-                    enum:
-                    - AND
-                    - OR
-          scoutId:
-            description: The Scout's ID.
-            type: integer
-          triggers:
-            type: array
-            description: 'An array containing an entry for each time an alert is triggered, or is no longer triggered and returns to a normal status.
-
-
-              In addition to the documented properties below, each entry also contains the test result values that caused the trigger to activate or return to a normal status. The names of these properties are dynamic and depend on the alert configuration.
-
-              '
-            items:
-              type: object
-              description: Additionally will contain properties that define in conditions under name `prop`
-              properties:
-                alertLevel:
-                  description: The Scout's alert status. The status is "TRIGGERED" for each time the alert is triggered, which can be multiple times in a row. The status is "OK" only when the alert policy is no longer triggered and the Scout returns to a normal status.
-                  type: string
-                  enum:
-                  - OK
-                  - TRIGGERED
-                cloudHive:
-                  type: integer
-                  description: ID of the Cloud Hive running the Scout that triggered the alert.
-                hiveId:
-                  type: integer
-                  description: ID of the Custom Hive running the Scout that triggered the alert.
-                stateCount:
-                  description: A counter that increases by 1 for each subsequent time the alert status is "TRIGGERED". `stateCount` starts at -1, and returns to -1 when the alert status is "OK".
-                  type: integer
-                time:
-                  type: string
-                  format: date-time
-                  description: The date and time of the alert.
-                  example: '2021-01-01 13:21:55'
-    AlertTerminalRuleWebTransactions:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
+      - operator
+      - rules
       properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | dest | Destination. | string |
-
-            | totalDuration | Total Duration (ms). | number (float) |
-
-            | stepsDuration | Steps Duration (ms). | number (float) |
-
-            | duration | Page Load - Duration (ms). | number (float) |
-
-            | firstPaint | Page Load - First Paint (ms). | number (float) |
-
-            | contentfulPaint | Page Load - Contentful Paint (ms). | number (integer) |
-
-            | domainLookup | Page Load - Domain Lookup (ms). | number (float) |
-
-            | domInteractive | Page Load - DOM Interactive (ms). | number (float) |
-
-            | downloadSize | Download Size (bytes). | number (integer) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - dest
-          - totalDuration
-          - stepsDuration
-          - duration
-          - firstPaint
-          - contentfulPaint
-          - domainLookup
-          - domInteractive
-          - downloadSize
         operator:
           type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
+          description: Logical operator for combining rules in this group.
           enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectCitrixCloud'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
+    AlertConditionObjectTeams:
+      title: Microsoft Teams
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
 
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleTeams'
+      - $ref: '#/components/schemas/AlertConditionGroupTeams'
+    AlertConditionObjectHttp:
+      title: HTTP/S
+      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
+
+
+        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
+
+        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/AlertTerminalRuleHttp'
+      - $ref: '#/components/schemas/AlertConditionGroupHttp'
+    AlertConditionGroupExchange:
+      title: Condition Group
+      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
+
+        '
+      type: object
+      required:
+      - operator
+      - rules
+      properties:
+        operator:
+          type: string
+          description: Logical operator for combining rules in this group.
+          enum:
+          - AND
+          - OR
+          example: AND
+        rules:
+          type: array
+          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AlertConditionObjectExchange'
+          example:
+          - field: status
+            operator: ==
+            value: failure
+          - operator: OR
+            rules:
+            - field: latency
+              operator: '>'
+              value: 80
+            - field: packetLoss
+              operator: '>'
+              value: 90
     AlertTerminalRuleVmware:
       title: Condition
       description: A single alert condition that evaluates a test result property.
@@ -1784,1799 +3577,6 @@ components:
           - type: number
           - type: boolean
           example: failure
-    AlertConditionGroupCitrixCloud:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectCitrixCloud'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertTriggerSettings:
-      title: Alert Trigger Settings
-      description: 'Settings that control when and how alerts are triggered.
-
-        '
-      type: object
-      properties:
-        sendOnStatusChange:
-          type: boolean
-          description: 'If `true`, notifications are sent only when the alert status changes, to prevent excessive notifications. This means that if the Scout
-
-            triggers the alert 10 times in a row, you''ll receive one notification when the Scout first triggers the alert, and another notification
-
-            when the Scout recovers.
-
-
-            If `false`, notifications are sent every time the alert triggers. This means that if something goes wrong and the Scout
-
-            starts triggering the alert, you''ll receive a notification every time the Scout runs.
-
-            '
-          default: true
-          example: true
-        consecutiveMatchCount:
-          type: integer
-          description: "Number of consecutive test results that must match the alert conditions before \nthe alert is triggered. This helps prevent false positives from temporary issues.\n"
-          minimum: 1
-          default: 1
-          example: 2
-        attachOutput:
-          type: boolean
-          description: "Relevant for Shell Scouts only. Attach the test output to alert notifications. When enabled, the notification \npayload will include additional details about the test result that triggered the alert.\n"
-          nullable: true
-          example: true
-        evaluationScope:
-          type: string
-          description: "Scope for evaluating consecutive matches.\n\n- `GLOBAL`: Evaluate consecutive matches across all specified hives (or all hives if targetHives is not specified).\n  The alert triggers when the required consecutive count is met across any combination of the target hives.\n- `PER_HIVE`: Evaluate consecutive matches separately for each hive. \n  The alert triggers when any single hive meets the required consecutive count.\n"
-          enum:
-          - GLOBAL
-          - PER_HIVE
-          default: GLOBAL
-          example: GLOBAL
-        targetHives:
-          title: Target Hives
-          description: "Sets which hives to include in the consecutive match evaluation.\nThis is only used when `evaluationScope` is set to `GLOBAL`. \nIf not specified when evaluationScope is GLOBAL, all hives are evaluated.\n"
-          type: object
-          properties:
-            cloudHiveIds:
-              type: array
-              description: List of Cloud Hive IDs to include in alert evaluation
-              items:
-                type: integer
-                format: int32
-                minimum: 1
-              default: []
-            customHiveIds:
-              type: array
-              description: List of Custom Hive IDs to include in alert evaluation
-              items:
-                type: integer
-                format: int32
-                minimum: 1
-              default: []
-              example:
-                cloudHiveIds:
-                - 1
-                - 2
-                - 3
-                customHiveIds:
-                - 4
-                - 5
-    AlertConditionObjectExchange:
-      title: Microsoft Exchange Online
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleExchange'
-      - $ref: '#/components/schemas/AlertConditionGroupExchange'
-    AlertConditionGroupExchange:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectExchange'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertConditionObjectPing:
-      title: Ping
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRulePing'
-      - $ref: '#/components/schemas/AlertConditionGroupPing'
-    AlertWebhookNotification:
-      title: Webhook Notification
-      type: object
-      required:
-      - type
-      - url
-      properties:
-        type:
-          type: string
-          const: WEBHOOK
-          description: Notification type identifier.
-        url:
-          type: string
-          format: uri
-          description: Webhook URL where alert notifications will be sent.
-        authentication:
-          title: Webhook Authentication
-          description: Authentication configuration for the webhook request. If not provided, no authentication will be used.
-          oneOf:
-          - type: object
-            title: Basic Authentication
-            required:
-            - type
-            - username
-            - password
-            properties:
-              type:
-                type: string
-                enum:
-                - BASIC
-              username:
-                type: string
-                description: Username for basic authentication.
-              password:
-                type: string
-                description: Password for basic authentication.
-          - type: object
-            title: Token Authentication
-            required:
-            - type
-            - token
-            properties:
-              type:
-                type: string
-                enum:
-                - TOKEN
-              token:
-                type: string
-                description: Token for authentication.
-        headers:
-          type: array
-          nullable: true
-          description: Custom HTTP headers to include in the webhook request.
-          items:
-            title: Webhook Header
-            type: object
-            required:
-            - name
-            - value
-            properties:
-              name:
-                type: string
-                description: Header name.
-              value:
-                type: string
-                description: Header value.
-        fields:
-          type: array
-          nullable: true
-          description: Custom fields to include in the webhook payload.
-          items:
-            title: Webhook Field
-            type: object
-            required:
-            - name
-            - value
-            properties:
-              name:
-                type: string
-                description: Field name.
-              value:
-                type: string
-                description: Field value.
-    AlertTerminalRuleShell:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | runtime | Avg. Response Time (ms). | number (float) |
-
-            | errorCode | Exit Code. | number (integer) |
-
-            | stdoutLen | STDOUT Length. | number (integer) |
-
-            | stderrLen | STDERR Length. | number (integer) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - runtime
-          - errorCode
-          - stdoutLen
-          - stderrLen
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertTerminalRuleAvd:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | imgAnomalyScore | Image Anomaly Score. | number (float) |
-
-            | authPhase | Authentication Duration (seconds). | number (float) |
-
-            | connPhase | Connecting to Session Duration (seconds). | number (float) |
-
-            | durationReady | Total Time to Session Ready (seconds). | number (float) |
-
-            | enumTime | Resources Enumeration Duration (seconds). | number (integer) |
-
-            | ready | Session Handoff (Ready) Duration (seconds). | number (float) |
-
-            | sess | Session Initialization Duration (seconds). | number (integer) |
-
-            | loginAttempts | Login Attempts. | number (integer) |
-
-            | serverName | Server Name. | string |
-
-            '
-          enum:
-          - status
-          - failReason
-          - imgAnomalyScore
-          - authPhase
-          - connPhase
-          - durationReady
-          - enumTime
-          - ready
-          - sess
-          - loginAttempts
-          - serverName
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertConditionObjectSiteload:
-      title: Site load
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleSiteload'
-      - $ref: '#/components/schemas/AlertConditionGroupSiteload'
-    AlertNotification:
-      title: Alert Notification
-      description: "Notifications sent when the Scout triggers the alert. If no notifications are selected, you can still view \neach time the alert has triggered using the API endpoints.\n"
-      oneOf:
-      - $ref: '#/components/schemas/AlertEmailNotification'
-      - $ref: '#/components/schemas/AlertWebhookNotification'
-      - $ref: '#/components/schemas/AlertIntegrationNotification'
-    AlertUpdateRequest:
-      title: Alert Update Request
-      description: Request schema for updating an alert for a Scout
-      type: object
-      properties:
-        disabled:
-          type: boolean
-          description: Indicates whether the alert is enabled or disabled.
-        conditions:
-          $ref: '#/components/schemas/AlertConditions'
-        settings:
-          $ref: '#/components/schemas/AlertTriggerSettings'
-        notifications:
-          type: array
-          description: 'Notification configuration.
-
-            '
-          items:
-            $ref: '#/components/schemas/AlertNotification'
-    AlertConditionGroupDns:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectDns'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertConditions:
-      title: Alert Conditions
-      description: 'Defines the test results that trigger an alert. Select your Scout type to see how to create conditions for that Scout type.
-
-        '
-      oneOf:
-      - title: EUC Scouts
-        oneOf:
-        - $ref: '#/components/schemas/AlertConditionObjectCitrix'
-        - $ref: '#/components/schemas/AlertConditionObjectCitrixCloud'
-        - $ref: '#/components/schemas/AlertConditionObjectCitrixStorefront'
-        - $ref: '#/components/schemas/AlertConditionObjectVmware'
-        - $ref: '#/components/schemas/AlertConditionObjectAvd'
-      - title: Infrastructure Scouts
-        oneOf:
-        - $ref: '#/components/schemas/AlertConditionObjectHttp'
-        - $ref: '#/components/schemas/AlertConditionObjectDns'
-        - $ref: '#/components/schemas/AlertConditionObjectTraceroute'
-        - $ref: '#/components/schemas/AlertConditionObjectPing'
-        - $ref: '#/components/schemas/AlertConditionObjectShell'
-        - $ref: '#/components/schemas/AlertConditionObjectAzureAd'
-      - title: Application Scouts
-        oneOf:
-        - $ref: '#/components/schemas/AlertConditionObjectExchange'
-        - $ref: '#/components/schemas/AlertConditionObjectTeams'
-        - $ref: '#/components/schemas/AlertConditionObjectSiteload'
-        - $ref: '#/components/schemas/AlertConditionObjectWebTransactions'
-    SubType:
-      type: object
-      title: List of sub types of the
-      properties:
-        subType:
-          description: The Scout's sub-type.
-          type: string
-          enum:
-          - citrix
-          - citrix_cloud
-          - storefront
-          - euc_avd
-          - vmware
-          - vmware_cloud
-          - vmware_ws_one
-          - vmware_sec_server
-          - net_ping
-          - net_traceroute
-          - net_dns
-          - net_http
-          - net_siteload
-          - app_shell
-          - app_azure_ad
-          - app_ms_exchange
-          - app_ms_teams
-          - app_web_transactions
-    AlertConditionObjectTraceroute:
-      title: Traceroute
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleTraceroute'
-      - $ref: '#/components/schemas/AlertConditionGroupTraceroute'
-    AlertSummary:
-      title: Alert Summary
-      description: Summary information about an alert policy for a Scout.
-      type: object
-      properties:
-        alertId:
-          type: integer
-          description: ID of the alert policy.
-          example: 123
-        scoutId:
-          type: integer
-          description: ID of the Scout.
-          example: 7852
-        subType:
-          type: string
-          description: Scout platform/subtype.
-          enum:
-          - citrix_gateway
-          - citrix_cloud
-          - citrix_storefront
-          - avd
-          - vmware_horizon
-          - vmware_cloud
-          - vmware_w1
-          - vmware_secsrv
-          - net_ping
-          - net_traceroute
-          - net_dns
-          - net_http
-          - siteload
-          - shell
-          - entra_id
-          - ms_exchange
-          - ms_teams
-          - web_transactions
-          example: net_http
-        conditions:
-          $ref: '#/components/schemas/AlertTerminalRuleResponse'
-          description: "Alert conditions that must be met for the alert to trigger. \n\nThe response structure can vary as an alert policy can have multiple nested conditions in condition groups with AND/OR operators. \nSee the [POST /scouts/{scoutId}/alerts](appcreate_scout_alert) request body for more detailed information about the conditions object.\n"
-        readableConditions:
-          type: string
-          description: Human-readable representation of the alert conditions.
-          example: status == failure
-      required:
-      - alertId
-      - scoutId
-      - subType
-      - conditions
-    AlertTerminalRulePing:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | avgRtt | Avg. Response Time (ms). | number (float) |
-
-            | minRtt | Min Response Time (ms). | number (float) |
-
-            | maxRtt | Max Response Time (ms). | number (float) |
-
-            | jitter | Jitter (ms). | number (float) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - avgRtt
-          - minRtt
-          - maxRtt
-          - jitter
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertConditionGroupShell:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectShell'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertConditionGroupAvd:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectAvd'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertConditionGroupSiteload:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectSiteload'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertEmailNotification:
-      title: Email Notification
-      type: object
-      required:
-      - type
-      - targets
-      properties:
-        type:
-          type: string
-          description: Notification type identifier.
-          enum:
-          - EMAIL
-        targets:
-          type: array
-          description: List of email addresses.
-          items:
-            type: string
-            format: email
-    AlertTerminalRuleDns:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | result | Result. | string |
-
-            | runtime | Response Time (ms). | number (float) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - result
-          - runtime
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertTerminalRuleAzureAd:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | userQueryDuration | User Query Duration (seconds). | number (float) |
-
-            | queryDuration | Organization Query Duration (seconds). | number (float) |
-
-            | onPremisesSyncEnabled | Sync Enabled. | boolean |
-
-            | onPremisesLastSyncDateTime | Last Sync Date Difference (minutes). | number (integer) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - userQueryDuration
-          - queryDuration
-          - onPremisesSyncEnabled
-          - onPremisesLastSyncDateTime
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertConditionObjectHttp:
-      title: HTTP/S
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleHttp'
-      - $ref: '#/components/schemas/AlertConditionGroupHttp'
-    AlertConditionObjectCitrix:
-      title: Citrix
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleCitrix'
-      - $ref: '#/components/schemas/AlertConditionGroupCitrix'
-    AlertConditionGroupWebTransactions:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectWebTransactions'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertTerminalRuleExchange:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | avgRtt | Avg. Response Time (ms). | number (float) |
-
-            | minRtt | Min Response Time (ms). | number (float) |
-
-            | maxRtt | Max Response Time (ms). | number (float) |
-
-            | jitter | Jitter (ms). | number (float) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - avgRtt
-          - minRtt
-          - maxRtt
-          - jitter
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertConditionGroupPing:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectPing'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertConditionObjectWebTransactions:
-      title: Web Transactions
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleWebTransactions'
-      - $ref: '#/components/schemas/AlertConditionGroupWebTransactions'
-    AlertDetails:
-      title: Alert Details
-      description: Detailed information about an alert policy for a Scout.
-      allOf:
-      - $ref: '#/components/schemas/AlertSummary'
-      - type: object
-        properties:
-          settings:
-            $ref: '#/components/schemas/AlertTriggerSettings'
-            description: Settings that control when and how the alert is triggered.
-          notifications:
-            type: array
-            description: Settings that control notifications that are sent when the alert is triggered.
-            items:
-              $ref: '#/components/schemas/AlertNotification'
-            default: []
-          status:
-            type: string
-            description: Current status of the alert.
-            nullable: true
-            example: active
-          createdAt:
-            type: string
-            format: date-time
-            description: Date and time when the alert policy was created.
-            example: '2023-09-26 08:00:00'
-          disabled:
-            type: boolean
-            description: Indicates whether the alert policy is enabled or disabled.
-            example: false
-    AlertConditionGroupTeams:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectTeams'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertIntegrationNotification:
-      title: Integration Notification
-      type: object
-      required:
-      - type
-      - integrationId
-      properties:
-        type:
-          type: string
-          const: INTEGRATION
-          description: Notification type identifier.
-        integrationId:
-          type: integer
-          description: Integration ID. You can get the ID of your integrations by inspecting the integrations page in your browser, or by asking ControlUp Support.
-    AlertConditionObjectTeams:
-      title: Microsoft Teams
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleTeams'
-      - $ref: '#/components/schemas/AlertConditionGroupTeams'
-    AlertConditionObjectVmware:
-      title: Horizon
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleVmware'
-      - $ref: '#/components/schemas/AlertConditionGroupVmware'
-    AlertConditionObjectCitrixStorefront:
-      title: Citrix Storefront
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleCitrixStorefront'
-      - $ref: '#/components/schemas/AlertConditionGroupCitrixStorefront'
-    AlertTerminalRuleResponse:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-            '
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            '
-          example: ==
-        value:
-          description: 'Value to compare against.
-
-            '
-          example: failure
-    AlertTerminalRuleHttp:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | dest | Destination. | string |
-
-            | statusCode | Status Code. | number (integer) |
-
-            | latency | Total Duration (ms). | number (float) |
-
-            | namelookupTime | Name Lookup Time (ms). | number (float) |
-
-            | connectTime | Connect Time (ms). | number (float) |
-
-            | tlsHandshakeTime | TLS Handshake Time (ms). | number (float) |
-
-            | responseTime | Response Time (ms). | number (float) |
-
-            | ttfb | Time to First Byte (ms). | number (float) |
-
-            | redirectTime | Redirects Time (ms). | number (float) |
-
-            | redirectCount | Redirects. | number (integer) |
-
-            | certExpDays | Certificate Expiration Days. | number (integer) |
-
-            | totalBytes | Response Size (bytes). | number (integer) |
-
-            | bodySize | Response Body Size (bytes). | number (integer) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - dest
-          - statusCode
-          - latency
-          - namelookupTime
-          - connectTime
-          - tlsHandshakeTime
-          - responseTime
-          - ttfb
-          - redirectTime
-          - redirectCount
-          - certExpDays
-          - totalBytes
-          - bodySize
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    BaseError:
-      type: object
-      properties:
-        errors:
-          type: string
-      required:
-      - errors
-    AlertConditionObjectDns:
-      title: DNS
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleDns'
-      - $ref: '#/components/schemas/AlertConditionGroupDns'
-    MarshmallowError:
-      type: object
-      properties:
-        errors:
-          type: object
-          items:
-            type: array
-            items:
-              type: string
-      example:
-        errors:
-          name:
-          - Missing required data.
-          period:
-          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
-    AlertTerminalRuleCitrix:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Property Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | imgAnomalyScore | Image Anomaly Score. | number (float) |
-
-            | authPhase | Authentication Duration (seconds). | number (float) |
-
-            | connPhase | Connecting to Session Duration (seconds). | number (float) |
-
-            | durationReady | Total Time to Session Ready (secconds). | number (float) |
-
-            | enumTime | Resources Enumeration Duration (seconds). | number (integer) |
-
-            | ready | Session Handoff (Ready) Duration (seconds). | number (float) |
-
-            | sess | Session Initialization Duration (seconds). | number (integer) |
-
-            | loginAttempts | Login Attempts. | number (integer) |
-
-            | icaTime | ICA Download Duration (seconds). | number (integer) |
-
-            | serverName | Server Name. | string |
-
-            '
-          enum:
-          - status
-          - failReason
-          - imgAnomalyScore
-          - authPhase
-          - connPhase
-          - durationReady
-          - enumTime
-          - ready
-          - sess
-          - loginAttempts
-          - icaTime
-          - serverName
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertTerminalRuleCitrixCloud:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | imgAnomalyScore | Image Anomaly Score. | number (float) |
-
-            | authPhase | Authentication Duration (seconds). | number (float) |
-
-            | connPhase | Connecting to Session Duration (seconds). | number (float) |
-
-            | durationReady | Total Time to Session Ready (seconds). | number (float) |
-
-            | enumTime | Resources Enumeration Duration (seconds). | number (integer) |
-
-            | ready | Session Handoff (Ready) Duration (seconds). | number (float) |
-
-            | sess | Session Initialization Duration (seconds). | number (integer) |
-
-            | loginAttempts | Login Attempts. | number (integer) |
-
-            | icaTime | ICA Download Duration (seconds). | number (float) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - imgAnomalyScore
-          - authPhase
-          - connPhase
-          - durationReady
-          - enumTime
-          - ready
-          - sess
-          - loginAttempts
-          - icaTime
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertConditionGroupTraceroute:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectTraceroute'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertConditionObjectAzureAd:
-      title: Microsoft Entra ID
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleAzureAd'
-      - $ref: '#/components/schemas/AlertConditionGroupAzureAd'
-    AlertCreateRequest:
-      title: Alert Create Request
-      description: Request schema for creating a new alert for a Scout
-      type: object
-      required:
-      - conditions
-      properties:
-        conditions:
-          $ref: '#/components/schemas/AlertConditions'
-        settings:
-          $ref: '#/components/schemas/AlertTriggerSettings'
-        notifications:
-          type: array
-          description: 'Notification configurations for when alerts are triggered. This field is optional.
-
-
-            If no notifications are configured, you can still get information about each time the alert has triggered using the alerts API endpoints.
-
-            '
-          items:
-            $ref: '#/components/schemas/AlertNotification'
-    AlertConditionObjectShell:
-      title: Shell
-      description: 'To create an Alert policy based on a single condition (for example, status == ''failure''), select `Condition`.
-
-
-        To create an Alert policy based on multiple conditions (for example, status == ''failure'' OR jitter > 30ms), select `Condition group`, choose the operator for the conditions in the group (AND/OR), and add your conditions.
-
-        You can nest condition groups (to combine AND and OR statements) by adding a condition group within another condition group.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/AlertTerminalRuleShell'
-      - $ref: '#/components/schemas/AlertConditionGroupShell'
-    AlertConditionGroupVmware:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectVmware'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertTerminalRuleTraceroute:
-      title: Condition
-      description: A single alert condition that evaluates a test result property.
-      type: object
-      properties:
-        field:
-          type: string
-          description: 'The test result property to compare against.
-
-
-            | Field Name | Description | Type |
-
-            | :--- | :--- | :--- |
-
-            | status | Overall status for the test, either **`success`** or **`failure`**. | string |
-
-            | failReason | The reason that the test failed. | string |
-
-            | avgRtt | Avg. Latency (ms). | number (float) |
-
-            | hops | Number of hops. | number (integer) |
-
-            | dest | Destination. | string |
-
-            | minRtt | Min Latency (ms). | number (float) |
-
-            | maxRtt | Max Latency (ms). | number (float) |
-
-            | lastAvgRtt | Last Hop''s Latency (ms). | number (float) |
-
-            | avgJitter | Avg Jitter (ms). | number (float) |
-
-            | minJitter | Min Jitter (ms). | number (float) |
-
-            | maxJitter | Max Jitter (ms). | number (float) |
-
-            | lastJitter | Last Hop''s Jitter (ms). | number (float) |
-
-            | avgPacketLoss | Avg packet loss percentage across all hops. | number (integer) |
-
-            | minPacketLoss | Min packet loss percentage for individual hop. | number (integer) |
-
-            | maxPacketLoss | Max packet loss percentage for indivudal hop. | number (integer) |
-
-            | lastLoss | Last hop''s packet loss percentage. | number (integer) |
-
-            '
-          enum:
-          - status
-          - failReason
-          - avgRtt
-          - hops
-          - dest
-          - minRtt
-          - maxRtt
-          - lastAvgRtt
-          - avgJitter
-          - minJitter
-          - maxJitter
-          - lastJitter
-          - avgPacketLoss
-          - minPacketLoss
-          - maxPacketLoss
-          - lastLoss
-        operator:
-          type: string
-          description: 'Comparison operator for evaluating the condition.
-
-            * For string fields, use `==`, `!=`, `contains`, `not_contains`.
-
-            * For number fields, use `>`, `<`, `>=`, `<=`, `==`, `!=`
-
-            * For boolean fields, use `==`, `!=`.
-
-            '
-          enum:
-          - '>'
-          - <
-          - '>='
-          - <=
-          - ==
-          - '!='
-          - contains
-          - not_contains
-          example: ==
-        value:
-          description: 'Value to compare against. The data type must match the data type of the test result property in the `field` parameter.
-
-            '
-          oneOf:
-          - type: string
-          - type: integer
-          - type: number
-          - type: boolean
-          example: failure
-    AlertConditionGroupHttp:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectHttp'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
-    AlertConditionGroupCitrix:
-      title: Condition Group
-      description: 'Group of conditions or condition groups with AND/OR operators. Supports nesting up to 5 levels deep.
-
-        '
-      type: object
-      required:
-      - operator
-      - rules
-      properties:
-        operator:
-          type: string
-          description: Logical operator for combining rules in this group.
-          enum:
-          - AND
-          - OR
-          example: AND
-        rules:
-          type: array
-          description: "List of conditions or condition groups. Must contain at least \n1 and at most 5 items.\n"
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/AlertConditionObjectCitrix'
-          example:
-          - field: status
-            operator: ==
-            value: failure
-          - operator: OR
-            rules:
-            - field: latency
-              operator: '>'
-              value: 80
-            - field: packetLoss
-              operator: '>'
-              value: 90
     AlertTerminalRuleCitrixStorefront:
       title: Condition
       description: A single alert condition that evaluates a test result property.
@@ -3689,27 +3689,17 @@ components:
           title: Number
         - type: boolean
           title: Boolean
-    FilterField:
-      name: filters[0][field]
+    SorterField:
+      name: sorters[0][field]
       in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
 
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
 
         '
       schema:
         type: string
         example: _created
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
     FilterType:
       name: filters[0][type]
       in: query
@@ -3734,12 +3724,22 @@ components:
         - '>'
         - like
         - boolean
-    SorterField:
-      name: sorters[0][field]
+    SorterDir:
+      name: sorters[0][dir]
       in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
 
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
 
         '
       schema:
@@ -3750,75 +3750,70 @@ components:
       description: API key is expired.
     '401':
       description: Invalid or missing API key.
-    AlertItem:
-      description: Alert details
+    AlertSummaryList:
+      description: List of alert policies for a Scout.
       content:
         application/json:
           schema:
             type: object
             properties:
+              success:
+                type: boolean
+                description: Whether the request was successful.
               data:
-                type: object
-                description: Information about the alert policy configured for the Scout, and the details of each alert (i.e., the alert is triggered, or it returns to a normal status).
-                $ref: '#/components/schemas/AlertItem'
+                type: array
+                description: List of alert policies for the Scout.
+                items:
+                  $ref: '#/components/schemas/AlertSummary'
+          example:
+            success: true
+            data:
+            - alertId: 123
+              scoutId: 7852
+              subType: net_http
+              conditions:
+                field: status
+                operator: ==
+                value: failure
+              readableConditions: status == failure
+    ValidationError:
+      description: Sent data has errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MarshmallowError'
+    AlertItems:
+      description: Details for all alerts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
               current_page:
                 type: integer
                 description: The current page of alerts returned.
-              total_pages:
-                type: integer
-                description: The total number of pages returned. Each page contains up to 100 alerts.
+              data:
+                type: array
+                description: An array with alert details for all Scouts that have triggered an alert. Each entry in the array contains alert details for a single Scout.
+                items:
+                  $ref: '#/components/schemas/AlertItem'
               success:
                 description: Whether the request was successful.
                 type: boolean
               total:
                 type: integer
-                description: The total number of alerts returned. If `total` is greater than 100, then the alerts are on multiple pages.
+                description: The total number of alerts returned. If `total` is greater than 100, then the alerts will be on multiple pages.
+              total_pages:
+                type: integer
+                description: The total number of pages returned. Each page contains up to 100 alerts.
+              total_per_page:
+                type: integer
+                description: The number of alerts that can be returned per page. This value is always 100.
           examples:
             AlertItemResponse:
               $ref: '#/components/examples/AlertItem'
             AlertMultipleCondsResponse:
               $ref: '#/components/examples/AlertItemWithMulConditions'
-    New404:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              errors:
-                type: array
-                items:
-                  $ref: '#/components/schemas/JsonApiError'
-          examples:
-            not_found_error:
-              summary: Resource not found error
-              value:
-                errors:
-                - id: 550e8400-e29b-41d4-a716-446655440005
-                  status: '404'
-                  code: not_found
-                  title: Not Found
-                  detail: 'Alert #123 not found.'
-    ServerError:
-      description: Server errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Server Error
-    New401:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              errors:
-                type: array
-                items:
-                  $ref: '#/components/schemas/JsonApiError'
     New400:
       description: Validation error
       content:
@@ -3883,6 +3878,116 @@ components:
                   code: validation_error
                   title: Validation Error
                   detail: Invalid request format.
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
+    AlertList:
+      description: A list of Scout IDs
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              scoutId:
+                type: array
+                description: Scout IDs that have triggered an alert.
+                items:
+                  type: string
+              success:
+                type: boolean
+                description: Whether the request was successful.
+          example:
+            success: true
+            scoutId:
+            - 44
+            - 1
+            - 100
+    New500:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JsonApiError'
+    AlertItem:
+      description: Alert details
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                description: Information about the alert policy configured for the Scout, and the details of each alert (i.e., the alert is triggered, or it returns to a normal status).
+                $ref: '#/components/schemas/AlertItem'
+              current_page:
+                type: integer
+                description: The current page of alerts returned.
+              total_pages:
+                type: integer
+                description: The total number of pages returned. Each page contains up to 100 alerts.
+              success:
+                description: Whether the request was successful.
+                type: boolean
+              total:
+                type: integer
+                description: The total number of alerts returned. If `total` is greater than 100, then the alerts are on multiple pages.
+          examples:
+            AlertItemResponse:
+              $ref: '#/components/examples/AlertItem'
+            AlertMultipleCondsResponse:
+              $ref: '#/components/examples/AlertItemWithMulConditions'
+    New401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JsonApiError'
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
+    New404:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JsonApiError'
+          examples:
+            not_found_error:
+              summary: Resource not found error
+              value:
+                errors:
+                - id: 550e8400-e29b-41d4-a716-446655440005
+                  status: '404'
+                  code: not_found
+                  title: Not Found
+                  detail: 'Alert #123 not found.'
     AlertDetails:
       description: Detailed information about an alert policy.
       content:
@@ -3913,112 +4018,43 @@ components:
               status: active
               createdAt: '2023-09-26 08:00:00'
               disabled: false
-    AlertItems:
-      description: Details for all alerts
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              current_page:
-                type: integer
-                description: The current page of alerts returned.
-              data:
-                type: array
-                description: An array with alert details for all Scouts that have triggered an alert. Each entry in the array contains alert details for a single Scout.
-                items:
-                  $ref: '#/components/schemas/AlertItem'
-              success:
-                description: Whether the request was successful.
-                type: boolean
-              total:
-                type: integer
-                description: The total number of alerts returned. If `total` is greater than 100, then the alerts will be on multiple pages.
-              total_pages:
-                type: integer
-                description: The total number of pages returned. Each page contains up to 100 alerts.
-              total_per_page:
-                type: integer
-                description: The number of alerts that can be returned per page. This value is always 100.
-          examples:
-            AlertItemResponse:
-              $ref: '#/components/examples/AlertItem'
-            AlertMultipleCondsResponse:
-              $ref: '#/components/examples/AlertItemWithMulConditions'
-    ValidationError:
-      description: Sent data has errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MarshmallowError'
-    AlertList:
-      description: A list of Scout IDs
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              scoutId:
-                type: array
-                description: Scout IDs that have triggered an alert.
-                items:
-                  type: string
-              success:
-                type: boolean
-                description: Whether the request was successful.
-          example:
-            success: true
-            scoutId:
-            - 44
-            - 1
-            - 100
-    AlertSummaryList:
-      description: List of alert policies for a Scout.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                description: Whether the request was successful.
-              data:
-                type: array
-                description: List of alert policies for the Scout.
-                items:
-                  $ref: '#/components/schemas/AlertSummary'
-          example:
-            success: true
-            data:
-            - alertId: 123
-              scoutId: 7852
-              subType: net_http
-              conditions:
-                field: status
-                operator: ==
-                value: failure
-              readableConditions: status == failure
-    Unauthorized:
-      description: Missing or wrong api key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Unauthorized
-    New500:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              errors:
-                type: array
-                items:
-                  $ref: '#/components/schemas/JsonApiError'
   examples:
+    AlertItem:
+      summary: Alert with single condition
+      value:
+        current_page: 1
+        data:
+          conditons:
+          - conditionType: ==
+            property: status
+            value: failure
+          scoutId: 1
+          subType: net_dns
+          triggers:
+          - alertLevel: TRIGGERED
+            cloudHive: 1
+            stateCount: 1
+            time: '2021-10-05 10:33:55'
+            status: failure
+          - alertLevel: TRIGGERED
+            cloudHive: 1
+            stateCount: 2
+            time: '2021-10-05 10:34:55'
+            status: failure
+          - alertLevel: TRIGGERED
+            cloudHive: 1
+            stateCount: 3
+            time: '2021-10-05 10:35:55'
+            status: failure
+          - alertLevel: OK
+            cloudHive: 1
+            stateCount: -1
+            time: '2021-10-05 10:36:55'
+            status: success
+        success: true
+        total: 4
+        total_pages: 1
+        total_per_page: 100
     AlertItemWithMulConditions:
       summary: Alert with multiple conditions
       value:
@@ -4064,50 +4100,7 @@ components:
         total: 8
         total_pages: 1
         total_per_page: 100
-    AlertItem:
-      summary: Alert with single condition
-      value:
-        current_page: 1
-        data:
-          conditons:
-          - conditionType: ==
-            property: status
-            value: failure
-          scoutId: 1
-          subType: net_dns
-          triggers:
-          - alertLevel: TRIGGERED
-            cloudHive: 1
-            stateCount: 1
-            time: '2021-10-05 10:33:55'
-            status: failure
-          - alertLevel: TRIGGERED
-            cloudHive: 1
-            stateCount: 2
-            time: '2021-10-05 10:34:55'
-            status: failure
-          - alertLevel: TRIGGERED
-            cloudHive: 1
-            stateCount: 3
-            time: '2021-10-05 10:35:55'
-            status: failure
-          - alertLevel: OK
-            cloudHive: 1
-            stateCount: -1
-            time: '2021-10-05 10:36:55'
-            status: success
-        success: true
-        total: 4
-        total_pages: 1
-        total_per_page: 100
   requestBodies:
-    AlertUpdate:
-      description: "Configuration options include: disabled, conditions, trigger settings, and notifications.  \nAt least one of these options must be included in the request.\n"
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AlertUpdateRequest'
     AlertCreate:
       description: Alert configuration including conditions, trigger settings, and optional notifications.
       required: true
@@ -4115,6 +4108,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/AlertCreateRequest'
+    AlertUpdate:
+      description: "Configuration options include: disabled, conditions, trigger settings, and notifications.  \nAt least one of these options must be included in the request.\n"
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AlertUpdateRequest'
   securitySchemes:
     bearerAuth:
       type: http
