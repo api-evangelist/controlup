@@ -73,53 +73,6 @@ paths:
 
           '
 components:
-  responses:
-    Unauthorized:
-      description: Missing or wrong api key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Unauthorized
-    HivesList:
-      description: A list of Custom Hives
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                description: Information about each Custom Hive.
-                items:
-                  $ref: '#/components/schemas/HiveResponse'
-              success:
-                type: boolean
-                description: Whether the request was successful.
-    ServerError:
-      description: Server errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Server Error
-    CloudHivesList:
-      description: A list of Cloud Hives
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                description: Information about each Cloud Hive.
-                items:
-                  $ref: '#/components/schemas/CloudHiveResponse'
-              success:
-                type: boolean
-                description: Whether the request was successful.
   schemas:
     HiveResponse:
       type: object
@@ -161,6 +114,13 @@ components:
           type: integer
           description: The Custom Hive version.
           example: 1124
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
     CloudHiveResponse:
       type: object
       description: Cloud hive properties
@@ -181,13 +141,53 @@ components:
           type: integer
           description: The hive version.
           example: 1161
-    BaseError:
-      type: object
-      properties:
-        errors:
-          type: string
-      required:
-      - errors
+  responses:
+    CloudHivesList:
+      description: A list of Cloud Hives
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: Information about each Cloud Hive.
+                items:
+                  $ref: '#/components/schemas/CloudHiveResponse'
+              success:
+                type: boolean
+                description: Whether the request was successful.
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
+    HivesList:
+      description: A list of Custom Hives
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: Information about each Custom Hive.
+                items:
+                  $ref: '#/components/schemas/HiveResponse'
+              success:
+                type: boolean
+                description: Whether the request was successful.
   securitySchemes:
     ApiKeyAuth:
       type: http

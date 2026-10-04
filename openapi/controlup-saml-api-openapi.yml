@@ -260,6 +260,119 @@ paths:
           $ref: '#/components/schemas/SamlConfigureIdpName'
 components:
   schemas:
+    UpdateOrganizationSamlSettings:
+      properties:
+        ssoServiceUrl:
+          type: string
+          description: IdP login URL.
+        sloServiceUrl:
+          type: string
+          description: IdP logout URL.
+        certificate:
+          type: string
+          description: IdP signing certificate.
+        idpPartnerName:
+          type: string
+          description: Entity / Issuer ID.
+        urn:
+          type: string
+          description: Relying party trust identifier.
+        defaultRoleId:
+          type: number
+          format: double
+          description: 'ID of the role assigned to ControlUp accounts automatically provisioned by SAML.
+
+
+            Default role IDs:
+
+            * Admin - 1
+
+            * Editor - 2
+
+            * Viewer - 3
+
+            * No Permissions - 4
+
+            * VDI and DaaS Admins - 5
+
+            * Access Real-Time DX Console - 6'
+      type: object
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
     CreateOrganizationSamlSettings:
       properties:
         ssoServiceUrl:
@@ -303,76 +416,44 @@ components:
       - certificate
       - ssoServiceUrl
       type: object
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorCode.InternalServerError:
+    BadRequestErrorMessages:
       enum:
-      - 6
-      type: number
-    HttpStatusCode.NOT_FOUND:
-      enum:
-      - 404
-      type: number
-    ErrorResponseMetadata:
-      properties:
-        cuRequestId:
-          type: string
-        orgId:
-          type: string
-        userId:
-          type: string
-        userIp:
-          type: string
-      required:
-      - userIp
-      - userId
-      - orgId
-      - cuRequestId
-      type: object
-    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Unauthorized'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ErrorMessage.Forbidden:
-      enum:
-      - Forbidden
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
       type: string
-    ErrorCode.Unauthorized:
+    ErrorCode.NotFound:
       enum:
-      - 3
+      - 5
       type: number
     SamlConfigureIdpName:
       enum:
       - entra_id
       type: string
-    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
       properties:
         message:
-          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
         code:
-          $ref: '#/components/schemas/ErrorCode.Forbidden'
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
         data:
           additionalProperties: true
           type: object
@@ -381,10 +462,52 @@ components:
       - code
       - message
       type: object
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
+    ErrorCode.InternalServerError:
       enum:
-      - 500
+      - 6
       type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
     OrganizationSamlSettingsPublic:
       properties:
         ssoServiceUrl:
@@ -448,95 +571,26 @@ components:
         defaultRoleId: 1
         createdAt: '2024-08-08T19:20:09.859Z'
         updatedAt: '2024-08-08T20:27:47.156Z'
-    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorCode.Forbidden:
+    ErrorMessage.Unauthorized:
       enum:
-      - 4
-      type: number
-    UpdateOrganizationSamlSettings:
-      properties:
-        ssoServiceUrl:
-          type: string
-          description: IdP login URL.
-        sloServiceUrl:
-          type: string
-          description: IdP logout URL.
-        certificate:
-          type: string
-          description: IdP signing certificate.
-        idpPartnerName:
-          type: string
-          description: Entity / Issuer ID.
-        urn:
-          type: string
-          description: Relying party trust identifier.
-        defaultRoleId:
-          type: number
-          format: double
-          description: 'ID of the role assigned to ControlUp accounts automatically provisioned by SAML.
-
-
-            Default role IDs:
-
-            * Admin - 1
-
-            * Editor - 2
-
-            * Viewer - 3
-
-            * No Permissions - 4
-
-            * VDI and DaaS Admins - 5
-
-            * Access Real-Time DX Console - 6'
-      type: object
-    ErrorCode.NotFound:
-      enum:
-      - 5
-      type: number
-    ErrorMessage.InternalServerError:
-      enum:
-      - Internal Server Error
+      - Unauthorized
       type: string
     ErrorMessage.NotFound:
       enum:
       - Not Found
       type: string
-    HttpStatusCode.UNAUTHORIZED:
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
       enum:
-      - 401
+      - 500
       type: number
-    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorMessage.Unauthorized:
-      enum:
-      - Unauthorized
-      type: string
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
       properties:
         message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
         code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
         data:
           additionalProperties: true
           type: object
@@ -544,38 +598,6 @@ components:
       - status
       - code
       - message
-      type: object
-    HttpStatusCode.FORBIDDEN:
-      enum:
-      - 403
-      type: number
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
-      required:
-      - error
-      - metadata
-      type: object
-    APIResponse_OrganizationSamlSettingsPublic_:
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationSamlSettingsPublic'
-      required:
-      - data
       type: object
     UUID:
       type: string
@@ -584,54 +606,32 @@ components:
 
         See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
       pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
-    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+    APIResponse_OrganizationSamlSettingsPublic_:
       properties:
-        message:
-          $ref: '#/components/schemas/BadRequestErrorMessages'
-        code:
-          $ref: '#/components/schemas/BadRequestErrorCodes'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
         data:
-          additionalProperties: true
-          type: object
+          allOf:
+          - $ref: '#/components/schemas/OrganizationSamlSettingsPublic'
       required:
-      - status
-      - code
-      - message
+      - data
       type: object
-    BadRequestErrorCodes:
+    HttpStatusCode.NOT_FOUND:
       enum:
-      - 2
-      - 14
-      - 50
+      - 404
       type: number
-    HttpStatusCode.BAD_REQUEST:
+    ErrorMessage.InternalServerError:
       enum:
-      - 400
-      type: number
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
-        code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    BadRequestErrorMessages:
-      enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
+      - Internal Server Error
       type: string
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
   securitySchemes:
     apiKey:
       type: http

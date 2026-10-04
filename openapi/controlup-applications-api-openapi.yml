@@ -351,6 +351,113 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
+    AppUsageSingleResult:
+      type: object
+      properties:
+        computer_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByComputer'
+        user_grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByUser'
+        concurrent_instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConcurrentInstances'
+        unique_users:
+          type: integer
+          format: int32
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    HistoricalSingleResponseAppUsageSingleResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          $ref: '#/components/schemas/AppUsageSingleResult'
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    HistoricalListResponseAppUsageAllResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppUsageAllResult'
+    AppStatsResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationStatistics'
+    ByUser:
+      type: object
+      properties:
+        user_account:
+          type: string
+        total_instances:
+          type: integer
+          format: int32
+        unique_machines:
+          type: integer
+          format: int32
+        process_name:
+          type: string
+        last_use_time:
+          type: string
+          format: date-time
+        process_version:
+          type: string
     AppUsageAllResult:
       type: object
       properties:
@@ -367,15 +474,6 @@ components:
         update_time:
           type: string
           format: date-time
-    HistoricalListResponseAppUsageAllResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppUsageAllResult'
     Error:
       type: object
       properties:
@@ -415,24 +513,6 @@ components:
         date_time:
           type: string
           format: date-time
-    AppUsageSingleResult:
-      type: object
-      properties:
-        computer_grouping:
-          type: array
-          items:
-            $ref: '#/components/schemas/ByComputer'
-        user_grouping:
-          type: array
-          items:
-            $ref: '#/components/schemas/ByUser'
-        concurrent_instances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConcurrentInstances'
-        unique_users:
-          type: integer
-          format: int32
     ApplicationStatistics:
       type: object
       properties:
@@ -483,86 +563,6 @@ components:
         cpuPercentile:
           type: integer
           format: int64
-    AppStatsResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApplicationStatistics'
-    UserMetadata:
-      type: object
-      properties:
-        orgId:
-          type: string
-        infraGuid:
-          type: string
-        region:
-          type: string
-        userId:
-          type: string
-        total:
-          type: integer
-          format: int64
-        limitPerPage:
-          type: integer
-          format: int32
-        currentPageNumber:
-          type: integer
-          format: int32
-        currentPageSize:
-          type: integer
-          format: int32
-        remaining:
-          type: integer
-          format: int64
-        userEmail:
-          type: string
-        truncated:
-          type: boolean
-        truncationLimit:
-          type: integer
-          format: int32
-        timeFrom:
-          type: string
-        timeTo:
-          type: string
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    HistoricalSingleResponseAppUsageSingleResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          $ref: '#/components/schemas/AppUsageSingleResult'
-    ByUser:
-      type: object
-      properties:
-        user_account:
-          type: string
-        total_instances:
-          type: integer
-          format: int32
-        unique_machines:
-          type: integer
-          format: int32
-        process_name:
-          type: string
-        last_use_time:
-          type: string
-          format: date-time
-        process_version:
-          type: string
   securitySchemes:
     bearer-jwt:
       type: http

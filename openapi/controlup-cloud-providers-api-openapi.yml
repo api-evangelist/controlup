@@ -211,26 +211,12 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    CloudProviderAuthTypeDto:
-      required:
-      - authType
-      - description
-      - displayName
-      - provider
-      type: object
-      properties:
-        provider:
-          $ref: '#/components/schemas/CloudProvider'
-        authType:
-          $ref: '#/components/schemas/CloudProviderAuthType'
-        displayName:
-          type: string
-          description: Human-readable display name for this authentication type.
-        description:
-          type: string
-          description: Detailed description of this authentication type.
-      additionalProperties: false
-      description: Data Transfer Object for cloud provider authentication type information.
+    CloudProviderAuthType:
+      enum:
+      - azureServicePrincipal
+      - azureServicePrincipalCertificate
+      type: string
+      description: Specifies the supported authentication types for connecting to various cloud providers and services.
     CloudProviderDto:
       required:
       - displayName
@@ -244,11 +230,6 @@ components:
           description: Human-readable display name for the cloud provider.
       additionalProperties: false
       description: Data Transfer Object for cloud provider information.
-    CloudProvider:
-      enum:
-      - azure
-      type: string
-      description: Enumeration of supported cloud provider identifiers.
     ErrorResponse:
       required:
       - status
@@ -296,12 +277,31 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    CloudProviderAuthType:
+    CloudProvider:
       enum:
-      - azureServicePrincipal
-      - azureServicePrincipalCertificate
+      - azure
       type: string
-      description: Specifies the supported authentication types for connecting to various cloud providers and services.
+      description: Enumeration of supported cloud provider identifiers.
+    CloudProviderAuthTypeDto:
+      required:
+      - authType
+      - description
+      - displayName
+      - provider
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        authType:
+          $ref: '#/components/schemas/CloudProviderAuthType'
+        displayName:
+          type: string
+          description: Human-readable display name for this authentication type.
+        description:
+          type: string
+          description: Detailed description of this authentication type.
+      additionalProperties: false
+      description: Data Transfer Object for cloud provider authentication type information.
   securitySchemes:
     BearerAuth:
       type: http

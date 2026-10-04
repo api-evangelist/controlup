@@ -126,6 +126,104 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    JsonObject:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        asNumber:
+          type: number
+        asFloat:
+          type: number
+          format: float
+        asByte:
+          type: string
+          format: byte
+        jsonArray:
+          type: boolean
+        jsonObject:
+          type: boolean
+        jsonPrimitive:
+          type: boolean
+        asJsonNull:
+          $ref: '#/components/schemas/JsonNull'
+        asCharacter:
+          type: string
+          deprecated: true
+        asBigDecimal:
+          type: number
+        asBigInteger:
+          type: integer
+        asShort:
+          type: integer
+          format: int32
+        jsonNull:
+          type: boolean
+        asJsonPrimitive:
+          $ref: '#/components/schemas/JsonPrimitive'
+        asJsonArray:
+          $ref: '#/components/schemas/JsonArray'
+        asJsonObject:
+          $ref: '#/components/schemas/JsonObject'
+        asString:
+          type: string
+        asInt:
+          type: integer
+          format: int32
+        asDouble:
+          type: number
+          format: double
+        asLong:
+          type: integer
+          format: int64
+        asBoolean:
+          type: boolean
     JsonArray:
       type: object
       properties:
@@ -175,17 +273,38 @@ components:
         asJsonArray: {}
         asJsonObject:
           $ref: '#/components/schemas/JsonObject'
-    Error:
+    SqlQuery:
       type: object
+      description: SQL SELECT statement with date range and pagination parameters
       properties:
-        message:
+        query:
           type: string
-        errorCode:
+          description: SQL SELECT statement
+          example: SELECT computer_id, host_name FROM machine_aggregation_5m
+        from:
+          type: string
+          format: date
+          description: 'Start date of the search period in the format: YYYY-MM-DD'
+          example: '2025-02-01'
+        to:
+          type: string
+          format: date
+          description: 'End date of the search period in the format: YYYY-MM-DD'
+          example: '2025-02-02'
+        pageSize:
           type: integer
           format: int32
-        statusCode:
+          description: The number of items returned per page. Minimum is 1.
+          example: 20
+          maximum: 5000
+          minimum: 1
+        page:
           type: integer
           format: int32
+          description: The page number returned. The first page is 1.
+          example: 1
+          maximum: 10000
+          minimum: 1
     JsonPrimitive:
       type: object
       properties:
@@ -240,58 +359,17 @@ components:
           $ref: '#/components/schemas/JsonArray'
         asJsonObject:
           $ref: '#/components/schemas/JsonObject'
-    JsonObject:
+    Error:
       type: object
       properties:
-        empty:
-          type: boolean
-        asNumber:
-          type: number
-        asFloat:
-          type: number
-          format: float
-        asByte:
+        message:
           type: string
-          format: byte
-        jsonArray:
-          type: boolean
-        jsonObject:
-          type: boolean
-        jsonPrimitive:
-          type: boolean
-        asJsonNull:
-          $ref: '#/components/schemas/JsonNull'
-        asCharacter:
-          type: string
-          deprecated: true
-        asBigDecimal:
-          type: number
-        asBigInteger:
-          type: integer
-        asShort:
+        errorCode:
           type: integer
           format: int32
-        jsonNull:
-          type: boolean
-        asJsonPrimitive:
-          $ref: '#/components/schemas/JsonPrimitive'
-        asJsonArray:
-          $ref: '#/components/schemas/JsonArray'
-        asJsonObject:
-          $ref: '#/components/schemas/JsonObject'
-        asString:
-          type: string
-        asInt:
+        statusCode:
           type: integer
           format: int32
-        asDouble:
-          type: number
-          format: double
-        asLong:
-          type: integer
-          format: int64
-        asBoolean:
-          type: boolean
     QueryResult:
       type: object
       properties:
@@ -314,84 +392,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonObject'
-    SqlQuery:
-      type: object
-      description: SQL SELECT statement with date range and pagination parameters
-      properties:
-        query:
-          type: string
-          description: SQL SELECT statement
-          example: SELECT computer_id, host_name FROM machine_aggregation_5m
-        from:
-          type: string
-          format: date
-          description: 'Start date of the search period in the format: YYYY-MM-DD'
-          example: '2025-02-01'
-        to:
-          type: string
-          format: date
-          description: 'End date of the search period in the format: YYYY-MM-DD'
-          example: '2025-02-02'
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of items returned per page. Minimum is 1.
-          example: 20
-          maximum: 5000
-          minimum: 1
-        page:
-          type: integer
-          format: int32
-          description: The page number returned. The first page is 1.
-          example: 1
-          maximum: 10000
-          minimum: 1
-    UserMetadata:
-      type: object
-      properties:
-        orgId:
-          type: string
-        infraGuid:
-          type: string
-        region:
-          type: string
-        userId:
-          type: string
-        total:
-          type: integer
-          format: int64
-        limitPerPage:
-          type: integer
-          format: int32
-        currentPageNumber:
-          type: integer
-          format: int32
-        currentPageSize:
-          type: integer
-          format: int32
-        remaining:
-          type: integer
-          format: int64
-        userEmail:
-          type: string
-        truncated:
-          type: boolean
-        truncationLimit:
-          type: integer
-          format: int32
-        timeFrom:
-          type: string
-        timeTo:
-          type: string
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     JsonNull:
       type: object
       properties:

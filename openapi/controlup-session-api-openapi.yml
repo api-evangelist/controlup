@@ -593,6 +593,653 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
+    SessionClientInfo:
+      type: object
+      properties:
+        client_ip:
+          type: string
+        client_name:
+          type: string
+        branch_name:
+          type: string
+        client_public_ip:
+          type: string
+        client_os_name:
+          type: string
+        client_os_version:
+          type: string
+        client_nic_type:
+          type: string
+        client_nic_speed:
+          type: integer
+          format: int64
+        client_wifi_ssid:
+          type: string
+        client_version:
+          type: string
+        start_time:
+          type: string
+        end_time:
+          type: string
+    SessionCvadResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionCvadResult'
+    SessionDetailsEventsResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          $ref: '#/components/schemas/SessionDetailsResult'
+    SessionDetailsResult:
+      type: object
+      properties:
+        session_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionState'
+        session_client_info:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionClientInfo'
+        active_apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActiveApp'
+        active_urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActiveUrl'
+    SessionHorizonResult:
+      type: object
+      properties:
+        user_name:
+          type: string
+        logoff_time:
+          type: string
+        user_full_name:
+          type: string
+        session_id:
+          type: string
+        login_time:
+          type: string
+        duration_in_seconds:
+          type: integer
+          format: int64
+        logon_duration:
+          type: integer
+          format: int64
+        initial_program:
+          type: string
+        initial_client_branch_name:
+          type: string
+        profile_load_time:
+          type: integer
+          format: int64
+        cpu_usage_avg:
+          type: integer
+          format: int64
+        gpu_cpu_utilization_avg:
+          type: integer
+          format: int64
+        memory_usage_avg:
+          type: integer
+          format: int64
+        desktop_load_time:
+          type: integer
+          format: int64
+        group_policy_load_time:
+          type: integer
+          format: int64
+        io_usage_iops_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        logoff_flag:
+          type: string
+        machine_name:
+          type: string
+        domain_name:
+          type: string
+        hz_pod:
+          type: string
+        hz_session_start_time:
+          type: string
+        hz_farm_name:
+          type: string
+        hz_pool_display_name:
+          type: string
+        hz_session_pool_name:
+          type: string
+        hz_pool_name:
+          type: string
+        initial_hz_agent_version:
+          type: string
+        initial_hz_client_version:
+          type: string
+        initial_hz_client_connection_server_url:
+          type: string
+        initial_hz_security_gateway_name:
+          type: string
+        hz_site:
+          type: string
+        initial_hz_client_type:
+          type: string
+        hz_session_type:
+          type: string
+        session_uid:
+          type: string
+        user_account:
+          type: string
+        computer_id:
+          type: string
+    SessionClientResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionClientResult'
+    SessionActivityResult:
+      type: object
+      properties:
+        username:
+          type: string
+        logoff_time:
+          type: string
+        user_full_name:
+          type: string
+        session_id:
+          type: string
+        login_time:
+          type: string
+        duration_in_seconds:
+          type: integer
+          format: int64
+        logon_duration:
+          type: integer
+          format: int64
+        session_protocol_latency_avg:
+          type: integer
+          format: int64
+        initial_program: {}
+        initial_client_ip:
+          type: string
+        logon_server:
+          type: string
+        user_ad_ou:
+          type: string
+        initial_client_branch_name:
+          type: string
+        session_protocol_bandwidth_usage_avg:
+          type: integer
+          format: int64
+        session_protocol_bandwidth_usage_max:
+          type: integer
+          format: int64
+        rtt_avg:
+          type: integer
+          format: int64
+        session_protocol_latency_max:
+          type: integer
+          format: int64
+        profile_load_time:
+          type: integer
+          format: int64
+        cpu_usage_avg:
+          type: integer
+          format: int64
+        gpu_cpu_utilization_avg:
+          type: integer
+          format: int64
+        memory_usage_avg:
+          type: integer
+          format: int64
+        desktop_load_time:
+          type: integer
+          format: int64
+        group_policy_load_time:
+          type: integer
+          format: int64
+        io_usage_iops_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        logon_duration_other:
+          type: integer
+          format: int64
+        active_time_percentage:
+          type: integer
+          format: int64
+        idle_time_percentage:
+          type: integer
+          format: int64
+        disconnect_time_percentage:
+          type: integer
+          format: int64
+        logoff_flag:
+          type: string
+        machine_name:
+          type: string
+        session_uid:
+          type: string
+        user_account:
+          type: string
+        computer_id:
+          type: string
+        cvad_session_key:
+          type: string
+    SessionClientResult:
+      type: object
+      properties:
+        username:
+          type: string
+        logoff_time:
+          type: string
+        user_full_name:
+          type: string
+        session_id:
+          type: string
+        login_time:
+          type: string
+        logon_duration:
+          type: integer
+          format: int64
+        initial_client_ip:
+          type: string
+        initial_client_branch_name:
+          type: string
+        logon_duration_other:
+          type: integer
+          format: int64
+        active_time_percentage:
+          type: integer
+          format: int64
+        idle_time_percentage:
+          type: integer
+          format: int64
+        disconnect_time_percentage:
+          type: integer
+          format: int64
+        logoff_flag:
+          type: string
+        machine_name:
+          type: string
+        domain_name:
+          type: string
+        client_wifi_signal_avg:
+          type: integer
+          format: int64
+        total_session_latency_avg:
+          type: integer
+          format: int64
+        internet_latency_avg:
+          type: integer
+          format: int64
+        lan_latency_avg:
+          type: integer
+          format: int64
+        initial_client_name:
+          type: string
+        initial_protocol_type:
+          type: string
+        initial_client_nic_speed:
+          type: integer
+          format: int64
+        initial_client_os_name:
+          type: string
+        initial_client_os_version:
+          type: string
+        initial_client_public_ip:
+          type: string
+        initial_client_wifi_ssid:
+          type: string
+        client_local_router_ip:
+          type: string
+        session_uid:
+          type: string
+        user_account:
+          type: string
+        computer_id:
+          type: string
+        cvad_session_key:
+          type: string
+    SessionTimelineResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          $ref: '#/components/schemas/SessionTimelineResult'
+    SessionAggregatedResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionAggregatedResult'
+    SessionTimelineResult:
+      type: object
+      properties:
+        session_uid:
+          type: string
+        session_id:
+          type: string
+        user_account:
+          type: string
+        server_name:
+          type: string
+        domain_name:
+          type: string
+        login_time:
+          type: string
+          format: date-time
+        logoff_time:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+          format: int64
+        current_state:
+          $ref: '#/components/schemas/SessionState'
+        timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionState'
+    ActiveUrl:
+      type: object
+      properties:
+        active_url:
+          type: string
+        start_time:
+          type: string
+        end_time:
+          type: string
+    UserMetadata:
+      type: object
+      properties:
+        orgId:
+          type: string
+        infraGuid:
+          type: string
+        region:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        limitPerPage:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        currentPageSize:
+          type: integer
+          format: int32
+        remaining:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        truncated:
+          type: boolean
+        truncationLimit:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+    SessionActivityResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionActivityResult'
+    ActiveApp:
+      type: object
+      properties:
+        active_app:
+          type: string
+        start_time:
+          type: string
+        end_time:
+          type: string
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    SessionResourcesResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionResourcesResult'
+    SessionListResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionListResult'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    SessionUxResult:
+      type: object
+      properties:
+        user_name:
+          type: string
+        logoff_time:
+          type: string
+        user_full_name:
+          type: string
+        session_id:
+          type: string
+        login_time:
+          type: string
+        logon_duration:
+          type: integer
+          format: int64
+        session_protocol_latency_avg:
+          type: integer
+          format: int64
+        initial_program:
+          type: string
+        user_ad_ou:
+          type: string
+        initial_client_branch_name:
+          type: string
+        rtt_avg:
+          type: integer
+          format: int64
+        session_protocol_latency_max:
+          type: integer
+          format: int64
+        memory_usage_avg:
+          type: integer
+          format: int64
+        desktop_load_time:
+          type: integer
+          format: int64
+        group_policy_load_time:
+          type: integer
+          format: int64
+        io_usage_iops_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        logon_duration_other:
+          type: integer
+          format: int64
+        active_time_percentage:
+          type: integer
+          format: int64
+        idle_time_percentage:
+          type: integer
+          format: int64
+        disconnect_time_percentage:
+          type: integer
+          format: int64
+        logoff_flag:
+          type: string
+        machine_name:
+          type: string
+        frames_per_second_avg:
+          type: integer
+          format: int64
+        session_uid:
+          type: string
+        user_account:
+          type: string
+        computer_id:
+          type: string
+        cvad_session_key:
+          type: string
+    SessionResourcesResult:
+      type: object
+      properties:
+        user_name:
+          type: string
+        logoff_time:
+          type: string
+        user_full_name:
+          type: string
+        session_id:
+          type: string
+        login_time:
+          type: string
+        logon_duration:
+          type: integer
+          format: int64
+        session_protocol_latency_avg:
+          type: integer
+          format: int64
+        initial_program:
+          type: string
+        initial_client_ip:
+          type: string
+        user_ad_ou:
+          type: string
+        initial_client_branch_name:
+          type: string
+        session_protocol_bandwidth_usage_avg:
+          type: integer
+          format: int64
+        session_protocol_bandwidth_usage_max:
+          type: integer
+          format: int64
+        rtt_avg:
+          type: integer
+          format: int64
+        session_protocol_latency_max:
+          type: integer
+          format: int64
+        cpu_usage_avg:
+          type: integer
+          format: int64
+        gpu_cpu_utilization_avg:
+          type: integer
+          format: int64
+        memory_usage_avg:
+          type: integer
+          format: int64
+        desktop_load_time:
+          type: integer
+          format: int64
+        group_policy_load_time:
+          type: integer
+          format: int64
+        io_usage_iops_avg:
+          type: integer
+          format: int64
+        disk_read_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        disk_write_kbyte_per_sec_avg:
+          type: integer
+          format: int64
+        logoff_flag:
+          type: string
+        machine_name:
+          type: string
+        domain_name:
+          type: string
+        user_account:
+          type: string
+        user_domain:
+          type: string
+        frames_per_second_avg:
+          type: integer
+          format: int64
+        app_load_time_avg:
+          type: integer
+          format: int64
+        total_session_latency_avg:
+          type: integer
+          format: int64
+        internet_latency_avg:
+          type: integer
+          format: int64
+        lan_latency_avg:
+          type: integer
+          format: int64
+        initial_client_name:
+          type: string
+        session_uid:
+          type: string
+        computer_id:
+          type: string
+        cvad_session_key:
+          type: string
     SessionAggregatedResult:
       type: object
       description: Aggregated session activity row. The exact set of fields returned depends on the requested groupBy, metrics and aggregations. Each request returns the group field, session_count, and one column per <metric>_<aggregation> combination.
@@ -856,7 +1503,7 @@ components:
         disconnected_time_in_seconds_count:
           type: integer
           format: int64
-    SessionListResponse:
+    SessionHorizonResponse:
       type: object
       properties:
         metadata:
@@ -864,7 +1511,16 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/SessionListResult'
+            $ref: '#/components/schemas/SessionHorizonResult'
+    SessionUxResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionUxResult'
     SessionCvadResult:
       type: object
       properties:
@@ -918,24 +1574,6 @@ components:
           type: string
         cvad_session_key:
           type: string
-    ActiveApp:
-      type: object
-      properties:
-        active_app:
-          type: string
-        start_time:
-          type: string
-        end_time:
-          type: string
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     SessionListResult:
       type: object
       properties:
@@ -949,43 +1587,6 @@ components:
           type: string
         cvad_session_key:
           type: string
-    SessionHorizonResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionHorizonResult'
-    SessionClientInfo:
-      type: object
-      properties:
-        client_ip:
-          type: string
-        client_name:
-          type: string
-        branch_name:
-          type: string
-        client_public_ip:
-          type: string
-        client_os_name:
-          type: string
-        client_os_version:
-          type: string
-        client_nic_type:
-          type: string
-        client_nic_speed:
-          type: integer
-          format: int64
-        client_wifi_ssid:
-          type: string
-        client_version:
-          type: string
-        start_time:
-          type: string
-        end_time:
-          type: string
     SessionState:
       type: object
       properties:
@@ -994,607 +1595,6 @@ components:
         start_time:
           type: string
         end_time:
-          type: string
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
-    SessionActivityResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionActivityResult'
-    SessionTimelineResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          $ref: '#/components/schemas/SessionTimelineResult'
-    SessionClientResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionClientResult'
-    SessionHorizonResult:
-      type: object
-      properties:
-        user_name:
-          type: string
-        logoff_time:
-          type: string
-        user_full_name:
-          type: string
-        session_id:
-          type: string
-        login_time:
-          type: string
-        duration_in_seconds:
-          type: integer
-          format: int64
-        logon_duration:
-          type: integer
-          format: int64
-        initial_program:
-          type: string
-        initial_client_branch_name:
-          type: string
-        profile_load_time:
-          type: integer
-          format: int64
-        cpu_usage_avg:
-          type: integer
-          format: int64
-        gpu_cpu_utilization_avg:
-          type: integer
-          format: int64
-        memory_usage_avg:
-          type: integer
-          format: int64
-        desktop_load_time:
-          type: integer
-          format: int64
-        group_policy_load_time:
-          type: integer
-          format: int64
-        io_usage_iops_avg:
-          type: integer
-          format: int64
-        disk_read_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        disk_write_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        logoff_flag:
-          type: string
-        machine_name:
-          type: string
-        domain_name:
-          type: string
-        hz_pod:
-          type: string
-        hz_session_start_time:
-          type: string
-        hz_farm_name:
-          type: string
-        hz_pool_display_name:
-          type: string
-        hz_session_pool_name:
-          type: string
-        hz_pool_name:
-          type: string
-        initial_hz_agent_version:
-          type: string
-        initial_hz_client_version:
-          type: string
-        initial_hz_client_connection_server_url:
-          type: string
-        initial_hz_security_gateway_name:
-          type: string
-        hz_site:
-          type: string
-        initial_hz_client_type:
-          type: string
-        hz_session_type:
-          type: string
-        session_uid:
-          type: string
-        user_account:
-          type: string
-        computer_id:
-          type: string
-    ActiveUrl:
-      type: object
-      properties:
-        active_url:
-          type: string
-        start_time:
-          type: string
-        end_time:
-          type: string
-    SessionDetailsResult:
-      type: object
-      properties:
-        session_events:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionState'
-        session_client_info:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionClientInfo'
-        active_apps:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActiveApp'
-        active_urls:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActiveUrl'
-    SessionResourcesResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionResourcesResult'
-    SessionUxResult:
-      type: object
-      properties:
-        user_name:
-          type: string
-        logoff_time:
-          type: string
-        user_full_name:
-          type: string
-        session_id:
-          type: string
-        login_time:
-          type: string
-        logon_duration:
-          type: integer
-          format: int64
-        session_protocol_latency_avg:
-          type: integer
-          format: int64
-        initial_program:
-          type: string
-        user_ad_ou:
-          type: string
-        initial_client_branch_name:
-          type: string
-        rtt_avg:
-          type: integer
-          format: int64
-        session_protocol_latency_max:
-          type: integer
-          format: int64
-        memory_usage_avg:
-          type: integer
-          format: int64
-        desktop_load_time:
-          type: integer
-          format: int64
-        group_policy_load_time:
-          type: integer
-          format: int64
-        io_usage_iops_avg:
-          type: integer
-          format: int64
-        disk_read_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        disk_write_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        logon_duration_other:
-          type: integer
-          format: int64
-        active_time_percentage:
-          type: integer
-          format: int64
-        idle_time_percentage:
-          type: integer
-          format: int64
-        disconnect_time_percentage:
-          type: integer
-          format: int64
-        logoff_flag:
-          type: string
-        machine_name:
-          type: string
-        frames_per_second_avg:
-          type: integer
-          format: int64
-        session_uid:
-          type: string
-        user_account:
-          type: string
-        computer_id:
-          type: string
-        cvad_session_key:
-          type: string
-    SessionActivityResult:
-      type: object
-      properties:
-        username:
-          type: string
-        logoff_time:
-          type: string
-        user_full_name:
-          type: string
-        session_id:
-          type: string
-        login_time:
-          type: string
-        duration_in_seconds:
-          type: integer
-          format: int64
-        logon_duration:
-          type: integer
-          format: int64
-        session_protocol_latency_avg:
-          type: integer
-          format: int64
-        initial_program: {}
-        initial_client_ip:
-          type: string
-        logon_server:
-          type: string
-        user_ad_ou:
-          type: string
-        initial_client_branch_name:
-          type: string
-        session_protocol_bandwidth_usage_avg:
-          type: integer
-          format: int64
-        session_protocol_bandwidth_usage_max:
-          type: integer
-          format: int64
-        rtt_avg:
-          type: integer
-          format: int64
-        session_protocol_latency_max:
-          type: integer
-          format: int64
-        profile_load_time:
-          type: integer
-          format: int64
-        cpu_usage_avg:
-          type: integer
-          format: int64
-        gpu_cpu_utilization_avg:
-          type: integer
-          format: int64
-        memory_usage_avg:
-          type: integer
-          format: int64
-        desktop_load_time:
-          type: integer
-          format: int64
-        group_policy_load_time:
-          type: integer
-          format: int64
-        io_usage_iops_avg:
-          type: integer
-          format: int64
-        disk_read_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        disk_write_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        logon_duration_other:
-          type: integer
-          format: int64
-        active_time_percentage:
-          type: integer
-          format: int64
-        idle_time_percentage:
-          type: integer
-          format: int64
-        disconnect_time_percentage:
-          type: integer
-          format: int64
-        logoff_flag:
-          type: string
-        machine_name:
-          type: string
-        session_uid:
-          type: string
-        user_account:
-          type: string
-        computer_id:
-          type: string
-        cvad_session_key:
-          type: string
-    SessionUxResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionUxResult'
-    SessionResourcesResult:
-      type: object
-      properties:
-        user_name:
-          type: string
-        logoff_time:
-          type: string
-        user_full_name:
-          type: string
-        session_id:
-          type: string
-        login_time:
-          type: string
-        logon_duration:
-          type: integer
-          format: int64
-        session_protocol_latency_avg:
-          type: integer
-          format: int64
-        initial_program:
-          type: string
-        initial_client_ip:
-          type: string
-        user_ad_ou:
-          type: string
-        initial_client_branch_name:
-          type: string
-        session_protocol_bandwidth_usage_avg:
-          type: integer
-          format: int64
-        session_protocol_bandwidth_usage_max:
-          type: integer
-          format: int64
-        rtt_avg:
-          type: integer
-          format: int64
-        session_protocol_latency_max:
-          type: integer
-          format: int64
-        cpu_usage_avg:
-          type: integer
-          format: int64
-        gpu_cpu_utilization_avg:
-          type: integer
-          format: int64
-        memory_usage_avg:
-          type: integer
-          format: int64
-        desktop_load_time:
-          type: integer
-          format: int64
-        group_policy_load_time:
-          type: integer
-          format: int64
-        io_usage_iops_avg:
-          type: integer
-          format: int64
-        disk_read_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        disk_write_kbyte_per_sec_avg:
-          type: integer
-          format: int64
-        logoff_flag:
-          type: string
-        machine_name:
-          type: string
-        domain_name:
-          type: string
-        user_account:
-          type: string
-        user_domain:
-          type: string
-        frames_per_second_avg:
-          type: integer
-          format: int64
-        app_load_time_avg:
-          type: integer
-          format: int64
-        total_session_latency_avg:
-          type: integer
-          format: int64
-        internet_latency_avg:
-          type: integer
-          format: int64
-        lan_latency_avg:
-          type: integer
-          format: int64
-        initial_client_name:
-          type: string
-        session_uid:
-          type: string
-        computer_id:
-          type: string
-        cvad_session_key:
-          type: string
-    SessionAggregatedResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionAggregatedResult'
-    SessionDetailsEventsResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          $ref: '#/components/schemas/SessionDetailsResult'
-    SessionTimelineResult:
-      type: object
-      properties:
-        session_uid:
-          type: string
-        session_id:
-          type: string
-        user_account:
-          type: string
-        server_name:
-          type: string
-        domain_name:
-          type: string
-        login_time:
-          type: string
-          format: date-time
-        logoff_time:
-          type: string
-          format: date-time
-        duration:
-          type: integer
-          format: int64
-        current_state:
-          $ref: '#/components/schemas/SessionState'
-        timeline:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionState'
-    UserMetadata:
-      type: object
-      properties:
-        orgId:
-          type: string
-        infraGuid:
-          type: string
-        region:
-          type: string
-        userId:
-          type: string
-        total:
-          type: integer
-          format: int64
-        limitPerPage:
-          type: integer
-          format: int32
-        currentPageNumber:
-          type: integer
-          format: int32
-        currentPageSize:
-          type: integer
-          format: int32
-        remaining:
-          type: integer
-          format: int64
-        userEmail:
-          type: string
-        truncated:
-          type: boolean
-        truncationLimit:
-          type: integer
-          format: int32
-        timeFrom:
-          type: string
-        timeTo:
-          type: string
-    SessionCvadResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionCvadResult'
-    SessionClientResult:
-      type: object
-      properties:
-        username:
-          type: string
-        logoff_time:
-          type: string
-        user_full_name:
-          type: string
-        session_id:
-          type: string
-        login_time:
-          type: string
-        logon_duration:
-          type: integer
-          format: int64
-        initial_client_ip:
-          type: string
-        initial_client_branch_name:
-          type: string
-        logon_duration_other:
-          type: integer
-          format: int64
-        active_time_percentage:
-          type: integer
-          format: int64
-        idle_time_percentage:
-          type: integer
-          format: int64
-        disconnect_time_percentage:
-          type: integer
-          format: int64
-        logoff_flag:
-          type: string
-        machine_name:
-          type: string
-        domain_name:
-          type: string
-        client_wifi_signal_avg:
-          type: integer
-          format: int64
-        total_session_latency_avg:
-          type: integer
-          format: int64
-        internet_latency_avg:
-          type: integer
-          format: int64
-        lan_latency_avg:
-          type: integer
-          format: int64
-        initial_client_name:
-          type: string
-        initial_protocol_type:
-          type: string
-        initial_client_nic_speed:
-          type: integer
-          format: int64
-        initial_client_os_name:
-          type: string
-        initial_client_os_version:
-          type: string
-        initial_client_public_ip:
-          type: string
-        initial_client_wifi_ssid:
-          type: string
-        client_local_router_ip:
-          type: string
-        session_uid:
-          type: string
-        user_account:
-          type: string
-        computer_id:
-          type: string
-        cvad_session_key:
           type: string
   securitySchemes:
     bearer-jwt:

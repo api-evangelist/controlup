@@ -269,91 +269,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/CustomReportDetails'
 components:
-  parameters:
-    FilterType:
-      name: filters[0][type]
-      in: query
-      description: 'The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>
-
-        `<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>
-
-        `boolean` is used to filter boolean fields.<br>
-
-        `like` is used to filter text fields.
-
-        '
-      schema:
-        type: string
-        example: '>='
-        enum:
-        - <
-        - <=
-        - '='
-        - '!='
-        - '>='
-        - '>'
-        - like
-        - boolean
-    SorterDir:
-      name: sorters[0][dir]
-      in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
-      schema:
-        type: string
-        example: asc
-        enum:
-        - asc
-        - desc
-    FilterField:
-      name: filters[0][field]
-      in: query
-      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
-
-        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
-    FilterValue:
-      name: filters[0][value]
-      in: query
-      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
-
-        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
-
-        '
-      schema:
-        oneOf:
-        - type: string
-          title: String
-        - type: number
-          title: Number
-        - type: boolean
-          title: Boolean
-    SorterField:
-      name: sorters[0][field]
-      in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
-
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
-
-        '
-      schema:
-        type: string
-        example: _created
   schemas:
-    IndexMappings:
+    CustomReportDetails:
       type: object
       properties:
+        _id:
+          description: ID of the custom report.
+          type: string
+          example: ByRWs4IBOEdS79OieyLo
+        _created:
+          description: The UTC date and time that the custom report was created.
+          type: string
+          format: date-time
+          example: '2022-08-18T23:42:45.544Z'
+        _updated:
+          description: The UTC date and time that the custom report was last updated.
+          type: string
+          format: date-time
+          example: '2022-08-18T23:42:45.544Z'
+        _associated_id:
+          description: ID of the user who created the custom report.
+          type: string
+          example: lJTSkoIOBFdS691iFJzH
         index:
+          description: The name of the index that contains the data for the custom report.
           type: string
+          example: activities
         name:
-          description: The name of the field.
+          description: The name of the custom report.
           type: string
-          example: _created
-        type:
-          description: The data type of the field.
+          example: sample-report-name
+        is_public:
+          description: If true, the custom report is available to all users in your organization. If false, it is only available to the user who created it.
+          type: boolean
+          example: true
+        config_data:
+          description: Placeholder.
           type: string
     DataIndexContents:
       type: object
@@ -391,42 +342,91 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IndexMappings'
-    CustomReportDetails:
+    IndexMappings:
       type: object
       properties:
-        _id:
-          description: ID of the custom report.
-          type: string
-          example: ByRWs4IBOEdS79OieyLo
-        _created:
-          description: The UTC date and time that the custom report was created.
-          type: string
-          format: date-time
-          example: '2022-08-18T23:42:45.544Z'
-        _updated:
-          description: The UTC date and time that the custom report was last updated.
-          type: string
-          format: date-time
-          example: '2022-08-18T23:42:45.544Z'
-        _associated_id:
-          description: ID of the user who created the custom report.
-          type: string
-          example: lJTSkoIOBFdS691iFJzH
         index:
-          description: The name of the index that contains the data for the custom report.
           type: string
-          example: activities
         name:
-          description: The name of the custom report.
+          description: The name of the field.
           type: string
-          example: sample-report-name
-        is_public:
-          description: If true, the custom report is available to all users in your organization. If false, it is only available to the user who created it.
-          type: boolean
-          example: true
-        config_data:
-          description: Placeholder.
+          example: _created
+        type:
+          description: The data type of the field.
           type: string
+  parameters:
+    SorterField:
+      name: sorters[0][field]
+      in: query
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    FilterField:
+      name: filters[0][field]
+      in: query
+      description: 'Filters the returned data based on the specified field name. This parameter must be used in combination with `filters[0][type]` and `filters[0][value]` to define a filter condition.
+
+        You can add multiple filter conditions by changing the integer in the parameter names (for example, `filters[1][field]`).</br></br>
+
+        '
+      schema:
+        type: string
+        example: _created
+    FilterValue:
+      name: filters[0][value]
+      in: query
+      description: 'The value used in the corresponding filter condition. The value you can use depends on the filter type.<br><br>
+
+        If you are filtering a date or text field, enter a string. If you are filtering a number field, enter a number. If you are filtering a boolean field, enter a boolean. If you are filtering a text field, you can use * as a wildcard, or begin the string with !! to exclude items that contain the string.
+
+        '
+      schema:
+        oneOf:
+        - type: string
+          title: String
+        - type: number
+          title: Number
+        - type: boolean
+          title: Boolean
+    SorterDir:
+      name: sorters[0][dir]
+      in: query
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      schema:
+        type: string
+        example: asc
+        enum:
+        - asc
+        - desc
+    FilterType:
+      name: filters[0][type]
+      in: query
+      description: 'The type of filter used in corresponding filter condition. The type of filter you can use depends on the data type of the field.<br><br>
+
+        `<`, `<=`, `=`, `!=`, `<=`, or `>` are used to filter numbers and dates.<br>
+
+        `boolean` is used to filter boolean fields.<br>
+
+        `like` is used to filter text fields.
+
+        '
+      schema:
+        type: string
+        example: '>='
+        enum:
+        - <
+        - <=
+        - '='
+        - '!='
+        - '>='
+        - '>'
+        - like
+        - boolean
   securitySchemes:
     bearerAuth:
       type: http

@@ -431,6 +431,147 @@ paths:
           $ref: '#/components/schemas/UUID'
 components:
   schemas:
+    TagValuePublic:
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+          description: The unique identifier of the tag value.
+        label:
+          type: string
+          description: The tag value label.
+        color:
+          type:
+          - string
+          - 'null'
+          description: The tag value color.
+      required:
+      - color
+      - label
+      - id
+      type: object
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorResponseMetadata:
+      properties:
+        cuRequestId:
+          type: string
+        orgId:
+          type: string
+        userId:
+          type: string
+        userIp:
+          type: string
+      required:
+      - userIp
+      - userId
+      - orgId
+      - cuRequestId
+      type: object
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    TagPublic:
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+          description: The unique identifier of the tag.
+        key:
+          type: string
+          description: The tag key.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The tag description.
+        updatedAt:
+          $ref: '#/components/schemas/ISOString'
+          description: When the tag was last updated.
+        values:
+          items:
+            $ref: '#/components/schemas/TagValuePublic'
+          type: array
+          description: The values associated with this tag.
+      required:
+      - updatedAt
+      - description
+      - key
+      - id
+      type: object
+    DeletedActionResponse:
+      properties:
+        affectedRows:
+          type: number
+          format: double
+      required:
+      - affectedRows
+      type: object
+    APIPaginatedResponse_TagPublic-Array_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_TagPublic-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
+        type: object
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
+        code:
+          $ref: '#/components/schemas/ErrorCode.NotFound'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Forbidden'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Forbidden'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
     UpdateTagRequest:
       properties:
         key:
@@ -461,58 +602,177 @@ components:
           type: array
           description: Updated set of values. Values with an `id` are updated; values without an `id` are created; existing values omitted here are deleted.
       type: object
-    TagValuePublic:
-      properties:
-        id:
-          $ref: '#/components/schemas/UUID'
-          description: The unique identifier of the tag value.
-        label:
-          type: string
-          description: The tag value label.
-        color:
-          type:
-          - string
-          - 'null'
-          description: The tag value color.
-      required:
-      - color
-      - label
-      - id
-      type: object
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
-      properties:
+    BadRequestErrorMessages:
+      enum:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    ErrorCode.NotFound:
+      enum:
+      - 5
+      type: number
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    GetTagsResponse:
+      $ref: '#/components/schemas/APIPaginatedResponse_TagPublic-Array_'
+      example:
         metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+          total: 2
+          limitPerPage: 10
+          currentPageNumber: 1
+          currentPageSize: 2
+          remaining: 0
+        data:
+        - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          key: environment
+          description: Deployment environment
+          updatedAt: '2024-08-05T18:40:22.244Z'
+          values:
+          - id: v1b2c3d4-e5f6-7890-abcd-ef1234567890
+            label: production
+            color: '#FF0000'
+          - id: v2b2c3d4-e5f6-7890-abcd-ef1234567890
+            label: staging
+            color: '#FFFF00'
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    ISOString:
+      type: string
+      example: '2022-12-22T18:43:55.483Z'
+      format: ISO String YYYY-MM-DDTHH:mm:ss.sssZ
+      description: Valid ISO string
+      pattern: ^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.\d{3})?Z$
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
       required:
-      - error
-      - metadata
+      - status
+      - code
+      - message
       type: object
     ErrorCode.InternalServerError:
       enum:
       - 6
       type: number
-    HttpStatusCode.NOT_FOUND:
-      enum:
-      - 404
-      type: number
-    ErrorResponseMetadata:
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
       properties:
-        cuRequestId:
-          type: string
-        orgId:
-          type: string
-        userId:
-          type: string
-        userIp:
-          type: string
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
       required:
-      - userIp
-      - userId
-      - orgId
-      - cuRequestId
+      - status
+      - code
+      - message
       type: object
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    TagFilterOperator:
+      type: string
+      enum:
+      - equals
+      - not_equals
+      - contains
+      - not_contains
+    APIResponse_TagPublic_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/TagPublic'
+      required:
+      - data
+      type: object
+    CreateTagRequest:
+      properties:
+        key:
+          type: string
+          description: The tag key. Must be unique within the organization.
+        description:
+          type:
+          - string
+          - 'null'
+          description: An optional description for the tag.
+        values:
+          items:
+            properties:
+              color:
+                type:
+                - string
+                - 'null'
+                description: Optional hex color code for the value.
+              label:
+                type: string
+                description: The value label.
+            required:
+            - label
+            type: object
+          type: array
+          description: Optional initial values for the tag.
+      required:
+      - key
+      type: object
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
     ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
       properties:
         message:
@@ -529,46 +789,21 @@ components:
       - code
       - message
       type: object
-    ErrorMessage.Forbidden:
-      enum:
-      - Forbidden
-      type: string
-    ErrorCode.Unauthorized:
-      enum:
-      - 3
-      type: number
-    ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
+    APIResponse_DeletedActionResponse_:
       properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.Forbidden'
-        code:
-          $ref: '#/components/schemas/ErrorCode.Forbidden'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.FORBIDDEN'
         data:
-          additionalProperties: true
-          type: object
+          allOf:
+          - $ref: '#/components/schemas/DeletedActionResponse'
       required:
-      - status
-      - code
-      - message
+      - data
       type: object
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
-      enum:
-      - 500
-      type: number
-    APIPaginatedResponse_TagPublic-Array_:
-      allOf:
-      - $ref: '#/components/schemas/APIResponse_TagPublic-Array_'
-      - properties:
-          metadata:
-            allOf:
-            - $ref: '#/components/schemas/PaginatedResponseMetadata'
-            - additionalProperties: true
-              type: object
-        required:
-        - metadata
-        type: object
+    UUID:
+      type: string
+      format: uuid
+      description: 'Stringified UUIDv4.
+
+        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
+      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
     PaginatedResponseMetadata:
       properties:
         total:
@@ -604,24 +839,10 @@ components:
         currentPageNumber: 1
         currentPageSize: 10
         remaining: 8
-    DeletedActionResponse:
-      properties:
-        affectedRows:
-          type: number
-          format: double
-      required:
-      - affectedRows
-      type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
-      required:
-      - error
-      - metadata
-      type: object
+    HttpStatusCode.NOT_FOUND:
+      enum:
+      - 404
+      type: number
     APIResponse_TagPublic-Array_:
       properties:
         data:
@@ -633,241 +854,20 @@ components:
       required:
       - data
       type: object
-    ErrorCode.Forbidden:
-      enum:
-      - 4
-      type: number
-    APIResponse_DeletedActionResponse_:
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/DeletedActionResponse'
-      required:
-      - data
-      type: object
-    ErrorCode.NotFound:
-      enum:
-      - 5
-      type: number
     ErrorMessage.InternalServerError:
       enum:
       - Internal Server Error
       type: string
-    ErrorMessage.NotFound:
-      enum:
-      - Not Found
-      type: string
-    HttpStatusCode.UNAUTHORIZED:
-      enum:
-      - 401
-      type: number
-    APIResponse_TagPublic_:
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/TagPublic'
-      required:
-      - data
-      type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
       properties:
         metadata:
           $ref: '#/components/schemas/ErrorResponseMetadata'
         error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
       required:
       - error
       - metadata
       type: object
-    TagPublic:
-      properties:
-        id:
-          $ref: '#/components/schemas/UUID'
-          description: The unique identifier of the tag.
-        key:
-          type: string
-          description: The tag key.
-        description:
-          type:
-          - string
-          - 'null'
-          description: The tag description.
-        updatedAt:
-          $ref: '#/components/schemas/ISOString'
-          description: When the tag was last updated.
-        values:
-          items:
-            $ref: '#/components/schemas/TagValuePublic'
-          type: array
-          description: The values associated with this tag.
-      required:
-      - updatedAt
-      - description
-      - key
-      - id
-      type: object
-    ErrorMessage.Unauthorized:
-      enum:
-      - Unauthorized
-      type: string
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
-        code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ISOString:
-      type: string
-      example: '2022-12-22T18:43:55.483Z'
-      format: ISO String YYYY-MM-DDTHH:mm:ss.sssZ
-      description: Valid ISO string
-      pattern: ^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.\d{3})?Z$
-    GetTagsResponse:
-      $ref: '#/components/schemas/APIPaginatedResponse_TagPublic-Array_'
-      example:
-        metadata:
-          total: 2
-          limitPerPage: 10
-          currentPageNumber: 1
-          currentPageSize: 2
-          remaining: 0
-        data:
-        - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-          key: environment
-          description: Deployment environment
-          updatedAt: '2024-08-05T18:40:22.244Z'
-          values:
-          - id: v1b2c3d4-e5f6-7890-abcd-ef1234567890
-            label: production
-            color: '#FF0000'
-          - id: v2b2c3d4-e5f6-7890-abcd-ef1234567890
-            label: staging
-            color: '#FFFF00'
-    HttpStatusCode.FORBIDDEN:
-      enum:
-      - 403
-      type: number
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
-      required:
-      - error
-      - metadata
-      type: object
-    CreateTagRequest:
-      properties:
-        key:
-          type: string
-          description: The tag key. Must be unique within the organization.
-        description:
-          type:
-          - string
-          - 'null'
-          description: An optional description for the tag.
-        values:
-          items:
-            properties:
-              color:
-                type:
-                - string
-                - 'null'
-                description: Optional hex color code for the value.
-              label:
-                type: string
-                description: The value label.
-            required:
-            - label
-            type: object
-          type: array
-          description: Optional initial values for the tag.
-      required:
-      - key
-      type: object
-    TagFilterOperator:
-      type: string
-      enum:
-      - equals
-      - not_equals
-      - contains
-      - not_contains
-    UUID:
-      type: string
-      format: uuid
-      description: 'Stringified UUIDv4.
-
-        See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
-      pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
-    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
-      properties:
-        message:
-          $ref: '#/components/schemas/BadRequestErrorMessages'
-        code:
-          $ref: '#/components/schemas/BadRequestErrorCodes'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    BadRequestErrorCodes:
-      enum:
-      - 2
-      - 14
-      - 50
-      type: number
-    HttpStatusCode.BAD_REQUEST:
-      enum:
-      - 400
-      type: number
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
-        code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    BadRequestErrorMessages:
-      enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
-      type: string
   securitySchemes:
     apiKey:
       type: http

@@ -229,24 +229,23 @@ paths:
         style: form
 components:
   schemas:
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
-      properties:
+    EventOrigin:
+      enum:
+      - ui
+      - api
+      - system
+      - aiAssistant
+      type: string
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
         metadata:
           $ref: '#/components/schemas/ErrorResponseMetadata'
         error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
       required:
       - error
       - metadata
       type: object
-    ErrorCode.InternalServerError:
-      enum:
-      - 6
-      type: number
-    HttpStatusCode.NOT_FOUND:
-      enum:
-      - 404
-      type: number
     ErrorResponseMetadata:
       properties:
         cuRequestId:
@@ -263,21 +262,44 @@ components:
       - orgId
       - cuRequestId
       type: object
-    EventOrigin:
+    ErrorCode.Forbidden:
       enum:
-      - ui
-      - api
-      - system
-      - aiAssistant
-      type: string
-    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      - 4
+      type: number
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    GetAllAuditLogEntriesMetadata:
+      properties:
+        timeFrom:
+          type: string
+          description: The earliest date from which results were retrieved.
+        timeTo:
+          type: string
+          description: The latest date up to which result were retrieved.
+      required:
+      - timeTo
+      - timeFrom
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
       properties:
         message:
-          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
         code:
-          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+          $ref: '#/components/schemas/ErrorCode.NotFound'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
         data:
           additionalProperties: true
           type: object
@@ -286,27 +308,6 @@ components:
       - code
       - message
       type: object
-    ErrorMessage.Forbidden:
-      enum:
-      - Forbidden
-      type: string
-    BadRequestErrorMessages:
-      enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
-      type: string
-    ActionType:
-      enum:
-      - action
-      - device
-      - security
-      - system
-      type: string
-    ErrorCode.Unauthorized:
-      enum:
-      - 3
-      type: number
     ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
       properties:
         message:
@@ -323,146 +324,22 @@ components:
       - code
       - message
       type: object
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
+    ModulePublic:
       enum:
-      - 500
-      type: number
-    PaginatedResponseMetadata:
-      properties:
-        total:
-          type: number
-          format: double
-          description: The total number of results across all pages.
-        limitPerPage:
-          type: number
-          format: double
-          description: The maximum number of results returned per page (set by the `_limit` parameter).
-        currentPageNumber:
-          type: number
-          format: double
-          description: The page of result returned (set by the `_page` parameter).
-        currentPageSize:
-          type: number
-          format: double
-          description: The number of results on the current page.
-        remaining:
-          type: number
-          format: double
-          description: The total number of results on all pages higher than the current page.
-      required:
-      - remaining
-      - currentPageSize
-      - currentPageNumber
-      - limitPerPage
-      - total
-      type: object
-      example:
-        total: 18
-        limitPerPage: 10
-        currentPageNumber: 1
-        currentPageSize: 10
-        remaining: 8
-    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorCode.Forbidden:
+      - dex
+      - employee
+      - synthetic monitoring
+      type: string
+    BadRequestErrorMessages:
       enum:
-      - 4
-      type: number
-    GetAllAuditLogEntriesMetadata:
-      properties:
-        timeFrom:
-          type: string
-          description: The earliest date from which results were retrieved.
-        timeTo:
-          type: string
-          description: The latest date up to which result were retrieved.
-      required:
-      - timeTo
-      - timeFrom
-      type: object
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
     ErrorCode.NotFound:
       enum:
       - 5
       type: number
-    ErrorMessage.InternalServerError:
-      enum:
-      - Internal Server Error
-      type: string
-    StatusType:
-      enum:
-      - success
-      - failure
-      - none
-      type: string
-    GetAllAuditLogEntriesResponse:
-      $ref: '#/components/schemas/APIPaginatedResponse_AuditLogPublicEntry-Array.GetAllAuditLogEntriesMetadata_'
-      example:
-        metadata:
-          total: 84
-          limitPerPage: 2
-          currentPageNumber: 1
-          currentPageSize: 2
-          remaining: 82
-          timeFrom: '2024-07-30T15:42:01.334Z'
-          timeTo: '2024-07-31T15:42:01.334Z'
-        data:
-        - activity: API key created
-          description: john.doe@controlup.com created a new API key *****97TwM
-          type: security
-          time: '2024-07-31T15:42:32.720Z'
-          source: john.doe@controlup.com
-          module: dex
-          ip: 198.162.1.0
-          status: success
-          origin: ui
-        - activity: Sign in
-          description: 'john.doe@controlup.com signed in with Google from 198.162.1.0
-
-            Roles: Admin'
-          type: security
-          time: '2024-07-31T15:42:01.334Z'
-          source: john.doe@controlup.com
-          module: dex
-          ip: 198.162.1.0
-          status: success
-          origin: ui
-    APIPaginatedResponse_AuditLogPublicEntry-Array.GetAllAuditLogEntriesMetadata_:
-      allOf:
-      - $ref: '#/components/schemas/APIResponse_AuditLogPublicEntry-Array_'
-      - properties:
-          metadata:
-            allOf:
-            - $ref: '#/components/schemas/PaginatedResponseMetadata'
-            - $ref: '#/components/schemas/GetAllAuditLogEntriesMetadata'
-        required:
-        - metadata
-        type: object
-    HttpStatusCode.UNAUTHORIZED:
-      enum:
-      - 401
-      type: number
-    ErrorMessage.NotFound:
-      enum:
-      - Not Found
-      type: string
-    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
-      required:
-      - error
-      - metadata
-      type: object
     APIResponse_AuditLogPublicEntry-Array_:
       properties:
         data:
@@ -474,6 +351,87 @@ components:
       required:
       - data
       type: object
+    StatusType:
+      enum:
+      - success
+      - failure
+      - none
+      type: string
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    APIPaginatedResponse_AuditLogPublicEntry-Array.GetAllAuditLogEntriesMetadata_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_AuditLogPublicEntry-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - $ref: '#/components/schemas/GetAllAuditLogEntriesMetadata'
+        required:
+        - metadata
+        type: object
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    ISOString:
+      type: string
+      example: '2022-12-22T18:43:55.483Z'
+      format: ISO String YYYY-MM-DDTHH:mm:ss.sssZ
+      description: Valid ISO string
+      pattern: ^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.\d{3})?Z$
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
     AuditLogPublicEntry:
       properties:
         activity:
@@ -514,46 +472,6 @@ components:
       - description
       - activity
       type: object
-    ErrorMessage.Unauthorized:
-      enum:
-      - Unauthorized
-      type: string
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
-        code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ISOString:
-      type: string
-      example: '2022-12-22T18:43:55.483Z'
-      format: ISO String YYYY-MM-DDTHH:mm:ss.sssZ
-      description: Valid ISO string
-      pattern: ^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.\d{3})?Z$
-    HttpStatusCode.FORBIDDEN:
-      enum:
-      - 403
-      type: number
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
-      required:
-      - error
-      - metadata
-      type: object
     ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
       properties:
         metadata:
@@ -564,6 +482,76 @@ components:
       - error
       - metadata
       type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
+      enum:
+      - 500
+      type: number
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+        code:
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    GetAllAuditLogEntriesResponse:
+      $ref: '#/components/schemas/APIPaginatedResponse_AuditLogPublicEntry-Array.GetAllAuditLogEntriesMetadata_'
+      example:
+        metadata:
+          total: 84
+          limitPerPage: 2
+          currentPageNumber: 1
+          currentPageSize: 2
+          remaining: 82
+          timeFrom: '2024-07-30T15:42:01.334Z'
+          timeTo: '2024-07-31T15:42:01.334Z'
+        data:
+        - activity: API key created
+          description: john.doe@controlup.com created a new API key *****97TwM
+          type: security
+          time: '2024-07-31T15:42:32.720Z'
+          source: john.doe@controlup.com
+          module: dex
+          ip: 198.162.1.0
+          status: success
+          origin: ui
+        - activity: Sign in
+          description: 'john.doe@controlup.com signed in with Google from 198.162.1.0
+
+            Roles: Admin'
+          type: security
+          time: '2024-07-31T15:42:01.334Z'
+          source: john.doe@controlup.com
+          module: dex
+          ip: 198.162.1.0
+          status: success
+          origin: ui
     UUID:
       type: string
       format: uuid
@@ -571,54 +559,66 @@ components:
 
         See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
       pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
-    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+    PaginatedResponseMetadata:
       properties:
-        message:
-          $ref: '#/components/schemas/BadRequestErrorMessages'
-        code:
-          $ref: '#/components/schemas/BadRequestErrorCodes'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
-        data:
-          additionalProperties: true
-          type: object
+        total:
+          type: number
+          format: double
+          description: The total number of results across all pages.
+        limitPerPage:
+          type: number
+          format: double
+          description: The maximum number of results returned per page (set by the `_limit` parameter).
+        currentPageNumber:
+          type: number
+          format: double
+          description: The page of result returned (set by the `_page` parameter).
+        currentPageSize:
+          type: number
+          format: double
+          description: The number of results on the current page.
+        remaining:
+          type: number
+          format: double
+          description: The total number of results on all pages higher than the current page.
       required:
-      - status
-      - code
-      - message
+      - remaining
+      - currentPageSize
+      - currentPageNumber
+      - limitPerPage
+      - total
       type: object
-    BadRequestErrorCodes:
+      example:
+        total: 18
+        limitPerPage: 10
+        currentPageNumber: 1
+        currentPageSize: 10
+        remaining: 8
+    HttpStatusCode.NOT_FOUND:
       enum:
-      - 2
-      - 14
-      - 50
+      - 404
       type: number
-    HttpStatusCode.BAD_REQUEST:
+    ActionType:
       enum:
-      - 400
-      type: number
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
-      properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
-        code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    ModulePublic:
-      enum:
-      - dex
-      - employee
-      - synthetic monitoring
+      - action
+      - device
+      - security
+      - system
       type: string
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
   securitySchemes:
     apiKey:
       type: http

@@ -838,217 +838,6 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    JobLogSeverity:
-      enum:
-      - info
-      - warning
-      - error
-      - success
-      type: string
-      description: 'Severity levels for job log entries.
-
-        Determines how the log is displayed in the UI (color, icon, filtering).'
-    JobPartialDto:
-      required:
-      - action
-      - cancellationRequested
-      - canRetry
-      - createdAt
-      - id
-      - initiatedBy
-      - initiationType
-      - jobType
-      - progress
-      - status
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
-
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
-
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        status:
-          $ref: '#/components/schemas/JobStatus'
-        progress:
-          type: integer
-          description: Progress percentage (0-100).
-          format: int32
-        currentStep:
-          type:
-          - string
-          - 'null'
-          description: 'Current step description for user feedback.
-
-            Example: "Gathering resource data (45/100)"'
-        cancellationRequested:
-          type: boolean
-          description: 'Whether cancellation has been requested for this job.
-
-            Worker checks this flag and stops at next safe checkpoint.'
-        canRetry:
-          type: boolean
-          description: 'Whether this job can be retried by the user from the Activity Feed.
-
-            True only when Status is Failed and the job type is registered as user-retriable.
-
-            Computed at mapping time (not stored in the database).'
-        initiatedBy:
-          type: string
-          description: Email of the user who initiated this job.
-        initiationType:
-          $ref: '#/components/schemas/JobInitiationType'
-        targetResource:
-          type:
-          - string
-          - 'null'
-          description: 'Target resource type if this job operates on a specific resource, formatted with spaces.
-
-            Examples: "Virtual Machine", "Session Host", "Host Pool"'
-        targetResourceName:
-          type:
-          - string
-          - 'null'
-          description: Target resource name if this job operates on a specific resource.
-        createdAt:
-          type: string
-          description: Timestamp when the job was created.
-          format: date-time
-        startedAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp when the job started processing.
-          format: date-time
-        completedAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp when the job completed.
-          format: date-time
-        cancellationRequestedAt:
-          type:
-          - string
-          - 'null'
-          description: 'Timestamp when cancellation was requested, for jobs where ControlUp.Foundry.Api.Dtos.Jobs.JobStatusDto.CancellationRequested
-
-            is true. Null when no cancellation has been requested.'
-          format: date-time
-        retryOfJobId:
-          type:
-          - string
-          - 'null'
-          description: 'The ID of the original failed job that this job is retrying.
-
-            Null for original (non-retry) jobs.'
-          format: uuid
-        retryRequestedBy:
-          type:
-          - string
-          - 'null'
-          description: 'Who requested the retry — user email for user-initiated retries, or "system" for recovery.
-
-            Null for original (non-retry) jobs.'
-        errorCode:
-          type:
-          - string
-          - 'null'
-          description: 'Structured, machine-readable error code identifying the failure class when the job failed
-
-            (e.g. "IntuneEnrollmentFailed"). Null when the job did not fail or the failure was unclassified.'
-        parentJobId:
-          type:
-          - string
-          - 'null'
-          description: 'The ID of the orchestrating job that created this one, for jobs that run as part of a
-
-            parent-child tree (for example one import job per subscription). Null for standalone jobs.
-
-            Distinct from ControlUp.Foundry.Api.Dtos.Jobs.JobPartialDto.RetryOfJobId, which records retry lineage rather than orchestration.'
-          format: uuid
-      additionalProperties: false
-      description: 'Partial job information for list views (optimized for bulk queries).
-
-        Contains identifying metadata and timestamps, but excludes parameters and errors.
-
-        Use this for job lists where full details aren''t needed.
-
-        For detailed information including parameters and errors, use ControlUp.Foundry.Api.Dtos.Jobs.JobDto.'
-    JobInitiationType:
-      enum:
-      - userInitiated
-      - systemScheduled
-      type: string
-      description: 'Indicates how a job was initiated - by a user action or by a system scheduler.
-
-        Used to filter job lists in UI and apply different retention policies.'
-    JobLogDto:
-      required:
-      - id
-      - loggedAt
-      - message
-      - severity
-      type: object
-      properties:
-        id:
-          type: integer
-          description: 'Unique identifier for this log entry (for cursor-based pagination).
-
-            Use this value in the ''after'' query parameter to get subsequent logs.'
-          format: int64
-        loggedAt:
-          type: string
-          description: Timestamp when this log entry was created.
-          format: date-time
-        severity:
-          $ref: '#/components/schemas/JobLogSeverity'
-        message:
-          type: string
-          description: User-facing message describing what happened.
-        phase:
-          type:
-          - string
-          - 'null'
-          description: 'Optional phase/stage of job execution.
-
-            Examples: "Discovery", "Gathering", "Saving", "Finalizing"'
-      additionalProperties: false
-      description: Represents a user-facing log entry for a background job.
-    JobType:
-      enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
-      type: string
-      description: 'Defines the types of background jobs supported by the system.
-
-        Each job type is processed by a specific worker and has its own parameter structure.'
     JobStatusDto:
       required:
       - action
@@ -1106,62 +895,38 @@ components:
         Use this for status polling every 2-5 seconds while job is running.
 
         For full details (including parameters, timestamps, errors), use GET /jobs/{id}.'
-    JobPartialDtoPagedResultDto:
+    JobLogDto:
       required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
+      - id
+      - loggedAt
+      - message
+      - severity
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobPartialDto'
-          description: The items in the current page.
-        page:
+        id:
           type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
+          description: 'Unique identifier for this log entry (for cursor-based pagination).
 
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
+            Use this value in the ''after'' query parameter to get subsequent logs.'
+          format: int64
+        loggedAt:
+          type: string
+          description: Timestamp when this log entry was created.
+          format: date-time
+        severity:
+          $ref: '#/components/schemas/JobLogSeverity'
+        message:
+          type: string
+          description: User-facing message describing what happened.
+        phase:
           type:
-          - integer
+          - string
           - 'null'
-          description: 'Total count of items across all pages (if available).
+          description: 'Optional phase/stage of job execution.
 
-            May be null if the data source does not support total count queries.'
-          format: int32
+            Examples: "Discovery", "Gathering", "Saving", "Finalizing"'
       additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
-    JobStatus:
-      enum:
-      - queued
-      - inProgress
-      - completed
-      - failed
-      - cancelled
-      type: string
-      description: 'Generic status enum for all background jobs.
-
-        Represents the lifecycle states common to all job types.'
+      description: Represents a user-facing log entry for a background job.
     JobDto:
       required:
       - action
@@ -1299,6 +1064,53 @@ components:
         Extends ControlUp.Foundry.Api.Dtos.Jobs.JobPartialDto with the error messages.
 
         Job parameters are available via a dedicated GET /jobs/{id}/parameters endpoint.'
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    JobInitiationType:
+      enum:
+      - userInitiated
+      - systemScheduled
+      type: string
+      description: 'Indicates how a job was initiated - by a user action or by a system scheduler.
+
+        Used to filter job lists in UI and apply different retention policies.'
+    JobStatus:
+      enum:
+      - queued
+      - inProgress
+      - completed
+      - failed
+      - cancelled
+      type: string
+      description: 'Generic status enum for all background jobs.
+
+        Represents the lifecycle states common to all job types.'
     JobCreatedDto:
       required:
       - action
@@ -1345,6 +1157,139 @@ components:
         Contains only essential information needed to track the job.
 
         Use the statusUrl to poll for updates and jobUrl to get full details.'
+    JobPartialDto:
+      required:
+      - action
+      - cancellationRequested
+      - canRetry
+      - createdAt
+      - id
+      - initiatedBy
+      - initiationType
+      - jobType
+      - progress
+      - status
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        status:
+          $ref: '#/components/schemas/JobStatus'
+        progress:
+          type: integer
+          description: Progress percentage (0-100).
+          format: int32
+        currentStep:
+          type:
+          - string
+          - 'null'
+          description: 'Current step description for user feedback.
+
+            Example: "Gathering resource data (45/100)"'
+        cancellationRequested:
+          type: boolean
+          description: 'Whether cancellation has been requested for this job.
+
+            Worker checks this flag and stops at next safe checkpoint.'
+        canRetry:
+          type: boolean
+          description: 'Whether this job can be retried by the user from the Activity Feed.
+
+            True only when Status is Failed and the job type is registered as user-retriable.
+
+            Computed at mapping time (not stored in the database).'
+        initiatedBy:
+          type: string
+          description: Email of the user who initiated this job.
+        initiationType:
+          $ref: '#/components/schemas/JobInitiationType'
+        targetResource:
+          type:
+          - string
+          - 'null'
+          description: 'Target resource type if this job operates on a specific resource, formatted with spaces.
+
+            Examples: "Virtual Machine", "Session Host", "Host Pool"'
+        targetResourceName:
+          type:
+          - string
+          - 'null'
+          description: Target resource name if this job operates on a specific resource.
+        createdAt:
+          type: string
+          description: Timestamp when the job was created.
+          format: date-time
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the job started processing.
+          format: date-time
+        completedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the job completed.
+          format: date-time
+        cancellationRequestedAt:
+          type:
+          - string
+          - 'null'
+          description: 'Timestamp when cancellation was requested, for jobs where ControlUp.Foundry.Api.Dtos.Jobs.JobStatusDto.CancellationRequested
+
+            is true. Null when no cancellation has been requested.'
+          format: date-time
+        retryOfJobId:
+          type:
+          - string
+          - 'null'
+          description: 'The ID of the original failed job that this job is retrying.
+
+            Null for original (non-retry) jobs.'
+          format: uuid
+        retryRequestedBy:
+          type:
+          - string
+          - 'null'
+          description: 'Who requested the retry — user email for user-initiated retries, or "system" for recovery.
+
+            Null for original (non-retry) jobs.'
+        errorCode:
+          type:
+          - string
+          - 'null'
+          description: 'Structured, machine-readable error code identifying the failure class when the job failed
+
+            (e.g. "IntuneEnrollmentFailed"). Null when the job did not fail or the failure was unclassified.'
+        parentJobId:
+          type:
+          - string
+          - 'null'
+          description: 'The ID of the orchestrating job that created this one, for jobs that run as part of a
+
+            parent-child tree (for example one import job per subscription). Null for standalone jobs.
+
+            Distinct from ControlUp.Foundry.Api.Dtos.Jobs.JobPartialDto.RetryOfJobId, which records retry lineage rather than orchestration.'
+          format: uuid
+      additionalProperties: false
+      description: 'Partial job information for list views (optimized for bulk queries).
+
+        Contains identifying metadata and timestamps, but excludes parameters and errors.
+
+        Use this for job lists where full details aren''t needed.
+
+        For detailed information including parameters and errors, use ControlUp.Foundry.Api.Dtos.Jobs.JobDto.'
     ErrorResponse:
       required:
       - status
@@ -1392,6 +1337,16 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    JobLogSeverity:
+      enum:
+      - info
+      - warning
+      - error
+      - success
+      type: string
+      description: 'Severity levels for job log entries.
+
+        Determines how the log is displayed in the UI (color, icon, filtering).'
     JobCancellationResponseDto:
       required:
       - jobId
@@ -1409,6 +1364,51 @@ components:
             Cancellation is cooperative, so the job stops at its next safe checkpoint rather than immediately.'
       additionalProperties: false
       description: Response returned when cancellation of a job has been requested.
+    JobPartialDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobPartialDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
   securitySchemes:
     BearerAuth:
       type: http

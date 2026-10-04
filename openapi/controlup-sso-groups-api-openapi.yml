@@ -349,24 +349,16 @@ paths:
           $ref: '#/components/schemas/UUID'
 components:
   schemas:
-    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
-      properties:
+    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
+    : properties:
         metadata:
           $ref: '#/components/schemas/ErrorResponseMetadata'
         error:
-          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
       required:
       - error
       - metadata
       type: object
-    ErrorCode.InternalServerError:
-      enum:
-      - 6
-      type: number
-    HttpStatusCode.NOT_FOUND:
-      enum:
-      - 404
-      type: number
     ErrorResponseMetadata:
       properties:
         cuRequestId:
@@ -383,14 +375,51 @@ components:
       - orgId
       - cuRequestId
       type: object
-    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
+    ErrorCode.Forbidden:
+      enum:
+      - 4
+      type: number
+    DeletedActionResponse:
+      properties:
+        affectedRows:
+          type: number
+          format: double
+      required:
+      - affectedRows
+      type: object
+    HttpStatusCode.FORBIDDEN:
+      enum:
+      - 403
+      type: number
+    APIResponse_SsoGroupPublic-Array_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SsoGroupPublic'
+          type:
+          - array
+          - 'null'
+      required:
+      - data
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
       properties:
         message:
-          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
+          $ref: '#/components/schemas/ErrorMessage.NotFound'
         code:
-          $ref: '#/components/schemas/ErrorCode.Unauthorized'
+          $ref: '#/components/schemas/ErrorCode.NotFound'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
+          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
         data:
           additionalProperties: true
           type: object
@@ -399,14 +428,9 @@ components:
       - code
       - message
       type: object
-    ErrorMessage.Forbidden:
-      enum:
-      - Forbidden
-      type: string
-    ErrorCode.Unauthorized:
-      enum:
-      - 3
-      type: number
+    Omit_SsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt_:
+      $ref: '#/components/schemas/Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__'
+      description: Construct a type with the properties of T except for those in type K.
     ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_:
       properties:
         message:
@@ -423,76 +447,33 @@ components:
       - code
       - message
       type: object
-    HttpStatusCode.INTERNAL_SERVER_ERROR:
+    BadRequestErrorMessages:
       enum:
-      - 500
-      type: number
-    PaginatedResponseMetadata:
-      properties:
-        total:
-          type: number
-          format: double
-          description: The total number of results across all pages.
-        limitPerPage:
-          type: number
-          format: double
-          description: The maximum number of results returned per page (set by the `_limit` parameter).
-        currentPageNumber:
-          type: number
-          format: double
-          description: The page of result returned (set by the `_page` parameter).
-        currentPageSize:
-          type: number
-          format: double
-          description: The number of results on the current page.
-        remaining:
-          type: number
-          format: double
-          description: The total number of results on all pages higher than the current page.
-      required:
-      - remaining
-      - currentPageSize
-      - currentPageNumber
-      - limitPerPage
-      - total
-      type: object
-      example:
-        total: 18
-        limitPerPage: 10
-        currentPageNumber: 1
-        currentPageSize: 10
-        remaining: 8
-    DeletedActionResponse:
-      properties:
-        affectedRows:
-          type: number
-          format: double
-      required:
-      - affectedRows
-      type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorCode.Forbidden:
+      - Bad Request
+      - Invalid Params
+      - Unique Field Violation
+      type: string
+    ErrorCode.NotFound:
       enum:
-      - 4
+      - 5
       type: number
-    APIResponse_DeletedActionResponse_:
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/DeletedActionResponse'
-      required:
-      - data
-      type: object
-    Partial_CreateSsoGroupRequest_:
+    ErrorCode.Unauthorized:
+      enum:
+      - 3
+      type: number
+    HttpStatusCode.UNAUTHORIZED:
+      enum:
+      - 401
+      type: number
+    ErrorMessage.Forbidden:
+      enum:
+      - Forbidden
+      type: string
+    HttpStatusCode.BAD_REQUEST:
+      enum:
+      - 400
+      type: number
+    Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__:
       properties:
         displayName:
           type: string
@@ -500,8 +481,105 @@ components:
         externalId:
           type: string
           description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
+      required:
+      - externalId
+      - displayName
       type: object
-      description: Make all properties in T optional
+      description: From T, pick a set of properties whose keys are in the union K
+    ErrorMessage.InternalServerError:
+      enum:
+      - Internal Server Error
+      type: string
+    APIPaginatedResponse_SsoGroupPublic-Array_:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse_SsoGroupPublic-Array_'
+      - properties:
+          metadata:
+            allOf:
+            - $ref: '#/components/schemas/PaginatedResponseMetadata'
+            - additionalProperties: true
+              type: object
+        required:
+        - metadata
+        type: object
+    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+      properties:
+        message:
+          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+        code:
+          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    ErrorCode.InternalServerError:
+      enum:
+      - 6
+      type: number
+    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
+      properties:
+        message:
+          $ref: '#/components/schemas/BadRequestErrorMessages'
+        code:
+          $ref: '#/components/schemas/BadRequestErrorCodes'
+        status:
+          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
+        data:
+          additionalProperties: true
+          type: object
+      required:
+      - status
+      - code
+      - message
+      type: object
+    BadRequestErrorCodes:
+      enum:
+      - 2
+      - 14
+      - 50
+      type: number
+    APIResponse_SsoGroupPublic_:
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/SsoGroupPublic'
+      required:
+      - data
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
+      required:
+      - error
+      - metadata
+      type: object
+    ErrorMessage.Unauthorized:
+      enum:
+      - Unauthorized
+      type: string
+    ErrorMessage.NotFound:
+      enum:
+      - Not Found
+      type: string
     SsoGroupPublic:
       properties:
         id:
@@ -554,88 +632,18 @@ components:
           displayName: Help Desk Employees
           createdAt: '2024-08-05T18:04:22.996Z'
           updatedAt: '2024-08-05T18:04:22.996Z'
-    ErrorCode.NotFound:
+    HttpStatusCode.INTERNAL_SERVER_ERROR:
       enum:
-      - 5
+      - 500
       type: number
-    ErrorMessage.InternalServerError:
-      enum:
-      - Internal Server Error
-      type: string
-    Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__:
-      properties:
-        displayName:
-          type: string
-          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
-        externalId:
-          type: string
-          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
-      required:
-      - externalId
-      - displayName
-      type: object
-      description: From T, pick a set of properties whose keys are in the union K
-    APIResponse_SsoGroupPublic-Array_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/SsoGroupPublic'
-          type:
-          - array
-          - 'null'
-      required:
-      - data
-      type: object
-    ErrorMessage.NotFound:
-      enum:
-      - Not Found
-      type: string
-    HttpStatusCode.UNAUTHORIZED:
-      enum:
-      - 401
-      type: number
-    ErrorResponseBody_ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden__:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.Forbidden.HttpStatusCode.FORBIDDEN.ErrorCode.Forbidden_'
-      required:
-      - error
-      - metadata
-      type: object
-    APIPaginatedResponse_SsoGroupPublic-Array_:
-      allOf:
-      - $ref: '#/components/schemas/APIResponse_SsoGroupPublic-Array_'
-      - properties:
-          metadata:
-            allOf:
-            - $ref: '#/components/schemas/PaginatedResponseMetadata'
-            - additionalProperties: true
-              type: object
-        required:
-        - metadata
-        type: object
-    ErrorMessage.Unauthorized:
-      enum:
-      - Unauthorized
-      type: string
-    APIResponse_SsoGroupPublic_:
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/SsoGroupPublic'
-      required:
-      - data
-      type: object
-    ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_:
+    ErrorType_ErrorMessage.Unauthorized.HttpStatusCode.UNAUTHORIZED.ErrorCode.Unauthorized_:
       properties:
         message:
-          $ref: '#/components/schemas/ErrorMessage.InternalServerError'
+          $ref: '#/components/schemas/ErrorMessage.Unauthorized'
         code:
-          $ref: '#/components/schemas/ErrorCode.InternalServerError'
+          $ref: '#/components/schemas/ErrorCode.Unauthorized'
         status:
-          $ref: '#/components/schemas/HttpStatusCode.INTERNAL_SERVER_ERROR'
+          $ref: '#/components/schemas/HttpStatusCode.UNAUTHORIZED'
         data:
           additionalProperties: true
           type: object
@@ -644,29 +652,13 @@ components:
       - code
       - message
       type: object
-    HttpStatusCode.FORBIDDEN:
-      enum:
-      - 403
-      type: number
-    ? ErrorResponseBody_ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError__
-    : properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.InternalServerError.HttpStatusCode.INTERNAL_SERVER_ERROR.ErrorCode.InternalServerError_'
-      required:
-      - error
-      - metadata
-      type: object
-    ErrorResponseBody_ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound__:
+    APIResponse_DeletedActionResponse_:
       properties:
-        metadata:
-          $ref: '#/components/schemas/ErrorResponseMetadata'
-        error:
-          $ref: '#/components/schemas/ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/DeletedActionResponse'
       required:
-      - error
-      - metadata
+      - data
       type: object
     UUID:
       type: string
@@ -675,60 +667,68 @@ components:
 
         See [RFC 4112](https://tools.ietf.org/html/rfc4122)'
       pattern: ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$
-    ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_:
-      properties:
-        message:
-          $ref: '#/components/schemas/BadRequestErrorMessages'
-        code:
-          $ref: '#/components/schemas/BadRequestErrorCodes'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.BAD_REQUEST'
-        data:
-          additionalProperties: true
-          type: object
-      required:
-      - status
-      - code
-      - message
-      type: object
-    BadRequestErrorCodes:
-      enum:
-      - 2
-      - 14
-      - 50
-      type: number
-    HttpStatusCode.BAD_REQUEST:
-      enum:
-      - 400
-      type: number
-    Omit_SsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt_:
-      $ref: '#/components/schemas/Pick_SsoGroupPublic.Exclude_keyofSsoGroupPublic.id-or-organizationId-or-createdAt-or-updatedAt__'
-      description: Construct a type with the properties of T except for those in type K.
     NonEmptyString:
       type: string
       minLength: 1
-    ErrorType_ErrorMessage.NotFound.HttpStatusCode.NOT_FOUND.ErrorCode.NotFound_:
+    PaginatedResponseMetadata:
       properties:
-        message:
-          $ref: '#/components/schemas/ErrorMessage.NotFound'
-        code:
-          $ref: '#/components/schemas/ErrorCode.NotFound'
-        status:
-          $ref: '#/components/schemas/HttpStatusCode.NOT_FOUND'
-        data:
-          additionalProperties: true
-          type: object
+        total:
+          type: number
+          format: double
+          description: The total number of results across all pages.
+        limitPerPage:
+          type: number
+          format: double
+          description: The maximum number of results returned per page (set by the `_limit` parameter).
+        currentPageNumber:
+          type: number
+          format: double
+          description: The page of result returned (set by the `_page` parameter).
+        currentPageSize:
+          type: number
+          format: double
+          description: The number of results on the current page.
+        remaining:
+          type: number
+          format: double
+          description: The total number of results on all pages higher than the current page.
       required:
-      - status
-      - code
-      - message
+      - remaining
+      - currentPageSize
+      - currentPageNumber
+      - limitPerPage
+      - total
       type: object
-    BadRequestErrorMessages:
+      example:
+        total: 18
+        limitPerPage: 10
+        currentPageNumber: 1
+        currentPageSize: 10
+        remaining: 8
+    HttpStatusCode.NOT_FOUND:
       enum:
-      - Bad Request
-      - Invalid Params
-      - Unique Field Violation
-      type: string
+      - 404
+      type: number
+    Partial_CreateSsoGroupRequest_:
+      properties:
+        displayName:
+          type: string
+          description: The display name for the SSO group. This is a friendly name that is used when assigned the SSO group to ControlUp user roles.
+        externalId:
+          type: string
+          description: The name or ID of the group in your IdP. This must exactly match what your IdP sends in the SAML assertion.
+      type: object
+      description: Make all properties in T optional
+    ErrorResponseBody_ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes__:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ErrorResponseMetadata'
+        error:
+          $ref: '#/components/schemas/ErrorType_BadRequestErrorMessages.HttpStatusCode.BAD_REQUEST.BadRequestErrorCodes_'
+      required:
+      - error
+      - metadata
+      type: object
   securitySchemes:
     apiKey:
       type: http

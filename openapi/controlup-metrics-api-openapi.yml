@@ -152,66 +152,6 @@ paths:
       - Region
 components:
   schemas:
-    TableDataContract:
-      type: object
-      properties:
-        tableName:
-          type: string
-          description: The name of the table
-        description:
-          type: string
-          description: Description of the table
-    QueryMatchDataContract:
-      type: object
-      required:
-      - field
-      - term
-      properties:
-        field:
-          type: string
-          description: The field to match against
-        term:
-          type: string
-          description: The text term to search for
-        regex:
-          type: boolean
-          description: Indicates if the term should be evaluated as a regular expression
-    QueryCounterOptionsDataContract:
-      type: object
-      properties:
-        includeStress:
-          type: boolean
-          description: Include stress level indicators for the counters
-        allSamples:
-          type: boolean
-          description: Include all raw data samples
-        includeAgg:
-          type: boolean
-          description: Include aggregated statistics
-        includeTag:
-          type: boolean
-          description: Include counter tags
-        includeTimestamp:
-          type: boolean
-          description: Include timestamps for counter values
-        aggStats:
-          type: boolean
-          description: Compute and return aggregated statistics for the counters
-        flatAgg:
-          type: boolean
-          description: Flatten the aggregated results into the root data objects
-        returnOnlyValue:
-          type: boolean
-          description: Return only the bare counter values without additional metadata
-    QueryPageDataContract:
-      type: object
-      properties:
-        offset:
-          type: integer
-          description: Number of items to skip before returning results (0-based)
-        size:
-          type: integer
-          description: Maximum number of items to return in this page
     QuerySortDataContract:
       type: object
       required:
@@ -223,105 +163,15 @@ components:
         dir:
           type: string
           description: Sort direction (e.g., 'Asc' or 'Desc')
-    QueryFieldDescriptorDataContract:
-      type: object
-      required:
-      - field
-      properties:
-        field:
-          type: string
-          description: The name of the metric or field to return
-        history:
-          type: integer
-          description: Number of historical data points to include for this metric
-        severityLevel:
-          type: boolean
-          description: Include the severity level status for this field
-        includeAvg:
-          type: boolean
-          description: Include the average value aggregation for this field
-        includeMax:
-          type: boolean
-          description: Include the maximum value aggregation for this field
-    QueryOptionsDataContract:
+    TableDataContract:
       type: object
       properties:
-        nodeId:
+        tableName:
           type: string
-          description: Specific organization tree node identifier to scope the query to
-        showNodeId:
-          type: boolean
-          description: Include tree node IDs in the returned response data
-        counters:
-          description: Advanced options for fetching performance counters
-          $ref: '#/components/schemas/QueryCounterOptionsDataContract'
-        translateEnums:
-          type: boolean
-          description: Translate numeric enum values to human-readable strings
-        bypassCache:
-          type: boolean
-          description: Force the query to bypass cache and fetch the most recent realtime data
-        drillDownOrigin:
-          type: string
-          description: Origin identifier when performing a drill-down query from a higher level
-        dataLoss:
-          description: Configuration for handling potential realtime data loss
-          $ref: '#/components/schemas/QueryDataLossOptionsDataContract'
-        includeDataEmptyReason:
-          type: boolean
-          description: Include reasons in the response when requested data columns are empty
-        siteId:
-          type: string
-          description: Monitor site identifier to scope the query
-        usePartialFolderData:
-          type: boolean
-          description: Allow returning partial data for folder hierarchies
-    TableFieldDataContract:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the field
-        header:
-          type: string
-          description: The header or display name of the field
+          description: The name of the table
         description:
           type: string
-          description: Description of the field
-        type:
-          type: string
-          description: The data type of the field
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Error code
-              example: VALIDATION_ERROR
-            message:
-              type: string
-              description: Human-readable error message
-              example: Invalid request parameters
-            details:
-              type: array
-              items:
-                type: object
-                properties:
-                  field:
-                    type: string
-                    description: Field name that caused the error
-                  message:
-                    type: string
-                    description: Specific error message for the field
-              description: Detailed error information per field
-          required:
-          - code
-          - message
-      required:
-      - error
+          description: Description of the table
     QueryDataLossOptionsDataContract:
       type: object
       properties:
@@ -386,6 +236,92 @@ components:
         focus:
           type: string
           description: Focus context for the query (e.g. scoping to a specific view)
+    TableFieldDataContract:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the field
+        header:
+          type: string
+          description: The header or display name of the field
+        description:
+          type: string
+          description: Description of the field
+        type:
+          type: string
+          description: The data type of the field
+    QueryCounterOptionsDataContract:
+      type: object
+      properties:
+        includeStress:
+          type: boolean
+          description: Include stress level indicators for the counters
+        allSamples:
+          type: boolean
+          description: Include all raw data samples
+        includeAgg:
+          type: boolean
+          description: Include aggregated statistics
+        includeTag:
+          type: boolean
+          description: Include counter tags
+        includeTimestamp:
+          type: boolean
+          description: Include timestamps for counter values
+        aggStats:
+          type: boolean
+          description: Compute and return aggregated statistics for the counters
+        flatAgg:
+          type: boolean
+          description: Flatten the aggregated results into the root data objects
+        returnOnlyValue:
+          type: boolean
+          description: Return only the bare counter values without additional metadata
+    QueryPageDataContract:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: Number of items to skip before returning results (0-based)
+        size:
+          type: integer
+          description: Maximum number of items to return in this page
+    QueryMatchDataContract:
+      type: object
+      required:
+      - field
+      - term
+      properties:
+        field:
+          type: string
+          description: The field to match against
+        term:
+          type: string
+          description: The text term to search for
+        regex:
+          type: boolean
+          description: Indicates if the term should be evaluated as a regular expression
+    QueryFieldDescriptorDataContract:
+      type: object
+      required:
+      - field
+      properties:
+        field:
+          type: string
+          description: The name of the metric or field to return
+        history:
+          type: integer
+          description: Number of historical data points to include for this metric
+        severityLevel:
+          type: boolean
+          description: Include the severity level status for this field
+        includeAvg:
+          type: boolean
+          description: Include the average value aggregation for this field
+        includeMax:
+          type: boolean
+          description: Include the maximum value aggregation for this field
     QueryConditionDataContract:
       type: object
       properties:
@@ -413,6 +349,70 @@ components:
         value:
           type: object
           description: The value to compare against. Can be a string, number, boolean, or array of values.
+    QueryOptionsDataContract:
+      type: object
+      properties:
+        nodeId:
+          type: string
+          description: Specific organization tree node identifier to scope the query to
+        showNodeId:
+          type: boolean
+          description: Include tree node IDs in the returned response data
+        counters:
+          description: Advanced options for fetching performance counters
+          $ref: '#/components/schemas/QueryCounterOptionsDataContract'
+        translateEnums:
+          type: boolean
+          description: Translate numeric enum values to human-readable strings
+        bypassCache:
+          type: boolean
+          description: Force the query to bypass cache and fetch the most recent realtime data
+        drillDownOrigin:
+          type: string
+          description: Origin identifier when performing a drill-down query from a higher level
+        dataLoss:
+          description: Configuration for handling potential realtime data loss
+          $ref: '#/components/schemas/QueryDataLossOptionsDataContract'
+        includeDataEmptyReason:
+          type: boolean
+          description: Include reasons in the response when requested data columns are empty
+        siteId:
+          type: string
+          description: Monitor site identifier to scope the query
+        usePartialFolderData:
+          type: boolean
+          description: Allow returning partial data for folder hierarchies
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+              example: Invalid request parameters
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    description: Field name that caused the error
+                  message:
+                    type: string
+                    description: Specific error message for the field
+              description: Detailed error information per field
+          required:
+          - code
+          - message
+      required:
+      - error
   securitySchemes:
     BearerAuth:
       type: http

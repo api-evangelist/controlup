@@ -100,16 +100,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    CapacityState:
-      enum:
-      - normal
-      - warning
-      - gracePeriod
-      - overCapacity
-      type: string
-      description: 'Represents the capacity utilization state of an organization
-
-        relative to its licensed concurrent user amount.'
     LicenseDto:
       required:
       - capacityState
@@ -152,6 +142,29 @@ components:
           $ref: '#/components/schemas/CapacityState'
       additionalProperties: false
       description: Data Transfer Object for license information.
+    LicenseType:
+      enum:
+      - unknown
+      - commercial
+      - trial
+      type: string
+      description: Represents the type of license an organization holds.
+    LicenseStatus:
+      enum:
+      - unknown
+      - active
+      type: string
+      description: Represents the status of a license.
+    CapacityState:
+      enum:
+      - normal
+      - warning
+      - gracePeriod
+      - overCapacity
+      type: string
+      description: 'Represents the capacity utilization state of an organization
+
+        relative to its licensed concurrent user amount.'
     ErrorResponse:
       required:
       - status
@@ -199,19 +212,6 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    LicenseStatus:
-      enum:
-      - unknown
-      - active
-      type: string
-      description: Represents the status of a license.
-    LicenseType:
-      enum:
-      - unknown
-      - commercial
-      - trial
-      type: string
-      description: Represents the type of license an organization holds.
   securitySchemes:
     BearerAuth:
       type: http

@@ -255,6 +255,11 @@ paths:
       - CookieAuth: []
 components:
   schemas:
+    CloudProvider:
+      enum:
+      - azure
+      type: string
+      description: Enumeration of supported cloud provider identifiers.
     ErrorResponse:
       required:
       - status
@@ -302,56 +307,6 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    CloudProvider:
-      enum:
-      - azure
-      type: string
-      description: Enumeration of supported cloud provider identifiers.
-    SessionHostDtoPagedResultDto:
-      required:
-      - count
-      - hasMore
-      - items
-      - page
-      - pageSize
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionHostDto'
-          description: The items in the current page.
-        page:
-          type: integer
-          description: Current page number (1-based).
-          format: int32
-        pageSize:
-          type: integer
-          description: Number of items per page.
-          format: int32
-        count:
-          type: integer
-          description: 'Actual number of items returned in this page.
-
-            May be less than PageSize on the last page.'
-          format: int32
-        hasMore:
-          type: boolean
-          description: 'Indicates if more pages are available.
-
-            True if Count equals PageSize, suggesting more data exists.'
-        totalCount:
-          type:
-          - integer
-          - 'null'
-          description: 'Total count of items across all pages (if available).
-
-            May be null if the data source does not support total count queries.'
-          format: int32
-      additionalProperties: false
-      description: 'Generic paginated response wrapper for API endpoints.
-
-        Supports traditional page-based navigation with forward/backward capability.'
     SessionHostDto:
       required:
       - activeSessions
@@ -471,6 +426,51 @@ components:
       description: 'Session host list item returned by the API.
 
         Excludes internal ARM resource IDs that are only used for scaling operations.'
+    SessionHostDtoPagedResultDto:
+      required:
+      - count
+      - hasMore
+      - items
+      - page
+      - pageSize
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionHostDto'
+          description: The items in the current page.
+        page:
+          type: integer
+          description: Current page number (1-based).
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          format: int32
+        count:
+          type: integer
+          description: 'Actual number of items returned in this page.
+
+            May be less than PageSize on the last page.'
+          format: int32
+        hasMore:
+          type: boolean
+          description: 'Indicates if more pages are available.
+
+            True if Count equals PageSize, suggesting more data exists.'
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: 'Total count of items across all pages (if available).
+
+            May be null if the data source does not support total count queries.'
+          format: int32
+      additionalProperties: false
+      description: 'Generic paginated response wrapper for API endpoints.
+
+        Supports traditional page-based navigation with forward/backward capability.'
   securitySchemes:
     BearerAuth:
       type: http

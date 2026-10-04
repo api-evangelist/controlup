@@ -132,6 +132,19 @@ paths:
       - CookieAuth: []
 components:
   schemas:
+    CreateSessionHostDeploymentRequest:
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: Number of session hosts to create.
+          format: int32
+      additionalProperties: false
+      description: Request to add session hosts to an existing Azure Virtual Desktop host pool.
     ErrorResponse:
       required:
       - status
@@ -253,19 +266,6 @@ components:
         Contains only essential information needed to track the job.
 
         Use the statusUrl to poll for updates and jobUrl to get full details.'
-    CreateSessionHostDeploymentRequest:
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          maximum: 100
-          minimum: 1
-          type: integer
-          description: Number of session hosts to create.
-          format: int32
-      additionalProperties: false
-      description: Request to add session hosts to an existing Azure Virtual Desktop host pool.
   securitySchemes:
     BearerAuth:
       type: http

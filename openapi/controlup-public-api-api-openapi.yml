@@ -936,6 +936,15 @@ paths:
       - BearerAuth: []
 components:
   schemas:
+    FlowScheduleType:
+      type: string
+      enum:
+      - manual
+      - api
+      - listener
+      - Form
+      - time
+      title: FlowScheduleType
     FormSortBy:
       type: string
       enum:
@@ -945,6 +954,40 @@ components:
       - updatedAt
       - lastRun
       title: FormSortBy
+    FlowRunStatus:
+      type: string
+      enum:
+      - unspecified
+      - running
+      - completed
+      - failed
+      - canceled
+      - terminated
+      - continued as new
+      - time out
+      - waiting for action
+      title: FlowRunStatus
+    FlowSortBy:
+      type: string
+      enum:
+      - name
+      - status
+      - createdDate
+      - createdAt
+      - updatedAt
+      - lastRun
+      - scheduleType
+      - creator
+      - lastEditor
+      title: FlowSortBy
+    IntegrationSortBy:
+      type: string
+      enum:
+      - name
+      - createdDate
+      - createdAt
+      - updatedAt
+      title: IntegrationSortBy
     ValidationError:
       properties:
         loc:
@@ -966,49 +1009,12 @@ components:
       - msg
       - type
       title: ValidationError
-    IntegrationSortBy:
+    SortOrder:
       type: string
       enum:
-      - name
-      - createdDate
-      - createdAt
-      - updatedAt
-      title: IntegrationSortBy
-    FlowScheduleType:
-      type: string
-      enum:
-      - manual
-      - api
-      - listener
-      - Form
-      - time
-      title: FlowScheduleType
-    FlowSortBy:
-      type: string
-      enum:
-      - name
-      - status
-      - createdDate
-      - createdAt
-      - updatedAt
-      - lastRun
-      - scheduleType
-      - creator
-      - lastEditor
-      title: FlowSortBy
-    FlowRunStatus:
-      type: string
-      enum:
-      - unspecified
-      - running
-      - completed
-      - failed
-      - canceled
-      - terminated
-      - continued as new
-      - time out
-      - waiting for action
-      title: FlowRunStatus
+      - asc
+      - desc
+      title: SortOrder
     HTTPValidationError:
       properties:
         detail:
@@ -1027,12 +1033,6 @@ components:
       required:
       - isActive
       title: FlowEnableDisableRequest
-    SortOrder:
-      type: string
-      enum:
-      - asc
-      - desc
-      title: SortOrder
   securitySchemes:
     BearerAuth:
       type: http

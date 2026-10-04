@@ -124,6 +124,59 @@ components:
       - disconnect
       type: string
       description: Types of actions that can be performed on a user session.
+    JobType:
+      enum:
+      - cloudResourceImport
+      - inventorySync
+      - metricCollection
+      - costCollection
+      - budgetCollection
+      - sessionStateCollection
+      - sessionHostAction
+      - cloudResourceAction
+      - cloudCredentialVerification
+      - cloudTenantResourceImport
+      - masterImageDeploy
+      - masterImagePublish
+      - masterImageSync
+      - masterImageCleanup
+      - masterImageVersionDelete
+      - masterImagePublishCleanup
+      - licenseUsageReport
+      - hostPoolOrphanedResourcesCleanup
+      - hostPoolCreate
+      - hostPoolSessionHostCreate
+      - hostPoolSessionHostBatchCreate
+      - hostPoolDelete
+      type: string
+      description: 'Defines the types of background jobs supported by the system.
+
+        Each job type is processed by a specific worker and has its own parameter structure.'
+    UserSessionActionRequest:
+      required:
+      - actionType
+      type: object
+      properties:
+        actionType:
+          $ref: '#/components/schemas/UserSessionActionType'
+        messageTitle:
+          maxLength: 256
+          type:
+          - string
+          - 'null'
+          description: 'The title of the message to send to the user.
+
+            Required for SendMessage action.'
+        messageBody:
+          maxLength: 1024
+          type:
+          - string
+          - 'null'
+          description: 'The body of the message to send to the user.
+
+            Required for SendMessage action.'
+      additionalProperties: false
+      description: Request to execute an action on a user session.
     JobCreatedDto:
       required:
       - action
@@ -170,34 +223,6 @@ components:
         Contains only essential information needed to track the job.
 
         Use the statusUrl to poll for updates and jobUrl to get full details.'
-    JobType:
-      enum:
-      - cloudResourceImport
-      - inventorySync
-      - metricCollection
-      - costCollection
-      - budgetCollection
-      - sessionStateCollection
-      - sessionHostAction
-      - cloudResourceAction
-      - cloudCredentialVerification
-      - cloudTenantResourceImport
-      - masterImageDeploy
-      - masterImagePublish
-      - masterImageSync
-      - masterImageCleanup
-      - masterImageVersionDelete
-      - masterImagePublishCleanup
-      - licenseUsageReport
-      - hostPoolOrphanedResourcesCleanup
-      - hostPoolCreate
-      - hostPoolSessionHostCreate
-      - hostPoolSessionHostBatchCreate
-      - hostPoolDelete
-      type: string
-      description: 'Defines the types of background jobs supported by the system.
-
-        Each job type is processed by a specific worker and has its own parameter structure.'
     ErrorResponse:
       required:
       - status
@@ -245,31 +270,6 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
-    UserSessionActionRequest:
-      required:
-      - actionType
-      type: object
-      properties:
-        actionType:
-          $ref: '#/components/schemas/UserSessionActionType'
-        messageTitle:
-          maxLength: 256
-          type:
-          - string
-          - 'null'
-          description: 'The title of the message to send to the user.
-
-            Required for SendMessage action.'
-        messageBody:
-          maxLength: 1024
-          type:
-          - string
-          - 'null'
-          description: 'The body of the message to send to the user.
-
-            Required for SendMessage action.'
-      additionalProperties: false
-      description: Request to execute an action on a user session.
   securitySchemes:
     BearerAuth:
       type: http

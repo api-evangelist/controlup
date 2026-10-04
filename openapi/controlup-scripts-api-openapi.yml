@@ -274,16 +274,17 @@ components:
           description: Indicates if the script is a built-in script.
           example: false
   parameters:
-    SorterDir:
-      name: sorters[0][dir]
+    SorterField:
+      name: sorters[0][field]
       in: query
-      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
+      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
+
+        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
+
+        '
       schema:
         type: string
-        example: asc
-        enum:
-        - asc
-        - desc
+        example: _created
     FilterField:
       name: filters[0][field]
       in: query
@@ -311,17 +312,16 @@ components:
           title: Number
         - type: boolean
           title: Boolean
-    SorterField:
-      name: sorters[0][field]
+    SorterDir:
+      name: sorters[0][dir]
       in: query
-      description: 'Sorts the returned data based on the specified field name. This parameter must be used in combination with `sorters[0][dir]` to set the sort order.
-
-        You can sort by more than one field by changing the integer in the parameter names (for example, `sorters[1][field]`). Sorters with a lower integer are applied first.</br></br>
-
-        '
+      description: The sort order for the corresponding field. Set to `asc` for ascending, or `desc` for descending.
       schema:
         type: string
-        example: _created
+        example: asc
+        enum:
+        - asc
+        - desc
     FilterType:
       name: filters[0][type]
       in: query
