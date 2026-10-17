@@ -251,15 +251,6 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    SessionHostActionRequest:
-      required:
-      - actionType
-      type: object
-      properties:
-        actionType:
-          $ref: '#/components/schemas/SessionHostActionType'
-      additionalProperties: false
-      description: Request to execute an action on a session host.
     UserSessionQueryResultPagedResult:
       required:
       - count
@@ -305,18 +296,6 @@ components:
       description: 'Represents a paginated result set with metadata for navigation.
 
         Supports traditional page-based pagination with skip/take semantics.'
-    SessionHostActionType:
-      enum:
-      - restart
-      - stop
-      - start
-      - allowNewSessions
-      - disallowNewSessions
-      - startAndAllowNewSessions
-      - stopAndDisallowNewSessions
-      - removeFromHostPool
-      type: string
-      description: Types of actions that can be performed on a session host.
     JobType:
       enum:
       - cloudResourceImport
@@ -345,6 +324,62 @@ components:
       description: 'Defines the types of background jobs supported by the system.
 
         Each job type is processed by a specific worker and has its own parameter structure.'
+    SessionHostActionRequest:
+      required:
+      - actionType
+      type: object
+      properties:
+        actionType:
+          $ref: '#/components/schemas/SessionHostActionType'
+      additionalProperties: false
+      description: Request to execute an action on a session host.
+    ErrorResponse:
+      required:
+      - status
+      - title
+      - traceId
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: The HTTP status code.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: 'Dictionary of field-specific validation errors (only present for validation failures).
+
+            Key is the field name, value is an array of error messages for that field.'
+        traceId:
+          type: string
+          description: Request ID (cu-request-id) for tracking and debugging purposes.
+      additionalProperties: false
+      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
+
+        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
     JobCreatedDto:
       required:
       - action
@@ -391,6 +426,18 @@ components:
         Contains only essential information needed to track the job.
 
         Use the statusUrl to poll for updates and jobUrl to get full details.'
+    SessionHostActionType:
+      enum:
+      - restart
+      - stop
+      - start
+      - allowNewSessions
+      - disallowNewSessions
+      - startAndAllowNewSessions
+      - stopAndDisallowNewSessions
+      - removeFromHostPool
+      type: string
+      description: Types of actions that can be performed on a session host.
     UserSessionQueryResult:
       required:
       - currentStateDuration
@@ -495,53 +542,6 @@ components:
         Read-only model optimized for list/grid display with joined data.
 
         Contains user session state information with denormalized session host name for display.'
-    ErrorResponse:
-      required:
-      - status
-      - title
-      - traceId
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the problem type.
-        title:
-          type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          description: The HTTP status code.
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: A URI reference that identifies the specific occurrence of the problem.
-        errors:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: 'Dictionary of field-specific validation errors (only present for validation failures).
-
-            Key is the field name, value is an array of error messages for that field.'
-        traceId:
-          type: string
-          description: Request ID (cu-request-id) for tracking and debugging purposes.
-      additionalProperties: false
-      description: 'Standard error body the API returns when a request fails validation or cannot be completed.
-
-        Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
   securitySchemes:
     BearerAuth:
       type: http

@@ -152,35 +152,35 @@ paths:
       - Region
 components:
   schemas:
-    QuerySortDataContract:
+    QueryPageDataContract:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: Number of items to skip before returning results (0-based)
+        size:
+          type: integer
+          description: Maximum number of items to return in this page
+    QueryFieldDescriptorDataContract:
       type: object
       required:
       - field
       properties:
         field:
           type: string
-          description: The field to sort the results by
-        dir:
-          type: string
-          description: Sort direction (e.g., 'Asc' or 'Desc')
-    TableDataContract:
-      type: object
-      properties:
-        tableName:
-          type: string
-          description: The name of the table
-        description:
-          type: string
-          description: Description of the table
-    QueryDataLossOptionsDataContract:
-      type: object
-      properties:
-        threshold:
+          description: The name of the metric or field to return
+        history:
           type: integer
-          description: Threshold limit for acceptable data loss before failing the query
-        timeout:
-          type: integer
-          description: Timeout in milliseconds to wait for data recovery
+          description: Number of historical data points to include for this metric
+        severityLevel:
+          type: boolean
+          description: Include the severity level status for this field
+        includeAvg:
+          type: boolean
+          description: Include the average value aggregation for this field
+        includeMax:
+          type: boolean
+          description: Include the maximum value aggregation for this field
     QueryResponse:
       type: object
       properties:
@@ -236,6 +236,15 @@ components:
         focus:
           type: string
           description: Focus context for the query (e.g. scoping to a specific view)
+    QueryDataLossOptionsDataContract:
+      type: object
+      properties:
+        threshold:
+          type: integer
+          description: Threshold limit for acceptable data loss before failing the query
+        timeout:
+          type: integer
+          description: Timeout in milliseconds to wait for data recovery
     TableFieldDataContract:
       type: object
       properties:
@@ -251,42 +260,6 @@ components:
         type:
           type: string
           description: The data type of the field
-    QueryCounterOptionsDataContract:
-      type: object
-      properties:
-        includeStress:
-          type: boolean
-          description: Include stress level indicators for the counters
-        allSamples:
-          type: boolean
-          description: Include all raw data samples
-        includeAgg:
-          type: boolean
-          description: Include aggregated statistics
-        includeTag:
-          type: boolean
-          description: Include counter tags
-        includeTimestamp:
-          type: boolean
-          description: Include timestamps for counter values
-        aggStats:
-          type: boolean
-          description: Compute and return aggregated statistics for the counters
-        flatAgg:
-          type: boolean
-          description: Flatten the aggregated results into the root data objects
-        returnOnlyValue:
-          type: boolean
-          description: Return only the bare counter values without additional metadata
-    QueryPageDataContract:
-      type: object
-      properties:
-        offset:
-          type: integer
-          description: Number of items to skip before returning results (0-based)
-        size:
-          type: integer
-          description: Maximum number of items to return in this page
     QueryMatchDataContract:
       type: object
       required:
@@ -302,26 +275,17 @@ components:
         regex:
           type: boolean
           description: Indicates if the term should be evaluated as a regular expression
-    QueryFieldDescriptorDataContract:
+    QuerySortDataContract:
       type: object
       required:
       - field
       properties:
         field:
           type: string
-          description: The name of the metric or field to return
-        history:
-          type: integer
-          description: Number of historical data points to include for this metric
-        severityLevel:
-          type: boolean
-          description: Include the severity level status for this field
-        includeAvg:
-          type: boolean
-          description: Include the average value aggregation for this field
-        includeMax:
-          type: boolean
-          description: Include the maximum value aggregation for this field
+          description: The field to sort the results by
+        dir:
+          type: string
+          description: Sort direction (e.g., 'Asc' or 'Desc')
     QueryConditionDataContract:
       type: object
       properties:
@@ -349,6 +313,37 @@ components:
         value:
           type: object
           description: The value to compare against. Can be a string, number, boolean, or array of values.
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+              example: Invalid request parameters
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    description: Field name that caused the error
+                  message:
+                    type: string
+                    description: Specific error message for the field
+              description: Detailed error information per field
+          required:
+          - code
+          - message
+      required:
+      - error
     QueryOptionsDataContract:
       type: object
       properties:
@@ -382,37 +377,42 @@ components:
         usePartialFolderData:
           type: boolean
           description: Allow returning partial data for folder hierarchies
-    ErrorResponse:
+    QueryCounterOptionsDataContract:
       type: object
       properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Error code
-              example: VALIDATION_ERROR
-            message:
-              type: string
-              description: Human-readable error message
-              example: Invalid request parameters
-            details:
-              type: array
-              items:
-                type: object
-                properties:
-                  field:
-                    type: string
-                    description: Field name that caused the error
-                  message:
-                    type: string
-                    description: Specific error message for the field
-              description: Detailed error information per field
-          required:
-          - code
-          - message
-      required:
-      - error
+        includeStress:
+          type: boolean
+          description: Include stress level indicators for the counters
+        allSamples:
+          type: boolean
+          description: Include all raw data samples
+        includeAgg:
+          type: boolean
+          description: Include aggregated statistics
+        includeTag:
+          type: boolean
+          description: Include counter tags
+        includeTimestamp:
+          type: boolean
+          description: Include timestamps for counter values
+        aggStats:
+          type: boolean
+          description: Compute and return aggregated statistics for the counters
+        flatAgg:
+          type: boolean
+          description: Flatten the aggregated results into the root data objects
+        returnOnlyValue:
+          type: boolean
+          description: Return only the bare counter values without additional metadata
+    TableDataContract:
+      type: object
+      properties:
+        tableName:
+          type: string
+          description: The name of the table
+        description:
+          type: string
+          description: Description of the table
   securitySchemes:
     BearerAuth:
       type: http

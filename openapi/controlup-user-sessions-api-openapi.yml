@@ -117,13 +117,6 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    UserSessionActionType:
-      enum:
-      - sendMessage
-      - signOut
-      - disconnect
-      type: string
-      description: Types of actions that can be performed on a user session.
     JobType:
       enum:
       - cloudResourceImport
@@ -177,52 +170,6 @@ components:
             Required for SendMessage action.'
       additionalProperties: false
       description: Request to execute an action on a user session.
-    JobCreatedDto:
-      required:
-      - action
-      - id
-      - jobType
-      - jobUrl
-      - logsUrl
-      - message
-      - statusUrl
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the created job.
-          format: uuid
-        jobType:
-          $ref: '#/components/schemas/JobType'
-        action:
-          type: string
-          description: 'Job action identifier.
-
-            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
-
-            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
-        jobUrl:
-          type: string
-          description: URL to get full job details (includes parameters).
-        statusUrl:
-          type: string
-          description: 'URL to poll for lightweight status updates (no parameters).
-
-            Poll this endpoint every 2-5 seconds while job is running.'
-        logsUrl:
-          type: string
-          description: URL to get job logs in JSON format.
-        message:
-          type: string
-          description: 'Human-readable message about job creation.
-
-            Example: "Import job created successfully. Poll statusUrl for progress updates."'
-      additionalProperties: false
-      description: 'Lightweight response returned when a job is created.
-
-        Contains only essential information needed to track the job.
-
-        Use the statusUrl to poll for updates and jobUrl to get full details.'
     ErrorResponse:
       required:
       - status
@@ -270,6 +217,59 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    UserSessionActionType:
+      enum:
+      - sendMessage
+      - signOut
+      - disconnect
+      type: string
+      description: Types of actions that can be performed on a user session.
+    JobCreatedDto:
+      required:
+      - action
+      - id
+      - jobType
+      - jobUrl
+      - logsUrl
+      - message
+      - statusUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created job.
+          format: uuid
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        action:
+          type: string
+          description: 'Job action identifier.
+
+            For standard jobs, this matches the JobType formatted with spaces (e.g., "Cloud Resource Import").
+
+            For action jobs, this is the specific action name formatted with spaces (e.g., "Start", "Stop").'
+        jobUrl:
+          type: string
+          description: URL to get full job details (includes parameters).
+        statusUrl:
+          type: string
+          description: 'URL to poll for lightweight status updates (no parameters).
+
+            Poll this endpoint every 2-5 seconds while job is running.'
+        logsUrl:
+          type: string
+          description: URL to get job logs in JSON format.
+        message:
+          type: string
+          description: 'Human-readable message about job creation.
+
+            Example: "Import job created successfully. Poll statusUrl for progress updates."'
+      additionalProperties: false
+      description: 'Lightweight response returned when a job is created.
+
+        Contains only essential information needed to track the job.
+
+        Use the statusUrl to poll for updates and jobUrl to get full details.'
   securitySchemes:
     BearerAuth:
       type: http

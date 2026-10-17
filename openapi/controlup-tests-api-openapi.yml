@@ -82,60 +82,41 @@ paths:
 
           '
 components:
-  responses:
-    ValidationError:
-      description: Sent data has errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MarshmallowError'
-    ServerError:
-      description: Server errors
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Server Error
-    Unauthorized:
-      description: Missing or wrong api key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BaseError'
-          example:
-            success: false
-            errors: Unauthorized
-    TestList:
-      description: A list of tests
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                description: An array of tests. Each entry in the array is a separate test, containing its details and results.
-                items:
-                  $ref: '#/components/schemas/TestItem'
-              current_page:
-                type: integer
-                description: The current page of tests returned by the request. Change the page with the `page` parameter.
-              total_pages:
-                type: integer
-                description: The total number of pages returned. Each page contains up to 100 tests.
-              total_per_page:
-                type: integer
-                description: The total number of tests that can appear per page.
-                enum:
-                - 100
-              success:
-                type: boolean
-                description: Whether the request was successful.
-              total:
-                type: integer
-                description: The total number of tests returned, based on the request conditions. If `total` is greater than 100, then the tests will be on multiple pages.
   schemas:
+    ScoutBaseNetProps:
+      title: Network test schema
+      allOf:
+      - type: object
+        properties:
+          type:
+            description: The Scout's type.
+            type: string
+            enum:
+            - network
+      - $ref: '#/components/schemas/ScoutTestSharedProps'
+      - $ref: '#/components/schemas/TestsSharedProps'
+    MarshmallowError:
+      type: object
+      properties:
+        errors:
+          type: object
+          items:
+            type: array
+            items:
+              type: string
+      example:
+        errors:
+          name:
+          - Missing required data.
+          period:
+          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
+    BaseError:
+      type: object
+      properties:
+        errors:
+          type: string
+      required:
+      - errors
     ScoutTestEucSharedProps:
       type: object
       properties:
@@ -167,46 +148,24 @@ components:
           type: number
           format: float
           description: The number of login attempts it took to successfully authenticate the Scout.
-    ScoutTestSharedProps:
-      type: object
-      properties:
-        scoutId:
-          type: integer
-          description: The Scout's ID.
-        scoutName:
-          type: string
-          description: The Scout's name.
-        parentScoutId:
-          type: integer
-          description: ID of the parent Scout. Present only when this test result belongs to a child Scout.
-        parentScoutName:
-          type: string
-          description: Name of the parent Scout. Present only when this test result belongs to a child Scout.
-        parentSubType:
-          type: string
-          description: Sub-type of the parent Scout. Present only when this test result belongs to a child Scout.
-          enum:
-          - ms_exchange
-          - net_http
-          - citrix_gateway
-          - citrix_cloud
-          - citrix_storefront
-          - vmware_horizon
-          - vmware_w1
-          - vmware_secsrv
-          - avd
-    ScoutBaseAppProps:
-      title: Application test schema
+    ScoutBaseEucProps:
       allOf:
+      - $ref: '#/components/schemas/ScoutTestSharedProps'
+      - $ref: '#/components/schemas/ScoutTestEucSharedProps'
+      - $ref: '#/components/schemas/TestsSharedProps'
       - type: object
         properties:
+          username:
+            type: string
+            description: The username the Scout uses to access the gateway.
+          resource:
+            type: string
+            description: The resource the Scout accesses and tests.
           type:
-            description: The Scout's type.
             type: string
             enum:
-            - application
-      - $ref: '#/components/schemas/ScoutTestSharedProps'
-      - $ref: '#/components/schemas/TestsSharedProps'
+            - euc
+            description: The Scout's type.
     TestItem:
       title: Test results
       oneOf:
@@ -1039,6 +998,46 @@ components:
                 description: Delivery duration up to the customer email server, in milliseconds.
                 type: number
                 format: float
+    ScoutTestSharedProps:
+      type: object
+      properties:
+        scoutId:
+          type: integer
+          description: The Scout's ID.
+        scoutName:
+          type: string
+          description: The Scout's name.
+        parentScoutId:
+          type: integer
+          description: ID of the parent Scout. Present only when this test result belongs to a child Scout.
+        parentScoutName:
+          type: string
+          description: Name of the parent Scout. Present only when this test result belongs to a child Scout.
+        parentSubType:
+          type: string
+          description: Sub-type of the parent Scout. Present only when this test result belongs to a child Scout.
+          enum:
+          - ms_exchange
+          - net_http
+          - citrix_gateway
+          - citrix_cloud
+          - citrix_storefront
+          - vmware_horizon
+          - vmware_w1
+          - vmware_secsrv
+          - avd
+    ScoutBaseAppProps:
+      title: Application test schema
+      allOf:
+      - type: object
+        properties:
+          type:
+            description: The Scout's type.
+            type: string
+            enum:
+            - application
+      - $ref: '#/components/schemas/ScoutTestSharedProps'
+      - $ref: '#/components/schemas/TestsSharedProps'
     TestsSharedProps:
       type: object
       properties:
@@ -1059,58 +1058,59 @@ components:
           enum:
           - success
           - failure
-    ScoutBaseEucProps:
-      allOf:
-      - $ref: '#/components/schemas/ScoutTestSharedProps'
-      - $ref: '#/components/schemas/ScoutTestEucSharedProps'
-      - $ref: '#/components/schemas/TestsSharedProps'
-      - type: object
-        properties:
-          username:
-            type: string
-            description: The username the Scout uses to access the gateway.
-          resource:
-            type: string
-            description: The resource the Scout accesses and tests.
-          type:
-            type: string
-            enum:
-            - euc
-            description: The Scout's type.
-    BaseError:
-      type: object
-      properties:
-        errors:
-          type: string
-      required:
-      - errors
-    MarshmallowError:
-      type: object
-      properties:
-        errors:
-          type: object
-          items:
-            type: array
-            items:
-              type: string
-      example:
-        errors:
-          name:
-          - Missing required data.
-          period:
-          - 'Must be one of: [ 1, 2, 3, 5, 10, 15, 30, 60 ]'
-    ScoutBaseNetProps:
-      title: Network test schema
-      allOf:
-      - type: object
-        properties:
-          type:
-            description: The Scout's type.
-            type: string
-            enum:
-            - network
-      - $ref: '#/components/schemas/ScoutTestSharedProps'
-      - $ref: '#/components/schemas/TestsSharedProps'
+  responses:
+    ValidationError:
+      description: Sent data has errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MarshmallowError'
+    TestList:
+      description: A list of tests
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: An array of tests. Each entry in the array is a separate test, containing its details and results.
+                items:
+                  $ref: '#/components/schemas/TestItem'
+              current_page:
+                type: integer
+                description: The current page of tests returned by the request. Change the page with the `page` parameter.
+              total_pages:
+                type: integer
+                description: The total number of pages returned. Each page contains up to 100 tests.
+              total_per_page:
+                type: integer
+                description: The total number of tests that can appear per page.
+                enum:
+                - 100
+              success:
+                type: boolean
+                description: Whether the request was successful.
+              total:
+                type: integer
+                description: The total number of tests returned, based on the request conditions. If `total` is greater than 100, then the tests will be on multiple pages.
+    Unauthorized:
+      description: Missing or wrong api key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Unauthorized
+    ServerError:
+      description: Server errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseError'
+          example:
+            success: false
+            errors: Server Error
   securitySchemes:
     ApiKeyAuth:
       type: http

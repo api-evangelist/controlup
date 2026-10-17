@@ -184,6 +184,56 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    WindowsEventResult:
+      type: object
+      properties:
+        eventTime:
+          type: string
+          format: date-time
+        logLevel:
+          type: string
+        logName:
+          type: string
+        sourceName:
+          type: string
+        eventId:
+          type: integer
+          format: int32
+        machineName:
+          type: string
+        userName:
+          type: string
+        message:
+          type: string
+    HistoricalListResponseWindowsEventResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WindowsEventResult'
     UserMetadata:
       type: object
       properties:
@@ -221,56 +271,6 @@ components:
           type: string
         timeTo:
           type: string
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    WindowsEventResult:
-      type: object
-      properties:
-        eventTime:
-          type: string
-          format: date-time
-        logLevel:
-          type: string
-        logName:
-          type: string
-        sourceName:
-          type: string
-        eventId:
-          type: integer
-          format: int32
-        machineName:
-          type: string
-        userName:
-          type: string
-        message:
-          type: string
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
-    HistoricalListResponseWindowsEventResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WindowsEventResult'
   securitySchemes:
     bearer-jwt:
       type: http

@@ -255,6 +255,75 @@ paths:
                 $ref: '#/components/schemas/HistoricalErrorResponse'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+    HostCpuUtilizationResult:
+      type: object
+      description: Host Cpu Utilization
+      properties:
+        folder_path:
+          type: string
+        hyper_visor_platform:
+          type: string
+        cpu_usage_avg:
+          type: integer
+          format: int64
+        hosts_count:
+          type: integer
+          format: int32
+        running_vm_count_sum:
+          type: integer
+          format: int64
+        machines_count:
+          type: integer
+          format: int32
+        update_time:
+          type: string
+          format: date-time
+    HistoricalListResponseHostCpuUtilizationResult:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostCpuUtilizationResult'
+    SessionCountResult:
+      type: object
+      description: Session Count
+      properties:
+        host_id:
+          type: string
+        host_name:
+          type: string
+        max:
+          type: integer
+          format: int64
+        min:
+          type: integer
+          format: int64
+        avg:
+          type: integer
+          format: int64
+    HistoricalErrorResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/UserMetadata'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     HostNumbersResult:
       type: object
       description: Host Numbers
@@ -303,75 +372,6 @@ components:
           type: string
         timeTo:
           type: string
-    HistoricalErrorResponse:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    SessionCountResult:
-      type: object
-      description: Session Count
-      properties:
-        host_id:
-          type: string
-        host_name:
-          type: string
-        max:
-          type: integer
-          format: int64
-        min:
-          type: integer
-          format: int64
-        avg:
-          type: integer
-          format: int64
-    HistoricalListResponseHostCpuUtilizationResult:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/UserMetadata'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/HostCpuUtilizationResult'
-    HostCpuUtilizationResult:
-      type: object
-      description: Host Cpu Utilization
-      properties:
-        folder_path:
-          type: string
-        hyper_visor_platform:
-          type: string
-        cpu_usage_avg:
-          type: integer
-          format: int64
-        hosts_count:
-          type: integer
-          format: int32
-        running_vm_count_sum:
-          type: integer
-          format: int64
-        machines_count:
-          type: integer
-          format: int32
-        update_time:
-          type: string
-          format: date-time
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errorCode:
-          type: integer
-          format: int32
-        statusCode:
-          type: integer
-          format: int32
   securitySchemes:
     bearer-jwt:
       type: http

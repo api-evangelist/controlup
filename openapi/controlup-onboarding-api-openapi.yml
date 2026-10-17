@@ -561,39 +561,6 @@ paths:
       - CookieAuth: []
 components:
   schemas:
-    OnboardingStatus:
-      enum:
-      - notStarted
-      - started
-      - complete
-      type: string
-      description: Current user's lifecycle state for an onboarding flow.
-    UpdateOnboardingRequest:
-      required:
-      - displayState
-      type: object
-      properties:
-        displayState:
-          $ref: '#/components/schemas/OnboardingDisplayState'
-        activeStep:
-          type:
-          - string
-          - 'null'
-          description: Stable onboarding step key for the active step, if selected.
-      additionalProperties: false
-      description: Request to update onboarding UI state for a flow.
-    OnboardingFlowListDto:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OnboardingFlowSummaryDto'
-          description: Onboarding flows available to the current user.
-      additionalProperties: false
-      description: Collection of onboarding flow summaries.
     OnboardingFlowDto:
       required:
       - displayState
@@ -642,80 +609,6 @@ components:
           description: Ordered onboarding steps.
       additionalProperties: false
       description: Detailed onboarding flow state for the current user.
-    OnboardingStepDto:
-      required:
-      - deepLinkDestination
-      - description
-      - isConfiguredInOrganization
-      - key
-      - title
-      - userState
-      type: object
-      properties:
-        key:
-          type: string
-          description: Stable step identifier.
-        title:
-          type: string
-          description: Human-readable step title.
-        description:
-          type: string
-          description: Short step description.
-        deepLinkDestination:
-          type: string
-          description: Human-readable deep-link destination.
-        userState:
-          $ref: '#/components/schemas/OnboardingStepState'
-        isConfiguredInOrganization:
-          type: boolean
-          description: Whether the organization already has the related configuration.
-      additionalProperties: false
-      description: Current user's state for an onboarding step.
-    OnboardingDisplayState:
-      enum:
-      - expanded
-      - collapsed
-      - dismissed
-      type: string
-      description: Display state for an onboarding flow.
-    OnboardingStepState:
-      enum:
-      - incomplete
-      - completed
-      - skipped
-      type: string
-      description: Current user's interaction state for an onboarding step.
-    OnboardingFlowSummaryDto:
-      required:
-      - displayState
-      - flow
-      - progressPercent
-      - status
-      - title
-      type: object
-      properties:
-        flow:
-          type: string
-          description: Route-safe flow identifier.
-        title:
-          type: string
-          description: Human-readable flow title.
-        status:
-          $ref: '#/components/schemas/OnboardingStatus'
-        startedAt:
-          type:
-          - string
-          - 'null'
-          description: Timestamp when the user started this onboarding flow.
-          format: date-time
-        displayState:
-          $ref: '#/components/schemas/OnboardingDisplayState'
-        progressPercent:
-          type: number
-          description: Derived user-action progress percentage.
-          format: double
-      additionalProperties: false
-      description: Summary of an onboarding flow for the current user.
     UpdateOnboardingStepRequest:
       required:
       - state
@@ -725,6 +618,27 @@ components:
           $ref: '#/components/schemas/OnboardingStepState'
       additionalProperties: false
       description: Request to update the current user's state for an onboarding step.
+    OnboardingStatus:
+      enum:
+      - notStarted
+      - started
+      - complete
+      type: string
+      description: Current user's lifecycle state for an onboarding flow.
+    OnboardingStepState:
+      enum:
+      - incomplete
+      - completed
+      - skipped
+      type: string
+      description: Current user's interaction state for an onboarding step.
+    OnboardingDisplayState:
+      enum:
+      - expanded
+      - collapsed
+      - dismissed
+      type: string
+      description: Display state for an onboarding flow.
     ErrorResponse:
       required:
       - status
@@ -772,6 +686,92 @@ components:
       description: 'Standard error body the API returns when a request fails validation or cannot be completed.
 
         Follows RFC 7807 Problem Details with additional `errors` and `traceId` fields.'
+    OnboardingFlowSummaryDto:
+      required:
+      - displayState
+      - flow
+      - progressPercent
+      - status
+      - title
+      type: object
+      properties:
+        flow:
+          type: string
+          description: Route-safe flow identifier.
+        title:
+          type: string
+          description: Human-readable flow title.
+        status:
+          $ref: '#/components/schemas/OnboardingStatus'
+        startedAt:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the user started this onboarding flow.
+          format: date-time
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        progressPercent:
+          type: number
+          description: Derived user-action progress percentage.
+          format: double
+      additionalProperties: false
+      description: Summary of an onboarding flow for the current user.
+    UpdateOnboardingRequest:
+      required:
+      - displayState
+      type: object
+      properties:
+        displayState:
+          $ref: '#/components/schemas/OnboardingDisplayState'
+        activeStep:
+          type:
+          - string
+          - 'null'
+          description: Stable onboarding step key for the active step, if selected.
+      additionalProperties: false
+      description: Request to update onboarding UI state for a flow.
+    OnboardingFlowListDto:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingFlowSummaryDto'
+          description: Onboarding flows available to the current user.
+      additionalProperties: false
+      description: Collection of onboarding flow summaries.
+    OnboardingStepDto:
+      required:
+      - deepLinkDestination
+      - description
+      - isConfiguredInOrganization
+      - key
+      - title
+      - userState
+      type: object
+      properties:
+        key:
+          type: string
+          description: Stable step identifier.
+        title:
+          type: string
+          description: Human-readable step title.
+        description:
+          type: string
+          description: Short step description.
+        deepLinkDestination:
+          type: string
+          description: Human-readable deep-link destination.
+        userState:
+          $ref: '#/components/schemas/OnboardingStepState'
+        isConfiguredInOrganization:
+          type: boolean
+          description: Whether the organization already has the related configuration.
+      additionalProperties: false
+      description: Current user's state for an onboarding step.
   securitySchemes:
     BearerAuth:
       type: http
